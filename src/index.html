@@ -19,191 +19,210 @@
     <nav class="top-nav">
         <div class="logo">PeriodicaX</div>
         <div class="mode-buttons">
-            <button class="nav-btn active" data-mode="table">Table</button>
-            <button class="nav-btn" data-mode="trends">Trends</button>
-            <button class="nav-btn" data-mode="compare">Compare</button>
-            <button class="nav-btn" data-mode="quiz">Quiz</button>
+            <button class="nav-btn active" data-view="main">Property Interface</button>
+            <button class="nav-btn" data-view="electrons">Electrons & Orbitals</button>
+            <button class="nav-btn" data-view="isotopes">Isotopes</button>
+            <button class="nav-btn" data-view="compounds">Compounds</button>
         </div>
         <div class="nav-controls">
             <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings">⚙️</button>
-            <button class="icon-btn" id="btn-about" aria-label="About" title="About this data">ℹ️</button>
         </div>
     </nav>
 
     <main class="app-container">
-        <!-- LEFT PANEL (Grid) -->
-        <section class="panel panel-left">
-            <div class="panel-header">
-                <div class="controls-row">
+        
+        <!-- VIEW: MAIN PANEL -->
+        <section class="view-mode active" id="view-main">
+            <!-- Left: Table & Controls -->
+            <div class="view-left">
+                <div class="table-controls">
                     <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                    <select id="env-simulator" title="Environment Simulator">
-                        <option value="stp">Standard Conditions (STP)</option>
-                        <option value="human">Human Body</option>
-                        <option value="ocean">Seawater</option>
-                        <option value="volcano">Volcanic Gas</option>
-                        <option value="space">Outer Space</option>
-                    </select>
-                </div>
-                
-                <div class="color-modes">
-                    <button class="mode-btn active" data-color="category">Category</button>
-                    <button class="mode-btn" data-color="state">State</button>
-                    <button class="mode-btn" data-color="electronegativity">Electronegativity</button>
-                    <button class="mode-btn" data-color="radius">Radius</button>
-                    <button class="mode-btn" data-color="block">Block</button>
-                </div>
-
-                <div class="temp-controller">
-                    <div class="temp-header">
-                        <label>Temperature: <span id="temp-display" class="mono-text">298 K</span></label>
-                        <div class="temp-unit-toggle">
-                            <button class="unit-btn active" data-unit="K">K</button>
-                            <button class="unit-btn" data-unit="C">°C</button>
-                            <button class="unit-btn" data-unit="F">°F</button>
-                        </div>
+                    <div class="temp-controller" id="temp-controller-wrapper">
+                        <label>Temp: <span id="temp-display" class="mono-text">298 K</span></label>
+                        <input type="range" id="temp-slider" min="0" max="6000" value="298">
                     </div>
-                    <input type="range" id="temp-slider" min="0" max="6000" value="298">
-                    <div class="temp-presets">
-                        <button class="preset-btn" data-temp="0" title="Absolute Zero">0K</button>
-                        <button class="preset-btn" data-temp="77" title="Liquid Nitrogen">77K</button>
-                        <button class="preset-btn" data-temp="298" title="Room Temp">298K</button>
-                        <button class="preset-btn" data-temp="310" title="Body Temp">310K</button>
-                        <button class="preset-btn" data-temp="5778" title="Surface of Sun">5778K</button>
+                    <div class="timeline-controller hidden" id="timeline-controller-wrapper" style="display: none; align-items: center; gap: 10px;">
+                        <label>Year: <span id="timeline-display" class="mono-text">2025</span></label>
+                        <input type="range" id="timeline-slider" min="1650" max="2025" value="2025" style="width: 200px;">
                     </div>
                     <div id="state-counter" class="mono-text small-text"></div>
                 </div>
-            </div>
 
-            <div class="grid-wrapper">
-                <div class="periodic-grid" id="periodic-grid">
-                    <!-- Grid items injected by JS -->
+                <div class="grid-wrapper">
+                    <div class="periodic-grid" id="main-grid">
+                        <div id="in-grid-legend" class="in-grid-legend">
+                            <!-- Dynamic legend injected by JS -->
+                        </div>
+                        <!-- Grid items injected by JS -->
+                    </div>
                 </div>
             </div>
-            
-            <div class="legend" id="grid-legend">
-                <!-- Legend injected by JS -->
-            </div>
-        </section>
 
-        <!-- CENTER PANEL (Detail Hub) -->
-        <section class="panel panel-center">
-            <div id="empty-state" class="empty-state">
-                <div class="empty-icon">⚛️</div>
-                <p>Select an element from the table to explore</p>
-            </div>
+            <!-- Right: Property Sidebar -->
+            <div class="view-right sidebar">
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">⚛️</div>
+                    <p>Select an element to view details</p>
+                    <p class="small-text mt-2">Click any property below to color the table</p>
+                </div>
 
-            <div id="element-detail-hub" class="hidden">
-                <header class="detail-header">
-                    <div class="element-card" id="detail-card">
-                        <div class="ec-top mono-text">
+                <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 120px;">
+                    <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
+                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between;">
                             <span id="dh-number"></span>
                             <span id="dh-mass"></span>
                         </div>
-                        <div class="ec-symbol mono-text" id="dh-symbol"></div>
+                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
                         <div class="ec-name" id="dh-name"></div>
-                        <div class="ec-badges">
-                            <span class="badge" id="dh-category"></span>
-                            <span class="badge" id="dh-state"></span>
+                    </div>
+                </div>
+
+                <div class="property-list">
+                    <h3>Properties Map</h3>
+                    <p class="small-text help-text">Click a property to visualize it on the table.</p>
+                    
+                    <!-- Property Items (act as buttons to switch heatmap) -->
+                    <div class="prop-item active" data-prop="category">
+                        <span class="prop-label">Series</span>
+                        <span class="prop-value" id="val-category">-</span>
+                    </div>
+                    <div class="prop-item" data-prop="state">
+                        <span class="prop-label">State at Current Temp</span>
+                        <span class="prop-value" id="val-state">-</span>
+                    </div>
+                    <div class="prop-item" data-prop="atomicMass">
+                        <span class="prop-label">Weight</span>
+                        <span class="prop-value mono-text"><span id="val-atomicMass">-</span> u</span>
+                    </div>
+                    <div class="prop-item" data-prop="energyLevels">
+                        <span class="prop-label">Energy levels</span>
+                        <span class="prop-value mono-text" id="val-energyLevels">-</span>
+                    </div>
+                    <div class="prop-item" data-prop="electronegativity">
+                        <span class="prop-label">Electronegativity</span>
+                        <span class="prop-value mono-text" id="val-electronegativity">-</span>
+                    </div>
+                    <div class="prop-item" data-prop="meltingPoint">
+                        <span class="prop-label">Melting point</span>
+                        <span class="prop-value mono-text"><span id="val-meltingPoint">-</span> <select id="unit-temp1" class="inline-select" data-type="temp"><option value="K">K</option><option value="C">°C</option><option value="F">°F</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="boilingPoint">
+                        <span class="prop-label">Boiling point</span>
+                        <span class="prop-value mono-text"><span id="val-boilingPoint">-</span> <select id="unit-temp2" class="inline-select" data-type="temp"><option value="K">K</option><option value="C">°C</option><option value="F">°F</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="electronAffinity">
+                        <span class="prop-label">Electron affinity</span>
+                        <span class="prop-value mono-text"><span id="val-electronAffinity">-</span> <select id="unit-affinity" class="inline-select" data-type="energy"><option value="kJ/mol">kJ/mol</option><option value="eV">eV</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="ionization">
+                        <span class="prop-label">Ionization, <select id="sub-ionization" class="inline-select sub-select"><option value="0">1st</option><option value="1">2nd</option><option value="2">3rd</option><option value="3">4th</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-ionization">-</span> <select id="unit-ionization" class="inline-select" data-type="energy"><option value="kJ/mol">kJ/mol</option><option value="eV">eV</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="radius">
+                        <span class="prop-label">Radius, <select id="sub-radius" class="inline-select sub-select"><option value="calculated">calculated</option><option value="empirical">empirical</option><option value="covalent">covalent</option><option value="vanDerWaals">van der Waals</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-radius">-</span> <select id="unit-radius" class="inline-select" data-type="length"><option value="pm">pm</option><option value="A">Å</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="hardness">
+                        <span class="prop-label">Hardness, <select id="sub-hardness" class="inline-select sub-select"><option value="brinell">Brinell</option><option value="mohs">Mohs</option><option value="vickers">Vickers</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-hardness">-</span> <span id="unit-hardness-span">MPa</span></span>
+                    </div>
+                    <div class="prop-item" data-prop="modulus">
+                        <span class="prop-label">Modulus, <select id="sub-modulus" class="inline-select sub-select"><option value="bulk">bulk</option><option value="shear">shear</option><option value="young">Young's</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-modulus">-</span> GPa</span>
+                    </div>
+                    <div class="prop-item" data-prop="density">
+                        <span class="prop-label">Density, <select id="sub-density" class="inline-select sub-select"><option value="stp">STP</option><option value="liquid">liquid</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-density">-</span> <select id="unit-density" class="inline-select" data-type="density"><option value="kg/m3">kg/m³</option><option value="g/cm3">g/cm³</option></select></span>
+                    </div>
+                    <div class="prop-item" data-prop="conductivity">
+                        <span class="prop-label">Conductivity, <select id="sub-conductivity" class="inline-select sub-select"><option value="thermal">thermal</option><option value="electric">electric</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-conductivity">-</span> <span id="unit-conductivity-span">W/mK</span></span>
+                    </div>
+                    <div class="prop-item" data-prop="heat">
+                        <span class="prop-label">Heat, <select id="sub-heat" class="inline-select sub-select"><option value="specific">specific</option><option value="vaporization">vaporization</option><option value="fusion">fusion</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-heat">-</span> <span id="unit-heat-span">J/kgK</span></span>
+                    </div>
+                    <div class="prop-item" data-prop="abundance">
+                        <span class="prop-label">Abundance, <select id="sub-abundance" class="inline-select sub-select"><option value="universe">universe</option><option value="sun">sun</option><option value="oceans">oceans</option><option value="human">human</option><option value="earthCrust">earth crust</option><option value="meteorites">meteorites</option></select></span>
+                        <span class="prop-value mono-text"><span id="val-abundance">-</span> %</span>
+                    </div>
+                    <div class="prop-item" data-prop="discoveryYear">
+                        <span class="prop-label">Discovered in</span>
+                        <span class="prop-value mono-text" id="val-discovered">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ELECTRONS & ORBITALS -->
+        <section class="view-mode" id="view-electrons">
+            <div class="view-left">
+                <div class="grid-wrapper">
+                    <!-- Specialized grid showing Bohr models -->
+                    <div class="periodic-grid" id="electrons-grid">
+                        <!-- Grid items injected by JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="view-right sidebar">
+                <h3>Electron Configuration</h3>
+                <div id="elec-empty-state" class="empty-state">Select an element</div>
+                
+                <div id="elec-details" class="hidden">
+                    <h2 class="elec-title"><span id="elec-sym" class="mono-text"></span> - <span id="elec-name"></span></h2>
+                    
+                    <div class="aufbau-diagram">
+                        <h4>Configuration</h4>
+                        <div class="mono-text" id="elec-config"></div>
+                        <div class="mono-text mt-1" id="elec-config-noble"></div>
+                    </div>
+
+                    <div class="bohr-reference-container">
+                        <h4>Bohr Model</h4>
+                        <div id="bohr-reference">
+                            <!-- Animated SVG Bohr model goes here -->
                         </div>
                     </div>
-                </header>
 
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="overview">Overview</button>
-                    <button class="tab-btn" data-tab="physical">Physical</button>
-                    <button class="tab-btn" data-tab="atomic">Atomic</button>
-                    <button class="tab-btn" data-tab="chemical">Chemical</button>
-                    <button class="tab-btn" data-tab="isotopes">Isotopes</button>
-                    <button class="tab-btn" data-tab="compounds">Compounds</button>
-                </div>
-
-                <div class="tab-content active" id="tab-overview">
-                    <div class="content-section">
-                        <h3>Discovery</h3>
-                        <p id="dh-discovery-text" class="body-text"></p>
-                    </div>
-                    <div class="content-section">
-                        <h3>Appearance</h3>
-                        <p id="dh-appearance-text" class="body-text"></p>
-                    </div>
-                    <div class="content-section">
-                        <h3>Fun Facts</h3>
-                        <ul id="dh-facts-list" class="body-text list-disc"></ul>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="tab-physical">
-                    <div class="content-section">
-                        <h3>Physical Properties</h3>
-                        <table class="data-table">
-                            <tbody id="dh-physical-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- We will add other tabs content dynamically or expand later -->
-                <div class="tab-content" id="tab-atomic">
-                    <div class="content-section">
-                        <h3>Electron Configuration</h3>
-                        <div class="mono-text" id="dh-econfig"></div>
-                        <div class="mono-text" id="dh-econfig-noble"></div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="tab-chemical">
-                    <div class="content-section">
-                        <h3>Chemical Behavior</h3>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="tab-isotopes">
-                    <div class="content-section">
-                        <h3>Isotopes</h3>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="tab-compounds">
-                    <div class="content-section">
-                        <h3>Common Compounds</h3>
+                    <div class="orbital-viewer">
+                        <h4>3D Orbital Viewer</h4>
+                        <div class="orbital-controls" style="display:flex; gap:10px; margin-bottom:10px;">
+                            <select id="orbital-n" class="styled-select">
+                                <option value="1">n=1</option>
+                                <option value="2" selected>n=2</option>
+                                <option value="3">n=3</option>
+                            </select>
+                            <select id="orbital-l" class="styled-select">
+                                <option value="0">l=0 (s)</option>
+                                <option value="1" selected>l=1 (p)</option>
+                            </select>
+                            <select id="orbital-ml" class="styled-select">
+                                <option value="-1">m=-1</option>
+                                <option value="0" selected>m=0</option>
+                                <option value="1">m=1</option>
+                            </select>
+                        </div>
+                        <div id="three-canvas-container" style="height: 200px; width: 100%;"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- RIGHT PANEL (Orbital Viewer) -->
-        <section class="panel panel-right">
-            <div class="orbital-viewer">
-                <div class="ov-header">
-                    <h3>3D Orbital Viewer</h3>
-                    <div class="orbital-controls">
-                        <select id="orbital-n">
-                            <option value="1">n=1</option>
-                            <option value="2">n=2</option>
-                            <option value="3">n=3</option>
-                            <option value="4">n=4</option>
-                        </select>
-                        <select id="orbital-l">
-                            <option value="0">s</option>
-                            <option value="1">p</option>
-                            <option value="2">d</option>
-                            <option value="3">f</option>
-                        </select>
-                        <select id="orbital-ml">
-                            <option value="0">m=0</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div id="three-canvas-container">
-                    <!-- Three.js renders here -->
-                </div>
-                
-                <div class="rdf-plot-container">
-                    <h4>Radial Distribution</h4>
-                    <canvas id="rdf-canvas"></canvas>
-                </div>
+        <!-- VIEW: ISOTOPES -->
+        <section class="view-mode" id="view-isotopes">
+            <div class="full-panel">
+                <h2>Isotopes Panel (Coming Soon)</h2>
             </div>
         </section>
+
+        <!-- VIEW: COMPOUNDS -->
+        <section class="view-mode" id="view-compounds">
+            <div class="full-panel">
+                <h2>Compounds Panel (Coming Soon)</h2>
+            </div>
+        </section>
+
     </main>
 
     <!-- JS_DATA_INJECT -->
