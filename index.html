@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
+
+/* 01_base.css */
 :root {
     --bg-dark: #0a0e1a;
     --surface: #111827;
@@ -122,6 +124,7 @@ body {
 /* Table Controls */
 .table-controls {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 20px;
     align-items: center;
@@ -134,18 +137,64 @@ input[type="text"], select {
     border-radius: 4px;
     font-family: var(--font-ui);
 }
-#search-bar { width: 300px; }
+#search-bar { width: 300px; flex-shrink: 0; }
 
 .temp-controller {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px;
     background: var(--surface-light);
-    padding: 8px 15px;
-    border-radius: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: max-content;
+    max-width: 100%;
 }
-#temp-display { color: var(--mono-green); width: 60px; display: inline-block; }
-input[type="range"] { width: 150px; accent-color: var(--accent-amber); cursor: pointer;}
+#temp-display-container { color: var(--dynamic-temp-color, var(--mono-green)); display: flex; align-items: center; white-space: nowrap; text-align: left; transition: color 0.1s; flex-shrink: 0 !important; }
+#temp-input {
+    width: 60px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: inherit;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-left: 5px;
+    outline: none;
+    text-align: right;
+    font-size: inherit;
+    transition: border-color 0.2s;
+}
+#temp-input:focus { border-color: var(--accent-cyan); }
+#temp-input::-webkit-outer-spin-button, #temp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-amber); cursor: pointer;}
+#temp-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 700px;
+    height: 18px;
+    background: linear-gradient(to right, rgb(0,0,255), rgb(0,255,255), rgb(255,255,0), rgb(255,136,0), rgb(255,0,0));
+    border-radius: 10px;
+    outline: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+}
+#temp-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--dynamic-temp-bg, transparent);
+    border: 3px solid #ffffff;
+    box-shadow: var(--temp-thumb-glow, none);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+#temp-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
 
 /* Grid */
 .grid-wrapper { flex: 1; overflow: auto; padding: 20px; }
@@ -315,6 +364,7 @@ input[type="range"] { width: 150px; accent-color: var(--accent-amber); cursor: p
     align-items: center;
     gap: 30px;
     padding: 10px;
+    padding-bottom: 30px;
     pointer-events: auto;
 }
 .legend-box {
@@ -365,10 +415,16 @@ input[type="range"] { width: 150px; accent-color: var(--accent-amber); cursor: p
 .legend-color { width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
 
 /* Highlight Logic */
-#main-grid.highlighting-active .element-cell {
-    opacity: 0.15;
-    filter: grayscale(100%);
+#main-grid.highlighting-active .element-cell:not(.highlighted) {
+    background: rgba(255,255,255,0.02) !important;
+    border-color: rgba(255,255,255,0.05) !important;
+    opacity: 0.2 !important;
+    box-shadow: none !important;
     pointer-events: none;
+}
+#main-grid.highlighting-active .element-cell:not(.highlighted) * {
+    color: rgba(255,255,255,0.3) !important;
+    text-shadow: none !important;
 }
 #main-grid.highlighting-active .element-cell.highlighted {
     opacity: 1;
@@ -498,7 +554,7 @@ input[type="range"] { width: 150px; accent-color: var(--accent-amber); cursor: p
                 <div class="table-controls">
                     <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
                     <div class="temp-controller" id="temp-controller-wrapper">
-                        <label>Temp: <span id="temp-display" class="mono-text">298 K</span></label>
+                        <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                         <input type="range" id="temp-slider" min="0" max="6000" value="298">
                     </div>
                     <div class="timeline-controller hidden" id="timeline-controller-wrapper" style="display: none; align-items: center; gap: 10px;">
@@ -685,7 +741,10 @@ input[type="range"] { width: 150px; accent-color: var(--accent-amber); cursor: p
 
     </main>
 
+    
     <script>
+
+// 01_data.js
 const elementsData = [
     {
         "atomicNumber": 1,
@@ -9952,8 +10011,7 @@ function getElementByNumber(num) {
     return elementsData.find(e => e.atomicNumber === parseInt(num));
 }
 
-</script>
-    <script>
+// 02_main.js
 // Constants & State
 let currentTemp = 298; // Kelvin
 let tempUnit = 'K';
@@ -10105,14 +10163,28 @@ function setupUI() {
         sel.addEventListener('click', e => e.stopPropagation());
     });
 
-    // Temp slider
+    // Temp slider & input
     const tempSlider = document.getElementById('temp-slider');
-    tempSlider.addEventListener('input', (e) => {
-        currentTemp = parseFloat(e.target.value);
+    const tempInput = document.getElementById('temp-input');
+    
+    const handleTempChange = (val) => {
+        let parsed = parseFloat(val);
+        if (isNaN(parsed)) return;
+        if (parsed < 0) parsed = 0;
+        if (parsed > 6000) parsed = 6000;
+        currentTemp = parsed;
+        
+        // Sync the other control
+        tempSlider.value = currentTemp;
+        tempInput.value = Math.round(currentTemp);
+        
         updateTempDisplay();
         if (currentProperty === 'category' || currentProperty === 'state') updateGridVisuals();
         updateSidebarValues();
-    });
+    };
+
+    tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value));
+    tempInput.addEventListener('input', (e) => handleTempChange(e.target.value));
 
     // Timeline slider
     const timelineSlider = document.getElementById('timeline-slider');
@@ -10130,6 +10202,9 @@ function setupUI() {
         drawOrbital();
     });
     document.getElementById('orbital-ml').addEventListener('change', drawOrbital);
+    
+    // Initialize display values
+    updateTempDisplay();
 }
 
 function updateMlOptions() {
@@ -10143,11 +10218,55 @@ function updateMlOptions() {
     }
 }
 
+function getTempColor(k) {
+    if (k < 273) {
+        const pct = k / 273;
+        return `rgb(0, ${Math.round(255 * pct)}, 255)`;
+    } else if (k < 1000) {
+        const pct = (k - 273) / (1000 - 273);
+        return `rgb(${Math.round(255 * pct)}, 255, ${Math.round(255 * (1 - pct))})`;
+    } else if (k < 3000) {
+        const pct = (k - 1000) / (3000 - 1000);
+        return `rgb(255, ${Math.round(255 - 119 * pct)}, 0)`;
+    } else {
+        const pct = Math.min(1, (k - 3000) / (6000 - 3000));
+        return `rgb(255, ${Math.round(136 * (1 - pct))}, 0)`;
+    }
+}
+
 function updateTempDisplay() {
     const k = currentTemp;
     const c = k - 273.15;
     const f = c * 9/5 + 32;
-    document.getElementById('temp-display').innerText = `${Math.round(k)} K  |  ${Math.round(c)} °C  |  ${Math.round(f)} °F`;
+    const cStr = String(Math.round(c)).padStart(5, '\u00A0');
+    const fStr = String(Math.round(f)).padStart(5, '\u00A0');
+    
+    document.getElementById('temp-input').value = Math.round(k);
+    document.getElementById('temp-display-c').innerText = `${cStr} °C`;
+    document.getElementById('temp-display-f').innerText = `${fStr} °F`;
+    
+    const displayContainer = document.getElementById('temp-display-container');
+    const color = getTempColor(k);
+    
+    displayContainer.style.color = color;
+    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
+    
+    const slider = document.getElementById('temp-slider');
+    
+    // Dynamic glow for the thumb
+    const glowIntensity = Math.min(1, k / 6000); // 0 to 1
+    let glowShadow = 'none';
+    let thumbBg = 'transparent';
+    if (glowIntensity > 0.05) {
+        const glowRadius1 = Math.round(glowIntensity * 15);
+        const glowRadius2 = Math.round(glowIntensity * 30);
+        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+    }
+    
+    slider.style.setProperty('--temp-thumb-glow', glowShadow);
+    slider.style.setProperty('--dynamic-temp-bg', thumbBg);
 }
 
 function generateMiniBohrSVG(shells) {

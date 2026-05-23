@@ -149,14 +149,28 @@ function setupUI() {
         sel.addEventListener('click', e => e.stopPropagation());
     });
 
-    // Temp slider
+    // Temp slider & input
     const tempSlider = document.getElementById('temp-slider');
-    tempSlider.addEventListener('input', (e) => {
-        currentTemp = parseFloat(e.target.value);
+    const tempInput = document.getElementById('temp-input');
+    
+    const handleTempChange = (val) => {
+        let parsed = parseFloat(val);
+        if (isNaN(parsed)) return;
+        if (parsed < 0) parsed = 0;
+        if (parsed > 6000) parsed = 6000;
+        currentTemp = parsed;
+        
+        // Sync the other control
+        tempSlider.value = currentTemp;
+        tempInput.value = Math.round(currentTemp);
+        
         updateTempDisplay();
         if (currentProperty === 'category' || currentProperty === 'state') updateGridVisuals();
         updateSidebarValues();
-    });
+    };
+
+    tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value));
+    tempInput.addEventListener('input', (e) => handleTempChange(e.target.value));
 
     // Timeline slider
     const timelineSlider = document.getElementById('timeline-slider');
@@ -174,6 +188,9 @@ function setupUI() {
         drawOrbital();
     });
     document.getElementById('orbital-ml').addEventListener('change', drawOrbital);
+    
+    // Initialize display values
+    updateTempDisplay();
 }
 
 function updateMlOptions() {
@@ -187,11 +204,55 @@ function updateMlOptions() {
     }
 }
 
+function getTempColor(k) {
+    if (k < 273) {
+        const pct = k / 273;
+        return `rgb(0, ${Math.round(255 * pct)}, 255)`;
+    } else if (k < 1000) {
+        const pct = (k - 273) / (1000 - 273);
+        return `rgb(${Math.round(255 * pct)}, 255, ${Math.round(255 * (1 - pct))})`;
+    } else if (k < 3000) {
+        const pct = (k - 1000) / (3000 - 1000);
+        return `rgb(255, ${Math.round(255 - 119 * pct)}, 0)`;
+    } else {
+        const pct = Math.min(1, (k - 3000) / (6000 - 3000));
+        return `rgb(255, ${Math.round(136 * (1 - pct))}, 0)`;
+    }
+}
+
 function updateTempDisplay() {
     const k = currentTemp;
     const c = k - 273.15;
     const f = c * 9/5 + 32;
-    document.getElementById('temp-display').innerText = `${Math.round(k)} K  |  ${Math.round(c)} °C  |  ${Math.round(f)} °F`;
+    const cStr = String(Math.round(c)).padStart(5, '\u00A0');
+    const fStr = String(Math.round(f)).padStart(5, '\u00A0');
+    
+    document.getElementById('temp-input').value = Math.round(k);
+    document.getElementById('temp-display-c').innerText = `${cStr} °C`;
+    document.getElementById('temp-display-f').innerText = `${fStr} °F`;
+    
+    const displayContainer = document.getElementById('temp-display-container');
+    const color = getTempColor(k);
+    
+    displayContainer.style.color = color;
+    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
+    
+    const slider = document.getElementById('temp-slider');
+    
+    // Dynamic glow for the thumb
+    const glowIntensity = Math.min(1, k / 6000); // 0 to 1
+    let glowShadow = 'none';
+    let thumbBg = 'transparent';
+    if (glowIntensity > 0.05) {
+        const glowRadius1 = Math.round(glowIntensity * 15);
+        const glowRadius2 = Math.round(glowIntensity * 30);
+        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+    }
+    
+    slider.style.setProperty('--temp-thumb-glow', glowShadow);
+    slider.style.setProperty('--dynamic-temp-bg', thumbBg);
 }
 
 function generateMiniBohrSVG(shells) {
