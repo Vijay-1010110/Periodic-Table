@@ -10518,7 +10518,7 @@ function setupUI() {
     });
     
     // Property Sidebar selection
-    document.querySelectorAll('.prop-item:not(.non-interactive)').forEach(item => {
+    document.querySelectorAll('.prop-item:not(.non-interactive):not(.elec-prop-item)').forEach(item => {
         item.addEventListener('click', (e) => {
             if (e.target.tagName.toLowerCase() === 'select' || e.target.tagName.toLowerCase() === 'option') return;
             document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => p.classList.remove('active'));
