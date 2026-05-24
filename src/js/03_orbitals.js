@@ -15,7 +15,6 @@ window.OrbitalViewer = {
         if (this.renderer) return;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color('#0a0e1a');
         
         let width = container.clientWidth || 300;
         let height = container.clientHeight || 200;
@@ -78,6 +77,7 @@ window.OrbitalViewer = {
 
     setElement: function(elData) {
         if (!elData) return;
+        this.currentElementData = elData;
         // Try to get empirical or calculated radius, fallback to 100 pm
         let r = 100;
         if (elData.radius) {
@@ -86,7 +86,53 @@ window.OrbitalViewer = {
             else if (elData.radius.covalent) r = elData.radius.covalent;
         }
         this.currentElementRadius = r;
-        this.drawOrbital();
+        
+        // Find outermost n from electron configuration
+        let maxN = 1;
+        if (elData.electronConfiguration) {
+            const parts = elData.electronConfiguration.split(' ');
+            parts.forEach(p => {
+                if (p.length > 0 && !p.startsWith('[')) {
+                    const n = parseInt(p[0]);
+                    if (!isNaN(n) && n > maxN) maxN = n;
+                }
+            });
+        }
+        this.outermostN = maxN;
+        
+        // We do NOT call drawOrbital() here directly anymore, because 02_main.js
+        // handles calling drawOrbital() with the correct valence shell parameters
+        // right after calling setElement().
+    },
+
+    updateInfoOverlay: function(n, l, mlStr, calculatedRadius) {
+        const elNameBox = document.getElementById('oi-element');
+        const orbitalBox = document.getElementById('oi-orbital');
+        const radiusBox = document.getElementById('oi-radius');
+        
+        if (elNameBox && this.currentElementData) {
+            elNameBox.textContent = `${this.currentElementData.name} (${this.currentElementData.symbol})`;
+        }
+        
+        if (orbitalBox) {
+            const lNames = ['s', 'p', 'd', 'f'];
+            const lChar = lNames[l] || 's';
+            let orientation = '';
+            if (mlStr !== 'all') {
+                if (lChar === 'p') {
+                    if (mlStr === '-1') orientation = 'x';
+                    if (mlStr === '0') orientation = 'y';
+                    if (mlStr === '1') orientation = 'z';
+                } else {
+                    orientation = ` (m=${mlStr})`;
+                }
+            }
+            orbitalBox.innerHTML = `${n}${lChar}<sub>${orientation}</sub>`;
+        }
+        
+        if (radiusBox) {
+            radiusBox.textContent = `Radius: ~${Math.round(calculatedRadius)} pm`;
+        }
     },
 
     drawOrbital: function(nParam, lParam, mlParam) {
@@ -105,6 +151,13 @@ window.OrbitalViewer = {
 
         const sliceToggle = document.getElementById('slice-orbital');
         const doSlice = sliceToggle ? sliceToggle.checked : false;
+
+        // Calculate specific orbital radius: R = BaseR * (n^2 / outerN^2)
+        const baseR = this.currentElementRadius || 100;
+        const outerN = this.outermostN || 2; // fallback
+        const specificRadius = baseR * Math.pow(n / outerN, 2);
+        
+        this.updateInfoOverlay(n, l, mlStr, specificRadius);
 
         // Clear existing orbital
         if (this.currentOrbitalGroup) {

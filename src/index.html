@@ -208,14 +208,23 @@
                         </div>
                     </div>
 
-                    <div class="orbital-viewer" style="background: transparent; padding: 0;">
-                        <div class="orbital-controls" style="display:flex; justify-content: flex-end; margin-bottom:5px;">
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">
-                                <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
-                            </label>
-                        </div>
-                        <div id="three-canvas-container" style="height: 250px; width: 100%; position:relative; background: transparent;">
-                            <div id="orbital-scale-bar" style="position:absolute; bottom:5px; left:10px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
+                    <div class="orbital-viewer" style="background: transparent; padding: 0; flex-grow: 1; display: flex; flex-direction: column; min-height: 350px;">
+                        <div id="three-canvas-container" style="flex-grow: 1; width: 100%; position:relative; background: transparent;">
+                            <!-- Top Right Info Overlay -->
+                            <div id="orbital-info-overlay" style="position: absolute; top: 10px; right: 10px; text-align: right; pointer-events: none; text-shadow: 0px 2px 4px rgba(0,0,0,1);">
+                                <div id="oi-element" style="color: #fff; font-weight: bold; font-size: 1.1rem;">-</div>
+                                <div id="oi-orbital" style="color: var(--accent-cyan); font-size: 1.2rem; font-weight: 800;">-</div>
+                                <div id="oi-radius" class="mono-text" style="color: #aaa; font-size: 0.85rem; margin-top: 2px;">-</div>
+                            </div>
+                            
+                            <!-- Floating Slice Toggle -->
+                            <div class="orbital-controls" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; backdrop-filter: blur(4px);">
+                                    <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
+                                </label>
+                            </div>
+                            
+                            <div id="orbital-scale-bar" style="position:absolute; bottom:15px; left:15px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
                                 <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
                                 <span id="orbital-scale-text">100 pm</span>
                             </div>

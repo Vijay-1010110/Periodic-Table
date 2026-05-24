@@ -525,7 +525,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 #three-canvas-container {
     width: 100%;
-    aspect-ratio: 1;
+    min-height: 250px;
     background: transparent;
     border-radius: 4px;
 }
@@ -839,14 +839,23 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                         </div>
                     </div>
 
-                    <div class="orbital-viewer" style="background: transparent; padding: 0;">
-                        <div class="orbital-controls" style="display:flex; justify-content: flex-end; margin-bottom:5px;">
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">
-                                <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
-                            </label>
-                        </div>
-                        <div id="three-canvas-container" style="height: 250px; width: 100%; position:relative; background: transparent;">
-                            <div id="orbital-scale-bar" style="position:absolute; bottom:5px; left:10px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
+                    <div class="orbital-viewer" style="background: transparent; padding: 0; flex-grow: 1; display: flex; flex-direction: column; min-height: 350px;">
+                        <div id="three-canvas-container" style="flex-grow: 1; width: 100%; position:relative; background: transparent;">
+                            <!-- Top Right Info Overlay -->
+                            <div id="orbital-info-overlay" style="position: absolute; top: 10px; right: 10px; text-align: right; pointer-events: none; text-shadow: 0px 2px 4px rgba(0,0,0,1);">
+                                <div id="oi-element" style="color: #fff; font-weight: bold; font-size: 1.1rem;">-</div>
+                                <div id="oi-orbital" style="color: var(--accent-cyan); font-size: 1.2rem; font-weight: 800;">-</div>
+                                <div id="oi-radius" class="mono-text" style="color: #aaa; font-size: 0.85rem; margin-top: 2px;">-</div>
+                            </div>
+                            
+                            <!-- Floating Slice Toggle -->
+                            <div class="orbital-controls" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; backdrop-filter: blur(4px);">
+                                    <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
+                                </label>
+                            </div>
+                            
+                            <div id="orbital-scale-bar" style="position:absolute; bottom:15px; left:15px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
                                 <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
                                 <span id="orbital-scale-text">100 pm</span>
                             </div>
@@ -11346,12 +11355,11 @@ function selectElement(z) {
             symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
         }
         
-        renderAufbauDiagram(el.electronConfiguration);
-        drawLargeBohrModel(el);
-        
         if (window.OrbitalViewer) {
             window.OrbitalViewer.setElement(el);
         }
+        renderAufbauDiagram(el.electronConfiguration);
+        drawLargeBohrModel(el);
     }
 }
 
@@ -11467,31 +11475,19 @@ function renderAufbauDiagram(configStr) {
     html += `</div></div></div></div>`; // close grid, container, content, box
     gridContainer.innerHTML = html;
 
-    // Bind event listeners for block legend
-    document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(item => {
+    // Bind event listeners for block legend ONLY (s, p, d, f indicators)
+    document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(item => {
         if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
             item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-            if (item.classList.contains('subshell-group')) item.style.background = 'rgba(255,255,255,0.1)';
         }
         
         item.addEventListener('mouseenter', (e) => {
-            if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = 'scale(1.1)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-            }
             if (lockedLegendKey || lockedLegendGroup) return;
             const key = e.currentTarget.dataset.key;
             const type = e.currentTarget.dataset.type;
             applyLegendHighlighting(key, type);
         });
         item.addEventListener('mouseleave', (e) => {
-            if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.background = 'transparent';
-                if (lockedLegendKey === e.currentTarget.dataset.key && lockedLegendType === 'subshell') {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                }
-            }
             if (lockedLegendKey || lockedLegendGroup) return;
             clearLegendHighlighting();
         });
@@ -11503,17 +11499,14 @@ function renderAufbauDiagram(configStr) {
                 lockedLegendKey = null;
                 lockedLegendType = null;
                 e.currentTarget.style.boxShadow = 'none';
-                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'transparent';
                 clearLegendHighlighting();
             } else {
-                document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(el => {
+                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
                     el.style.boxShadow = 'none';
-                    if (el.classList.contains('subshell-group')) el.style.background = 'transparent';
                 });
                 lockedLegendKey = key;
                 lockedLegendType = type;
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 applyLegendHighlighting(key, type);
             }
         });
@@ -11521,6 +11514,14 @@ function renderAufbauDiagram(configStr) {
 
     // Add specific interaction handlers for 3D orbital viewer
     document.querySelectorAll('.interactive-subshell').forEach(subshell => {
+        subshell.addEventListener('mouseenter', (e) => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+        });
+        subshell.addEventListener('mouseleave', (e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.background = 'transparent';
+        });
         subshell.addEventListener('click', (e) => {
             // Clicking the group means we want 'all' orientations
             const n = parseInt(e.currentTarget.dataset.n);
@@ -11751,7 +11752,6 @@ window.OrbitalViewer = {
         if (this.renderer) return;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color('#0a0e1a');
         
         let width = container.clientWidth || 300;
         let height = container.clientHeight || 200;
@@ -11814,6 +11814,7 @@ window.OrbitalViewer = {
 
     setElement: function(elData) {
         if (!elData) return;
+        this.currentElementData = elData;
         // Try to get empirical or calculated radius, fallback to 100 pm
         let r = 100;
         if (elData.radius) {
@@ -11822,7 +11823,53 @@ window.OrbitalViewer = {
             else if (elData.radius.covalent) r = elData.radius.covalent;
         }
         this.currentElementRadius = r;
-        this.drawOrbital();
+        
+        // Find outermost n from electron configuration
+        let maxN = 1;
+        if (elData.electronConfiguration) {
+            const parts = elData.electronConfiguration.split(' ');
+            parts.forEach(p => {
+                if (p.length > 0 && !p.startsWith('[')) {
+                    const n = parseInt(p[0]);
+                    if (!isNaN(n) && n > maxN) maxN = n;
+                }
+            });
+        }
+        this.outermostN = maxN;
+        
+        // We do NOT call drawOrbital() here directly anymore, because 02_main.js
+        // handles calling drawOrbital() with the correct valence shell parameters
+        // right after calling setElement().
+    },
+
+    updateInfoOverlay: function(n, l, mlStr, calculatedRadius) {
+        const elNameBox = document.getElementById('oi-element');
+        const orbitalBox = document.getElementById('oi-orbital');
+        const radiusBox = document.getElementById('oi-radius');
+        
+        if (elNameBox && this.currentElementData) {
+            elNameBox.textContent = `${this.currentElementData.name} (${this.currentElementData.symbol})`;
+        }
+        
+        if (orbitalBox) {
+            const lNames = ['s', 'p', 'd', 'f'];
+            const lChar = lNames[l] || 's';
+            let orientation = '';
+            if (mlStr !== 'all') {
+                if (lChar === 'p') {
+                    if (mlStr === '-1') orientation = 'x';
+                    if (mlStr === '0') orientation = 'y';
+                    if (mlStr === '1') orientation = 'z';
+                } else {
+                    orientation = ` (m=${mlStr})`;
+                }
+            }
+            orbitalBox.innerHTML = `${n}${lChar}<sub>${orientation}</sub>`;
+        }
+        
+        if (radiusBox) {
+            radiusBox.textContent = `Radius: ~${Math.round(calculatedRadius)} pm`;
+        }
     },
 
     drawOrbital: function(nParam, lParam, mlParam) {
@@ -11841,6 +11888,13 @@ window.OrbitalViewer = {
 
         const sliceToggle = document.getElementById('slice-orbital');
         const doSlice = sliceToggle ? sliceToggle.checked : false;
+
+        // Calculate specific orbital radius: R = BaseR * (n^2 / outerN^2)
+        const baseR = this.currentElementRadius || 100;
+        const outerN = this.outermostN || 2; // fallback
+        const specificRadius = baseR * Math.pow(n / outerN, 2);
+        
+        this.updateInfoOverlay(n, l, mlStr, specificRadius);
 
         // Clear existing orbital
         if (this.currentOrbitalGroup) {

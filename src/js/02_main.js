@@ -1082,12 +1082,11 @@ function selectElement(z) {
             symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
         }
         
-        renderAufbauDiagram(el.electronConfiguration);
-        drawLargeBohrModel(el);
-        
         if (window.OrbitalViewer) {
             window.OrbitalViewer.setElement(el);
         }
+        renderAufbauDiagram(el.electronConfiguration);
+        drawLargeBohrModel(el);
     }
 }
 
@@ -1203,31 +1202,19 @@ function renderAufbauDiagram(configStr) {
     html += `</div></div></div></div>`; // close grid, container, content, box
     gridContainer.innerHTML = html;
 
-    // Bind event listeners for block legend
-    document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(item => {
+    // Bind event listeners for block legend ONLY (s, p, d, f indicators)
+    document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(item => {
         if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
             item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-            if (item.classList.contains('subshell-group')) item.style.background = 'rgba(255,255,255,0.1)';
         }
         
         item.addEventListener('mouseenter', (e) => {
-            if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = 'scale(1.1)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-            }
             if (lockedLegendKey || lockedLegendGroup) return;
             const key = e.currentTarget.dataset.key;
             const type = e.currentTarget.dataset.type;
             applyLegendHighlighting(key, type);
         });
         item.addEventListener('mouseleave', (e) => {
-            if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.background = 'transparent';
-                if (lockedLegendKey === e.currentTarget.dataset.key && lockedLegendType === 'subshell') {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                }
-            }
             if (lockedLegendKey || lockedLegendGroup) return;
             clearLegendHighlighting();
         });
@@ -1239,17 +1226,14 @@ function renderAufbauDiagram(configStr) {
                 lockedLegendKey = null;
                 lockedLegendType = null;
                 e.currentTarget.style.boxShadow = 'none';
-                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'transparent';
                 clearLegendHighlighting();
             } else {
-                document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(el => {
+                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
                     el.style.boxShadow = 'none';
-                    if (el.classList.contains('subshell-group')) el.style.background = 'transparent';
                 });
                 lockedLegendKey = key;
                 lockedLegendType = type;
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 applyLegendHighlighting(key, type);
             }
         });
@@ -1257,6 +1241,14 @@ function renderAufbauDiagram(configStr) {
 
     // Add specific interaction handlers for 3D orbital viewer
     document.querySelectorAll('.interactive-subshell').forEach(subshell => {
+        subshell.addEventListener('mouseenter', (e) => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+        });
+        subshell.addEventListener('mouseleave', (e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.background = 'transparent';
+        });
         subshell.addEventListener('click', (e) => {
             // Clicking the group means we want 'all' orientations
             const n = parseInt(e.currentTarget.dataset.n);
