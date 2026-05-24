@@ -27,6 +27,108 @@ let lockedLegendKey = null;
 let lockedLegendType = null;
 let lockedLegendGroup = null;
 let currentTimelineYear = 2025;
+const aufbauExceptions = {
+    24: ['4s', '3d'],
+    29: ['4s', '3d'],
+    41: ['5s', '4d'],
+    42: ['5s', '4d'],
+    44: ['5s', '4d'],
+    45: ['5s', '4d'],
+    46: ['5s', '4d'],
+    47: ['5s', '4d'],
+    57: ['6s', '5d'],
+    58: ['6s', '4f', '5d'],
+    64: ['6s', '4f', '5d'],
+    78: ['6s', '5d'],
+    79: ['6s', '5d'],
+    89: ['7s', '6d'],
+    90: ['7s', '6d'],
+    91: ['7s', '5f', '6d'],
+    92: ['7s', '5f', '6d'],
+    93: ['7s', '5f', '6d'],
+    96: ['7s', '5f', '6d'],
+    103: ['7s', '5f', '6d', '7p']
+};
+
+function formatElectronConfigHTML(configString, atomicNumber) {
+    if (!configString) return '';
+    const anomalies = aufbauExceptions[atomicNumber];
+    
+    const parts = configString.split(' ').map(part => {
+        let formatted = part.replace(/([spdf])(\d+)/g, '$1<sup>$2</sup>');
+        if (anomalies) {
+            const match = part.match(/^(\d+[spdf])/);
+            if (match && anomalies.includes(match[1])) {
+                formatted = `<span style="color: #ff4444">${formatted}</span>`;
+            }
+        }
+        return formatted;
+    });
+    
+    return parts.join(' ');
+}
+
+function sortElectronConfig(configString) {
+    if (!configString) return '';
+    const parts = configString.split(' ');
+    const core = parts.filter(p => p.startsWith('['));
+    const orbitals = parts.filter(p => !p.startsWith('['));
+    
+    orbitals.sort((a, b) => {
+        const matchA = a.match(/^(\d+)([spdf])/);
+        const matchB = b.match(/^(\d+)([spdf])/);
+        if (!matchA || !matchB) return 0;
+        
+        const nA = parseInt(matchA[1]);
+        const lA = {'s':0, 'p':1, 'd':2, 'f':3}[matchA[2]];
+        const nB = parseInt(matchB[1]);
+        const lB = {'s':0, 'p':1, 'd':2, 'f':3}[matchB[2]];
+        
+        const energyA = nA + lA;
+        const energyB = nB + lB;
+        
+        if (energyA !== energyB) {
+            return energyA - energyB;
+        }
+        return nA - nB;
+    });
+    
+    return [...core, ...orbitals].join(' ');
+}
+
+function getQuantumNumbers(configString) {
+    if (!configString) return { n: '-', l: '-', m: '-', s: '-' };
+    const parts = configString.split(' ');
+    const lastTerm = parts[parts.length - 1];
+    if (!lastTerm) return { n: '-', l: '-', m: '-', s: '-' };
+    
+    const match = lastTerm.match(/^(\d+)([spdf])(\d+)$/);
+    if (!match) return { n: '-', l: '-', m: '-', s: '-' };
+    
+    const n = parseInt(match[1]);
+    const orbital = match[2];
+    const electrons = parseInt(match[3]);
+    
+    let l = 0;
+    if (orbital === 's') l = 0;
+    else if (orbital === 'p') l = 1;
+    else if (orbital === 'd') l = 2;
+    else if (orbital === 'f') l = 3;
+    
+    const numOrbitals = 2 * l + 1;
+    let m;
+    let s;
+    
+    if (electrons <= numOrbitals) {
+        m = -l + (electrons - 1);
+        s = '+1/2';
+    } else {
+        m = -l + (electrons - numOrbitals - 1);
+        s = '-1/2';
+    }
+    
+    return { n, l, m, s };
+}
 
 function applyLegendHighlighting(key, type, groupKeys = null) {
     const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
@@ -631,12 +733,40 @@ function updateGridVisuals() {
                 } else { color = '#333'; }
                 valText = elData.oxidationStates || '';
             } else if (activeProp === 'configuration' || activeProp === 'expanded') {
-                color = blockColors[elData.block] || '#333';
-                valText = elData.block || '';
+                const isException = (elData.atomicNumber in aufbauExceptions);
+                if (isException) {
+                    color = '#aa0000'; // Dark red background for exception in view
+                } else {
+                    color = blockColors[elData.block] || '#333';
+                }
+                
+                let rawConfig = (activeProp === 'configuration' ? elData.electronConfigurationNoble : elData.electronConfiguration) || '';
+                rawConfig = sortElectronConfig(rawConfig);
+                const parts = rawConfig.split(' ');
+                
+                // If it's an exception, try to pick out the anomalous terms for the grid cell instead of blindly picking the last two
+                let displayStr = '';
+                if (isException) {
+                    const anomalies = aufbauExceptions[elData.atomicNumber];
+                    const anomalousParts = parts.filter(p => {
+                        const m = p.match(/^(\d+[spdf])/);
+                        return m && anomalies.includes(m[1]);
+                    });
+                    displayStr = anomalousParts.length > 0 ? anomalousParts.join(' ') : parts.slice(Math.max(0, parts.length - 2)).join(' ');
+                } else {
+                    displayStr = parts.slice(Math.max(0, parts.length - 2)).join(' ');
+                }
+                
+                valText = formatElectronConfigHTML(displayStr, 0); // 0 atomicNumber means no red text coloring on the grid itself, since bg is red
             } else if (activeProp === 'energyLevel') {
                 const shells = elData.electronsPerShell ? elData.electronsPerShell.length : 1;
                 color = getHeatmapColor(shells, heatmapConfigs.energyLevels);
-                valText = shells;
+                valText = elData.electronsPerShell ? elData.electronsPerShell.join(',') : '';
+            } else if (activeProp === 'quantum') {
+                const qn = getQuantumNumbers(elData.electronConfiguration);
+                const lColors = {0: '#ff6b6b', 1: '#4ecdc4', 2: '#feca57', 3: '#a29bfe'};
+                color = lColors[qn.l] || '#333';
+                valText = `n=${qn.n} l=${qn.l} m=${qn.m}`;
             }
         }
 
@@ -668,7 +798,15 @@ function updateGridVisuals() {
         cell.dataset.block = elData.block || '';
 
         const valSpan = cell.querySelector('.cell-value');
-        if(valSpan) valSpan.innerText = valText;
+        if(valSpan) {
+            if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum')) {
+                valSpan.innerHTML = valText;
+                valSpan.style.fontSize = activeProp === 'quantum' ? '0.48rem' : '0.55rem';
+            } else {
+                valSpan.innerHTML = valText;
+                valSpan.style.fontSize = ''; // Reset
+            }
+        }
     });
     window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
     
@@ -914,9 +1052,16 @@ function selectElement(z) {
         document.getElementById('elec-name').innerText = el.name;
         
         document.getElementById('val-oxidation').innerText = el.oxidationStates || 'Unknown';
-        document.getElementById('val-config').innerText = el.electronConfigurationNoble || 'Unknown';
-        document.getElementById('val-config-exp').innerText = el.electronConfiguration || 'Unknown';
-        document.getElementById('val-energy-level').innerText = el.electronsPerShell ? el.electronsPerShell.length : '-';
+        
+        const sortedNoble = sortElectronConfig(el.electronConfigurationNoble);
+        const sortedExpanded = sortElectronConfig(el.electronConfiguration);
+        
+        document.getElementById('val-config').innerHTML = formatElectronConfigHTML(sortedNoble, el.atomicNumber);
+        document.getElementById('val-config-exp').innerHTML = formatElectronConfigHTML(sortedExpanded, el.atomicNumber);
+        document.getElementById('val-energy-level').innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
+        
+        const qn = getQuantumNumbers(sortedExpanded);
+        document.getElementById('val-quantum').innerText = `n=${qn.n}, l=${qn.l}, m=${qn.m}`;
         
         const normalizedCategory = getNormalizedCategory(el.category);
         const card = document.getElementById('elec-element-card');
