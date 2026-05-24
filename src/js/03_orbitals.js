@@ -474,42 +474,10 @@ window.OrbitalViewer = {
         this.scene.add(this.currentOrbitalGroup);
     },
 
-    updateScaleBar: function() {
-        const scaleText = document.getElementById('orbital-scale-text');
-        const container = document.getElementById('three-canvas-container');
-        if (!scaleText || !container || !this.camera) return;
-
-        // Calculate visible width at the origin (z=0)
-        // distance to origin is camera.position.length()
-        const dist = this.camera.position.length();
-        const vFOV = this.camera.fov * Math.PI / 180;
-        const heightAtOrigin = 2 * Math.tan(vFOV / 2) * dist;
-        const widthAtOrigin = heightAtOrigin * this.camera.aspect;
-
-        // HTML container width
-        const cw = container.clientWidth;
-        
-        // Scale bar width is fixed at 50px (from HTML)
-        const scaleBarPixelWidth = 50;
-
-        // Ratio of scale bar to canvas width
-        const ratio = scaleBarPixelWidth / cw;
-
-        // Physical width in Three.js units
-        const threeUnits = widthAtOrigin * ratio;
-
-        // Convert to picometers (1 unit = 100 pm)
-        const pm = Math.round(threeUnits * 100);
-        
-        scaleText.innerText = `${pm} pm`;
-    },
-
     animate: function() {
         this.animationId = requestAnimationFrame(this.animate.bind(this));
         
         if (this.controls) this.controls.update();
         if (this.renderer) this.renderer.render(this.scene, this.camera);
-        
-        this.updateScaleBar();
     }
 };

@@ -170,7 +170,7 @@
                 <h3>Electron Configuration</h3>
                 <div id="elec-empty-state" class="empty-state">Select an element</div>
                 
-                <div id="elec-details" class="hidden">
+                <div id="elec-details" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1;">
                     <div id="elec-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 120px; margin-bottom: 20px;">
                         <div id="bohr-reference" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
                             <!-- Animated SVG Bohr model goes here -->
@@ -209,25 +209,24 @@
                     </div>
 
                     <div class="orbital-viewer" style="background: transparent; padding: 0; flex-grow: 1; display: flex; flex-direction: column; min-height: 350px;">
-                        <div id="three-canvas-container" style="flex-grow: 1; width: 100%; position:relative; background: transparent;">
-                            <!-- Top Right Info Overlay -->
-                            <div id="orbital-info-overlay" style="position: absolute; top: 10px; right: 10px; text-align: right; pointer-events: none; text-shadow: 0px 2px 4px rgba(0,0,0,1);">
-                                <div id="oi-element" style="color: #fff; font-weight: bold; font-size: 1.1rem;">-</div>
-                                <div id="oi-orbital" style="color: var(--accent-cyan); font-size: 1.2rem; font-weight: 800;">-</div>
-                                <div id="oi-radius" class="mono-text" style="color: #aaa; font-size: 0.85rem; margin-top: 2px;">-</div>
-                            </div>
-                            
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
                             <!-- Floating Slice Toggle -->
-                            <div class="orbital-controls" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-                                <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; backdrop-filter: blur(4px);">
+                            <div class="orbital-controls">
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; backdrop-filter: blur(4px);">
                                     <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
                                 </label>
                             </div>
                             
-                            <div id="orbital-scale-bar" style="position:absolute; bottom:15px; left:15px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
-                                <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
-                                <span id="orbital-scale-text">100 pm</span>
+                            <!-- Top Right Info Overlay -->
+                            <div id="orbital-info-overlay" style="text-align: right;">
+                                <div id="oi-element" style="color: #fff; font-weight: bold; font-size: 1.1rem;">-</div>
+                                <div id="oi-orbital" style="color: var(--accent-cyan); font-size: 1.2rem; font-weight: 800;">-</div>
+                                <div id="oi-radius" class="mono-text" style="color: #aaa; font-size: 0.85rem; margin-top: 2px;">-</div>
                             </div>
+                        </div>
+
+                        <div id="three-canvas-container" style="flex-grow: 1; width: 100%; position:relative; background: transparent;">
                         </div>
                     </div>
                 </div>
