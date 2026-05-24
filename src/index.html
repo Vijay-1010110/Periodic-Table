@@ -208,33 +208,13 @@
                         </div>
                     </div>
 
-                    <div class="orbital-viewer">
-                        <h4>3D Orbital Viewer</h4>
-                        <div class="orbital-controls" style="display:flex; gap:10px; margin-bottom:10px;">
-                            <select id="orbital-n" class="styled-select">
-                                <option value="1">n=1</option>
-                                <option value="2" selected>n=2</option>
-                                <option value="3">n=3</option>
-                                <option value="4">n=4</option>
-                                <option value="5">n=5</option>
-                                <option value="6">n=6</option>
-                                <option value="7">n=7</option>
-                            </select>
-                            <select id="orbital-l" class="styled-select">
-                                <option value="0">l=0 (s)</option>
-                                <option value="1" selected>l=1 (p)</option>
-                            </select>
-                            <select id="orbital-ml" class="styled-select">
-                                <option value="all">All</option>
-                                <option value="-1">m=-1</option>
-                                <option value="0" selected>m=0</option>
-                                <option value="1">m=1</option>
-                            </select>
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer;">
+                    <div class="orbital-viewer" style="background: transparent; padding: 0;">
+                        <div class="orbital-controls" style="display:flex; justify-content: flex-end; margin-bottom:5px;">
+                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">
                                 <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
                             </label>
                         </div>
-                        <div id="three-canvas-container" style="height: 200px; width: 100%; position:relative;">
+                        <div id="three-canvas-container" style="height: 250px; width: 100%; position:relative; background: transparent;">
                             <div id="orbital-scale-bar" style="position:absolute; bottom:5px; left:10px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
                                 <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
                                 <span id="orbital-scale-text">100 pm</span>

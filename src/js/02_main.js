@@ -325,69 +325,12 @@ function setupUI() {
         timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value));
     }
     
-    // Orbital Controls
-    document.getElementById('orbital-n').addEventListener('change', () => { 
-        updateLOptions();
-        updateMlOptions();
-        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); 
-    });
-    document.getElementById('orbital-l').addEventListener('change', () => {
-        updateMlOptions();
-        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital();
-    });
-    document.getElementById('orbital-ml').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
+    // Orbital Controls (Slice view only)
     document.getElementById('slice-orbital').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
     
     // Initialize display values
     updateTempDisplay();
     updateTimelineDisplay();
-}
-
-function updateLOptions() {
-    const nEl = document.getElementById('orbital-n');
-    const lEl = document.getElementById('orbital-l');
-    if (!nEl || !lEl) return;
-    
-    const n = parseInt(nEl.value);
-    const currentL = parseInt(lEl.value);
-    
-    // l can go from 0 to n-1, but realistically we only show s, p, d, f (l up to 3)
-    const maxL = Math.min(3, n - 1);
-    
-    lEl.innerHTML = '';
-    const lNames = ['s', 'p', 'd', 'f'];
-    
-    for (let l = 0; l <= maxL; l++) {
-        lEl.innerHTML += `<option value="${l}">l=${l} (${lNames[l]})</option>`;
-    }
-    
-    if (currentL <= maxL) {
-        lEl.value = currentL;
-    } else {
-        lEl.value = maxL;
-    }
-}
-
-function updateMlOptions() {
-    const lEl = document.getElementById('orbital-l');
-    const mlSelect = document.getElementById('orbital-ml');
-    if (!lEl || !mlSelect) return;
-    const l = parseInt(lEl.value);
-    const currentMl = mlSelect.value;
-    
-    mlSelect.innerHTML = '';
-    
-    if (l > 0) {
-        mlSelect.innerHTML += `<option value="all">All</option>`;
-    }
-    
-    for (let m = -l; m <= l; m++) {
-        mlSelect.innerHTML += `<option value="${m}" ${m===0?'selected':''}>m=${m}</option>`;
-    }
-    
-    if (Array.from(mlSelect.options).some(o => o.value === currentMl)) {
-        mlSelect.value = currentMl;
-    }
 }
 
 function getTempColor(k) {
@@ -1190,6 +1133,14 @@ function renderAufbauDiagram(configStr) {
                 <div class="aufbau-grid">
     `;
 
+    const getLValue = (block) => {
+        if (block === 's') return 0;
+        if (block === 'p') return 1;
+        if (block === 'd') return 2;
+        if (block === 'f') return 3;
+        return 0;
+    };
+
     rows.forEach(row => {
         html += `<div class="aufbau-row">`;
         row.forEach((subshell, colIndex) => {
@@ -1200,15 +1151,24 @@ function renderAufbauDiagram(configStr) {
                 return;
             }
 
+            const nValue = parseInt(subshell[0]);
+            const lValue = getLValue(subshell[1]);
             const block = subshell[1];
             const numOrbitals = blockCap[block];
             const numElectrons = configMap[subshell] || 0;
             const bgClass = blockColorClass[block];
             const isActive = subshell === lastFilledSubshell;
             
-            html += `<div class="subshell-group" data-key="${subshell}" data-type="subshell" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
+            html += `<div class="subshell-group interactive-subshell" data-key="${subshell}" data-type="subshell" data-n="${nValue}" data-l="${lValue}" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
             
             html += `<div class="subshell-label">${subshell}</div><div class="orbital-boxes">`;
+            
+            // Map box index to m values
+            // For s: 0. For p: -1, 0, 1. For d: -2, -1, 0, 1, 2.
+            let mValues = [];
+            for (let m = -lValue; m <= lValue; m++) {
+                mValues.push(m);
+            }
             
             for (let i = 0; i < numOrbitals; i++) {
                 let electronsInThisOrbital = 0;
@@ -1230,7 +1190,10 @@ function renderAufbauDiagram(configStr) {
                 
                 const boxColor = blockColors[blockType] || '#444';
                 const glossyBg = getGlossyBackground(boxColor);
-                html += `<div class="orbital-box ${activeClass}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px;">${arrows}</div>`;
+                
+                const mVal = mValues[i] !== undefined ? mValues[i] : 0;
+                
+                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px; transition: transform 0.1s, box-shadow 0.1s;">${arrows}</div>`;
             }
             html += `</div></div>`; // close orbital-boxes and subshell-group
         });
@@ -1259,43 +1222,82 @@ function renderAufbauDiagram(configStr) {
         });
         item.addEventListener('mouseleave', (e) => {
             if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = '';
-                if (lockedLegendKey !== e.currentTarget.dataset.key) {
-                    e.currentTarget.style.background = '';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.background = 'transparent';
+                if (lockedLegendKey === e.currentTarget.dataset.key && lockedLegendType === 'subshell') {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 }
             }
-            clearLegendHighlighting()
+            if (lockedLegendKey || lockedLegendGroup) return;
+            clearLegendHighlighting();
         });
         item.addEventListener('click', (e) => {
             const key = e.currentTarget.dataset.key;
             const type = e.currentTarget.dataset.type;
-            if (lockedLegendKey === key) {
+            
+            if (lockedLegendKey === key && lockedLegendType === type) {
                 lockedLegendKey = null;
                 lockedLegendType = null;
-                lockedLegendGroup = null;
-                e.currentTarget.style.boxShadow = '';
-                e.currentTarget.style.transform = '';
-                if (e.currentTarget.classList.contains('subshell-group')) {
-                    e.currentTarget.style.background = '';
-                }
+                e.currentTarget.style.boxShadow = 'none';
+                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'transparent';
+                clearLegendHighlighting();
             } else {
+                document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(el => {
+                    el.style.boxShadow = 'none';
+                    if (el.classList.contains('subshell-group')) el.style.background = 'transparent';
+                });
                 lockedLegendKey = key;
                 lockedLegendType = type;
-                lockedLegendGroup = null;
-                
-                // Clear others
-                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
-                    el.style.boxShadow = '';
-                    el.style.transform = '';
-                });
-                
-                // Highlight self
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-                e.currentTarget.style.transform = 'scale(1.05)';
+                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                applyLegendHighlighting(key, type);
             }
-            clearLegendHighlighting();
         });
     });
+
+    // Add specific interaction handlers for 3D orbital viewer
+    document.querySelectorAll('.interactive-subshell').forEach(subshell => {
+        subshell.addEventListener('click', (e) => {
+            // Clicking the group means we want 'all' orientations
+            const n = parseInt(e.currentTarget.dataset.n);
+            const l = parseInt(e.currentTarget.dataset.l);
+            if (window.OrbitalViewer) {
+                window.OrbitalViewer.drawOrbital(n, l, 'all');
+            }
+        });
+    });
+
+    document.querySelectorAll('.interactive-box').forEach(box => {
+        box.addEventListener('mouseenter', (e) => {
+            e.currentTarget.style.transform = 'scale(1.2)';
+            e.currentTarget.style.boxShadow = '0 0 5px rgba(255,255,255,0.8)';
+            e.currentTarget.style.zIndex = '10';
+        });
+        box.addEventListener('mouseleave', (e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.zIndex = '1';
+        });
+        box.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering the subshell group click
+            const group = e.currentTarget.closest('.interactive-subshell');
+            if (group) {
+                const n = parseInt(group.dataset.n);
+                const l = parseInt(group.dataset.l);
+                const m = parseInt(e.currentTarget.dataset.m);
+                if (window.OrbitalViewer) {
+                    window.OrbitalViewer.drawOrbital(n, l, m);
+                }
+            }
+        });
+    });
+
+    // Automatically show the valence shell in 3D viewer when Aufbau is rendered
+    if (window.OrbitalViewer && lastFilledSubshell) {
+        const nMatch = parseInt(lastFilledSubshell[0]);
+        const lMatch = getLValue(lastFilledSubshell[1]);
+        window.OrbitalViewer.drawOrbital(nMatch, lMatch, 'all');
+    }
 }
 
 function updateSidebarValues() {

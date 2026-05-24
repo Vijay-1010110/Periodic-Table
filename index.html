@@ -512,10 +512,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 /* Electrons Sidebar */
 .elec-title { color: var(--accent-cyan); margin-bottom: 20px; border-bottom: 1px solid var(--surface-light); padding-bottom: 10px; }
-.aufbau-diagram, .bohr-reference-container, .orbital-viewer {
+.aufbau-diagram, .bohr-reference-container {
     background: var(--surface-light);
     border-radius: 6px;
     padding: 15px;
+    margin-bottom: 15px;
+}
+.orbital-viewer {
     margin-bottom: 15px;
 }
 .aufbau-diagram h4, .bohr-reference-container h4, .orbital-viewer h4 { margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9rem; }
@@ -523,7 +526,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 #three-canvas-container {
     width: 100%;
     aspect-ratio: 1;
-    background: var(--bg-dark);
+    background: transparent;
     border-radius: 4px;
 }
 #bohr-reference {
@@ -836,33 +839,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                         </div>
                     </div>
 
-                    <div class="orbital-viewer">
-                        <h4>3D Orbital Viewer</h4>
-                        <div class="orbital-controls" style="display:flex; gap:10px; margin-bottom:10px;">
-                            <select id="orbital-n" class="styled-select">
-                                <option value="1">n=1</option>
-                                <option value="2" selected>n=2</option>
-                                <option value="3">n=3</option>
-                                <option value="4">n=4</option>
-                                <option value="5">n=5</option>
-                                <option value="6">n=6</option>
-                                <option value="7">n=7</option>
-                            </select>
-                            <select id="orbital-l" class="styled-select">
-                                <option value="0">l=0 (s)</option>
-                                <option value="1" selected>l=1 (p)</option>
-                            </select>
-                            <select id="orbital-ml" class="styled-select">
-                                <option value="all">All</option>
-                                <option value="-1">m=-1</option>
-                                <option value="0" selected>m=0</option>
-                                <option value="1">m=1</option>
-                            </select>
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer;">
+                    <div class="orbital-viewer" style="background: transparent; padding: 0;">
+                        <div class="orbital-controls" style="display:flex; justify-content: flex-end; margin-bottom:5px;">
+                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">
                                 <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
                             </label>
                         </div>
-                        <div id="three-canvas-container" style="height: 200px; width: 100%; position:relative;">
+                        <div id="three-canvas-container" style="height: 250px; width: 100%; position:relative; background: transparent;">
                             <div id="orbital-scale-bar" style="position:absolute; bottom:5px; left:10px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
                                 <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
                                 <span id="orbital-scale-text">100 pm</span>
@@ -10606,69 +10589,12 @@ function setupUI() {
         timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value));
     }
     
-    // Orbital Controls
-    document.getElementById('orbital-n').addEventListener('change', () => { 
-        updateLOptions();
-        updateMlOptions();
-        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); 
-    });
-    document.getElementById('orbital-l').addEventListener('change', () => {
-        updateMlOptions();
-        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital();
-    });
-    document.getElementById('orbital-ml').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
+    // Orbital Controls (Slice view only)
     document.getElementById('slice-orbital').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
     
     // Initialize display values
     updateTempDisplay();
     updateTimelineDisplay();
-}
-
-function updateLOptions() {
-    const nEl = document.getElementById('orbital-n');
-    const lEl = document.getElementById('orbital-l');
-    if (!nEl || !lEl) return;
-    
-    const n = parseInt(nEl.value);
-    const currentL = parseInt(lEl.value);
-    
-    // l can go from 0 to n-1, but realistically we only show s, p, d, f (l up to 3)
-    const maxL = Math.min(3, n - 1);
-    
-    lEl.innerHTML = '';
-    const lNames = ['s', 'p', 'd', 'f'];
-    
-    for (let l = 0; l <= maxL; l++) {
-        lEl.innerHTML += `<option value="${l}">l=${l} (${lNames[l]})</option>`;
-    }
-    
-    if (currentL <= maxL) {
-        lEl.value = currentL;
-    } else {
-        lEl.value = maxL;
-    }
-}
-
-function updateMlOptions() {
-    const lEl = document.getElementById('orbital-l');
-    const mlSelect = document.getElementById('orbital-ml');
-    if (!lEl || !mlSelect) return;
-    const l = parseInt(lEl.value);
-    const currentMl = mlSelect.value;
-    
-    mlSelect.innerHTML = '';
-    
-    if (l > 0) {
-        mlSelect.innerHTML += `<option value="all">All</option>`;
-    }
-    
-    for (let m = -l; m <= l; m++) {
-        mlSelect.innerHTML += `<option value="${m}" ${m===0?'selected':''}>m=${m}</option>`;
-    }
-    
-    if (Array.from(mlSelect.options).some(o => o.value === currentMl)) {
-        mlSelect.value = currentMl;
-    }
 }
 
 function getTempColor(k) {
@@ -11471,6 +11397,14 @@ function renderAufbauDiagram(configStr) {
                 <div class="aufbau-grid">
     `;
 
+    const getLValue = (block) => {
+        if (block === 's') return 0;
+        if (block === 'p') return 1;
+        if (block === 'd') return 2;
+        if (block === 'f') return 3;
+        return 0;
+    };
+
     rows.forEach(row => {
         html += `<div class="aufbau-row">`;
         row.forEach((subshell, colIndex) => {
@@ -11481,15 +11415,24 @@ function renderAufbauDiagram(configStr) {
                 return;
             }
 
+            const nValue = parseInt(subshell[0]);
+            const lValue = getLValue(subshell[1]);
             const block = subshell[1];
             const numOrbitals = blockCap[block];
             const numElectrons = configMap[subshell] || 0;
             const bgClass = blockColorClass[block];
             const isActive = subshell === lastFilledSubshell;
             
-            html += `<div class="subshell-group" data-key="${subshell}" data-type="subshell" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
+            html += `<div class="subshell-group interactive-subshell" data-key="${subshell}" data-type="subshell" data-n="${nValue}" data-l="${lValue}" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
             
             html += `<div class="subshell-label">${subshell}</div><div class="orbital-boxes">`;
+            
+            // Map box index to m values
+            // For s: 0. For p: -1, 0, 1. For d: -2, -1, 0, 1, 2.
+            let mValues = [];
+            for (let m = -lValue; m <= lValue; m++) {
+                mValues.push(m);
+            }
             
             for (let i = 0; i < numOrbitals; i++) {
                 let electronsInThisOrbital = 0;
@@ -11511,7 +11454,10 @@ function renderAufbauDiagram(configStr) {
                 
                 const boxColor = blockColors[blockType] || '#444';
                 const glossyBg = getGlossyBackground(boxColor);
-                html += `<div class="orbital-box ${activeClass}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px;">${arrows}</div>`;
+                
+                const mVal = mValues[i] !== undefined ? mValues[i] : 0;
+                
+                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px; transition: transform 0.1s, box-shadow 0.1s;">${arrows}</div>`;
             }
             html += `</div></div>`; // close orbital-boxes and subshell-group
         });
@@ -11540,43 +11486,82 @@ function renderAufbauDiagram(configStr) {
         });
         item.addEventListener('mouseleave', (e) => {
             if (e.currentTarget.classList.contains('subshell-group')) {
-                e.currentTarget.style.transform = '';
-                if (lockedLegendKey !== e.currentTarget.dataset.key) {
-                    e.currentTarget.style.background = '';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.background = 'transparent';
+                if (lockedLegendKey === e.currentTarget.dataset.key && lockedLegendType === 'subshell') {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 }
             }
-            clearLegendHighlighting()
+            if (lockedLegendKey || lockedLegendGroup) return;
+            clearLegendHighlighting();
         });
         item.addEventListener('click', (e) => {
             const key = e.currentTarget.dataset.key;
             const type = e.currentTarget.dataset.type;
-            if (lockedLegendKey === key) {
+            
+            if (lockedLegendKey === key && lockedLegendType === type) {
                 lockedLegendKey = null;
                 lockedLegendType = null;
-                lockedLegendGroup = null;
-                e.currentTarget.style.boxShadow = '';
-                e.currentTarget.style.transform = '';
-                if (e.currentTarget.classList.contains('subshell-group')) {
-                    e.currentTarget.style.background = '';
-                }
+                e.currentTarget.style.boxShadow = 'none';
+                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'transparent';
+                clearLegendHighlighting();
             } else {
+                document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(el => {
+                    el.style.boxShadow = 'none';
+                    if (el.classList.contains('subshell-group')) el.style.background = 'transparent';
+                });
                 lockedLegendKey = key;
                 lockedLegendType = type;
-                lockedLegendGroup = null;
-                
-                // Clear others
-                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
-                    el.style.boxShadow = '';
-                    el.style.transform = '';
-                });
-                
-                // Highlight self
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-                e.currentTarget.style.transform = 'scale(1.05)';
+                if (e.currentTarget.classList.contains('subshell-group')) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                applyLegendHighlighting(key, type);
             }
-            clearLegendHighlighting();
         });
     });
+
+    // Add specific interaction handlers for 3D orbital viewer
+    document.querySelectorAll('.interactive-subshell').forEach(subshell => {
+        subshell.addEventListener('click', (e) => {
+            // Clicking the group means we want 'all' orientations
+            const n = parseInt(e.currentTarget.dataset.n);
+            const l = parseInt(e.currentTarget.dataset.l);
+            if (window.OrbitalViewer) {
+                window.OrbitalViewer.drawOrbital(n, l, 'all');
+            }
+        });
+    });
+
+    document.querySelectorAll('.interactive-box').forEach(box => {
+        box.addEventListener('mouseenter', (e) => {
+            e.currentTarget.style.transform = 'scale(1.2)';
+            e.currentTarget.style.boxShadow = '0 0 5px rgba(255,255,255,0.8)';
+            e.currentTarget.style.zIndex = '10';
+        });
+        box.addEventListener('mouseleave', (e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.zIndex = '1';
+        });
+        box.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering the subshell group click
+            const group = e.currentTarget.closest('.interactive-subshell');
+            if (group) {
+                const n = parseInt(group.dataset.n);
+                const l = parseInt(group.dataset.l);
+                const m = parseInt(e.currentTarget.dataset.m);
+                if (window.OrbitalViewer) {
+                    window.OrbitalViewer.drawOrbital(n, l, m);
+                }
+            }
+        });
+    });
+
+    // Automatically show the valence shell in 3D viewer when Aufbau is rendered
+    if (window.OrbitalViewer && lastFilledSubshell) {
+        const nMatch = parseInt(lastFilledSubshell[0]);
+        const lMatch = getLValue(lastFilledSubshell[1]);
+        window.OrbitalViewer.drawOrbital(nMatch, lMatch, 'all');
+    }
 }
 
 function updateSidebarValues() {
@@ -11840,23 +11825,39 @@ window.OrbitalViewer = {
         this.drawOrbital();
     },
 
-    drawOrbital: function() {
+    drawOrbital: function(nParam, lParam, mlParam) {
         if (!this.scene) return;
-        if (this.currentOrbitalGroup) this.scene.remove(this.currentOrbitalGroup);
+
+        // Determine current orbital params
+        // Use parameters if provided, otherwise default to stored values, or 2p as fallback
+        const n = nParam !== undefined ? parseInt(nParam) : (this.currentN || 2);
+        const l = lParam !== undefined ? parseInt(lParam) : (this.currentL !== undefined ? this.currentL : 1);
+        let mlStr = mlParam !== undefined ? mlParam.toString() : (this.currentMl !== undefined ? this.currentMl.toString() : 'all');
+        
+        // Save state so re-renders (like slice toggle) keep the same orbital
+        this.currentN = n;
+        this.currentL = l;
+        this.currentMl = mlStr;
+
+        const sliceToggle = document.getElementById('slice-orbital');
+        const doSlice = sliceToggle ? sliceToggle.checked : false;
+
+        // Clear existing orbital
+        if (this.currentOrbitalGroup) {
+            this.scene.remove(this.currentOrbitalGroup);
+            this.currentOrbitalGroup.traverse((child) => {
+                if (child.isMesh) {
+                    child.geometry.dispose();
+                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                    else child.material.dispose();
+                }
+            });
+            this.currentOrbitalGroup = null;
+        }
         
         this.currentOrbitalGroup = new THREE.Group();
         
-        const nEl = document.getElementById('orbital-n');
-        const lEl = document.getElementById('orbital-l');
-        const mlEl = document.getElementById('orbital-ml');
-        const sliceToggle = document.getElementById('slice-orbital');
-        
-        if(!nEl || !lEl || !mlEl) return;
-
-        const n = parseInt(nEl.value);
-        const l = parseInt(lEl.value);
-        const mlVal = mlEl.value;
-        const doSlice = sliceToggle ? sliceToggle.checked : false;
+        const mlVal = mlStr;
 
         // Visual properties
         const colorBlue = 0x00d4ff;

@@ -89,23 +89,39 @@ window.OrbitalViewer = {
         this.drawOrbital();
     },
 
-    drawOrbital: function() {
+    drawOrbital: function(nParam, lParam, mlParam) {
         if (!this.scene) return;
-        if (this.currentOrbitalGroup) this.scene.remove(this.currentOrbitalGroup);
+
+        // Determine current orbital params
+        // Use parameters if provided, otherwise default to stored values, or 2p as fallback
+        const n = nParam !== undefined ? parseInt(nParam) : (this.currentN || 2);
+        const l = lParam !== undefined ? parseInt(lParam) : (this.currentL !== undefined ? this.currentL : 1);
+        let mlStr = mlParam !== undefined ? mlParam.toString() : (this.currentMl !== undefined ? this.currentMl.toString() : 'all');
+        
+        // Save state so re-renders (like slice toggle) keep the same orbital
+        this.currentN = n;
+        this.currentL = l;
+        this.currentMl = mlStr;
+
+        const sliceToggle = document.getElementById('slice-orbital');
+        const doSlice = sliceToggle ? sliceToggle.checked : false;
+
+        // Clear existing orbital
+        if (this.currentOrbitalGroup) {
+            this.scene.remove(this.currentOrbitalGroup);
+            this.currentOrbitalGroup.traverse((child) => {
+                if (child.isMesh) {
+                    child.geometry.dispose();
+                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                    else child.material.dispose();
+                }
+            });
+            this.currentOrbitalGroup = null;
+        }
         
         this.currentOrbitalGroup = new THREE.Group();
         
-        const nEl = document.getElementById('orbital-n');
-        const lEl = document.getElementById('orbital-l');
-        const mlEl = document.getElementById('orbital-ml');
-        const sliceToggle = document.getElementById('slice-orbital');
-        
-        if(!nEl || !lEl || !mlEl) return;
-
-        const n = parseInt(nEl.value);
-        const l = parseInt(lEl.value);
-        const mlVal = mlEl.value;
-        const doSlice = sliceToggle ? sliceToggle.checked : false;
+        const mlVal = mlStr;
 
         // Visual properties
         const colorBlue = 0x00d4ff;
