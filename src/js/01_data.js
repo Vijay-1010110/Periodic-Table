@@ -26,10 +26,10 @@ const elementsData = [
             1312
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 52.9,
+            "empirical": 25,
+            "covalent": 38,
+            "vanDerWaals": 120
         },
         "hardness": {
             "brinell": null,
