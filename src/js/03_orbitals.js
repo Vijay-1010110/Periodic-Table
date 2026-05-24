@@ -78,6 +78,7 @@ window.OrbitalViewer = {
     setElement: function(elData) {
         if (!elData) return;
         this.currentElementData = elData;
+        this.atomicNumber = elData.atomicNumber || 1;
         // Try to get empirical or calculated radius, fallback to 100 pm
         let r = 100;
         if (elData.radius) {
@@ -131,7 +132,8 @@ window.OrbitalViewer = {
         }
         
         if (radiusBox) {
-            radiusBox.textContent = `Radius: ~${Math.round(calculatedRadius)} pm`;
+            let formattedRadius = parseFloat(calculatedRadius.toFixed(2));
+            radiusBox.textContent = `Radius: ~${formattedRadius} pm`;
         }
     },
 
@@ -152,10 +154,27 @@ window.OrbitalViewer = {
         const sliceToggle = document.getElementById('slice-orbital');
         const doSlice = sliceToggle ? sliceToggle.checked : false;
 
-        // Calculate specific orbital radius: R = BaseR * (n^2 / outerN^2)
+        // Calculate scientifically accurate orbital radius using relativistic Bohr model for core 
+        // and exponential interpolation to match empirical/calculated radius for valence
         const baseR = this.currentElementRadius || 100;
-        const outerN = this.outermostN || 2; // fallback
-        const specificRadius = baseR * Math.pow(n / outerN, 2);
+        const outerN = this.outermostN || 2;
+        const Z = this.atomicNumber || 1;
+
+        const alpha = 1 / 137.036;
+        const safeRelFactor = Math.sqrt(Math.max(0.1, 1 - Math.pow(Z * alpha, 2)));
+        const r1 = (52.9 / Z) * safeRelFactor;
+
+        let specificRadius;
+        if (outerN <= 1) {
+            specificRadius = baseR;
+        } else if (n === 1) {
+            specificRadius = r1;
+        } else if (n >= outerN) {
+            specificRadius = baseR * Math.pow(n / outerN, 2); // Extrapolate beyond if needed
+        } else {
+            const k = Math.log(baseR / r1) / (outerN - 1);
+            specificRadius = r1 * Math.exp(k * (n - 1));
+        }
         
         this.updateInfoOverlay(n, l, mlStr, specificRadius);
 

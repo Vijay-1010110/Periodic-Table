@@ -42,20 +42,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.1815,
             "electric": null
         },
         "heat": {
             "specific": 28.836,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 0.904,
+            "fusion": 0.117
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 108000.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1400.0,
             "meteorites": null
         },
         "discoveryYear": 1766,
@@ -97,10 +97,10 @@ const elementsData = [
             5250.5
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 120.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 46.0,
+            "vanDerWaals": 140.0
         },
         "hardness": {
             "brinell": null,
@@ -113,20 +113,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.152,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 5.193,
+            "vaporization": 0.08,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 7.000000000000001e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.008,
             "meteorites": null
         },
         "discoveryYear": 1868,
@@ -169,10 +169,10 @@ const elementsData = [
             11815
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 123.0,
+            "covalent": 133.0,
+            "vanDerWaals": 182.0
         },
         "hardness": {
             "brinell": null,
@@ -185,20 +185,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 84.8,
             "electric": null
         },
         "heat": {
             "specific": 24.86,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 148.0,
+            "fusion": 2.89
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.18,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 20.0,
             "meteorites": null
         },
         "discoveryYear": 1817,
@@ -242,10 +242,10 @@ const elementsData = [
             21006.6
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 105.0,
+            "empirical": 89.0,
+            "covalent": 102.0,
+            "vanDerWaals": 153.0
         },
         "hardness": {
             "brinell": null,
@@ -258,20 +258,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 201.0,
             "electric": null
         },
         "heat": {
             "specific": 16.443,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 309.0,
+            "fusion": 12.21
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 5.6e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.8,
             "meteorites": null
         },
         "discoveryYear": 1798,
@@ -316,10 +316,10 @@ const elementsData = [
             32826.7
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 85.0,
+            "empirical": 80.0,
+            "covalent": 85.0,
+            "vanDerWaals": 192.0
         },
         "hardness": {
             "brinell": null,
@@ -332,20 +332,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 27.4,
             "electric": null
         },
         "heat": {
             "specific": 11.087,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 504.5,
+            "fusion": 23.6
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4.44,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 10.0,
             "meteorites": null
         },
         "discoveryYear": 1808,
@@ -391,10 +391,10 @@ const elementsData = [
             47277
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 70.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 75.0,
+            "vanDerWaals": 170.0
         },
         "hardness": {
             "brinell": null,
@@ -407,7 +407,7 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 1.59,
             "electric": null
         },
         "heat": {
@@ -418,9 +418,9 @@ const elementsData = [
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 28.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 200.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -467,10 +467,10 @@ const elementsData = [
             64360
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 65.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 71.0,
+            "vanDerWaals": 155.0
         },
         "hardness": {
             "brinell": null,
@@ -483,20 +483,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.026,
             "electric": null
         },
         "heat": {
-            "specific": null,
+            "specific": 1.04,
             "vaporization": null,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.5,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 19.0,
             "meteorites": null
         },
         "discoveryYear": 1772,
@@ -544,10 +544,10 @@ const elementsData = [
             84078
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 60.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 63.0,
+            "vanDerWaals": 152.0
         },
         "hardness": {
             "brinell": null,
@@ -560,20 +560,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.027,
             "electric": null
         },
         "heat": {
-            "specific": null,
+            "specific": 0.918,
             "vaporization": null,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 857000.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 461000.0,
             "meteorites": null
         },
         "discoveryYear": 1774,
@@ -622,10 +622,10 @@ const elementsData = [
             106434.3
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 50.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 64.0,
+            "vanDerWaals": 147.0
         },
         "hardness": {
             "brinell": null,
@@ -638,20 +638,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.028,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "specific": 0.824,
+            "vaporization": 6.54,
+            "fusion": 0.51
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.3,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 585.0,
             "meteorites": null
         },
         "discoveryYear": 1886,
@@ -701,10 +701,10 @@ const elementsData = [
             131432
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 160.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 67.0,
+            "vanDerWaals": 154.0
         },
         "hardness": {
             "brinell": null,
@@ -721,16 +721,16 @@ const elementsData = [
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 1.03,
+            "vaporization": 1.74,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00011999999999999999,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.005,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -782,10 +782,10 @@ const elementsData = [
             159076
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 180.0,
+            "empirical": 157.0,
+            "covalent": 155.0,
+            "vanDerWaals": 227.0
         },
         "hardness": {
             "brinell": null,
@@ -798,20 +798,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 142.0,
             "electric": null
         },
         "heat": {
             "specific": 28.23,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 97.9,
+            "fusion": 2.64
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 10800.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 23600.0,
             "meteorites": null
         },
         "discoveryYear": 1807,
@@ -864,10 +864,10 @@ const elementsData = [
             189368
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 150.0,
+            "empirical": 136.0,
+            "covalent": 139.0,
+            "vanDerWaals": 173.0
         },
         "hardness": {
             "brinell": null,
@@ -880,20 +880,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 156.0,
             "electric": null
         },
         "heat": {
             "specific": 24.869,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 131.8,
+            "fusion": 9.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1290.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 23300.0,
             "meteorites": null
         },
         "discoveryYear": 1755,
@@ -947,10 +947,10 @@ const elementsData = [
             222316
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 125.0,
+            "empirical": 125.0,
+            "covalent": 126.0,
+            "vanDerWaals": 184.0
         },
         "hardness": {
             "brinell": null,
@@ -963,20 +963,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 237.0,
             "electric": null
         },
         "heat": {
             "specific": 24.2,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 284.1,
+            "fusion": 10.75
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.002,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 82300.0,
             "meteorites": null
         },
         "discoveryYear": 1825,
@@ -1031,10 +1031,10 @@ const elementsData = [
             257923
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 110.0,
+            "empirical": 117.0,
+            "covalent": 115.99999999999999,
+            "vanDerWaals": 210.0
         },
         "hardness": {
             "brinell": null,
@@ -1047,20 +1047,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 149.0,
             "electric": null
         },
         "heat": {
             "specific": 19.789,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 383.0,
+            "fusion": 50.6
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.2,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 282000.0,
             "meteorites": null
         },
         "discoveryYear": 1824,
@@ -1116,10 +1116,10 @@ const elementsData = [
             296195
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 100.0,
+            "empirical": 110.0,
+            "covalent": 111.00000000000001,
+            "vanDerWaals": 180.0
         },
         "hardness": {
             "brinell": null,
@@ -1137,15 +1137,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 23.824,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 49.8,
+            "fusion": 2.51
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1050.0,
             "meteorites": null
         },
         "discoveryYear": 1669,
@@ -1202,10 +1202,10 @@ const elementsData = [
             337138
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 100.0,
+            "empirical": 104.0,
+            "covalent": 103.0,
+            "vanDerWaals": 180.0
         },
         "hardness": {
             "brinell": null,
@@ -1218,20 +1218,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.27,
             "electric": null
         },
         "heat": {
             "specific": 22.75,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 10.5,
+            "fusion": 1.23
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 905.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 350.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -1289,10 +1289,10 @@ const elementsData = [
             380760
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 100.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 99.0,
+            "vanDerWaals": 175.0
         },
         "hardness": {
             "brinell": null,
@@ -1305,20 +1305,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.009,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "specific": 0.479,
+            "vaporization": 20.41,
+            "fusion": 6.41
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 19400.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 145.0,
             "meteorites": null
         },
         "discoveryYear": 1774,
@@ -1378,10 +1378,10 @@ const elementsData = [
             427066
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 71.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 96.0,
+            "vanDerWaals": 188.0
         },
         "hardness": {
             "brinell": null,
@@ -1394,20 +1394,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.0177,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 0.52,
+            "vaporization": 6.52,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.45,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 3.5,
             "meteorites": null
         },
         "discoveryYear": 1894,
@@ -1469,10 +1469,10 @@ const elementsData = [
             476063
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 220.0,
+            "empirical": 203.0,
+            "covalent": 196.0,
+            "vanDerWaals": 275.0
         },
         "hardness": {
             "brinell": null,
@@ -1485,20 +1485,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 79.0,
             "electric": null
         },
         "heat": {
             "specific": 29.6,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 2.33,
+            "fusion": 102.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 399.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 20900.0,
             "meteorites": null
         },
         "discoveryYear": 1807,
@@ -1560,10 +1560,10 @@ const elementsData = [
             527762
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 180.0,
+            "empirical": 174.0,
+            "covalent": 171.0,
+            "vanDerWaals": 231.0
         },
         "hardness": {
             "brinell": null,
@@ -1581,15 +1581,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 25.929,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 153.6,
+            "fusion": 9.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 412.0,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 41500.0,
             "meteorites": null
         },
         "discoveryYear": 1808,
@@ -1652,10 +1652,10 @@ const elementsData = [
             582163
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 160.0,
+            "empirical": 144.0,
+            "covalent": 148.0,
+            "vanDerWaals": 215.0
         },
         "hardness": {
             "brinell": null,
@@ -1668,20 +1668,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 15.8,
             "electric": null
         },
         "heat": {
             "specific": 25.52,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 332.7,
+            "fusion": 15.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 6e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 22.0,
             "meteorites": null
         },
         "discoveryYear": 1879,
@@ -1745,10 +1745,10 @@ const elementsData = [
             639294
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 132.0,
+            "covalent": 136.0,
+            "vanDerWaals": 211.0
         },
         "hardness": {
             "brinell": null,
@@ -1761,20 +1761,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 21.9,
             "electric": null
         },
         "heat": {
             "specific": 25.06,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 422.6,
+            "fusion": 18.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.001,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 5650.0,
             "meteorites": null
         },
         "discoveryYear": 1791,
@@ -1839,10 +1839,10 @@ const elementsData = [
             699144
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 122.0,
+            "covalent": 134.0,
+            "vanDerWaals": 206.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -1855,20 +1855,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 30.7,
             "electric": null
         },
         "heat": {
             "specific": 24.89,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 460.0,
+            "fusion": 17.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0025,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 120.0,
             "meteorites": null
         },
         "discoveryYear": 1801,
@@ -1934,10 +1934,10 @@ const elementsData = [
             761733
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 119.0,
+            "covalent": 122.0,
+            "vanDerWaals": 206.0
         },
         "hardness": {
             "brinell": null,
@@ -1950,20 +1950,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 93.9,
             "electric": null
         },
         "heat": {
             "specific": 23.35,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 342.0,
+            "fusion": 21.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0003,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 102.0,
             "meteorites": null
         },
         "discoveryYear": 1797,
@@ -2030,10 +2030,10 @@ const elementsData = [
             827067
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 118.0,
+            "covalent": 119.0,
+            "vanDerWaals": 204.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -2051,15 +2051,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.32,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 221.0,
+            "fusion": 13.4
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0002,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 950.0,
             "meteorites": null
         },
         "discoveryYear": 1774,
@@ -2127,10 +2127,10 @@ const elementsData = [
             895161
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 117.0,
+            "covalent": 115.99999999999999,
+            "vanDerWaals": 204.0
         },
         "hardness": {
             "brinell": null,
@@ -2143,20 +2143,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 80.4,
             "electric": null
         },
         "heat": {
             "specific": 25.1,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 340.0,
+            "fusion": 13.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.002,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 56300.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -2225,10 +2225,10 @@ const elementsData = [
             966023
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 116.0,
+            "covalent": 111.00000000000001,
+            "vanDerWaals": 200.0
         },
         "hardness": {
             "brinell": null,
@@ -2241,20 +2241,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 100.0,
             "electric": null
         },
         "heat": {
             "specific": 24.81,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 389.1,
+            "fusion": 15.48
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 25.0,
             "meteorites": null
         },
         "discoveryYear": 1735,
@@ -2324,10 +2324,10 @@ const elementsData = [
             1039668
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 115.0,
+            "covalent": 110.00000000000001,
+            "vanDerWaals": 197.0
         },
         "hardness": {
             "brinell": null,
@@ -2340,20 +2340,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 90.9,
             "electric": null
         },
         "heat": {
             "specific": 26.07,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 378.6,
+            "fusion": 17.61
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00056,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 84.0,
             "meteorites": null
         },
         "discoveryYear": 1751,
@@ -2424,10 +2424,10 @@ const elementsData = [
             1116105
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 118.0,
+            "covalent": 112.00000000000001,
+            "vanDerWaals": 196.0
         },
         "hardness": {
             "brinell": null,
@@ -2440,20 +2440,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 401.0,
             "electric": null
         },
         "heat": {
             "specific": 24.44,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 304.6,
+            "fusion": 13.01
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00025,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 60.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -2516,10 +2516,10 @@ const elementsData = [
             179100
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 121.0,
+            "covalent": 118.0,
+            "vanDerWaals": 200.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -2532,20 +2532,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 116.0,
             "electric": null
         },
         "heat": {
             "specific": 25.47,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 114.8,
+            "fusion": 7.28
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0049,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 70.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -2591,10 +2591,10 @@ const elementsData = [
             6180
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 130.0,
+            "empirical": 125.0,
+            "covalent": 124.0,
+            "vanDerWaals": 187.0
         },
         "hardness": {
             "brinell": null,
@@ -2607,20 +2607,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 28.1,
             "electric": null
         },
         "heat": {
             "specific": 25.86,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 270.3,
+            "fusion": 5.59
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.9999999999999997e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 19.0,
             "meteorites": null
         },
         "discoveryYear": 1875,
@@ -2669,10 +2669,10 @@ const elementsData = [
             9020
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 125.0,
+            "empirical": 124.0,
+            "covalent": 121.0,
+            "vanDerWaals": 211.0
         },
         "hardness": {
             "brinell": null,
@@ -2685,20 +2685,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 60.2,
             "electric": null
         },
         "heat": {
             "specific": 23.222,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 328.0,
+            "fusion": 36.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 5e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.5,
             "meteorites": null
         },
         "discoveryYear": 1886,
@@ -2746,10 +2746,10 @@ const elementsData = [
             12310
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 115.0,
+            "empirical": 121.0,
+            "covalent": 121.0,
+            "vanDerWaals": 185.0
         },
         "hardness": {
             "brinell": null,
@@ -2767,15 +2767,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 24.64,
-            "vaporization": null,
+            "vaporization": 32.4,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0037,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.8,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -2824,10 +2824,10 @@ const elementsData = [
             14990
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 115.0,
+            "empirical": 117.0,
+            "covalent": 115.99999999999999,
+            "vanDerWaals": 190.0
         },
         "hardness": {
             "brinell": null,
@@ -2840,20 +2840,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.52,
             "electric": null
         },
         "heat": {
             "specific": 25.363,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 59.7,
+            "fusion": 5.23
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0002,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.05,
             "meteorites": null
         },
         "discoveryYear": 1817,
@@ -2903,10 +2903,10 @@ const elementsData = [
             18600
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 115.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 113.99999999999999,
+            "vanDerWaals": 185.0
         },
         "hardness": {
             "brinell": null,
@@ -2919,20 +2919,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.005,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "specific": 0.474,
+            "vaporization": 29.56,
+            "fusion": 10.57
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 67.3,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.4,
             "meteorites": null
         },
         "discoveryYear": 1826,
@@ -3006,8 +3006,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 117.0,
+            "vanDerWaals": 202.0
         },
         "hardness": {
             "brinell": null,
@@ -3020,20 +3020,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.0095,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 0.248,
+            "vaporization": 9.05,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00021,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.0001,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -3086,10 +3086,10 @@ const elementsData = [
             26740
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 235.0,
+            "empirical": 216.0,
+            "covalent": 210.0,
+            "vanDerWaals": 303.0
         },
         "hardness": {
             "brinell": null,
@@ -3102,20 +3102,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 58.2,
             "electric": null
         },
         "heat": {
             "specific": 31.06,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 75.8,
+            "fusion": 2.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.12,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 90.0,
             "meteorites": null
         },
         "discoveryYear": 1861,
@@ -3170,10 +3170,10 @@ const elementsData = [
             31270
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 200.0,
+            "empirical": 191.0,
+            "covalent": 185.0,
+            "vanDerWaals": 249.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -3191,15 +3191,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.4,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 144.0,
+            "fusion": 9.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 7.9,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 370.0,
             "meteorites": null
         },
         "discoveryYear": 1790,
@@ -3254,10 +3254,10 @@ const elementsData = [
             36090
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 180.0,
+            "empirical": 162.0,
+            "covalent": 163.0,
+            "vanDerWaals": 231.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -3275,15 +3275,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.53,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 367.0,
+            "fusion": 11.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.3000000000000001e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 33.0,
             "meteorites": null
         },
         "discoveryYear": 1794,
@@ -3332,10 +3332,10 @@ const elementsData = [
             9500
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 155.0,
+            "empirical": 145.0,
+            "covalent": 154.0,
+            "vanDerWaals": 223.0
         },
         "hardness": {
             "brinell": null,
@@ -3348,20 +3348,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 22.7,
             "electric": null
         },
         "heat": {
             "specific": 25.36,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 567.0,
+            "fusion": 19.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.9999999999999997e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 165.0,
             "meteorites": null
         },
         "discoveryYear": 1789,
@@ -3411,10 +3411,10 @@ const elementsData = [
             12100
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 134.0,
+            "covalent": 147.0,
+            "vanDerWaals": 218.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -3427,20 +3427,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 53.7,
             "electric": null
         },
         "heat": {
             "specific": 24.6,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 680.0,
+            "fusion": 26.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 20.0,
             "meteorites": null
         },
         "discoveryYear": 1801,
@@ -3513,10 +3513,10 @@ const elementsData = [
             154500
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 130.0,
+            "covalent": 138.0,
+            "vanDerWaals": 217.0
         },
         "hardness": {
             "brinell": null,
@@ -3534,15 +3534,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 24.06,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 590.0,
+            "fusion": 28.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.01,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.2,
             "meteorites": null
         },
         "discoveryYear": 1778,
@@ -3588,10 +3588,10 @@ const elementsData = [
             2850
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 127.0,
+            "covalent": 128.0,
+            "vanDerWaals": 216.0
         },
         "hardness": {
             "brinell": null,
@@ -3604,13 +3604,13 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 50.6,
             "electric": null
         },
         "heat": {
             "specific": 24.27,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 585.0,
+            "fusion": 23.8
         },
         "abundance": {
             "universe": null,
@@ -3663,10 +3663,10 @@ const elementsData = [
             2747
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 130.0,
+            "empirical": 125.0,
+            "covalent": 125.0,
+            "vanDerWaals": 213.0
         },
         "hardness": {
             "brinell": null,
@@ -3679,20 +3679,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 117.0,
             "electric": null
         },
         "heat": {
             "specific": 24.06,
             "vaporization": null,
-            "fusion": null
+            "fusion": 25.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 7e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.001,
             "meteorites": null
         },
         "discoveryYear": 1844,
@@ -3738,10 +3738,10 @@ const elementsData = [
             2997
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 125.0,
+            "covalent": 125.0,
+            "vanDerWaals": 210.0
         },
         "hardness": {
             "brinell": null,
@@ -3754,20 +3754,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 150.0,
             "electric": null
         },
         "heat": {
             "specific": 24.98,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 494.0,
+            "fusion": 21.8
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.001,
             "meteorites": null
         },
         "discoveryYear": 1803,
@@ -3812,10 +3812,10 @@ const elementsData = [
             3177
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 128.0,
+            "covalent": 120.0,
+            "vanDerWaals": 210.0
         },
         "hardness": {
             "brinell": null,
@@ -3828,20 +3828,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 71.8,
             "electric": null
         },
         "heat": {
             "specific": 25.98,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 372.4,
+            "fusion": 17.24
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.015,
             "meteorites": null
         },
         "discoveryYear": 1803,
@@ -3887,10 +3887,10 @@ const elementsData = [
             3361
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 160.0,
+            "empirical": 134.0,
+            "covalent": 128.0,
+            "vanDerWaals": 211.0
         },
         "hardness": {
             "brinell": null,
@@ -3903,20 +3903,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 429.0,
             "electric": null
         },
         "heat": {
             "specific": 25.35,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 254.1,
+            "fusion": 11.95
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.075,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -3962,10 +3962,10 @@ const elementsData = [
             3616
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 155.0,
+            "empirical": 138.0,
+            "covalent": 136.0,
+            "vanDerWaals": 218.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -3978,20 +3978,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 96.9,
             "electric": null
         },
         "heat": {
             "specific": 26.02,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 59.1,
+            "fusion": 6.11
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00011,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.15,
             "meteorites": null
         },
         "discoveryYear": 1817,
@@ -4038,10 +4038,10 @@ const elementsData = [
             5210
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 155.0,
+            "empirical": 142.0,
+            "covalent": 142.0,
+            "vanDerWaals": 193.0
         },
         "hardness": {
             "brinell": null,
@@ -4054,20 +4054,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 81.8,
             "electric": null
         },
         "heat": {
             "specific": 26.74,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 225.1,
+            "fusion": 3.24
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.02,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.25,
             "meteorites": null
         },
         "discoveryYear": 1863,
@@ -4115,10 +4115,10 @@ const elementsData = [
             7456
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 142.0,
+            "covalent": 140.0,
+            "vanDerWaals": 217.0
         },
         "hardness": {
             "brinell": null,
@@ -4131,20 +4131,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 66.8,
             "electric": null
         },
         "heat": {
             "specific": 27.112,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 296.0,
+            "fusion": 7.07
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.3,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -4193,10 +4193,10 @@ const elementsData = [
             10400
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 139.0,
+            "covalent": 140.0,
+            "vanDerWaals": 206.0
         },
         "hardness": {
             "brinell": null,
@@ -4209,20 +4209,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 24.43,
             "electric": null
         },
         "heat": {
             "specific": 25.23,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 195.2,
+            "fusion": 20.08
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.00023999999999999998,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.2,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -4272,10 +4272,10 @@ const elementsData = [
             13200
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 140.0,
+            "empirical": 137.0,
+            "covalent": 136.0,
+            "vanDerWaals": 206.0
         },
         "hardness": {
             "brinell": null,
@@ -4288,20 +4288,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 14.3,
             "electric": null
         },
         "heat": {
             "specific": 25.73,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 49.8,
+            "fusion": 17.91
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.001,
             "meteorites": null
         },
         "discoveryYear": 1782,
@@ -4347,10 +4347,10 @@ const elementsData = [
             3180
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 140.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 133.0,
+            "vanDerWaals": 198.0
         },
         "hardness": {
             "brinell": null,
@@ -4367,16 +4367,16 @@ const elementsData = [
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "specific": 0.214,
+            "vaporization": 41.95,
+            "fusion": 15.52
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.45,
             "meteorites": null
         },
         "discoveryYear": 1811,
@@ -4424,8 +4424,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 131.0,
+            "vanDerWaals": 216.0
         },
         "hardness": {
             "brinell": null,
@@ -4438,20 +4438,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.0057,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 0.158,
+            "vaporization": 12.65,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 5e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.9999999999999997e-05,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -4498,10 +4498,10 @@ const elementsData = [
             3400
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 260.0,
+            "empirical": 235.0,
+            "covalent": 231.99999999999997,
+            "vanDerWaals": 343.0
         },
         "hardness": {
             "brinell": null,
@@ -4514,20 +4514,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 35.9,
             "electric": null
         },
         "heat": {
             "specific": 32.21,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 68.3,
+            "fusion": 2.09
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0003,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 3.0,
             "meteorites": null
         },
         "discoveryYear": 1860,
@@ -4574,10 +4574,10 @@ const elementsData = [
             3600
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 215.0,
+            "empirical": 198.0,
+            "covalent": 196.0,
+            "vanDerWaals": 268.0
         },
         "hardness": {
             "brinell": null,
@@ -4595,15 +4595,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 28.07,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 142.0,
+            "fusion": 7.66
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.013000000000000001,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 425.0,
             "meteorites": null
         },
         "discoveryYear": 1774,
@@ -4652,10 +4652,10 @@ const elementsData = [
             5940
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 195.0,
+            "empirical": 169.0,
+            "covalent": 180.0,
+            "vanDerWaals": 243.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -4668,20 +4668,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 13.4,
             "electric": null
         },
         "heat": {
             "specific": 27.11,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 402.0,
+            "fusion": 8.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 3.4e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 39.0,
             "meteorites": null
         },
         "discoveryYear": 1839,
@@ -4731,10 +4731,10 @@ const elementsData = [
             7490
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 163.0,
+            "vanDerWaals": 242.0
         },
         "hardness": {
             "brinell": null,
@@ -4747,20 +4747,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 11.3,
             "electric": null
         },
         "heat": {
             "specific": 26.94,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 398.0,
+            "fusion": 5.2
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.2e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 66.5,
             "meteorites": null
         },
         "discoveryYear": 1803,
@@ -4809,10 +4809,10 @@ const elementsData = [
             5551
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 176.0,
+            "vanDerWaals": 240.0
         },
         "hardness": {
             "brinell": null,
@@ -4825,20 +4825,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 12.5,
             "electric": null
         },
         "heat": {
             "specific": 27.2,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 331.0,
+            "fusion": 11.3
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 6.4e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 9.2,
             "meteorites": null
         },
         "discoveryYear": 1885,
@@ -4886,10 +4886,10 @@ const elementsData = [
             3900
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 174.0,
+            "vanDerWaals": 239.0
         },
         "hardness": {
             "brinell": null,
@@ -4907,15 +4907,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 27.45,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 289.0,
+            "fusion": 7.1
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.8e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 41.5,
             "meteorites": null
         },
         "discoveryYear": 1885,
@@ -4963,10 +4963,10 @@ const elementsData = [
             3970
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 173.0,
+            "vanDerWaals": 238.0
         },
         "hardness": {
             "brinell": null,
@@ -4979,7 +4979,7 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 17.9,
             "electric": null
         },
         "heat": {
@@ -5040,10 +5040,10 @@ const elementsData = [
             3990
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 172.0,
+            "vanDerWaals": 236.0
         },
         "hardness": {
             "brinell": null,
@@ -5061,15 +5061,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 29.54,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 165.0,
+            "fusion": 8.9
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4.5e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 7.05,
             "meteorites": null
         },
         "discoveryYear": 1879,
@@ -5117,10 +5117,10 @@ const elementsData = [
             4120
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 185.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 168.0,
+            "vanDerWaals": 235.0
         },
         "hardness": {
             "brinell": null,
@@ -5133,20 +5133,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 13.9,
             "electric": null
         },
         "heat": {
             "specific": 27.66,
-            "vaporization": null,
+            "vaporization": 176.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.3e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.0,
             "meteorites": null
         },
         "discoveryYear": 1896,
@@ -5194,10 +5194,10 @@ const elementsData = [
             4250
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 180.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 169.0,
+            "vanDerWaals": 234.0
         },
         "hardness": {
             "brinell": null,
@@ -5215,15 +5215,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 37.03,
-            "vaporization": null,
+            "vaporization": 398.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 7e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 6.2,
             "meteorites": null
         },
         "discoveryYear": 1880,
@@ -5271,10 +5271,10 @@ const elementsData = [
             3839
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 168.0,
+            "vanDerWaals": 233.0
         },
         "hardness": {
             "brinell": null,
@@ -5287,20 +5287,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 11.1,
             "electric": null
         },
         "heat": {
             "specific": 28.91,
-            "vaporization": null,
+            "vaporization": 389.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.4e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.2,
             "meteorites": null
         },
         "discoveryYear": 1843,
@@ -5348,10 +5348,10 @@ const elementsData = [
             3990
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 167.0,
+            "vanDerWaals": 231.0
         },
         "hardness": {
             "brinell": null,
@@ -5364,20 +5364,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 10.7,
             "electric": null
         },
         "heat": {
             "specific": 27.7,
-            "vaporization": null,
+            "vaporization": 291.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 9.1e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 5.2,
             "meteorites": null
         },
         "discoveryYear": 1886,
@@ -5425,10 +5425,10 @@ const elementsData = [
             4100
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 166.0,
+            "vanDerWaals": 229.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -5446,15 +5446,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 27.15,
-            "vaporization": null,
+            "vaporization": 301.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.2e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.3,
             "meteorites": null
         },
         "discoveryYear": 1878,
@@ -5502,10 +5502,10 @@ const elementsData = [
             4120
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 165.0,
+            "vanDerWaals": 229.0
         },
         "hardness": {
             "brinell": null,
@@ -5523,15 +5523,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 28.12,
-            "vaporization": null,
+            "vaporization": 317.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 8.7e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 3.5,
             "meteorites": null
         },
         "discoveryYear": 1843,
@@ -5579,10 +5579,10 @@ const elementsData = [
             4120
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 164.0,
+            "vanDerWaals": 227.0
         },
         "hardness": {
             "brinell": null,
@@ -5600,15 +5600,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 27.03,
-            "vaporization": null,
+            "vaporization": 232.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.7e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.52,
             "meteorites": null
         },
         "discoveryYear": 1879,
@@ -5656,10 +5656,10 @@ const elementsData = [
             4203
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 170.0,
+            "vanDerWaals": 225.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -5677,15 +5677,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.74,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 159.0,
+            "fusion": 3.35
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 8.2e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 3.2,
             "meteorites": null
         },
         "discoveryYear": 1878,
@@ -5734,10 +5734,10 @@ const elementsData = [
             6445
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 162.0,
+            "vanDerWaals": 224.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -5755,15 +5755,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.86,
-            "vaporization": null,
+            "vaporization": 414.0,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.5e-07,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.8,
             "meteorites": null
         },
         "discoveryYear": 1907,
@@ -5811,10 +5811,10 @@ const elementsData = [
             3216
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 155.0,
+            "empirical": 144.0,
+            "covalent": 152.0,
+            "vanDerWaals": 223.0
         },
         "hardness": {
             "brinell": null,
@@ -5827,20 +5827,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 23.0,
             "electric": null
         },
         "heat": {
             "specific": 25.73,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 575.0,
+            "fusion": 25.1
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 7.000000000000001e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 3.0,
             "meteorites": null
         },
         "discoveryYear": 1923,
@@ -5886,10 +5886,10 @@ const elementsData = [
             1500
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 145.0,
+            "empirical": 134.0,
+            "covalent": 146.0,
+            "vanDerWaals": 222.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -5902,20 +5902,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 57.5,
             "electric": null
         },
         "heat": {
             "specific": 25.36,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 758.0,
+            "fusion": 24.7
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.0,
             "meteorites": null
         },
         "discoveryYear": 1802,
@@ -5961,10 +5961,10 @@ const elementsData = [
             1700
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 130.0,
+            "covalent": 137.0,
+            "vanDerWaals": 218.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -5977,20 +5977,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 173.0,
             "electric": null
         },
         "heat": {
             "specific": 24.27,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 824.0,
+            "fusion": 35.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0001,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.25,
             "meteorites": null
         },
         "discoveryYear": 1783,
@@ -6038,10 +6038,10 @@ const elementsData = [
             3640
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 128.0,
+            "covalent": 131.0,
+            "vanDerWaals": 216.0
         },
         "hardness": {
             "brinell": null,
@@ -6054,20 +6054,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 48.0,
             "electric": null
         },
         "heat": {
             "specific": 25.48,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 704.0,
+            "fusion": 34.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.0007,
             "meteorites": null
         },
         "discoveryYear": 1925,
@@ -6113,10 +6113,10 @@ const elementsData = [
             1600
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 130.0,
+            "empirical": 126.0,
+            "covalent": 129.0,
+            "vanDerWaals": 216.0
         },
         "hardness": {
             "brinell": null,
@@ -6134,15 +6134,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 24.7,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 738.0,
+            "fusion": 31.7
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.0015,
             "meteorites": null
         },
         "discoveryYear": 1803,
@@ -6189,10 +6189,10 @@ const elementsData = [
             1600
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 127.0,
+            "covalent": 122.0,
+            "vanDerWaals": 213.0
         },
         "hardness": {
             "brinell": null,
@@ -6205,20 +6205,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 147.0,
             "electric": null
         },
         "heat": {
             "specific": 25.1,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 604.0,
+            "fusion": 27.61
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.001,
             "meteorites": null
         },
         "discoveryYear": 1803,
@@ -6265,10 +6265,10 @@ const elementsData = [
             1791
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 130.0,
+            "covalent": 123.0,
+            "vanDerWaals": 213.0
         },
         "hardness": {
             "brinell": null,
@@ -6281,20 +6281,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 71.6,
             "electric": null
         },
         "heat": {
             "specific": 25.86,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 470.0,
+            "fusion": 21.76
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.005,
             "meteorites": null
         },
         "discoveryYear": 1735,
@@ -6340,10 +6340,10 @@ const elementsData = [
             1980
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 135.0,
+            "empirical": 134.0,
+            "covalent": 124.0,
+            "vanDerWaals": 214.0
         },
         "hardness": {
             "brinell": null,
@@ -6356,20 +6356,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 318.0,
             "electric": null
         },
         "heat": {
             "specific": 25.418,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 340.0,
+            "fusion": 12.68
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 4e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.004,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -6416,10 +6416,10 @@ const elementsData = [
             3300
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 150.0,
+            "empirical": 139.0,
+            "covalent": 133.0,
+            "vanDerWaals": 223.0
         },
         "hardness": {
             "brinell": null,
@@ -6432,20 +6432,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 8.3,
             "electric": null
         },
         "heat": {
             "specific": 27.983,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 58.5,
+            "fusion": 2.295
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.9999999999999997e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.085,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -6492,10 +6492,10 @@ const elementsData = [
             2878
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 190.0,
+            "empirical": 144.0,
+            "covalent": 144.0,
+            "vanDerWaals": 196.0
         },
         "hardness": {
             "brinell": null,
@@ -6508,20 +6508,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 46.1,
             "electric": null
         },
         "heat": {
             "specific": 26.32,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 162.4,
+            "fusion": 4.31
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.9e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.85,
             "meteorites": null
         },
         "discoveryYear": 1861,
@@ -6570,10 +6570,10 @@ const elementsData = [
             6640
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 180.0,
+            "empirical": 150.0,
+            "covalent": 144.0,
+            "vanDerWaals": 202.0
         },
         "hardness": {
             "brinell": null,
@@ -6586,20 +6586,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 35.3,
             "electric": null
         },
         "heat": {
             "specific": 26.65,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 177.8,
+            "fusion": 4.77
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2.9999999999999997e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 14.0,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -6649,10 +6649,10 @@ const elementsData = [
             8520
         ],
         "radius": {
-            "calculated": null,
-            "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "calculated": 160.0,
+            "empirical": 151.0,
+            "covalent": 151.0,
+            "vanDerWaals": 206.99999999999997
         },
         "hardness": {
             "brinell": null,
@@ -6665,20 +6665,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 7.9,
             "electric": null
         },
         "heat": {
             "specific": 25.52,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 172.0,
+            "fusion": 11.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 2e-05,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 0.0085,
             "meteorites": null
         },
         "discoveryYear": "Ancient",
@@ -6723,10 +6723,10 @@ const elementsData = [
             812.1
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 190.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 145.0,
+            "vanDerWaals": 197.0
         },
         "hardness": {
             "brinell": null,
@@ -6744,15 +6744,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.4,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 102.9,
+            "fusion": 10.0
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1.5e-14,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2e-10,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -6799,8 +6799,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 147.0,
+            "vanDerWaals": 202.0
         },
         "hardness": {
             "brinell": null,
@@ -6874,8 +6874,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 142.0,
+            "vanDerWaals": 220.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -6888,20 +6888,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 0.0036,
             "electric": null
         },
         "heat": {
-            "specific": null,
-            "vaporization": null,
+            "specific": 0.094,
+            "vaporization": 18.1,
             "fusion": null
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 6e-16,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 4e-13,
             "meteorites": null
         },
         "discoveryYear": 1900,
@@ -6950,8 +6950,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 223.0,
+            "vanDerWaals": 348.0
         },
         "hardness": {
             "brinell": null,
@@ -6970,7 +6970,7 @@ const elementsData = [
         "heat": {
             "specific": null,
             "vaporization": null,
-            "fusion": null
+            "fusion": 15.0
         },
         "abundance": {
             "universe": null,
@@ -7025,10 +7025,10 @@ const elementsData = [
             979
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 215.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 200.99999999999997,
+            "vanDerWaals": 283.0
         },
         "hardness": {
             "brinell": null,
@@ -7046,15 +7046,15 @@ const elementsData = [
         },
         "heat": {
             "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 113.0,
+            "fusion": 9.6
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 8.9e-11,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 9e-07,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -7101,10 +7101,10 @@ const elementsData = [
             1170
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 195.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 186.0,
+            "vanDerWaals": 247.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7122,15 +7122,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 27.2,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 292.9,
+            "fusion": 10.5
         },
         "abundance": {
             "universe": null,
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 5.5e-10,
             "meteorites": null
         },
         "discoveryYear": 1899,
@@ -7179,10 +7179,10 @@ const elementsData = [
             2780
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 180.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 175.0,
+            "vanDerWaals": 245.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7200,15 +7200,15 @@ const elementsData = [
         },
         "heat": {
             "specific": 26.23,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 513.7,
+            "fusion": 16.11
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 1e-06,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 9.6,
             "meteorites": null
         },
         "discoveryYear": 1829,
@@ -7254,10 +7254,10 @@ const elementsData = [
             568
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 180.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 169.0,
+            "vanDerWaals": 243.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7275,15 +7275,15 @@ const elementsData = [
         },
         "heat": {
             "specific": null,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 481.2,
+            "fusion": 16.7
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 5e-11,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 1.4e-06,
             "meteorites": null
         },
         "discoveryYear": 1913,
@@ -7330,10 +7330,10 @@ const elementsData = [
             1420
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 170.0,
+            "vanDerWaals": 241.0
         },
         "hardness": {
             "brinell": null,
@@ -7346,20 +7346,20 @@ const elementsData = [
             "young": null
         },
         "conductivity": {
-            "thermal": null,
+            "thermal": 27.5,
             "electric": null
         },
         "heat": {
             "specific": 27.665,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 417.0,
+            "fusion": 12.6
         },
         "abundance": {
             "universe": null,
             "sun": null,
-            "oceans": null,
+            "oceans": 0.0032,
             "human": null,
-            "earthCrust": null,
+            "earthCrust": 2.7,
             "meteorites": null
         },
         "discoveryYear": 1789,
@@ -7405,10 +7405,10 @@ const elementsData = [
             604.5
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 171.0,
+            "vanDerWaals": 239.0
         },
         "hardness": {
             "brinell": null,
@@ -7426,8 +7426,8 @@ const elementsData = [
         },
         "heat": {
             "specific": 29.46,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 336.0,
+            "fusion": 9.6
         },
         "abundance": {
             "universe": null,
@@ -7480,10 +7480,10 @@ const elementsData = [
             584.7
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 172.0,
+            "vanDerWaals": 243.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7501,8 +7501,8 @@ const elementsData = [
         },
         "heat": {
             "specific": 35.5,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 343.5,
+            "fusion": 2.8
         },
         "abundance": {
             "universe": null,
@@ -7555,10 +7555,10 @@ const elementsData = [
             578
         ],
         "radius": {
-            "calculated": null,
+            "calculated": 175.0,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 166.0,
+            "vanDerWaals": 244.0
         },
         "hardness": {
             "brinell": null,
@@ -7576,8 +7576,8 @@ const elementsData = [
         },
         "heat": {
             "specific": 62.7,
-            "vaporization": null,
-            "fusion": null
+            "vaporization": 238.5,
+            "fusion": 10.0
         },
         "abundance": {
             "universe": null,
@@ -7633,8 +7633,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 166.0,
+            "vanDerWaals": 245.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7709,8 +7709,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 168.0,
+            "vanDerWaals": 244.0
         },
         "hardness": {
             "brinell": null,
@@ -7784,8 +7784,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 168.0,
+            "vanDerWaals": 245.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7859,8 +7859,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 165.0,
+            "vanDerWaals": 245.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -7934,8 +7934,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 167.0,
+            "vanDerWaals": 245.00000000000003
         },
         "hardness": {
             "brinell": null,
@@ -8009,8 +8009,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 173.0,
+            "vanDerWaals": 246.0
         },
         "hardness": {
             "brinell": null,
@@ -8084,8 +8084,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 176.0,
+            "vanDerWaals": 246.0
         },
         "hardness": {
             "brinell": null,
@@ -8159,8 +8159,8 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
-            "vanDerWaals": null
+            "covalent": 161.0,
+            "vanDerWaals": 246.0
         },
         "hardness": {
             "brinell": null,
@@ -8234,7 +8234,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 157.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8308,7 +8308,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 149.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8381,7 +8381,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 143.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8455,7 +8455,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 141.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8528,7 +8528,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 134.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8602,7 +8602,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 129.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8676,7 +8676,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 128.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8749,7 +8749,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 121.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8823,7 +8823,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 122.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8897,7 +8897,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 136.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -8970,7 +8970,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 143.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -9043,7 +9043,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 162.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -9116,7 +9116,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 175.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -9189,7 +9189,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 165.0,
             "vanDerWaals": null
         },
         "hardness": {
@@ -9262,7 +9262,7 @@ const elementsData = [
         "radius": {
             "calculated": null,
             "empirical": null,
-            "covalent": null,
+            "covalent": 157.0,
             "vanDerWaals": null
         },
         "hardness": {
