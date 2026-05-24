@@ -140,11 +140,11 @@ input[type="text"], select {
 #search-bar { width: 300px; flex-shrink: 0; }
 
 .temp-controller {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: 15px;
     background: var(--surface-light);
     padding: 10px 20px;
@@ -153,46 +153,55 @@ input[type="text"], select {
     max-width: 100%;
 }
 #temp-display-container { color: var(--dynamic-temp-color, var(--mono-green)); display: flex; align-items: center; white-space: nowrap; text-align: left; transition: color 0.1s; flex-shrink: 0 !important; }
-#temp-input {
+#temp-input, #timeline-input {
     width: 60px;
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.2);
-    color: inherit;
+    color: #fff;
+    padding: 2px 5px;
     border-radius: 4px;
-    padding: 2px 4px;
-    margin-left: 5px;
     outline: none;
-    text-align: right;
-    font-size: inherit;
-    transition: border-color 0.2s;
+    text-align: center;
 }
-#temp-input:focus { border-color: var(--accent-cyan); }
-#temp-input::-webkit-outer-spin-button, #temp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+#temp-input:focus, #timeline-input:focus { border-color: var(--accent-cyan); }
+#temp-input::-webkit-outer-spin-button, #temp-input::-webkit-inner-spin-button,
+#timeline-input::-webkit-outer-spin-button, #timeline-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-amber); cursor: pointer;}
-#temp-slider {
+#temp-slider, #timeline-slider {
     -webkit-appearance: none;
     appearance: none;
     width: 700px;
     height: 18px;
-    background: linear-gradient(to right, rgb(0,0,255), rgb(0,255,255), rgb(255,255,0), rgb(255,136,0), rgb(255,0,0));
     border-radius: 10px;
     outline: none;
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
-#temp-slider::-webkit-slider-thumb {
+#temp-slider {
+    background: linear-gradient(to right, rgb(0,0,255), rgb(0,255,255), rgb(255,255,0), rgb(255,136,0), rgb(255,0,0));
+}
+#timeline-slider {
+    background: linear-gradient(to right, #4338ca, #6366f1, #a855f7, #ec4899);
+}
+#temp-slider::-webkit-slider-thumb, #timeline-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: var(--dynamic-temp-bg, transparent);
     border: 3px solid #ffffff;
-    box-shadow: var(--temp-thumb-glow, none);
     cursor: pointer;
     transition: transform 0.1s;
 }
-#temp-slider::-webkit-slider-thumb:hover {
+#temp-slider::-webkit-slider-thumb {
+    background: var(--dynamic-temp-bg, transparent);
+    box-shadow: var(--temp-thumb-glow, none);
+}
+#timeline-slider::-webkit-slider-thumb {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+#temp-slider::-webkit-slider-thumb:hover, #timeline-slider::-webkit-slider-thumb:hover {
     transform: scale(1.15);
 }
 
@@ -411,22 +420,25 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
 }
 .legend-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: var(--transition-fast); margin-left: -4px; font-size: 0.7rem; }
-.legend-item:hover { background: rgba(255,255,255,0.1); }
+.legend-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
 .legend-color { width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
 
 /* Highlight Logic */
-#main-grid.highlighting-active .element-cell:not(.highlighted) {
+#main-grid.highlighting-active .element-cell:not(.highlighted),
+#electrons-grid.highlighting-active .element-cell:not(.highlighted) {
     background: rgba(255,255,255,0.02) !important;
     border-color: rgba(255,255,255,0.05) !important;
     opacity: 0.2 !important;
     box-shadow: none !important;
     pointer-events: none;
 }
-#main-grid.highlighting-active .element-cell:not(.highlighted) * {
+#main-grid.highlighting-active .element-cell:not(.highlighted) *,
+#electrons-grid.highlighting-active .element-cell:not(.highlighted) * {
     color: rgba(255,255,255,0.3) !important;
     text-shadow: none !important;
 }
-#main-grid.highlighting-active .element-cell.highlighted {
+#main-grid.highlighting-active .element-cell.highlighted,
+#electrons-grid.highlighting-active .element-cell.highlighted {
     opacity: 1;
     filter: grayscale(0%);
     transform: scale(1.1);
@@ -529,6 +541,106 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
+
+/* Aufbau Diagram Styles */
+.aufbau-diagram-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: flex-end;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #e0e0e0;
+}
+
+.aufbau-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px; /* Align with the bottom row */
+    margin-right: 15px;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.legend-box-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.aufbau-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.aufbau-row {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: flex-start;
+}
+
+.block-type-s { width: 40px; }
+.block-type-p { width: 80px; }
+.block-type-d { width: 120px; }
+.block-type-f { width: 160px; }
+
+.subshell-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.subshell-label {
+    width: 18px;
+    text-align: right;
+    color: #ccc;
+    font-size: 0.75rem;
+}
+
+.orbital-boxes {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.orbital-box {
+    width: 18px;
+    height: 22px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    border: 1px solid transparent;
+}
+
+.arrow-up { color: #fff; margin-right: -1px; }
+.arrow-down { color: #fff; margin-left: -1px; }
+
+/* Block Colors */
+.s-block { background-color: #0d5c63; }
+.p-block { background-color: #4a5d23; }
+.d-block { background-color: #6a1a41; }
+.f-block { background-color: #0b3c8a; }
+
+.active-orbital {
+    border: 1px solid #4da6ff;
+    box-shadow: 0 0 5px rgba(77, 166, 255, 0.5);
+}
+
 </style>
 </head>
 <body class="theme-dark">
@@ -557,11 +669,11 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                         <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                         <input type="range" id="temp-slider" min="0" max="6000" value="298">
                     </div>
-                    <div class="timeline-controller hidden" id="timeline-controller-wrapper" style="display: none; align-items: center; gap: 10px;">
-                        <label>Year: <span id="timeline-display" class="mono-text">2025</span></label>
-                        <input type="range" id="timeline-slider" min="1650" max="2025" value="2025" style="width: 200px;">
+                    <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
+                        <label id="timeline-display-container">Year: <input type="number" id="timeline-input" class="mono-text" min="1650" max="2025" value="2025"></label>
+                        <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
                     </div>
-                    <div id="state-counter" class="mono-text small-text"></div>
+
                 </div>
 
                 <div class="grid-wrapper">
@@ -585,12 +697,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                 <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 120px;">
                     <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
                     <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between;">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; color: rgba(255,255,255,0.9);">
                             <span id="dh-number"></span>
                             <span id="dh-mass"></span>
                         </div>
                         <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
-                        <div class="ec-name" id="dh-name"></div>
+                        <div class="ec-name" id="dh-name" style="color: rgba(255,255,255,0.9);"></div>
                     </div>
                 </div>
 
@@ -686,19 +798,24 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                 <div id="elec-empty-state" class="empty-state">Select an element</div>
                 
                 <div id="elec-details" class="hidden">
-                    <h2 class="elec-title"><span id="elec-sym" class="mono-text"></span> - <span id="elec-name"></span></h2>
+                    <div id="elec-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 120px; margin-bottom: 20px;">
+                        <div id="bohr-reference" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
+                            <!-- Animated SVG Bohr model goes here -->
+                        </div>
+                        <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; color: rgba(255,255,255,0.9);">
+                                <span id="elec-number"></span>
+                                <span id="elec-mass"></span>
+                            </div>
+                            <div class="ec-symbol mono-text" id="elec-sym" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
+                            <div class="ec-name" id="elec-name" style="color: rgba(255,255,255,0.9);"></div>
+                        </div>
+                    </div>
                     
-                    <div class="aufbau-diagram">
+                    <div class="config-text-container mt-2">
                         <h4>Configuration</h4>
                         <div class="mono-text" id="elec-config"></div>
                         <div class="mono-text mt-1" id="elec-config-noble"></div>
-                    </div>
-
-                    <div class="bohr-reference-container">
-                        <h4>Bohr Model</h4>
-                        <div id="bohr-reference">
-                            <!-- Animated SVG Bohr model goes here -->
-                        </div>
                     </div>
 
                     <div class="orbital-viewer">
@@ -10856,10 +10973,19 @@ function selectElement(z) {
         document.getElementById('elec-empty-state').classList.add('hidden');
         document.getElementById('elec-details').classList.remove('hidden');
         
+        document.getElementById('elec-number').innerText = el.atomicNumber;
+        document.getElementById('elec-mass').innerText = el.atomicMass ? el.atomicMass.toFixed(3) : '';
         document.getElementById('elec-sym').innerText = el.symbol;
         document.getElementById('elec-name').innerText = el.name;
         document.getElementById('elec-config').innerText = el.electronConfiguration;
         document.getElementById('elec-config-noble').innerText = el.electronConfigurationNoble;
+        
+        const normalizedCategory = getNormalizedCategory(el.category);
+        const card = document.getElementById('elec-element-card');
+        if (card) {
+            card.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
+            card.style.borderColor = categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)';
+        }
         
         drawLargeBohrModel(el);
     }
@@ -10980,7 +11106,6 @@ function drawLargeBohrModel(el) {
     
     // Nucleus
     svg += `<circle cx="100" cy="100" r="12" fill="var(--accent-amber)" />`;
-    svg += `<text x="100" y="104" fill="#000" font-size="12" text-anchor="middle" font-weight="bold" font-family="var(--font-mono)">${el.symbol}</text>`;
     
     const shells = el.electronsPerShell;
     

@@ -41,11 +41,11 @@
                         <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                         <input type="range" id="temp-slider" min="0" max="6000" value="298">
                     </div>
-                    <div class="timeline-controller hidden" id="timeline-controller-wrapper" style="display: none; align-items: center; gap: 10px;">
-                        <label>Year: <span id="timeline-display" class="mono-text">2025</span></label>
-                        <input type="range" id="timeline-slider" min="1650" max="2025" value="2025" style="width: 200px;">
+                    <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
+                        <label id="timeline-display-container">Year: <input type="number" id="timeline-input" class="mono-text" min="1650" max="2025" value="2025"></label>
+                        <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
                     </div>
-                    <div id="state-counter" class="mono-text small-text"></div>
+
                 </div>
 
                 <div class="grid-wrapper">
@@ -170,19 +170,22 @@
                 <div id="elec-empty-state" class="empty-state">Select an element</div>
                 
                 <div id="elec-details" class="hidden">
-                    <h2 class="elec-title"><span id="elec-sym" class="mono-text"></span> - <span id="elec-name"></span></h2>
+                    <div id="elec-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <div id="bohr-reference" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <!-- Animated SVG Bohr model goes here -->
+                        </div>
+                        <div style="position: relative; z-index: 1; width: 100%; height: 200px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; pointer-events: none;">
+                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: flex-start; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                                <span id="elec-number" style="font-size: 1.2rem;"></span>
+                            </div>
+                            <div class="ec-name" id="elec-name" style="text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-size: 1.1rem; padding-bottom: 5px;"></div>
+                        </div>
+                    </div>
                     
-                    <div class="aufbau-diagram">
+                    <div class="config-text-container mt-2">
                         <h4>Configuration</h4>
                         <div class="mono-text" id="elec-config"></div>
                         <div class="mono-text mt-1" id="elec-config-noble"></div>
-                    </div>
-
-                    <div class="bohr-reference-container">
-                        <h4>Bohr Model</h4>
-                        <div id="bohr-reference">
-                            <!-- Animated SVG Bohr model goes here -->
-                        </div>
                     </div>
 
                     <div class="orbital-viewer">
