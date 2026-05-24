@@ -2,6 +2,7 @@
 let currentTemp = 298; // Kelvin
 let tempUnit = 'K';
 let currentProperty = 'category';
+let currentElecProperty = 'oxidation';
 let currentView = 'main';
 const heatmapConfigs = {
     atomicMass:        { minColor: '#00ff00', maxColor: '#ff0000', scale: 'linear', min: 1, max: 294 },
@@ -151,10 +152,21 @@ function setupUI() {
     document.querySelectorAll('.prop-item:not(.non-interactive)').forEach(item => {
         item.addEventListener('click', (e) => {
             if (e.target.tagName.toLowerCase() === 'select' || e.target.tagName.toLowerCase() === 'option') return;
-            document.querySelectorAll('.prop-item').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => p.classList.remove('active'));
             const target = e.currentTarget;
             target.classList.add('active');
             currentProperty = target.dataset.prop;
+            updateGridVisuals();
+        });
+    });
+
+    // Electron Interface Property selection
+    document.querySelectorAll('.elec-prop-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            document.querySelectorAll('.elec-prop-item').forEach(p => p.classList.remove('active'));
+            const target = e.currentTarget;
+            target.classList.add('active');
+            currentElecProperty = target.dataset.prop;
             updateGridVisuals();
         });
     });
@@ -409,6 +421,28 @@ function getNormalizedCategory(cat) {
     return cat;
 }
 
+function getHeatmapColor(value, config) {
+    if (value === null || value === undefined || isNaN(value)) return heatmapUnknownColor;
+    let cMin = config.min;
+    let cMax = config.max;
+    let minR = hexToRgb(config.minColor);
+    let maxR = hexToRgb(config.maxColor);
+    let pct;
+    if (config.scale === 'log') {
+        const safeValue = Math.max(0.000001, value);
+        const safeMin = Math.max(0.000001, cMin);
+        const safeMax = Math.max(0.000001, cMax);
+        pct = (Math.log(safeValue) - Math.log(safeMin)) / (Math.log(safeMax) - Math.log(safeMin));
+    } else {
+        pct = (value - cMin) / (cMax - cMin);
+    }
+    pct = Math.max(0, Math.min(1, pct || 0));
+    const r = Math.round(minR.r + (maxR.r - minR.r) * pct);
+    const g = Math.round(minR.g + (maxR.g - minR.g) * pct);
+    const b = Math.round(minR.b + (maxR.b - minR.b) * pct);
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
 function getGradientColor(value, propName) {
     const config = heatmapConfigs[propName];
     if (!config || value === null || value === undefined || isNaN(value)) return heatmapUnknownColor;
@@ -501,13 +535,16 @@ function getGlossyBackground(colorStr, category = '') {
     }
 }
 
-// Update Grid Colors based on currentProperty
 function updateGridVisuals() {
+    const isMain = currentView === 'main';
+    const gridId = isMain ? '#main-grid' : '#electrons-grid';
+    const activeProp = isMain ? currentProperty : currentElecProperty;
+    
     // Toggle controllers
     const tempWrapper = document.getElementById('temp-controller-wrapper');
     const timelineWrapper = document.getElementById('timeline-controller-wrapper');
     if (tempWrapper && timelineWrapper) {
-        if (currentView === 'main' && currentProperty === 'discoveryYear') {
+        if (isMain && currentProperty === 'discoveryYear') {
             tempWrapper.classList.add('hidden');
             tempWrapper.style.display = 'none';
             timelineWrapper.classList.remove('hidden');
@@ -520,23 +557,21 @@ function updateGridVisuals() {
         }
     }
 
-    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
     const cells = document.querySelectorAll(`${gridId} .element-cell`);
     let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
-
     const blockColors = { s: '#0d5f66', p: '#4a5c00', d: '#5d0f40', f: '#0022a1' };
 
     cells.forEach(cell => {
         const z = parseInt(cell.dataset.z);
-        const el = getElementByNumber(z);
-        if (!el) return;
-        const normalizedCategory = getNormalizedCategory(el.category);
+        const elData = getElementByNumber(z);
+        if (!elData) return;
+        const normalizedCategory = getNormalizedCategory(elData.category);
         
         // 1. Determine State at currentTemp for text color (always active)
         let currentState = 'Unknown';
-        if (el.meltingPoint && el.boilingPoint) {
-            if (currentTemp < el.meltingPoint) currentState = 'Solid';
-            else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
+        if (elData.meltingPoint && elData.boilingPoint) {
+            if (currentTemp < elData.meltingPoint) currentState = 'Solid';
+            else if (currentTemp >= elData.meltingPoint && currentTemp < elData.boilingPoint) currentState = 'Liquid';
             else currentState = 'Gas';
         }
         
@@ -552,7 +587,6 @@ function updateGridVisuals() {
         }
 
         if (currentView === 'electrons') {
-            // Apply text color to bohr model wrapper
             const bohrWrapper = cell.querySelector('.cell-bohr');
             if (bohrWrapper) {
                 bohrWrapper.style.color = stateTextColors[currentState];
@@ -560,70 +594,62 @@ function updateGridVisuals() {
             }
         }
 
-        // 2. Determine Background/Border
-        let bgStyle = 'rgba(255,255,255,0.05)';
-        let borderColor = 'transparent';
+        // 2. Determine Background/Border/Value
+        let color = '#333';
         let valText = '';
 
-        if (currentView === 'electrons') {
-            const blockColor = blockColors[el.block] || '#444';
-            bgStyle = getGlossyBackground(blockColor, normalizedCategory);
-            borderColor = blockColor;
-        } else {
+        if (isMain) {
             if (currentProperty === 'category') {
-                bgStyle = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
-                borderColor = categoryColors[normalizedCategory];
-                valText = el.atomicMass ? el.atomicMass.toFixed(3) : '';
-            }
-            else if (currentProperty === 'state') {
-                const stColor = stateColors[currentState] || '#6b7280';
-                bgStyle = getGlossyBackground(stColor, normalizedCategory);
-                borderColor = stColor;
+                color = categoryColors[normalizedCategory] || '#333';
+                valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
+            } else if (currentProperty === 'state') {
+                color = stateColors[currentState] || '#6b7280';
                 valText = currentState;
-            }
-            else if (heatmapConfigs[currentProperty]) {
-                const numValue = getPropertyValue(el, currentProperty);
-                
-                // Special handling for discoveryYear 'Ancient'
-                if (currentProperty === 'discoveryYear' && el.discoveryYear === 'Ancient') {
-                    bgStyle = getGlossyBackground('#ffffff', normalizedCategory);
-                    borderColor = '#ffffff';
+            } else if (heatmapConfigs[currentProperty]) {
+                const numValue = getPropertyValue(elData, currentProperty);
+                if (currentProperty === 'discoveryYear' && elData.discoveryYear === 'Ancient') {
+                    color = '#ffffff';
                     valText = 'Ancient';
                 } else if (numValue !== null && numValue !== undefined && !isNaN(numValue)) {
-                    const color = getGradientColor(numValue, currentProperty);
-                    bgStyle = getGlossyBackground(color, normalizedCategory);
-                    borderColor = color || '#444';
-                    
-                    if (currentProperty === 'energyLevels' && el.electronsPerShell) {
-                        valText = el.electronsPerShell.join(', ');
-                    } else if (currentProperty === 'discoveryYear') {
-                        valText = numValue;
-                    } else {
-                    let text = Number(numValue);
-                    if (!Number.isInteger(text)) {
-                        valText = (text > 100 || text < -100) ? Math.round(text) : Number(text.toPrecision(3)).toString();
-                    } else {
-                        valText = text;
-                    }
+                    color = getGradientColor(numValue, currentProperty);
+                    valText = Number(numValue);
+                    if (!Number.isInteger(valText)) valText = (valText > 100 || valText < -100) ? Math.round(valText) : Number(valText.toPrecision(3)).toString();
+                } else {
+                    color = heatmapUnknownColor;
                 }
-            } else {
-                bgStyle = getGlossyBackground(heatmapUnknownColor, normalizedCategory);
-                borderColor = heatmapUnknownColor;
-                valText = '';
+            }
+        } else {
+            // Electron view property mapping
+            if (activeProp === 'oxidation') {
+                const statesStr = elData.oxidationStates || '';
+                const states = statesStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+                if (states.length > 0) {
+                    const primary = states[0];
+                    if (primary < 0) color = getHeatmapColor(primary, { minColor: '#ff0000', maxColor: '#ffffff', scale: 'linear', min: -4, max: 0 });
+                    else if (primary > 0) color = getHeatmapColor(primary, { minColor: '#ffffff', maxColor: '#00ff00', scale: 'linear', min: 0, max: 8 });
+                    else color = '#ffffff';
+                } else { color = '#333'; }
+                valText = elData.oxidationStates || '';
+            } else if (activeProp === 'configuration' || activeProp === 'expanded') {
+                color = blockColors[elData.block] || '#333';
+                valText = elData.block || '';
+            } else if (activeProp === 'energyLevel') {
+                const shells = elData.electronsPerShell ? elData.electronsPerShell.length : 1;
+                color = getHeatmapColor(shells, heatmapConfigs.energyLevels);
+                valText = shells;
             }
         }
-    }
 
-        cell.style.background = bgStyle;
-        cell.style.borderColor = borderColor;
+        cell.style.background = getGlossyBackground(color, normalizedCategory);
+        cell.style.borderColor = color;
 
         // Timeline opacity logic
-        if (currentProperty === 'discoveryYear') {
-            if (el.discoveryYear === 'Ancient') {
+        if (isMain && currentProperty === 'discoveryYear') {
+            if (elData.discoveryYear === 'Ancient') {
                 cell.style.opacity = '1';
                 cell.style.filter = 'none';
             } else {
-                const dYear = parseInt(el.discoveryYear);
+                const dYear = parseInt(elData.discoveryYear);
                 if (!isNaN(dYear) && dYear > currentTimelineYear) {
                     cell.style.opacity = '0.2';
                     cell.style.filter = 'grayscale(1)';
@@ -637,34 +663,17 @@ function updateGridVisuals() {
             cell.style.filter = 'none';
         }
 
-        if (currentProperty === 'category') {
-            const stateColor = stateTextColors[currentState] || '#e2e8f0';
-            const sym = cell.querySelector('.cell-sym');
-            if (sym) {
-                sym.style.color = stateColor;
-                sym.style.textShadow = '0 1px 3px rgba(0,0,0,0.8)';
-            }
-        } else {
-            const sym = cell.querySelector('.cell-sym');
-            if (sym) {
-                sym.style.color = '';
-                sym.style.textShadow = '';
-            }
-        }
-        
-        // Add datasets for hover highlighting
         cell.dataset.category = normalizedCategory;
         cell.dataset.state = currentState;
-        cell.dataset.block = el.block || '';
+        cell.dataset.block = elData.block || '';
 
         const valSpan = cell.querySelector('.cell-value');
         if(valSpan) valSpan.innerText = valText;
     });
     window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
     
-    // Reapply locks if any
     clearLegendHighlighting();
-    if (currentView === 'main') {
+    if (isMain) {
         renderLegend();
     }
 }
@@ -903,8 +912,11 @@ function selectElement(z) {
         document.getElementById('elec-mass').innerText = el.atomicMass;
         document.getElementById('elec-symbol').innerText = el.symbol;
         document.getElementById('elec-name').innerText = el.name;
-        document.getElementById('elec-config').innerText = el.electronConfiguration;
-        document.getElementById('elec-config-noble').innerText = el.electronConfigurationNoble;
+        
+        document.getElementById('val-oxidation').innerText = el.oxidationStates || 'Unknown';
+        document.getElementById('val-config').innerText = el.electronConfigurationNoble || 'Unknown';
+        document.getElementById('val-config-exp').innerText = el.electronConfiguration || 'Unknown';
+        document.getElementById('val-energy-level').innerText = el.electronsPerShell ? el.electronsPerShell.length : '-';
         
         const normalizedCategory = getNormalizedCategory(el.category);
         const card = document.getElementById('elec-element-card');

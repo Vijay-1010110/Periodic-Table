@@ -1,6 +1,7 @@
 const elementsData = [
     {
         "atomicNumber": 1,
+        "oxidationStates": "-1, 1",
         "symbol": "H",
         "name": "Hydrogen",
         "atomicMass": 1.008,
@@ -70,6 +71,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 2,
+        "oxidationStates": "",
         "symbol": "He",
         "name": "Helium",
         "atomicMass": 4.0026022,
@@ -139,6 +141,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 3,
+        "oxidationStates": "1",
         "symbol": "Li",
         "name": "Lithium",
         "atomicMass": 6.94,
@@ -210,6 +213,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 4,
+        "oxidationStates": "2",
         "symbol": "Be",
         "name": "Beryllium",
         "atomicMass": 9.01218315,
@@ -282,6 +286,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 5,
+        "oxidationStates": "1, 2, 3",
         "symbol": "B",
         "name": "Boron",
         "atomicMass": 10.81,
@@ -355,6 +360,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 6,
+        "oxidationStates": "-4, -3, -2, -1, 1, 2, 3, 4",
         "symbol": "C",
         "name": "Carbon",
         "atomicMass": 12.011,
@@ -429,6 +435,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 7,
+        "oxidationStates": "-3, -2, -1, 1, 2, 3, 4, 5",
         "symbol": "N",
         "name": "Nitrogen",
         "atomicMass": 14.007,
@@ -504,6 +511,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 8,
+        "oxidationStates": "-2, -1, 1, 2",
         "symbol": "O",
         "name": "Oxygen",
         "atomicMass": 15.999,
@@ -580,6 +588,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 9,
+        "oxidationStates": "-1",
         "symbol": "F",
         "name": "Fluorine",
         "atomicMass": 18.9984031636,
@@ -657,6 +666,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 10,
+        "oxidationStates": "",
         "symbol": "Ne",
         "name": "Neon",
         "atomicMass": 20.17976,
@@ -735,6 +745,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 11,
+        "oxidationStates": "-1, 1",
         "symbol": "Na",
         "name": "Sodium",
         "atomicMass": 22.989769282,
@@ -815,6 +826,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 12,
+        "oxidationStates": "1, 2",
         "symbol": "Mg",
         "name": "Magnesium",
         "atomicMass": 24.305,
@@ -896,6 +908,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 13,
+        "oxidationStates": "1, 3",
         "symbol": "Al",
         "name": "Aluminium",
         "atomicMass": 26.98153857,
@@ -978,6 +991,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 14,
+        "oxidationStates": "-4, -3, -2, -1, 1, 2, 3, 4",
         "symbol": "Si",
         "name": "Silicon",
         "atomicMass": 28.085,
@@ -1061,6 +1075,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 15,
+        "oxidationStates": "-3, -2, -1, 1, 2, 3, 4, 5",
         "symbol": "P",
         "name": "Phosphorus",
         "atomicMass": 30.9737619985,
@@ -1145,6 +1160,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 16,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "S",
         "name": "Sulfur",
         "atomicMass": 32.06,
@@ -1230,6 +1246,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 17,
+        "oxidationStates": "-1, 1, 2, 3, 4, 5, 6, 7",
         "symbol": "Cl",
         "name": "Chlorine",
         "atomicMass": 35.45,
@@ -1317,6 +1334,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 18,
+        "oxidationStates": "",
         "symbol": "Ar",
         "name": "Argon",
         "atomicMass": 39.9481,
@@ -1405,6 +1423,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 19,
+        "oxidationStates": "1",
         "symbol": "K",
         "name": "Potassium",
         "atomicMass": 39.09831,
@@ -1494,6 +1513,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 20,
+        "oxidationStates": "2",
         "symbol": "Ca",
         "name": "Calcium",
         "atomicMass": 40.0784,
@@ -1584,6 +1604,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 21,
+        "oxidationStates": "1, 2, 3",
         "symbol": "Sc",
         "name": "Scandium",
         "atomicMass": 44.9559085,
@@ -1675,6 +1696,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 22,
+        "oxidationStates": "-1, 2, 3, 4",
         "symbol": "Ti",
         "name": "Titanium",
         "atomicMass": 47.8671,
@@ -1767,6 +1789,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 23,
+        "oxidationStates": "-1, 2, 3, 4",
         "symbol": "V",
         "name": "Vanadium",
         "atomicMass": 50.94151,
@@ -1860,6 +1883,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 24,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "Cr",
         "name": "Chromium",
         "atomicMass": 51.99616,
@@ -1954,6 +1978,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 25,
+        "oxidationStates": "-3, -2, -1, 1, 2, 3, 4, 5, 6, 7",
         "symbol": "Mn",
         "name": "Manganese",
         "atomicMass": 54.9380443,
@@ -2049,6 +2074,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 26,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "Fe",
         "name": "Iron",
         "atomicMass": 55.8452,
@@ -2145,6 +2171,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 27,
+        "oxidationStates": "-1, 1, 2, 3, 4, 5",
         "symbol": "Co",
         "name": "Cobalt",
         "atomicMass": 58.9331944,
@@ -2242,6 +2269,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 28,
+        "oxidationStates": "-1, 1, 2, 3, 4",
         "symbol": "Ni",
         "name": "Nickel",
         "atomicMass": 58.69344,
@@ -2340,6 +2368,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 29,
+        "oxidationStates": "1, 2, 3, 4",
         "symbol": "Cu",
         "name": "Copper",
         "atomicMass": 63.5463,
@@ -2439,6 +2468,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 30,
+        "oxidationStates": "2",
         "symbol": "Zn",
         "name": "Zinc",
         "atomicMass": 65.382,
@@ -2530,6 +2560,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 31,
+        "oxidationStates": "1, 2, 3",
         "symbol": "Ga",
         "name": "Gallium",
         "atomicMass": 69.7231,
@@ -2606,6 +2637,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 32,
+        "oxidationStates": "-4, 1, 2, 3, 4",
         "symbol": "Ge",
         "name": "Germanium",
         "atomicMass": 72.6308,
@@ -2681,6 +2713,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 33,
+        "oxidationStates": "-3, 2, 3, 5",
         "symbol": "As",
         "name": "Arsenic",
         "atomicMass": 74.9215956,
@@ -2757,6 +2790,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 34,
+        "oxidationStates": "-2, 2, 4, 6",
         "symbol": "Se",
         "name": "Selenium",
         "atomicMass": 78.9718,
@@ -2834,6 +2868,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 35,
+        "oxidationStates": "-1, 1, 3, 4, 5, 7",
         "symbol": "Br",
         "name": "Bromine",
         "atomicMass": 79.904,
@@ -2912,6 +2947,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 36,
+        "oxidationStates": "2",
         "symbol": "Kr",
         "name": "Krypton",
         "atomicMass": 83.7982,
@@ -3012,6 +3048,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 37,
+        "oxidationStates": "1",
         "symbol": "Rb",
         "name": "Rubidium",
         "atomicMass": 85.46783,
@@ -3094,6 +3131,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 38,
+        "oxidationStates": "2",
         "symbol": "Sr",
         "name": "Strontium",
         "atomicMass": 87.621,
@@ -3176,6 +3214,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 39,
+        "oxidationStates": "1, 2, 3",
         "symbol": "Y",
         "name": "Yttrium",
         "atomicMass": 88.905842,
@@ -3259,6 +3298,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 40,
+        "oxidationStates": "1, 2, 3, 4",
         "symbol": "Zr",
         "name": "Zirconium",
         "atomicMass": 91.2242,
@@ -3336,6 +3376,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 41,
+        "oxidationStates": "-1, 2, 3, 4, 5",
         "symbol": "Nb",
         "name": "Niobium",
         "atomicMass": 92.906372,
@@ -3414,6 +3455,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 42,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "Mo",
         "name": "Molybdenum",
         "atomicMass": 95.951,
@@ -3515,6 +3557,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 43,
+        "oxidationStates": "-3, -1, 1, 2, 3, 4, 5, 6, 7",
         "symbol": "Tc",
         "name": "Technetium",
         "atomicMass": 98,
@@ -3589,6 +3632,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 44,
+        "oxidationStates": "-2, 1, 2, 3, 4, 5, 6, 7, 8",
         "symbol": "Ru",
         "name": "Ruthenium",
         "atomicMass": 101.072,
@@ -3663,6 +3707,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 45,
+        "oxidationStates": "-1, 1, 2, 3, 4, 5, 6",
         "symbol": "Rh",
         "name": "Rhodium",
         "atomicMass": 102.905502,
@@ -3737,6 +3782,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 46,
+        "oxidationStates": "2, 4",
         "symbol": "Pd",
         "name": "Palladium",
         "atomicMass": 106.421,
@@ -3810,6 +3856,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 47,
+        "oxidationStates": "1, 2, 3",
         "symbol": "Ag",
         "name": "Silver",
         "atomicMass": 107.86822,
@@ -3884,6 +3931,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 48,
+        "oxidationStates": "2",
         "symbol": "Cd",
         "name": "Cadmium",
         "atomicMass": 112.4144,
@@ -3958,6 +4006,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 49,
+        "oxidationStates": "1, 2, 3",
         "symbol": "In",
         "name": "Indium",
         "atomicMass": 114.8181,
@@ -4033,6 +4082,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 50,
+        "oxidationStates": "-4, 2, 4",
         "symbol": "Sn",
         "name": "Tin",
         "atomicMass": 118.7107,
@@ -4109,6 +4159,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 51,
+        "oxidationStates": "-3, 3, 5",
         "symbol": "Sb",
         "name": "Antimony",
         "atomicMass": 121.7601,
@@ -4186,6 +4237,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 52,
+        "oxidationStates": "-2, 2, 4, 5, 6",
         "symbol": "Te",
         "name": "Tellurium",
         "atomicMass": 127.603,
@@ -4264,6 +4316,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 53,
+        "oxidationStates": "-1, 1, 3, 5, 7",
         "symbol": "I",
         "name": "Iodine",
         "atomicMass": 126.904473,
@@ -4338,6 +4391,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 54,
+        "oxidationStates": "2, 4, 6, 8",
         "symbol": "Xe",
         "name": "Xenon",
         "atomicMass": 131.2936,
@@ -4412,6 +4466,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 55,
+        "oxidationStates": "1",
         "symbol": "Cs",
         "name": "Cesium",
         "atomicMass": 132.905451966,
@@ -4487,6 +4542,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 56,
+        "oxidationStates": "2",
         "symbol": "Ba",
         "name": "Barium",
         "atomicMass": 137.3277,
@@ -4562,6 +4618,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 57,
+        "oxidationStates": "2, 3",
         "symbol": "La",
         "name": "Lanthanum",
         "atomicMass": 138.905477,
@@ -4639,6 +4696,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 58,
+        "oxidationStates": "2, 3, 4",
         "symbol": "Ce",
         "name": "Cerium",
         "atomicMass": 140.1161,
@@ -4717,6 +4775,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 59,
+        "oxidationStates": "2, 3, 4",
         "symbol": "Pr",
         "name": "Praseodymium",
         "atomicMass": 140.907662,
@@ -4794,6 +4853,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 60,
+        "oxidationStates": "2, 3",
         "symbol": "Nd",
         "name": "Neodymium",
         "atomicMass": 144.2423,
@@ -4870,6 +4930,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 61,
+        "oxidationStates": "3",
         "symbol": "Pm",
         "name": "Promethium",
         "atomicMass": 145,
@@ -4946,6 +5007,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 62,
+        "oxidationStates": "2, 3",
         "symbol": "Sm",
         "name": "Samarium",
         "atomicMass": 150.362,
@@ -5022,6 +5084,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 63,
+        "oxidationStates": "2, 3",
         "symbol": "Eu",
         "name": "Europium",
         "atomicMass": 151.9641,
@@ -5098,6 +5161,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 64,
+        "oxidationStates": "1, 2, 3",
         "symbol": "Gd",
         "name": "Gadolinium",
         "atomicMass": 157.253,
@@ -5174,6 +5238,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 65,
+        "oxidationStates": "1, 3, 4",
         "symbol": "Tb",
         "name": "Terbium",
         "atomicMass": 158.925352,
@@ -5250,6 +5315,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 66,
+        "oxidationStates": "2, 3",
         "symbol": "Dy",
         "name": "Dysprosium",
         "atomicMass": 162.5001,
@@ -5326,6 +5392,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 67,
+        "oxidationStates": "3",
         "symbol": "Ho",
         "name": "Holmium",
         "atomicMass": 164.930332,
@@ -5402,6 +5469,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 68,
+        "oxidationStates": "3",
         "symbol": "Er",
         "name": "Erbium",
         "atomicMass": 167.2593,
@@ -5478,6 +5546,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 69,
+        "oxidationStates": "2, 3",
         "symbol": "Tm",
         "name": "Thulium",
         "atomicMass": 168.934222,
@@ -5554,6 +5623,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 70,
+        "oxidationStates": "2, 3",
         "symbol": "Yb",
         "name": "Ytterbium",
         "atomicMass": 173.0451,
@@ -5630,6 +5700,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 71,
+        "oxidationStates": "3",
         "symbol": "Lu",
         "name": "Lutetium",
         "atomicMass": 174.96681,
@@ -5707,6 +5778,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 72,
+        "oxidationStates": "2, 3, 4",
         "symbol": "Hf",
         "name": "Hafnium",
         "atomicMass": 178.492,
@@ -5783,6 +5855,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 73,
+        "oxidationStates": "-1, 2, 3, 4, 5",
         "symbol": "Ta",
         "name": "Tantalum",
         "atomicMass": 180.947882,
@@ -5857,6 +5930,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 74,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "W",
         "name": "Tungsten",
         "atomicMass": 183.841,
@@ -5931,6 +6005,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 75,
+        "oxidationStates": "-3, -1, 1, 2, 3, 4, 5, 6, 7",
         "symbol": "Re",
         "name": "Rhenium",
         "atomicMass": 186.2071,
@@ -6007,6 +6082,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 76,
+        "oxidationStates": "-2, -1, 1, 2, 3, 4, 5, 6, 7, 8",
         "symbol": "Os",
         "name": "Osmium",
         "atomicMass": 190.233,
@@ -6082,6 +6158,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 77,
+        "oxidationStates": "-3, -1, 1, 2, 3, 4, 5, 6",
         "symbol": "Ir",
         "name": "Iridium",
         "atomicMass": 192.2173,
@@ -6157,6 +6234,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 78,
+        "oxidationStates": "2, 4, 5, 6",
         "symbol": "Pt",
         "name": "Platinum",
         "atomicMass": 195.0849,
@@ -6231,6 +6309,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 79,
+        "oxidationStates": "-1, 1, 2, 3, 5",
         "symbol": "Au",
         "name": "Gold",
         "atomicMass": 196.9665695,
@@ -6305,6 +6384,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 80,
+        "oxidationStates": "1, 2, 4",
         "symbol": "Hg",
         "name": "Mercury",
         "atomicMass": 200.5923,
@@ -6380,6 +6460,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 81,
+        "oxidationStates": "1, 3",
         "symbol": "Tl",
         "name": "Thallium",
         "atomicMass": 204.38,
@@ -6455,6 +6536,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 82,
+        "oxidationStates": "-4, 2, 4",
         "symbol": "Pb",
         "name": "Lead",
         "atomicMass": 207.21,
@@ -6532,6 +6614,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 83,
+        "oxidationStates": "-3, 3, 5",
         "symbol": "Bi",
         "name": "Bismuth",
         "atomicMass": 208.980401,
@@ -6610,6 +6693,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 84,
+        "oxidationStates": "-2, 2, 4, 6",
         "symbol": "Po",
         "name": "Polonium",
         "atomicMass": 209,
@@ -6683,6 +6767,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 85,
+        "oxidationStates": "-1, 1, 3, 5",
         "symbol": "At",
         "name": "Astatine",
         "atomicMass": 210,
@@ -6757,6 +6842,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 86,
+        "oxidationStates": "2",
         "symbol": "Rn",
         "name": "Radon",
         "atomicMass": 222,
@@ -6831,6 +6917,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 87,
+        "oxidationStates": "1",
         "symbol": "Fr",
         "name": "Francium",
         "atomicMass": 223,
@@ -6906,6 +6993,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 88,
+        "oxidationStates": "2",
         "symbol": "Ra",
         "name": "Radium",
         "atomicMass": 226,
@@ -6981,6 +7069,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 89,
+        "oxidationStates": "3",
         "symbol": "Ac",
         "name": "Actinium",
         "atomicMass": 227,
@@ -7056,6 +7145,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 90,
+        "oxidationStates": "2, 3, 4",
         "symbol": "Th",
         "name": "Thorium",
         "atomicMass": 232.03774,
@@ -7133,6 +7223,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 91,
+        "oxidationStates": "3, 4, 5",
         "symbol": "Pa",
         "name": "Protactinium",
         "atomicMass": 231.035882,
@@ -7207,6 +7298,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 92,
+        "oxidationStates": "3, 4, 5, 6",
         "symbol": "U",
         "name": "Uranium",
         "atomicMass": 238.028913,
@@ -7282,6 +7374,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 93,
+        "oxidationStates": "3, 4, 5, 6, 7",
         "symbol": "Np",
         "name": "Neptunium",
         "atomicMass": 237,
@@ -7356,6 +7449,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 94,
+        "oxidationStates": "3, 4, 5, 6, 7",
         "symbol": "Pu",
         "name": "Plutonium",
         "atomicMass": 244,
@@ -7430,6 +7524,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 95,
+        "oxidationStates": "2, 3, 4, 5, 6",
         "symbol": "Am",
         "name": "Americium",
         "atomicMass": 243,
@@ -7505,6 +7600,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 96,
+        "oxidationStates": "3, 4",
         "symbol": "Cm",
         "name": "Curium",
         "atomicMass": 247,
@@ -7580,6 +7676,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 97,
+        "oxidationStates": "3, 4",
         "symbol": "Bk",
         "name": "Berkelium",
         "atomicMass": 247,
@@ -7654,6 +7751,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 98,
+        "oxidationStates": "2, 3, 4",
         "symbol": "Cf",
         "name": "Californium",
         "atomicMass": 251,
@@ -7728,6 +7826,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 99,
+        "oxidationStates": "2, 3",
         "symbol": "Es",
         "name": "Einsteinium",
         "atomicMass": 252,
@@ -7802,6 +7901,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 100,
+        "oxidationStates": "2, 3",
         "symbol": "Fm",
         "name": "Fermium",
         "atomicMass": 257,
@@ -7876,6 +7976,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 101,
+        "oxidationStates": "2, 3",
         "symbol": "Md",
         "name": "Mendelevium",
         "atomicMass": 258,
@@ -7950,6 +8051,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 102,
+        "oxidationStates": "2, 3",
         "symbol": "No",
         "name": "Nobelium",
         "atomicMass": 259,
@@ -8024,6 +8126,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 103,
+        "oxidationStates": "3",
         "symbol": "Lr",
         "name": "Lawrencium",
         "atomicMass": 266,
@@ -8098,6 +8201,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 104,
+        "oxidationStates": "4",
         "symbol": "Rf",
         "name": "Rutherfordium",
         "atomicMass": 267,
@@ -8173,6 +8277,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 105,
+        "oxidationStates": "",
         "symbol": "Db",
         "name": "Dubnium",
         "atomicMass": 268,
@@ -8245,6 +8350,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 106,
+        "oxidationStates": "",
         "symbol": "Sg",
         "name": "Seaborgium",
         "atomicMass": 269,
@@ -8318,6 +8424,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 107,
+        "oxidationStates": "",
         "symbol": "Bh",
         "name": "Bohrium",
         "atomicMass": 270,
@@ -8390,6 +8497,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 108,
+        "oxidationStates": "",
         "symbol": "Hs",
         "name": "Hassium",
         "atomicMass": 269,
@@ -8463,6 +8571,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 109,
+        "oxidationStates": "",
         "symbol": "Mt",
         "name": "Meitnerium",
         "atomicMass": 278,
@@ -8536,6 +8645,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 110,
+        "oxidationStates": "",
         "symbol": "Ds",
         "name": "Darmstadtium",
         "atomicMass": 281,
@@ -8608,6 +8718,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 111,
+        "oxidationStates": "",
         "symbol": "Rg",
         "name": "Roentgenium",
         "atomicMass": 282,
@@ -8681,6 +8792,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 112,
+        "oxidationStates": "",
         "symbol": "Cn",
         "name": "Copernicium",
         "atomicMass": 285,
@@ -8754,6 +8866,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 113,
+        "oxidationStates": "",
         "symbol": "Nh",
         "name": "Nihonium",
         "atomicMass": 286,
@@ -8826,6 +8939,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 114,
+        "oxidationStates": "",
         "symbol": "Fl",
         "name": "Flerovium",
         "atomicMass": 289,
@@ -8898,6 +9012,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 115,
+        "oxidationStates": "",
         "symbol": "Mc",
         "name": "Moscovium",
         "atomicMass": 289,
@@ -8970,6 +9085,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 116,
+        "oxidationStates": "",
         "symbol": "Lv",
         "name": "Livermorium",
         "atomicMass": 293,
@@ -9042,6 +9158,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 117,
+        "oxidationStates": "",
         "symbol": "Ts",
         "name": "Tennessine",
         "atomicMass": 294,
@@ -9114,6 +9231,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 118,
+        "oxidationStates": "",
         "symbol": "Og",
         "name": "Oganesson",
         "atomicMass": 294,
@@ -9186,6 +9304,7 @@ const elementsData = [
     },
     {
         "atomicNumber": 119,
+        "oxidationStates": "",
         "symbol": "Uue",
         "name": "Ununennium",
         "atomicMass": 315,

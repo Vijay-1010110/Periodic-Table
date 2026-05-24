@@ -184,10 +184,23 @@
                         </div>
                     </div>
                     
-                    <div class="config-text-container mt-2">
-                        <h4>Configuration</h4>
-                        <div class="mono-text" id="elec-config"></div>
-                        <div class="mono-text mt-1" id="elec-config-noble"></div>
+                    <div class="prop-list" id="elec-prop-list">
+                        <div class="prop-item elec-prop-item active" data-prop="oxidation">
+                            <span class="prop-label">Oxidation States</span>
+                            <span class="prop-value mono-text" id="val-oxidation">-</span>
+                        </div>
+                        <div class="prop-item elec-prop-item" data-prop="configuration">
+                            <span class="prop-label">Configuration</span>
+                            <span class="prop-value mono-text" id="val-config">-</span>
+                        </div>
+                        <div class="prop-item elec-prop-item" data-prop="expanded" style="min-height: 46px; align-items: center;">
+                            <span class="prop-label">Expanded</span>
+                            <span class="prop-value mono-text" style="font-size: 0.65em; max-width: 150px; word-break: break-word; line-height: 1.2; text-align: right; display: block;" id="val-config-exp">-</span>
+                        </div>
+                        <div class="prop-item elec-prop-item" data-prop="energyLevel">
+                            <span class="prop-label">Energy Level (Shells)</span>
+                            <span class="prop-value mono-text" id="val-energy-level">-</span>
+                        </div>
                     </div>
 
                     <div class="orbital-viewer">
