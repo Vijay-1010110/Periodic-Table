@@ -10617,6 +10617,7 @@ function setupUI() {
         if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital();
     });
     document.getElementById('orbital-ml').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
+    document.getElementById('slice-orbital').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
     
     // Initialize display values
     updateTempDisplay();
@@ -11792,11 +11793,18 @@ window.OrbitalViewer = {
         if (window.THREE && THREE.OrbitControls) {
             this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
             this.controls.enableDamping = true;
-            this.controls.enablePan = false;
+            this.controls.dampingFactor = 0.05;
+            this.controls.autoRotate = true;
+            this.controls.autoRotateSpeed = 2.0;
         }
 
-        // Initialize slicing plane (cuts away Z > 0 half)
-        this.slicePlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.1);
+        // Slicing planes for quadrant cutout (removes x>0 AND z>0)
+        this.slicePlane1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
+        this.slicePlane2 = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
+        
+        // Initial draw
+        this.drawOrbital();
+        this.animate();
 
         window.addEventListener('resize', () => this.resize());
 
@@ -11805,7 +11813,6 @@ window.OrbitalViewer = {
         if (sliceToggle) {
             sliceToggle.addEventListener('change', () => this.drawOrbital());
         }
-
         this.animate();
         this.drawOrbital();
     },
@@ -11857,9 +11864,21 @@ window.OrbitalViewer = {
         const colorGreen = 0x22c55e;
         const opacityVal = doSlice ? 0.9 : 0.8;
         
-        const clippingPlanes = doSlice ? [this.slicePlane] : [];
+        const clippingPlanes = doSlice ? [this.slicePlane1, this.slicePlane2] : [];
 
         const layers = Math.max(1, n - l);
+        
+        const sliceLabel = document.getElementById('slice-orbital').parentElement;
+        if (layers <= 1) {
+            sliceLabel.style.display = 'none';
+            if (doSlice) {
+                document.getElementById('slice-orbital').checked = false;
+                clippingPlanes.length = 0;
+            }
+        } else {
+            sliceLabel.style.display = 'flex';
+        }
+
         const maxRadius = this.currentElementRadius / 100.0;
 
         // Custom function to create a mathematically accurate, "fat" solid mesh for any orbital
@@ -11923,6 +11942,150 @@ window.OrbitalViewer = {
             return geom;
         };
 
+        const capVertexShader = `
+            varying vec3 vPosition;
+            void main() {
+                vPosition = position;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        const capFragmentShader = `
+            varying vec3 vPosition;
+            uniform int lType;
+            uniform int mType;
+            uniform vec3 colorPos;
+            uniform vec3 colorNeg;
+            uniform float maxRadius;
+            uniform float rOuter[6];
+            uniform float rInner[6];
+            uniform int numLayers;
+            uniform bool isAllView;
+            uniform int sliceAxis; // 0 for Z-cap, 1 for X-cap
+
+            void main() {
+                float x_orb, y_orb, z_orb;
+                
+                if (sliceAxis == 0) {
+                    if (vPosition.x <= 0.0) discard;
+                    x_orb = vPosition.x;
+                    y_orb = vPosition.y;
+                    z_orb = 0.0;
+                } else {
+                    if (vPosition.x >= 0.0) discard;
+                    x_orb = 0.0;
+                    y_orb = vPosition.y;
+                    z_orb = -vPosition.x;
+                }
+                
+                float r = sqrt(x_orb*x_orb + y_orb*y_orb + z_orb*z_orb);
+                if (r > maxRadius || r < 0.0001) discard;
+                
+                float nx = x_orb / r;
+                float ny = y_orb / r;
+                float nz = z_orb / r;
+                
+                float Y = 0.0;
+                if (lType == 0) {
+                    Y = 1.0;
+                } else if (lType == 1) {
+                    if (mType == 0) Y = ny;
+                    else if (mType == 1) Y = nx;
+                    else if (mType == -1) Y = nz;
+                } else if (lType == 2) {
+                    if (mType == 0) Y = (3.0 * ny * ny - 1.0) / 2.0;
+                    else if (mType == 1) Y = sqrt(3.0) * nx * ny;
+                    else if (mType == -1) Y = sqrt(3.0) * nz * ny;
+                    else if (mType == 2) Y = sqrt(3.0) / 2.0 * (x_orb * x_orb - nz * nz);
+                    else if (mType == -2) Y = sqrt(3.0) * nx * nz;
+                } else if (lType == 3) {
+                    if (mType == 0) Y = 0.5 * ny * (5.0 * ny * ny - 3.0);
+                    else if (mType == 1) Y = sqrt(6.0)/4.0 * nx * (5.0 * ny * ny - 1.0);
+                    else if (mType == -1) Y = sqrt(6.0)/4.0 * nz * (5.0 * ny * ny - 1.0);
+                    else if (mType == 2) Y = sqrt(15.0)/2.0 * ny * (nx * nx - nz * nz);
+                    else if (mType == -2) Y = sqrt(15.0) * nx * ny * nz;
+                    else if (mType == 3) Y = sqrt(10.0)/4.0 * nx * (x_orb * x_orb - 3.0 * nz * nz);
+                    else if (mType == -3) Y = sqrt(10.0)/4.0 * nz * (3.0 * x_orb * x_orb - nz * nz);
+                }
+                
+                float absY = abs(Y);
+                float scale = lType == 0 ? 1.0 : pow(absY, 0.35);
+                if (scale < 0.001) discard;
+                
+                float localR = r / maxRadius;
+                float expectedR = scale;
+                float normalizedR = localR / expectedR;
+                
+                bool insideSolid = false;
+                int layerIdx = 0;
+                for (int i=0; i<6; i++) {
+                    if (i >= numLayers) break;
+                    if (normalizedR <= rOuter[i] && normalizedR >= rInner[i]) {
+                        insideSolid = true;
+                        layerIdx = i;
+                        break;
+                    }
+                }
+                
+                if (!insideSolid) discard;
+                
+                vec3 cP = colorPos;
+                vec3 cN = colorNeg;
+                if (layerIdx == 1 || layerIdx == 3 || layerIdx == 5) {
+                    cP = colorNeg;
+                    cN = colorPos;
+                }
+                
+                vec3 baseColor = cP;
+                if (!isAllView) {
+                    if (Y < 0.0) baseColor = cN;
+                }
+                
+                gl_FragColor = vec4(baseColor * 0.75, 1.0);
+            }
+        `;
+
+        const R_outer = [];
+        const R_inner = [];
+        for (let i = 0; i < layers; i++) {
+            const outScale = Math.pow((layers - i) / layers, 2.0);
+            R_outer.push(outScale);
+            if (i < layers - 1) {
+                const nextOutScale = Math.pow((layers - (i + 1)) / layers, 2.0);
+                const gap = 0.06;
+                const inScale = Math.min(outScale - 0.01, nextOutScale + gap);
+                R_inner.push(inScale);
+            } else {
+                R_inner.push(0.0);
+            }
+        }
+
+        const createCapMaterial = (lType, mType, colorPosHex, colorNegHex, isAllView, axisIdx) => {
+            const paddedOuter = [...R_outer];
+            while(paddedOuter.length < 6) paddedOuter.push(0);
+            const paddedInner = [...R_inner];
+            while(paddedInner.length < 6) paddedInner.push(0);
+
+            return new THREE.ShaderMaterial({
+                vertexShader: capVertexShader,
+                fragmentShader: capFragmentShader,
+                uniforms: {
+                    lType: { value: lType },
+                    mType: { value: mType },
+                    colorPos: { value: new THREE.Color(colorPosHex) },
+                    colorNeg: { value: new THREE.Color(colorNegHex) },
+                    maxRadius: { value: maxRadius },
+                    rOuter: { value: paddedOuter },
+                    rInner: { value: paddedInner },
+                    numLayers: { value: layers },
+                    isAllView: { value: isAllView },
+                    sliceAxis: { value: axisIdx }
+                },
+                side: THREE.DoubleSide,
+                transparent: true
+            });
+        };
+
         const generateShell = (lType, mlType, scaleFactor, primaryColorHex, secondaryColorHex, isAllView) => {
             const material = new THREE.MeshPhongMaterial({ 
                 vertexColors: true,
@@ -11930,7 +12093,8 @@ window.OrbitalViewer = {
                 opacity: opacityVal, 
                 wireframe: false,
                 side: THREE.DoubleSide,
-                clippingPlanes: clippingPlanes
+                clippingPlanes: clippingPlanes,
+                clipIntersection: true
             });
 
             const geometry = createOrbitalGeometry(lType, mlType, maxRadius * scaleFactor, primaryColorHex, secondaryColorHex, isAllView);
@@ -11940,11 +12104,33 @@ window.OrbitalViewer = {
         const renderSingleOrientation = (mlTarget, primaryColor, isAllView) => {
             const group = new THREE.Group();
             for (let i = 0; i < layers; i++) {
-                const layerScale = 1.0 - (i * (0.8 / layers));
+                const outScale = R_outer[i];
+                const inScale = R_inner[i];
                 const c1 = (i % 2 === 0) ? primaryColor : colorRed;
                 const c2 = (i % 2 === 0) ? colorRed : primaryColor;
-                group.add(generateShell(l, mlTarget, layerScale, c1, c2, isAllView));
+                
+                group.add(generateShell(l, mlTarget, outScale, c1, c2, isAllView));
+                
+                if (inScale > 0) {
+                    group.add(generateShell(l, mlTarget, inScale, c1, c2, isAllView));
+                }
             }
+            
+            if (doSlice) {
+                const capGeo = new THREE.PlaneGeometry(maxRadius * 2.5, maxRadius * 2.5);
+                
+                const capMatZ = createCapMaterial(l, mlTarget, primaryColor, colorRed, isAllView, 0);
+                const capMeshZ = new THREE.Mesh(capGeo, capMatZ);
+                capMeshZ.position.z = -0.001 - ((mlTarget + l) * 0.0005);
+                group.add(capMeshZ);
+                
+                const capMatX = createCapMaterial(l, mlTarget, primaryColor, colorRed, isAllView, 1);
+                const capMeshX = new THREE.Mesh(capGeo, capMatX);
+                capMeshX.rotation.y = Math.PI / 2;
+                capMeshX.position.x = -0.001 - ((mlTarget + l) * 0.0005);
+                group.add(capMeshX);
+            }
+            
             return group;
         };
 
@@ -12002,11 +12188,6 @@ window.OrbitalViewer = {
 
     animate: function() {
         this.animationId = requestAnimationFrame(this.animate.bind(this));
-        
-        if (this.currentOrbitalGroup) {
-            this.currentOrbitalGroup.rotation.y += 0.005;
-            this.currentOrbitalGroup.rotation.x += 0.002;
-        }
         
         if (this.controls) this.controls.update();
         if (this.renderer) this.renderer.render(this.scene, this.camera);

@@ -336,6 +336,7 @@ function setupUI() {
         if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital();
     });
     document.getElementById('orbital-ml').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
+    document.getElementById('slice-orbital').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
     
     // Initialize display values
     updateTempDisplay();
