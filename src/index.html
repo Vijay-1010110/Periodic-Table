@@ -69,12 +69,12 @@
                 <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 120px;">
                     <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
                     <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between;">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
                             <span id="dh-number"></span>
                             <span id="dh-mass"></span>
                         </div>
-                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
-                        <div class="ec-name" id="dh-name"></div>
+                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
+                        <div class="ec-name" id="dh-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
                     </div>
                 </div>
 
@@ -170,15 +170,17 @@
                 <div id="elec-empty-state" class="empty-state">Select an element</div>
                 
                 <div id="elec-details" class="hidden">
-                    <div id="elec-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px;">
-                        <div id="bohr-reference" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; display: flex; align-items: center; justify-content: center;">
+                    <div id="elec-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 120px; margin-bottom: 20px;">
+                        <div id="bohr-reference" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
                             <!-- Animated SVG Bohr model goes here -->
                         </div>
-                        <div style="position: relative; z-index: 1; width: 100%; height: 200px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; pointer-events: none;">
-                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: flex-start; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                                <span id="elec-number" style="font-size: 1.2rem;"></span>
+                        <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
+                                <span id="elec-number"></span>
+                                <span id="elec-mass"></span>
                             </div>
-                            <div class="ec-name" id="elec-name" style="text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-size: 1.1rem; padding-bottom: 5px;"></div>
+                            <div class="ec-symbol mono-text" id="elec-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
+                            <div class="ec-name" id="elec-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
                         </div>
                     </div>
                     

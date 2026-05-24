@@ -204,6 +204,15 @@ function setupUI() {
         timelineSlider.addEventListener('input', (e) => handleTimelineChange(e.target.value));
         timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value));
     }
+    
+    // Orbital Controls
+    document.getElementById('orbital-n').addEventListener('change', drawOrbital);
+    document.getElementById('orbital-l').addEventListener('change', () => {
+        updateMlOptions();
+        drawOrbital();
+    });
+    document.getElementById('orbital-ml').addEventListener('change', drawOrbital);
+    
     // Initialize display values
     updateTempDisplay();
     updateTimelineDisplay();
@@ -891,6 +900,8 @@ function selectElement(z) {
         document.getElementById('elec-details').classList.remove('hidden');
         
         document.getElementById('elec-number').innerText = el.atomicNumber;
+        document.getElementById('elec-mass').innerText = el.atomicMass;
+        document.getElementById('elec-symbol').innerText = el.symbol;
         document.getElementById('elec-name').innerText = el.name;
         document.getElementById('elec-config').innerText = el.electronConfiguration;
         document.getElementById('elec-config-noble').innerText = el.electronConfigurationNoble;
@@ -900,6 +911,17 @@ function selectElement(z) {
         if (card) {
             card.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
             card.style.borderColor = categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)';
+        }
+        
+        const symEl = document.getElementById('elec-symbol');
+        if (symEl) {
+            let currentState = 'Unknown';
+            if (el.meltingPoint && el.boilingPoint) {
+                if (currentTemp < el.meltingPoint) currentState = 'Solid';
+                else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
+                else currentState = 'Gas';
+            }
+            symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
         }
         
         renderAufbauDiagram(el.electronConfiguration);
@@ -1204,4 +1226,130 @@ function drawLargeBohrModel(el) {
 window.addEventListener('DOMContentLoaded', () => {
     setupUI();
     renderGrid(); // Initial render for main view
+    
+    // Check if three-canvas-container exists and initialize
+    if (document.getElementById('three-canvas-container')) {
+        initThreeJS();
+        drawOrbital(); // Initial orbital draw
+    }
 });
+
+function generateMiniBohrSVG(shells) {
+    if (!shells || shells.length === 0) return '';
+    let svg = `<svg viewBox="0 0 100 100" width="100%" height="100%">`;
+    svg += `<circle cx="50" cy="50" r="6" fill="var(--accent-amber)" />`;
+    const step = 40 / Math.max(1, shells.length);
+    for (let i = 0; i < shells.length; i++) {
+        const r = 10 + i * step;
+        svg += `<circle cx="50" cy="50" r="${r}" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none" />`;
+    }
+    svg += `</svg>`;
+    return svg;
+}
+
+// Three.js Orbital Viewer Placeholder
+let scene, camera, renderer, currentOrbitalGroup;
+function initThreeJS() {
+    const container = document.getElementById('three-canvas-container');
+    if (!container) return;
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color('#0a0e1a');
+    
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.z = 8;
+    camera.position.y = 2;
+    camera.lookAt(0,0,0);
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+    
+    const light = new THREE.PointLight(0xffffff, 1.2, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+    
+    // Axes helper
+    const axesHelper = new THREE.AxesHelper(3);
+    scene.add(axesHelper);
+
+    window.addEventListener('resize', () => {
+        if(container.clientWidth > 0) {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+    });
+    
+    animate();
+}
+
+function drawOrbital() {
+    if (!scene) return;
+    if (currentOrbitalGroup) scene.remove(currentOrbitalGroup);
+    
+    currentOrbitalGroup = new THREE.Group();
+    
+    const n = parseInt(document.getElementById('orbital-n').value);
+    const l = parseInt(document.getElementById('orbital-l').value);
+    const ml = parseInt(document.getElementById('orbital-ml').value || 0);
+
+    const materialPos = new THREE.MeshPhongMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.6, wireframe: false });
+    const materialNeg = new THREE.MeshPhongMaterial({ color: 0xef4444, transparent: true, opacity: 0.6, wireframe: false });
+
+    // Base scale on n
+    const scale = 1 + (n * 0.2);
+
+    if (l === 0) {
+        // s-orbital: sphere
+        const geometry = new THREE.SphereGeometry(1.5 * scale, 32, 32);
+        const mesh = new THREE.Mesh(geometry, materialPos);
+        currentOrbitalGroup.add(mesh);
+    } 
+    else if (l === 1) {
+        // p-orbital: 2 lobes
+        const lobeGeom = new THREE.SphereGeometry(1 * scale, 32, 32);
+        lobeGeom.scale(1, 1.5, 1);
+        
+        const lobe1 = new THREE.Mesh(lobeGeom, materialPos);
+        const lobe2 = new THREE.Mesh(lobeGeom, materialNeg);
+        
+        lobe1.position.y = 1.2 * scale;
+        lobe2.position.y = -1.2 * scale;
+
+        // Orient based on ml
+        if (ml === 0) {
+            // pz
+            lobe1.rotation.x = Math.PI / 2;
+            lobe2.rotation.x = Math.PI / 2;
+            lobe1.position.set(0, 0, 1.2 * scale);
+            lobe2.position.set(0, 0, -1.2 * scale);
+        } else if (ml === 1) {
+            // px
+            lobe1.rotation.z = Math.PI / 2;
+            lobe2.rotation.z = Math.PI / 2;
+            lobe1.position.set(1.2 * scale, 0, 0);
+            lobe2.position.set(-1.2 * scale, 0, 0);
+        }
+
+        currentOrbitalGroup.add(lobe1);
+        currentOrbitalGroup.add(lobe2);
+    }
+    else {
+        // Placeholder for d/f
+        const geometry = new THREE.TorusKnotGeometry(1 * scale, 0.3, 100, 16);
+        const mesh = new THREE.Mesh(geometry, materialPos);
+        currentOrbitalGroup.add(mesh);
+    }
+    
+    scene.add(currentOrbitalGroup);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (currentOrbitalGroup) {
+        currentOrbitalGroup.rotation.y += 0.005;
+        currentOrbitalGroup.rotation.x += 0.002;
+    }
+    renderer.render(scene, camera);
+}

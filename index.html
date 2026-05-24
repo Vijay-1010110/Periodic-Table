@@ -697,12 +697,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                 <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 120px;">
                     <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
                     <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; color: rgba(255,255,255,0.9);">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
                             <span id="dh-number"></span>
                             <span id="dh-mass"></span>
                         </div>
-                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
-                        <div class="ec-name" id="dh-name" style="color: rgba(255,255,255,0.9);"></div>
+                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
+                        <div class="ec-name" id="dh-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
                     </div>
                 </div>
 
@@ -803,12 +803,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                             <!-- Animated SVG Bohr model goes here -->
                         </div>
                         <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; color: rgba(255,255,255,0.9);">
+                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
                                 <span id="elec-number"></span>
                                 <span id="elec-mass"></span>
                             </div>
-                            <div class="ec-symbol mono-text" id="elec-sym" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);"></div>
-                            <div class="ec-name" id="elec-name" style="color: rgba(255,255,255,0.9);"></div>
+                            <div class="ec-symbol mono-text" id="elec-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
+                            <div class="ec-name" id="elec-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
                         </div>
                     </div>
                     
@@ -10158,20 +10158,36 @@ let lockedLegendType = null;
 let lockedLegendGroup = null;
 let currentTimelineYear = 2025;
 
-function applyLegendHighlighting(key, type, keys = null) {
-    const grid = document.getElementById('main-grid');
+function applyLegendHighlighting(key, type, groupKeys = null) {
+    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const grid = document.querySelector(gridId);
     if (!grid) return;
+
+    if (!key && !groupKeys) {
+        grid.classList.remove('highlighting-active');
+        document.querySelectorAll(`${gridId} .element-cell`).forEach(c => c.classList.remove('highlighted'));
+        return;
+    }
+
     grid.classList.add('highlighting-active');
-    
-    document.querySelectorAll('#main-grid .element-cell').forEach(cell => {
-        if (keys) {
-            if (keys.includes(cell.dataset.category)) cell.classList.add('highlighted');
-            else cell.classList.remove('highlighted');
-        } else {
-            const elProp = type === 'state' ? cell.dataset.state : cell.dataset.category;
-            if (elProp === key) cell.classList.add('highlighted');
-            else cell.classList.remove('highlighted');
+    document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
+        let match = false;
+        if (groupKeys) {
+            match = groupKeys.includes(cell.dataset.category);
+        } else if (type === 'category') {
+            match = cell.dataset.category === key;
+        } else if (type === 'state') {
+            match = cell.dataset.state === key;
+        } else if (type === 'block') {
+            match = cell.dataset.block === key;
+        } else if (type === 'subshell') {
+            const z = parseInt(cell.dataset.z);
+            const el = getElementByNumber(z);
+            match = el && el.electronConfiguration && el.electronConfiguration.includes(key);
         }
+        
+        if (match) cell.classList.add('highlighted');
+        else cell.classList.remove('highlighted');
     });
 }
 
@@ -10180,10 +10196,11 @@ function clearLegendHighlighting() {
         applyLegendHighlighting(lockedLegendKey, lockedLegendType, lockedLegendGroup ? categoryGroups[lockedLegendGroup] : null);
         return;
     }
-    const grid = document.getElementById('main-grid');
+    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const grid = document.querySelector(gridId);
     if (!grid) return;
     grid.classList.remove('highlighting-active');
-    document.querySelectorAll('#main-grid .element-cell').forEach(cell => {
+    document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
         cell.classList.remove('highlighted');
     });
 }
@@ -10255,6 +10272,9 @@ function setupUI() {
             document.getElementById('view-' + viewId).classList.add('active');
             
             renderGrid();
+            if (selectedElement) {
+                selectElement(selectedElement.atomicNumber);
+            }
         });
     });
     
@@ -10303,15 +10323,19 @@ function setupUI() {
     tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value));
     tempInput.addEventListener('input', (e) => handleTempChange(e.target.value));
 
-    // Timeline slider
-    const timelineSlider = document.getElementById('timeline-slider');
-    if (timelineSlider) {
-        timelineSlider.addEventListener('input', (e) => {
-            currentTimelineYear = parseInt(e.target.value);
-            document.getElementById('timeline-display').innerText = currentTimelineYear;
-            if (currentProperty === 'discoveryYear') updateGridVisuals();
-        });
+    function handleTimelineChange(val) {
+        currentTimelineYear = parseInt(val);
+        updateTimelineDisplay();
+        if (currentProperty === 'discoveryYear') updateGridVisuals();
     }
+
+    const timelineSlider = document.getElementById('timeline-slider');
+    const timelineInput = document.getElementById('timeline-input');
+    if (timelineSlider && timelineInput) {
+        timelineSlider.addEventListener('input', (e) => handleTimelineChange(e.target.value));
+        timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value));
+    }
+    
     // Orbital Controls
     document.getElementById('orbital-n').addEventListener('change', drawOrbital);
     document.getElementById('orbital-l').addEventListener('change', () => {
@@ -10322,17 +10346,7 @@ function setupUI() {
     
     // Initialize display values
     updateTempDisplay();
-}
-
-function updateMlOptions() {
-    const lSelect = document.getElementById('orbital-l');
-    const mlSelect = document.getElementById('orbital-ml');
-    const l = parseInt(lSelect.value);
-    
-    mlSelect.innerHTML = '';
-    for (let ml = -l; ml <= l; ml++) {
-        mlSelect.innerHTML += `<option value="${ml}">m=${ml}</option>`;
-    }
+    updateTimelineDisplay();
 }
 
 function getTempColor(k) {
@@ -10386,20 +10400,43 @@ function updateTempDisplay() {
     slider.style.setProperty('--dynamic-temp-bg', thumbBg);
 }
 
-function generateMiniBohrSVG(shells) {
-    if (!shells || shells.length === 0) return '';
-    let svg = `<svg viewBox="0 0 100 100" width="100%" height="100%">`;
-    svg += `<circle cx="50" cy="50" r="6" fill="var(--accent-amber)" />`;
-    const step = 38 / Math.max(1, shells.length);
-    for (let i = 0; i < shells.length; i++) {
-        const r = 10 + i * step;
-        svg += `<circle cx="50" cy="50" r="${r}" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none" />`;
+function updateTimelineDisplay() {
+    const y = currentTimelineYear;
+    const inputEl = document.getElementById('timeline-input');
+    if (inputEl && document.activeElement !== inputEl) {
+        inputEl.value = y;
     }
-    const shellText = shells.join(', ');
-    svg += `<text x="50" y="96" fill="currentColor" font-size="22" font-family="var(--font-mono)" text-anchor="middle" font-weight="bold">${shellText}</text>`;
-    svg += `</svg>`;
-    return svg;
+    
+    const displayContainer = document.getElementById('timeline-display-container');
+    if (!displayContainer) return;
+    
+    const minYear = 1650;
+    const maxYear = 2025;
+    const pct = Math.max(0, Math.min(1, (y - minYear) / (maxYear - minYear)));
+    
+    const r = Math.round(0 + (255 - 0) * pct);
+    const g = Math.round(204 + (0 - 204) * pct);
+    const b = Math.round(255 + (204 - 255) * pct);
+    const color = `rgb(${r}, ${g}, ${b})`;
+    
+    displayContainer.style.color = color;
+    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
+    
+    const slider = document.getElementById('timeline-slider');
+    if (!slider) return;
+    
+    const glowIntensity = 0.5 + 0.5 * pct;
+    const glowRadius1 = Math.round(glowIntensity * 15);
+    const glowRadius2 = Math.round(glowIntensity * 30);
+    const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+    const glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+    const thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+    
+    slider.style.setProperty('--time-thumb-glow', glowShadow);
+    slider.style.setProperty('--dynamic-time-bg', thumbBg);
 }
+
+
 
 // Render Grid Structure based on Mode
 function renderGrid() {
@@ -10414,6 +10451,13 @@ function renderGrid() {
         legendDiv.id = 'in-grid-legend';
         legendDiv.className = 'in-grid-legend';
         grid.appendChild(legendDiv);
+    } else if (currentView === 'electrons') {
+        const legendDiv = document.createElement('div');
+        legendDiv.id = 'elec-in-grid-legend';
+        legendDiv.className = 'in-grid-legend';
+        grid.appendChild(legendDiv);
+        const configStr = selectedElement ? selectedElement.electronConfiguration : "";
+        setTimeout(() => renderAufbauDiagram(configStr), 0);
     }
     
     for (let i = 1; i <= 118; i++) {
@@ -10426,26 +10470,25 @@ function renderGrid() {
         cell.style.gridColumn = pos.col;
         cell.style.gridRow = pos.row;
         
-        if (currentView === 'main') {
-            cell.innerHTML = `
-                <span class="cell-num">${i}</span>
-                <span class="cell-sym">${elData ? elData.symbol : '?'}</span>
-                <span class="cell-name">${elData ? elData.name : ''}</span>
-                <span class="cell-value" id="cell-val-${i}"></span>
+        let bohrHtml = '';
+        if (currentView === 'electrons' && elData) {
+            bohrHtml = `
+                <div class="cell-bohr" id="bohr-mini-${i}" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; opacity:0.25; pointer-events:none; display:flex; align-items:center; justify-content:center; color: inherit;">
+                    ${generateMiniBohrSVG(elData.electronsPerShell)}
+                </div>
             `;
-        } else if (currentView === 'electrons') {
-            if (elData) {
-                // Mini Bohr Model SVG
-                cell.innerHTML = `
-                    <span class="cell-num">${i}</span>
-                    <span class="cell-sym" style="position:absolute; top:2px; right:4px; font-size:0.6rem;">${elData.symbol}</span>
-                    <div class="cell-bohr" id="bohr-mini-${i}" style="color: inherit;">
-                        ${generateMiniBohrSVG(elData.electronsPerShell)}
-                    </div>
-                `;
-            } else {
-                cell.innerHTML = `<span class="cell-num">${i}</span>`;
-            }
+        }
+
+        if (currentView === 'main' || elData) {
+            cell.innerHTML = `
+                ${bohrHtml}
+                <span class="cell-num" style="z-index:1; position:relative;">${i}</span>
+                <span class="cell-sym" style="z-index:1; position:relative;">${elData ? elData.symbol : '?'}</span>
+                <span class="cell-name" style="z-index:1; position:relative;">${elData ? elData.name : ''}</span>
+                <span class="cell-value" id="cell-val-${i}" style="z-index:1; position:relative;"></span>
+            `;
+        } else {
+            cell.innerHTML = `<span class="cell-num">${i}</span>`;
         }
         
         if (!elData) cell.style.opacity = '0.2';
@@ -10591,25 +10634,28 @@ function getGlossyBackground(colorStr, category = '') {
 
 // Update Grid Colors based on currentProperty
 function updateGridVisuals() {
-    if (currentView !== 'main') return;
-    
     // Toggle controllers
     const tempWrapper = document.getElementById('temp-controller-wrapper');
     const timelineWrapper = document.getElementById('timeline-controller-wrapper');
     if (tempWrapper && timelineWrapper) {
-        if (currentProperty === 'discoveryYear') {
+        if (currentView === 'main' && currentProperty === 'discoveryYear') {
             tempWrapper.classList.add('hidden');
+            tempWrapper.style.display = 'none';
             timelineWrapper.classList.remove('hidden');
             timelineWrapper.style.display = 'flex';
         } else {
             tempWrapper.classList.remove('hidden');
-            tempWrapper.style.display = 'block'; // or flex, but default is usually block for div
+            tempWrapper.style.display = 'flex';
             timelineWrapper.classList.add('hidden');
+            timelineWrapper.style.display = 'none';
         }
     }
 
-    const cells = document.querySelectorAll('#main-grid .element-cell');
-    let solidCount = 0, liquidCount = 0, gasCount = 0;
+    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const cells = document.querySelectorAll(`${gridId} .element-cell`);
+    let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
+
+    const blockColors = { s: '#0d5f66', p: '#4a5c00', d: '#5d0f40', f: '#0022a1' };
 
     cells.forEach(cell => {
         const z = parseInt(cell.dataset.z);
@@ -10626,8 +10672,9 @@ function updateGridVisuals() {
         }
         
         if (currentState === 'Solid') solidCount++;
-        if (currentState === 'Liquid') liquidCount++;
-        if (currentState === 'Gas') gasCount++;
+        else if (currentState === 'Liquid') liquidCount++;
+        else if (currentState === 'Gas') gasCount++;
+        else unknownCount++;
 
         const symSpan = cell.querySelector('.cell-sym');
         if (symSpan) {
@@ -10644,40 +10691,45 @@ function updateGridVisuals() {
             }
         }
 
-        // 2. Determine Background/Border based on selected property
+        // 2. Determine Background/Border
         let bgStyle = 'rgba(255,255,255,0.05)';
         let borderColor = 'transparent';
         let valText = '';
 
-        if (currentProperty === 'category') {
-            bgStyle = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
-            borderColor = categoryColors[normalizedCategory];
-            valText = el.atomicMass ? el.atomicMass.toFixed(3) : '';
-        }
-        else if (currentProperty === 'state') {
-            const stColor = stateColors[currentState] || '#6b7280';
-            bgStyle = getGlossyBackground(stColor, normalizedCategory);
-            borderColor = stColor;
-            valText = currentState;
-        }
-        else if (heatmapConfigs[currentProperty]) {
-            const numValue = getPropertyValue(el, currentProperty);
-            
-            // Special handling for discoveryYear 'Ancient'
-            if (currentProperty === 'discoveryYear' && el.discoveryYear === 'Ancient') {
-                bgStyle = getGlossyBackground('#ffffff', normalizedCategory);
-                borderColor = '#ffffff';
-                valText = 'Ancient';
-            } else if (numValue !== null && numValue !== undefined && !isNaN(numValue)) {
-                const color = getGradientColor(numValue, currentProperty);
-                bgStyle = getGlossyBackground(color, normalizedCategory);
-                borderColor = color || '#444';
+        if (currentView === 'electrons') {
+            const blockColor = blockColors[el.block] || '#444';
+            bgStyle = getGlossyBackground(blockColor, normalizedCategory);
+            borderColor = blockColor;
+        } else {
+            if (currentProperty === 'category') {
+                bgStyle = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
+                borderColor = categoryColors[normalizedCategory];
+                valText = el.atomicMass ? el.atomicMass.toFixed(3) : '';
+            }
+            else if (currentProperty === 'state') {
+                const stColor = stateColors[currentState] || '#6b7280';
+                bgStyle = getGlossyBackground(stColor, normalizedCategory);
+                borderColor = stColor;
+                valText = currentState;
+            }
+            else if (heatmapConfigs[currentProperty]) {
+                const numValue = getPropertyValue(el, currentProperty);
                 
-                if (currentProperty === 'energyLevels' && el.electronsPerShell) {
-                    valText = el.electronsPerShell.join(', ');
-                } else if (currentProperty === 'discoveryYear') {
-                    valText = numValue;
-                } else {
+                // Special handling for discoveryYear 'Ancient'
+                if (currentProperty === 'discoveryYear' && el.discoveryYear === 'Ancient') {
+                    bgStyle = getGlossyBackground('#ffffff', normalizedCategory);
+                    borderColor = '#ffffff';
+                    valText = 'Ancient';
+                } else if (numValue !== null && numValue !== undefined && !isNaN(numValue)) {
+                    const color = getGradientColor(numValue, currentProperty);
+                    bgStyle = getGlossyBackground(color, normalizedCategory);
+                    borderColor = color || '#444';
+                    
+                    if (currentProperty === 'energyLevels' && el.electronsPerShell) {
+                        valText = el.electronsPerShell.join(', ');
+                    } else if (currentProperty === 'discoveryYear') {
+                        valText = numValue;
+                    } else {
                     let text = Number(numValue);
                     if (!Number.isInteger(text)) {
                         valText = (text > 100 || text < -100) ? Math.round(text) : Number(text.toPrecision(3)).toString();
@@ -10691,6 +10743,7 @@ function updateGridVisuals() {
                 valText = '';
             }
         }
+    }
 
         cell.style.background = bgStyle;
         cell.style.borderColor = borderColor;
@@ -10733,20 +10786,18 @@ function updateGridVisuals() {
         // Add datasets for hover highlighting
         cell.dataset.category = normalizedCategory;
         cell.dataset.state = currentState;
+        cell.dataset.block = el.block || '';
 
         const valSpan = cell.querySelector('.cell-value');
         if(valSpan) valSpan.innerText = valText;
     });
-    
-    if (currentProperty === 'state') {
-        document.getElementById('state-counter').innerText = `${solidCount} Solid / ${liquidCount} Liquid / ${gasCount} Gas`;
-    } else {
-        document.getElementById('state-counter').innerText = '';
-    }
+    window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
     
     // Reapply locks if any
     clearLegendHighlighting();
-    renderLegend();
+    if (currentView === 'main') {
+        renderLegend();
+    }
 }
 
 function renderLegend() {
@@ -10878,10 +10929,11 @@ function renderLegend() {
         for (const key of keys) {
             const color = stateColors[key];
             if (color) {
+                const countStr = (window.lastStateCounts && window.lastStateCounts[key] !== undefined) ? ` (${window.lastStateCounts[key]})` : '';
                 const glossBg = getGlossyBackground(color, '');
                 html += `
                     <div class="legend-item" data-key="${key}" data-type="state" style="background: transparent; border: 1px solid ${color}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">
-                        <span style="color: ${color}; font-weight: 600;">${key}</span>
+                        <span style="color: ${color}; font-weight: 600;">${key}${countStr}</span>
                     </div>
                 `;
             }
@@ -10894,6 +10946,11 @@ function renderLegend() {
     
     // Interactions for individual items
     document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
+        // Restore box-shadow if this item is currently locked
+        if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
+            item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
+        }
+        
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const key = e.currentTarget.dataset.key;
@@ -10974,8 +11031,8 @@ function selectElement(z) {
         document.getElementById('elec-details').classList.remove('hidden');
         
         document.getElementById('elec-number').innerText = el.atomicNumber;
-        document.getElementById('elec-mass').innerText = el.atomicMass ? el.atomicMass.toFixed(3) : '';
-        document.getElementById('elec-sym').innerText = el.symbol;
+        document.getElementById('elec-mass').innerText = el.atomicMass;
+        document.getElementById('elec-symbol').innerText = el.symbol;
         document.getElementById('elec-name').innerText = el.name;
         document.getElementById('elec-config').innerText = el.electronConfiguration;
         document.getElementById('elec-config-noble').innerText = el.electronConfigurationNoble;
@@ -10987,8 +11044,170 @@ function selectElement(z) {
             card.style.borderColor = categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)';
         }
         
+        const symEl = document.getElementById('elec-symbol');
+        if (symEl) {
+            let currentState = 'Unknown';
+            if (el.meltingPoint && el.boilingPoint) {
+                if (currentTemp < el.meltingPoint) currentState = 'Solid';
+                else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
+                else currentState = 'Gas';
+            }
+            symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
+        }
+        
+        renderAufbauDiagram(el.electronConfiguration);
         drawLargeBohrModel(el);
     }
+}
+
+function renderAufbauDiagram(configStr) {
+    const gridContainer = document.getElementById('elec-in-grid-legend');
+    if (!gridContainer) return;
+    
+    const parts = configStr ? configStr.split(' ') : [];
+    const configMap = {};
+    parts.forEach(p => {
+        const match = p.match(/(\d[spdf])(\d+)/);
+        if (match) configMap[match[1]] = parseInt(match[2]);
+    });    
+    const rows = [
+        [null, '7p', '6d', '5f'],
+        ['7s', '6p', '5d', '4f'],
+        ['6s', '5p', '4d', null],
+        ['5s', '4p', '3d', null],
+        ['4s', '3p', null, null],
+        ['3s', '2p', null, null],
+        ['2s', null, null, null],
+        ['1s', null, null, null]
+    ];
+
+    const blockCap = { s: 1, p: 3, d: 5, f: 7 }; // number of orbitals
+    const blockColorClass = { s: 's-block', p: 'p-block', d: 'd-block', f: 'f-block' };
+    
+    // Track the highest filled subshell to mark as active
+    let lastFilledSubshell = parts.length > 0 ? parts[parts.length-1].match(/(\d[spdf])/)?.[1] : null;
+
+    const blockColors = { s: '#0d5f66', p: '#4a5c00', d: '#5d0f40', f: '#0022a1' };
+    let html = `
+    <div class="legend-box aufbau-box" style="display: flex; flex-direction: column;">
+        <div class="legend-box-title">Electron Configuration</div>
+        <div class="legend-box-content" style="gap: 20px;">
+            <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-end; padding: 0;">
+                <div class="aufbau-legend" style="margin-bottom: 0;">
+                    <div class="legend-item" data-key="s" data-type="block" style="background: ${getGlossyBackground(blockColors.s)}; border: 1px solid ${blockColors.s}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">s-block</div>
+                    <div class="legend-item" data-key="p" data-type="block" style="background: ${getGlossyBackground(blockColors.p)}; border: 1px solid ${blockColors.p}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">p-block</div>
+                    <div class="legend-item" data-key="d" data-type="block" style="background: ${getGlossyBackground(blockColors.d)}; border: 1px solid ${blockColors.d}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">d-block</div>
+                    <div class="legend-item" data-key="f" data-type="block" style="background: ${getGlossyBackground(blockColors.f)}; border: 1px solid ${blockColors.f}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">f-block</div>
+                </div>
+                <div class="aufbau-grid">
+    `;
+
+    rows.forEach(row => {
+        html += `<div class="aufbau-row">`;
+        row.forEach((subshell, colIndex) => {
+            const blockType = ['s', 'p', 'd', 'f'][colIndex];
+            
+            if (!subshell) {
+                html += `<div class="subshell-group block-type-${blockType}"></div>`;
+                return;
+            }
+
+            const block = subshell[1];
+            const numOrbitals = blockCap[block];
+            const numElectrons = configMap[subshell] || 0;
+            const bgClass = blockColorClass[block];
+            const isActive = subshell === lastFilledSubshell;
+            
+            html += `<div class="subshell-group" data-key="${subshell}" data-type="subshell" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
+            
+            html += `<div class="subshell-label">${subshell}</div><div class="orbital-boxes">`;
+            
+            for (let i = 0; i < numOrbitals; i++) {
+                let electronsInThisOrbital = 0;
+                if (numElectrons > i) {
+                    electronsInThisOrbital = 1; 
+                    if (numElectrons > numOrbitals + i) electronsInThisOrbital = 2; 
+                }
+                
+                let arrows = '';
+                if (electronsInThisOrbital === 1) arrows = '<span class="arrow-up">&#x21BF;</span>';
+                if (electronsInThisOrbital === 2) arrows = '<span class="arrow-up">&#x21BF;</span><span class="arrow-down">&#x21C2;</span>';
+                
+                let isLastOrbital = false;
+                if (isActive) {
+                    if (numElectrons <= numOrbitals && i === numElectrons - 1) isLastOrbital = true;
+                    if (numElectrons > numOrbitals && i === numElectrons - numOrbitals - 1) isLastOrbital = true;
+                }
+                const activeClass = isLastOrbital ? 'active-orbital' : '';
+                
+                const boxColor = blockColors[blockType] || '#444';
+                const glossyBg = getGlossyBackground(boxColor);
+                html += `<div class="orbital-box ${activeClass}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px;">${arrows}</div>`;
+            }
+            html += `</div></div>`; // close orbital-boxes and subshell-group
+        });
+        html += `</div>`;
+    });
+
+    html += `</div></div></div></div>`; // close grid, container, content, box
+    gridContainer.innerHTML = html;
+
+    // Bind event listeners for block legend
+    document.querySelectorAll('#elec-in-grid-legend .legend-item, #elec-in-grid-legend .subshell-group').forEach(item => {
+        if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
+            item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
+            if (item.classList.contains('subshell-group')) item.style.background = 'rgba(255,255,255,0.1)';
+        }
+        
+        item.addEventListener('mouseenter', (e) => {
+            if (e.currentTarget.classList.contains('subshell-group')) {
+                e.currentTarget.style.transform = 'scale(1.1)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+            }
+            if (lockedLegendKey || lockedLegendGroup) return;
+            const key = e.currentTarget.dataset.key;
+            const type = e.currentTarget.dataset.type;
+            applyLegendHighlighting(key, type);
+        });
+        item.addEventListener('mouseleave', (e) => {
+            if (e.currentTarget.classList.contains('subshell-group')) {
+                e.currentTarget.style.transform = '';
+                if (lockedLegendKey !== e.currentTarget.dataset.key) {
+                    e.currentTarget.style.background = '';
+                }
+            }
+            clearLegendHighlighting()
+        });
+        item.addEventListener('click', (e) => {
+            const key = e.currentTarget.dataset.key;
+            const type = e.currentTarget.dataset.type;
+            if (lockedLegendKey === key) {
+                lockedLegendKey = null;
+                lockedLegendType = null;
+                lockedLegendGroup = null;
+                e.currentTarget.style.boxShadow = '';
+                e.currentTarget.style.transform = '';
+                if (e.currentTarget.classList.contains('subshell-group')) {
+                    e.currentTarget.style.background = '';
+                }
+            } else {
+                lockedLegendKey = key;
+                lockedLegendType = type;
+                lockedLegendGroup = null;
+                
+                // Clear others
+                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
+                    el.style.boxShadow = '';
+                    el.style.transform = '';
+                });
+                
+                // Highlight self
+                e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+            }
+            clearLegendHighlighting();
+        });
+    });
 }
 
 function updateSidebarValues() {
@@ -11106,6 +11325,7 @@ function drawLargeBohrModel(el) {
     
     // Nucleus
     svg += `<circle cx="100" cy="100" r="12" fill="var(--accent-amber)" />`;
+    svg += `<text x="100" y="104" fill="#000" font-size="12" text-anchor="middle" font-weight="bold" font-family="var(--font-mono)">${el.symbol}</text>`;
     
     const shells = el.electronsPerShell;
     
@@ -11133,10 +11353,36 @@ function drawLargeBohrModel(el) {
     container.innerHTML = svg;
 }
 
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+    setupUI();
+    renderGrid(); // Initial render for main view
+    
+    // Check if three-canvas-container exists and initialize
+    if (document.getElementById('three-canvas-container')) {
+        initThreeJS();
+        drawOrbital(); // Initial orbital draw
+    }
+});
+
+function generateMiniBohrSVG(shells) {
+    if (!shells || shells.length === 0) return '';
+    let svg = `<svg viewBox="0 0 100 100" width="100%" height="100%">`;
+    svg += `<circle cx="50" cy="50" r="6" fill="var(--accent-amber)" />`;
+    const step = 40 / Math.max(1, shells.length);
+    for (let i = 0; i < shells.length; i++) {
+        const r = 10 + i * step;
+        svg += `<circle cx="50" cy="50" r="${r}" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none" />`;
+    }
+    svg += `</svg>`;
+    return svg;
+}
+
 // Three.js Orbital Viewer Placeholder
 let scene, camera, renderer, currentOrbitalGroup;
 function initThreeJS() {
     const container = document.getElementById('three-canvas-container');
+    if (!container) return;
     scene = new THREE.Scene();
     scene.background = new THREE.Color('#0a0e1a');
     
@@ -11215,15 +11461,11 @@ function drawOrbital() {
             lobe2.rotation.z = Math.PI / 2;
             lobe1.position.set(1.2 * scale, 0, 0);
             lobe2.position.set(-1.2 * scale, 0, 0);
-        } else {
-            // py
-            // Already set
         }
 
         currentOrbitalGroup.add(lobe1);
         currentOrbitalGroup.add(lobe2);
     }
-    // d and f orbitals would require more complex geometry or marching cubes
     else {
         // Placeholder for d/f
         const geometry = new THREE.TorusKnotGeometry(1 * scale, 0.3, 100, 16);
@@ -11242,18 +11484,6 @@ function animate() {
     }
     renderer.render(scene, camera);
 }
-
-// Init
-window.addEventListener('DOMContentLoaded', () => {
-    setupUI();
-    renderGrid(); // Initial render for main view
-    
-    // Check if three-canvas-container exists and initialize
-    if (document.getElementById('three-canvas-container')) {
-        initThreeJS();
-        drawOrbital(); // Initial orbital draw
-    }
-});
 
 </script>
 </body>
