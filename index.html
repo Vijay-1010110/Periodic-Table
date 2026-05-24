@@ -12,6 +12,7 @@
     
     <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <style>
 
@@ -842,18 +843,31 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                                 <option value="1">n=1</option>
                                 <option value="2" selected>n=2</option>
                                 <option value="3">n=3</option>
+                                <option value="4">n=4</option>
+                                <option value="5">n=5</option>
+                                <option value="6">n=6</option>
+                                <option value="7">n=7</option>
                             </select>
                             <select id="orbital-l" class="styled-select">
                                 <option value="0">l=0 (s)</option>
                                 <option value="1" selected>l=1 (p)</option>
                             </select>
                             <select id="orbital-ml" class="styled-select">
+                                <option value="all">All</option>
                                 <option value="-1">m=-1</option>
                                 <option value="0" selected>m=0</option>
                                 <option value="1">m=1</option>
                             </select>
+                            <label style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#fff; cursor:pointer;">
+                                <input type="checkbox" id="slice-orbital" style="cursor:pointer;"> Slice View
+                            </label>
                         </div>
-                        <div id="three-canvas-container" style="height: 200px; width: 100%;"></div>
+                        <div id="three-canvas-container" style="height: 200px; width: 100%; position:relative;">
+                            <div id="orbital-scale-bar" style="position:absolute; bottom:5px; left:10px; color:#fff; font-size:0.75rem; font-family:'IBM Plex Mono', monospace; pointer-events:none; text-shadow:1px 1px 2px #000, -1px -1px 2px #000;">
+                                <div style="border-bottom:1px solid #fff; border-left:1px solid #fff; border-right:1px solid #fff; height:6px; width:50px; margin-bottom:2px;"></div>
+                                <span id="orbital-scale-text">100 pm</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -10514,6 +10528,12 @@ function setupUI() {
             if (selectedElement) {
                 selectElement(selectedElement.atomicNumber);
             }
+            if (viewId === 'electrons') {
+                if (window.OrbitalViewer) {
+                    // Small delay to ensure CSS display:block has taken effect
+                    setTimeout(() => window.OrbitalViewer.resize(), 50);
+                }
+            }
         });
     });
     
@@ -10587,16 +10607,67 @@ function setupUI() {
     }
     
     // Orbital Controls
-    document.getElementById('orbital-n').addEventListener('change', drawOrbital);
+    document.getElementById('orbital-n').addEventListener('change', () => { 
+        updateLOptions();
+        updateMlOptions();
+        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); 
+    });
     document.getElementById('orbital-l').addEventListener('change', () => {
         updateMlOptions();
-        drawOrbital();
+        if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital();
     });
-    document.getElementById('orbital-ml').addEventListener('change', drawOrbital);
+    document.getElementById('orbital-ml').addEventListener('change', () => { if (window.OrbitalViewer) window.OrbitalViewer.drawOrbital(); });
     
     // Initialize display values
     updateTempDisplay();
     updateTimelineDisplay();
+}
+
+function updateLOptions() {
+    const nEl = document.getElementById('orbital-n');
+    const lEl = document.getElementById('orbital-l');
+    if (!nEl || !lEl) return;
+    
+    const n = parseInt(nEl.value);
+    const currentL = parseInt(lEl.value);
+    
+    // l can go from 0 to n-1, but realistically we only show s, p, d, f (l up to 3)
+    const maxL = Math.min(3, n - 1);
+    
+    lEl.innerHTML = '';
+    const lNames = ['s', 'p', 'd', 'f'];
+    
+    for (let l = 0; l <= maxL; l++) {
+        lEl.innerHTML += `<option value="${l}">l=${l} (${lNames[l]})</option>`;
+    }
+    
+    if (currentL <= maxL) {
+        lEl.value = currentL;
+    } else {
+        lEl.value = maxL;
+    }
+}
+
+function updateMlOptions() {
+    const lEl = document.getElementById('orbital-l');
+    const mlSelect = document.getElementById('orbital-ml');
+    if (!lEl || !mlSelect) return;
+    const l = parseInt(lEl.value);
+    const currentMl = mlSelect.value;
+    
+    mlSelect.innerHTML = '';
+    
+    if (l > 0) {
+        mlSelect.innerHTML += `<option value="all">All</option>`;
+    }
+    
+    for (let m = -l; m <= l; m++) {
+        mlSelect.innerHTML += `<option value="${m}" ${m===0?'selected':''}>m=${m}</option>`;
+    }
+    
+    if (Array.from(mlSelect.options).some(o => o.value === currentMl)) {
+        mlSelect.value = currentMl;
+    }
 }
 
 function getTempColor(k) {
@@ -11350,6 +11421,10 @@ function selectElement(z) {
         
         renderAufbauDiagram(el.electronConfiguration);
         drawLargeBohrModel(el);
+        
+        if (window.OrbitalViewer) {
+            window.OrbitalViewer.setElement(el);
+        }
     }
 }
 
@@ -11653,8 +11728,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Check if three-canvas-container exists and initialize
     if (document.getElementById('three-canvas-container')) {
-        initThreeJS();
-        drawOrbital(); // Initial orbital draw
+        if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
     }
 });
 
@@ -11671,112 +11745,275 @@ function generateMiniBohrSVG(shells) {
     return svg;
 }
 
-// Three.js Orbital Viewer Placeholder
-let scene, camera, renderer, currentOrbitalGroup;
-function initThreeJS() {
-    const container = document.getElementById('three-canvas-container');
-    if (!container) return;
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color('#0a0e1a');
-    
-    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.z = 8;
-    camera.position.y = 2;
-    camera.lookAt(0,0,0);
-    
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
-    
-    const light = new THREE.PointLight(0xffffff, 1.2, 100);
-    light.position.set(10, 10, 10);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
-    
-    // Axes helper
-    const axesHelper = new THREE.AxesHelper(3);
-    scene.add(axesHelper);
 
-    window.addEventListener('resize', () => {
-        if(container.clientWidth > 0) {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        }
-    });
-    
-    animate();
-}
 
-function drawOrbital() {
-    if (!scene) return;
-    if (currentOrbitalGroup) scene.remove(currentOrbitalGroup);
-    
-    currentOrbitalGroup = new THREE.Group();
-    
-    const n = parseInt(document.getElementById('orbital-n').value);
-    const l = parseInt(document.getElementById('orbital-l').value);
-    const ml = parseInt(document.getElementById('orbital-ml').value || 0);
+// 03_orbitals.js
+window.OrbitalViewer = {
+    scene: null,
+    camera: null,
+    renderer: null,
+    controls: null,
+    animationId: null,
+    currentOrbitalGroup: null,
+    slicePlane: null,
+    currentElementRadius: 100, // default 100 pm
 
-    const materialPos = new THREE.MeshPhongMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.6, wireframe: false });
-    const materialNeg = new THREE.MeshPhongMaterial({ color: 0xef4444, transparent: true, opacity: 0.6, wireframe: false });
+    init: function(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
 
-    // Base scale on n
-    const scale = 1 + (n * 0.2);
+        if (this.renderer) return;
 
-    if (l === 0) {
-        // s-orbital: sphere
-        const geometry = new THREE.SphereGeometry(1.5 * scale, 32, 32);
-        const mesh = new THREE.Mesh(geometry, materialPos);
-        currentOrbitalGroup.add(mesh);
-    } 
-    else if (l === 1) {
-        // p-orbital: 2 lobes
-        const lobeGeom = new THREE.SphereGeometry(1 * scale, 32, 32);
-        lobeGeom.scale(1, 1.5, 1);
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color('#0a0e1a');
         
-        const lobe1 = new THREE.Mesh(lobeGeom, materialPos);
-        const lobe2 = new THREE.Mesh(lobeGeom, materialNeg);
-        
-        lobe1.position.y = 1.2 * scale;
-        lobe2.position.y = -1.2 * scale;
+        let width = container.clientWidth || 300;
+        let height = container.clientHeight || 200;
 
-        // Orient based on ml
-        if (ml === 0) {
-            // pz
-            lobe1.rotation.x = Math.PI / 2;
-            lobe2.rotation.x = Math.PI / 2;
-            lobe1.position.set(0, 0, 1.2 * scale);
-            lobe2.position.set(0, 0, -1.2 * scale);
-        } else if (ml === 1) {
-            // px
-            lobe1.rotation.z = Math.PI / 2;
-            lobe2.rotation.z = Math.PI / 2;
-            lobe1.position.set(1.2 * scale, 0, 0);
-            lobe2.position.set(-1.2 * scale, 0, 0);
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        this.camera.position.z = 8;
+        this.camera.position.y = 2;
+        this.camera.lookAt(0,0,0);
+
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.localClippingEnabled = true; // Enable slicing
+        container.appendChild(this.renderer.domElement);
+
+        const light = new THREE.PointLight(0xffffff, 1.2, 100);
+        light.position.set(10, 10, 10);
+        this.scene.add(light);
+        this.scene.add(new THREE.AmbientLight(0x606060));
+        
+        const axesHelper = new THREE.AxesHelper(3);
+        this.scene.add(axesHelper);
+
+        if (window.THREE && THREE.OrbitControls) {
+            this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.enableDamping = true;
+            this.controls.enablePan = false;
         }
 
-        currentOrbitalGroup.add(lobe1);
-        currentOrbitalGroup.add(lobe2);
-    }
-    else {
-        // Placeholder for d/f
-        const geometry = new THREE.TorusKnotGeometry(1 * scale, 0.3, 100, 16);
-        const mesh = new THREE.Mesh(geometry, materialPos);
-        currentOrbitalGroup.add(mesh);
-    }
-    
-    scene.add(currentOrbitalGroup);
-}
+        // Initialize slicing plane (cuts away Z > 0 half)
+        this.slicePlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.1);
 
-function animate() {
-    requestAnimationFrame(animate);
-    if (currentOrbitalGroup) {
-        currentOrbitalGroup.rotation.y += 0.005;
-        currentOrbitalGroup.rotation.x += 0.002;
+        window.addEventListener('resize', () => this.resize());
+
+        // Setup UI listener for slicing toggle
+        const sliceToggle = document.getElementById('slice-orbital');
+        if (sliceToggle) {
+            sliceToggle.addEventListener('change', () => this.drawOrbital());
+        }
+
+        this.animate();
+        this.drawOrbital();
+    },
+
+    resize: function() {
+        const container = document.getElementById('three-canvas-container');
+        if (!container || !this.camera || !this.renderer) return;
+        if (container.clientWidth > 0 && container.clientHeight > 0) {
+            this.camera.aspect = container.clientWidth / container.clientHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+    },
+
+    setElement: function(elData) {
+        if (!elData) return;
+        // Try to get empirical or calculated radius, fallback to 100 pm
+        let r = 100;
+        if (elData.radius) {
+            if (elData.radius.calculated) r = elData.radius.calculated;
+            else if (elData.radius.empirical) r = elData.radius.empirical;
+            else if (elData.radius.covalent) r = elData.radius.covalent;
+        }
+        this.currentElementRadius = r;
+        this.drawOrbital();
+    },
+
+    drawOrbital: function() {
+        if (!this.scene) return;
+        if (this.currentOrbitalGroup) this.scene.remove(this.currentOrbitalGroup);
+        
+        this.currentOrbitalGroup = new THREE.Group();
+        
+        const nEl = document.getElementById('orbital-n');
+        const lEl = document.getElementById('orbital-l');
+        const mlEl = document.getElementById('orbital-ml');
+        const sliceToggle = document.getElementById('slice-orbital');
+        
+        if(!nEl || !lEl || !mlEl) return;
+
+        const n = parseInt(nEl.value);
+        const l = parseInt(lEl.value);
+        const mlVal = mlEl.value;
+        const doSlice = sliceToggle ? sliceToggle.checked : false;
+
+        // Visual properties
+        const colorBlue = 0x00d4ff;
+        const colorRed = 0xef4444;
+        const colorGreen = 0x22c55e;
+        const opacityVal = doSlice ? 0.9 : 0.8;
+        
+        const clippingPlanes = doSlice ? [this.slicePlane] : [];
+
+        const layers = Math.max(1, n - l);
+        const maxRadius = this.currentElementRadius / 100.0;
+
+        // Custom function to create a mathematically accurate, "fat" solid mesh for any orbital
+        const createOrbitalGeometry = (lType, mType, radius, colorPosHex, colorNegHex, isAllView) => {
+            const geom = new THREE.SphereGeometry(radius, 64, 64);
+            const pos = geom.attributes.position;
+            const colors = [];
+            const colorP = new THREE.Color(colorPosHex);
+            const colorN = new THREE.Color(colorNegHex);
+            
+            for (let i = 0; i < pos.count; i++) {
+                const x = pos.getX(i);
+                const y = pos.getY(i);
+                const z = pos.getZ(i);
+                
+                const nx = x / radius;
+                const ny = y / radius;
+                const nz = z / radius;
+                
+                let Y = 0;
+                if (lType === 0) {
+                    Y = 1.0;
+                } else if (lType === 1) {
+                    if (mType === 0) Y = ny;
+                    else if (mType === 1) Y = nx;
+                    else if (mType === -1) Y = nz;
+                } else if (lType === 2) {
+                    if (mType === 0) Y = (3.0 * ny * ny - 1.0) / 2.0;
+                    else if (mType === 1) Y = Math.sqrt(3.0) * nx * ny;
+                    else if (mType === -1) Y = Math.sqrt(3.0) * nz * ny;
+                    else if (mType === 2) Y = Math.sqrt(3.0) / 2.0 * (nx * nx - nz * nz);
+                    else if (mType === -2) Y = Math.sqrt(3.0) * nx * nz;
+                } else if (lType === 3) {
+                    if (mType === 0) Y = 0.5 * ny * (5.0 * ny * ny - 3.0);
+                    else if (mType === 1) Y = Math.sqrt(6.0)/4.0 * nx * (5.0 * ny * ny - 1.0);
+                    else if (mType === -1) Y = Math.sqrt(6.0)/4.0 * nz * (5.0 * ny * ny - 1.0);
+                    else if (mType === 2) Y = Math.sqrt(15.0)/2.0 * ny * (nx * nx - nz * nz);
+                    else if (mType === -2) Y = Math.sqrt(15.0) * nx * ny * nz;
+                    else if (mType === 3) Y = Math.sqrt(10.0)/4.0 * nx * (nx * nx - 3.0 * nz * nz);
+                    else if (mType === -3) Y = Math.sqrt(10.0)/4.0 * nz * (3.0 * nx * nx - nz * nz);
+                }
+                
+                // A power < 1 makes the lobes "fatter". 
+                // 0.35 ensures that overlapping all orientations feels like a sphere, rather than isolated pool balls.
+                const absY = Math.abs(Y);
+                const scale = lType === 0 ? 1.0 : Math.pow(absY, 0.35);
+                
+                pos.setXYZ(i, x * scale, y * scale, z * scale);
+                
+                if (isAllView) {
+                    // For "All" view, use the same color for both phases to visually identify the axis
+                    colors.push(colorP.r, colorP.g, colorP.b);
+                } else {
+                    if (Y > 0) colors.push(colorP.r, colorP.g, colorP.b);
+                    else colors.push(colorN.r, colorN.g, colorN.b);
+                }
+            }
+            
+            geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geom.computeVertexNormals();
+            return geom;
+        };
+
+        const generateShell = (lType, mlType, scaleFactor, primaryColorHex, secondaryColorHex, isAllView) => {
+            const material = new THREE.MeshPhongMaterial({ 
+                vertexColors: true,
+                transparent: true, 
+                opacity: opacityVal, 
+                wireframe: false,
+                side: THREE.DoubleSide,
+                clippingPlanes: clippingPlanes
+            });
+
+            const geometry = createOrbitalGeometry(lType, mlType, maxRadius * scaleFactor, primaryColorHex, secondaryColorHex, isAllView);
+            return new THREE.Mesh(geometry, material);
+        };
+
+        const renderSingleOrientation = (mlTarget, primaryColor, isAllView) => {
+            const group = new THREE.Group();
+            for (let i = 0; i < layers; i++) {
+                const layerScale = 1.0 - (i * (0.8 / layers));
+                const c1 = (i % 2 === 0) ? primaryColor : colorRed;
+                const c2 = (i % 2 === 0) ? colorRed : primaryColor;
+                group.add(generateShell(l, mlTarget, layerScale, c1, c2, isAllView));
+            }
+            return group;
+        };
+
+        if (mlVal === 'all') {
+            if (l === 1) {
+                this.currentOrbitalGroup.add(renderSingleOrientation(1, colorRed, true));    // px
+                this.currentOrbitalGroup.add(renderSingleOrientation(-1, colorGreen, true)); // py
+                this.currentOrbitalGroup.add(renderSingleOrientation(0, colorBlue, true));   // pz
+            } else if (l === 2) {
+                this.currentOrbitalGroup.add(renderSingleOrientation(0, colorBlue, true));
+                this.currentOrbitalGroup.add(renderSingleOrientation(1, colorRed, true));
+                this.currentOrbitalGroup.add(renderSingleOrientation(-1, colorGreen, true));
+                this.currentOrbitalGroup.add(renderSingleOrientation(2, 0xf59e0b, true)); // yellow
+                this.currentOrbitalGroup.add(renderSingleOrientation(-2, 0xec4899, true)); // pink
+            } else {
+                this.currentOrbitalGroup.add(renderSingleOrientation(0, colorBlue, true));
+            }
+        } else {
+            const m = mlVal === 'all' ? 0 : parseInt(mlVal);
+            this.currentOrbitalGroup.add(renderSingleOrientation(m, colorBlue, false));
+        }
+        
+        this.scene.add(this.currentOrbitalGroup);
+    },
+
+    updateScaleBar: function() {
+        const scaleText = document.getElementById('orbital-scale-text');
+        const container = document.getElementById('three-canvas-container');
+        if (!scaleText || !container || !this.camera) return;
+
+        // Calculate visible width at the origin (z=0)
+        // distance to origin is camera.position.length()
+        const dist = this.camera.position.length();
+        const vFOV = this.camera.fov * Math.PI / 180;
+        const heightAtOrigin = 2 * Math.tan(vFOV / 2) * dist;
+        const widthAtOrigin = heightAtOrigin * this.camera.aspect;
+
+        // HTML container width
+        const cw = container.clientWidth;
+        
+        // Scale bar width is fixed at 50px (from HTML)
+        const scaleBarPixelWidth = 50;
+
+        // Ratio of scale bar to canvas width
+        const ratio = scaleBarPixelWidth / cw;
+
+        // Physical width in Three.js units
+        const threeUnits = widthAtOrigin * ratio;
+
+        // Convert to picometers (1 unit = 100 pm)
+        const pm = Math.round(threeUnits * 100);
+        
+        scaleText.innerText = `${pm} pm`;
+    },
+
+    animate: function() {
+        this.animationId = requestAnimationFrame(this.animate.bind(this));
+        
+        if (this.currentOrbitalGroup) {
+            this.currentOrbitalGroup.rotation.y += 0.005;
+            this.currentOrbitalGroup.rotation.x += 0.002;
+        }
+        
+        if (this.controls) this.controls.update();
+        if (this.renderer) this.renderer.render(this.scene, this.camera);
+        
+        this.updateScaleBar();
     }
-    renderer.render(scene, camera);
-}
+};
 
 </script>
 </body>
