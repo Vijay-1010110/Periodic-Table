@@ -176,7 +176,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.6,
             "vickers": null
         },
         "modulus": {
@@ -249,13 +249,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 287
         },
         "conductivity": {
             "thermal": 201.0,
@@ -323,13 +323,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 9.3,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 400
         },
         "conductivity": {
             "thermal": 27.4,
@@ -398,13 +398,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 1050
         },
         "conductivity": {
             "thermal": 1.59,
@@ -789,7 +789,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.5,
             "vickers": null
         },
         "modulus": {
@@ -871,13 +871,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 45
         },
         "conductivity": {
             "thermal": 156.0,
@@ -954,13 +954,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.75,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 70
         },
         "conductivity": {
             "thermal": 237.0,
@@ -1038,13 +1038,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 162
         },
         "conductivity": {
             "thermal": 149.0,
@@ -1123,7 +1123,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.5,
             "vickers": null
         },
         "modulus": {
@@ -1209,7 +1209,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.0,
             "vickers": null
         },
         "modulus": {
@@ -1476,7 +1476,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.4,
             "vickers": null
         },
         "modulus": {
@@ -1567,13 +1567,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 20
         },
         "conductivity": {
             "thermal": null,
@@ -1659,13 +1659,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 74
         },
         "conductivity": {
             "thermal": 15.8,
@@ -1752,13 +1752,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 116
         },
         "conductivity": {
             "thermal": 21.9,
@@ -1846,13 +1846,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 7.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 128
         },
         "conductivity": {
             "thermal": 30.7,
@@ -1941,13 +1941,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 8.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 279
         },
         "conductivity": {
             "thermal": 93.9,
@@ -2037,13 +2037,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 198
         },
         "conductivity": {
             "thermal": null,
@@ -2134,13 +2134,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 4.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 211
         },
         "conductivity": {
             "thermal": 80.4,
@@ -2232,13 +2232,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 209
         },
         "conductivity": {
             "thermal": 100.0,
@@ -2331,13 +2331,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 4.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 200
         },
         "conductivity": {
             "thermal": 90.9,
@@ -2431,13 +2431,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 130
         },
         "conductivity": {
             "thermal": 401.0,
@@ -2523,13 +2523,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 108
         },
         "conductivity": {
             "thermal": 116.0,
@@ -2598,7 +2598,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.5,
             "vickers": null
         },
         "modulus": {
@@ -2676,13 +2676,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 103
         },
         "conductivity": {
             "thermal": 60.2,
@@ -2753,13 +2753,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 8
         },
         "conductivity": {
             "thermal": null,
@@ -2831,13 +2831,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 10
         },
         "conductivity": {
             "thermal": 0.52,
@@ -3093,7 +3093,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.3,
             "vickers": null
         },
         "modulus": {
@@ -3177,13 +3177,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 16
         },
         "conductivity": {
             "thermal": null,
@@ -3261,13 +3261,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 25
         },
         "conductivity": {
             "thermal": null,
@@ -3339,13 +3339,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 68
         },
         "conductivity": {
             "thermal": 22.7,
@@ -3418,13 +3418,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 105
         },
         "conductivity": {
             "thermal": 53.7,
@@ -3520,13 +3520,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 329
         },
         "conductivity": {
             "thermal": null,
@@ -3595,13 +3595,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 322
         },
         "conductivity": {
             "thermal": 50.6,
@@ -3670,13 +3670,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 447
         },
         "conductivity": {
             "thermal": 117.0,
@@ -3745,13 +3745,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 380
         },
         "conductivity": {
             "thermal": 150.0,
@@ -3819,13 +3819,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 4.75,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 121
         },
         "conductivity": {
             "thermal": 71.8,
@@ -3894,13 +3894,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 83
         },
         "conductivity": {
             "thermal": 429.0,
@@ -3969,13 +3969,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 50
         },
         "conductivity": {
             "thermal": 96.9,
@@ -4045,13 +4045,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.2,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 11
         },
         "conductivity": {
             "thermal": 81.8,
@@ -4122,13 +4122,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 50
         },
         "conductivity": {
             "thermal": 66.8,
@@ -4200,13 +4200,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 55
         },
         "conductivity": {
             "thermal": 24.43,
@@ -4279,13 +4279,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.25,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 43
         },
         "conductivity": {
             "thermal": 14.3,
@@ -4451,7 +4451,7 @@ const elementsData = [
             "sun": null,
             "oceans": 5e-05,
             "human": null,
-            "earthCrust": 2.9999999999999997e-05,
+            "earthCrust": 2.9999999999999997e-05e-05,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -4505,7 +4505,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.2,
             "vickers": null
         },
         "modulus": {
@@ -4581,13 +4581,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.25,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 13
         },
         "conductivity": {
             "thermal": null,
@@ -4659,13 +4659,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 36
         },
         "conductivity": {
             "thermal": 13.4,
@@ -4738,13 +4738,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 33
         },
         "conductivity": {
             "thermal": 11.3,
@@ -4816,13 +4816,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 37
         },
         "conductivity": {
             "thermal": 12.5,
@@ -4893,13 +4893,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 41
         },
         "conductivity": {
             "thermal": null,
@@ -4970,7 +4970,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
@@ -5047,13 +5047,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 49
         },
         "conductivity": {
             "thermal": null,
@@ -5124,13 +5124,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 18
         },
         "conductivity": {
             "thermal": 13.9,
@@ -5201,13 +5201,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 54
         },
         "conductivity": {
             "thermal": null,
@@ -5278,13 +5278,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 55
         },
         "conductivity": {
             "thermal": 11.1,
@@ -5355,13 +5355,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 61
         },
         "conductivity": {
             "thermal": 10.7,
@@ -5432,13 +5432,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 64
         },
         "conductivity": {
             "thermal": null,
@@ -5509,13 +5509,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 69
         },
         "conductivity": {
             "thermal": null,
@@ -5586,13 +5586,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 74
         },
         "conductivity": {
             "thermal": null,
@@ -5663,13 +5663,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 23
         },
         "conductivity": {
             "thermal": null,
@@ -5741,13 +5741,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 68
         },
         "conductivity": {
             "thermal": null,
@@ -5818,13 +5818,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 5.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 78
         },
         "conductivity": {
             "thermal": 23.0,
@@ -5893,13 +5893,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 186
         },
         "conductivity": {
             "thermal": 57.5,
@@ -5968,13 +5968,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 7.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 411
         },
         "conductivity": {
             "thermal": 173.0,
@@ -6045,13 +6045,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 7.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 463
         },
         "conductivity": {
             "thermal": 48.0,
@@ -6120,13 +6120,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 7.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 560
         },
         "conductivity": {
             "thermal": null,
@@ -6196,13 +6196,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 528
         },
         "conductivity": {
             "thermal": 147.0,
@@ -6272,13 +6272,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 168
         },
         "conductivity": {
             "thermal": 71.6,
@@ -6347,13 +6347,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 78
         },
         "conductivity": {
             "thermal": 318.0,
@@ -6423,7 +6423,7 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 0.0,
             "vickers": null
         },
         "modulus": {
@@ -6499,13 +6499,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.2,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 8
         },
         "conductivity": {
             "thermal": 46.1,
@@ -6577,13 +6577,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 1.5,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 16
         },
         "conductivity": {
             "thermal": 35.3,
@@ -6656,13 +6656,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 2.25,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 32
         },
         "conductivity": {
             "thermal": 7.9,
@@ -6752,7 +6752,7 @@ const elementsData = [
             "sun": null,
             "oceans": 1.5e-14,
             "human": null,
-            "earthCrust": 2e-10,
+            "earthCrust": 2e-10e-10,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -6901,7 +6901,7 @@ const elementsData = [
             "sun": null,
             "oceans": 6e-16,
             "human": null,
-            "earthCrust": 4e-13,
+            "earthCrust": 4e-13e-13,
             "meteorites": null
         },
         "discoveryYear": 1900,
@@ -7054,7 +7054,7 @@ const elementsData = [
             "sun": null,
             "oceans": 8.9e-11,
             "human": null,
-            "earthCrust": 9e-07,
+            "earthCrust": 9e-07e-07,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -7130,7 +7130,7 @@ const elementsData = [
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": 5.5e-10,
+            "earthCrust": 5.5e-10e-10,
             "meteorites": null
         },
         "discoveryYear": 1899,
@@ -7186,13 +7186,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 3.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 71
         },
         "conductivity": {
             "thermal": null,
@@ -7283,7 +7283,7 @@ const elementsData = [
             "sun": null,
             "oceans": 5e-11,
             "human": null,
-            "earthCrust": 1.4e-06,
+            "earthCrust": 1.4e-06e-06,
             "meteorites": null
         },
         "discoveryYear": 1913,
@@ -7337,13 +7337,13 @@ const elementsData = [
         },
         "hardness": {
             "brinell": null,
-            "mohs": null,
+            "mohs": 6.0,
             "vickers": null
         },
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 208
         },
         "conductivity": {
             "thermal": 27.5,
@@ -7493,7 +7493,7 @@ const elementsData = [
         "modulus": {
             "bulk": null,
             "shear": null,
-            "young": null
+            "young": 96
         },
         "conductivity": {
             "thermal": null,

@@ -10932,9 +10932,14 @@ function updateGridVisuals() {
             tempWrapper.style.display = 'none';
             timelineWrapper.classList.remove('hidden');
             timelineWrapper.style.display = 'flex';
-        } else {
+        } else if (isMain && ['category', 'state', 'meltingPoint', 'boilingPoint'].includes(currentProperty)) {
             tempWrapper.classList.remove('hidden');
             tempWrapper.style.display = 'flex';
+            timelineWrapper.classList.add('hidden');
+            timelineWrapper.style.display = 'none';
+        } else {
+            tempWrapper.classList.add('hidden');
+            tempWrapper.style.display = 'none';
             timelineWrapper.classList.add('hidden');
             timelineWrapper.style.display = 'none';
         }
