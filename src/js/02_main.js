@@ -424,7 +424,8 @@ function updateTimelineDisplay() {
 
 // Render Grid Structure based on Mode
 function renderGrid() {
-    const gridId = currentView === 'electrons' ? 'electrons-grid' : 'main-grid';
+    const gridId = currentView === 'electrons' ? 'electrons-grid' : 
+                   currentView === 'isotopes' ? 'isotopes-grid' : 'main-grid';
     const grid = document.getElementById(gridId);
     if (!grid) return;
     
@@ -463,7 +464,7 @@ function renderGrid() {
             `;
         }
 
-        if (currentView === 'main' || elData) {
+        if (currentView === 'main' || currentView === 'isotopes' || elData) {
             cell.innerHTML = `
                 ${bohrHtml}
                 <span class="cell-num" style="z-index:1; position:relative;">${i}</span>
@@ -640,7 +641,9 @@ function getGlossyBackground(colorStr, category = '') {
 
 function updateGridVisuals() {
     const isMain = currentView === 'main';
-    const gridId = isMain ? '#main-grid' : '#electrons-grid';
+    const isIsotopes = currentView === 'isotopes';
+    const gridId = isMain ? '#main-grid' : 
+                   isIsotopes ? '#isotopes-grid' : '#electrons-grid';
     const activeProp = isMain ? currentProperty : currentElecProperty;
     
     // Toggle controllers
@@ -706,8 +709,8 @@ function updateGridVisuals() {
         let color = '#333';
         let valText = '';
 
-        if (isMain) {
-            if (currentProperty === 'category') {
+        if (isMain || isIsotopes) {
+            if (isIsotopes || currentProperty === 'category') {
                 color = categoryColors[normalizedCategory] || '#333';
                 valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
             } else if (currentProperty === 'state') {
@@ -1092,6 +1095,10 @@ function selectElement(z) {
         }
         renderAufbauDiagram(el.electronConfiguration);
         drawLargeBohrModel(el);
+    } else if (currentView === 'isotopes') {
+        if (typeof updateIsotopesView === 'function') {
+            updateIsotopesView(z);
+        }
     }
 }
 

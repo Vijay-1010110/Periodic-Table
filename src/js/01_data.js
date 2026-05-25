@@ -4451,7 +4451,7 @@ const elementsData = [
             "sun": null,
             "oceans": 5e-05,
             "human": null,
-            "earthCrust": 2.9999999999999997e-05e-05,
+            "earthCrust": 3e-10,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -6752,7 +6752,7 @@ const elementsData = [
             "sun": null,
             "oceans": 1.5e-14,
             "human": null,
-            "earthCrust": 2e-10e-10,
+            "earthCrust": 2.0000000000000002e-20,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -6901,7 +6901,7 @@ const elementsData = [
             "sun": null,
             "oceans": 6e-16,
             "human": null,
-            "earthCrust": 4e-13e-13,
+            "earthCrust": 4e-26,
             "meteorites": null
         },
         "discoveryYear": 1900,
@@ -7054,7 +7054,7 @@ const elementsData = [
             "sun": null,
             "oceans": 8.9e-11,
             "human": null,
-            "earthCrust": 9e-07e-07,
+            "earthCrust": 9e-14,
             "meteorites": null
         },
         "discoveryYear": 1898,
@@ -7130,7 +7130,7 @@ const elementsData = [
             "sun": null,
             "oceans": null,
             "human": null,
-            "earthCrust": 5.5e-10e-10,
+            "earthCrust": 5.5e-20,
             "meteorites": null
         },
         "discoveryYear": 1899,
@@ -7283,7 +7283,7 @@ const elementsData = [
             "sun": null,
             "oceans": 5e-11,
             "human": null,
-            "earthCrust": 1.4e-06e-06,
+            "earthCrust": 1.3999999999999999e-12,
             "meteorites": null
         },
         "discoveryYear": 1913,

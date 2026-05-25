@@ -15,7 +15,13 @@ def build():
             css_content += f"\n/* {os.path.basename(cf)} */\n" + f.read()
     
     # Read and concatenate JS
-    js_files = sorted(glob.glob('src/js/*.js'))
+    js_files = [
+        'src/js/01_data.js',
+        'src/js/04_isotopes_data.js',
+        'src/js/05_isotopes.js',
+        'src/js/02_main.js',
+        'src/js/03_orbitals.js'
+    ]
     js_content = ""
     for jf in js_files:
         print(f"Adding {jf}")
