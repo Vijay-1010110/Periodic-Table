@@ -106,11 +106,13 @@ window.OrbitalViewer = {
         // right after calling setElement().
     },
 
-    updateInfoOverlay: function(n, l, mlStr, calculatedRadius) {
+    updateInfoOverlay: function(n, l, mlStr, calculatedRadius, bindingEnergy) {
         const elNameBox = document.getElementById('oi-element');
         const orbitalBox = document.getElementById('oi-orbital');
         const radiusBox = document.getElementById('oi-radius');
         const quantumBox = document.getElementById('oi-quantum');
+        const bindingBox = document.getElementById('oi-binding');
+        const bindingUnit = document.getElementById('oi-binding-unit');
         
         if (elNameBox && this.currentElementData) {
             elNameBox.textContent = `${this.currentElementData.name} (${this.currentElementData.symbol})`;
@@ -142,6 +144,36 @@ window.OrbitalViewer = {
             } else {
                 quantumBox.innerHTML = `n=${n}, ℓ=${l}, m<sub>ℓ</sub>=${mlStr}`;
             }
+        }
+        
+        if (bindingBox && bindingEnergy !== undefined) {
+            window.currentBindingEnergy_eV = bindingEnergy; // store globally for the dropdown
+            
+            const updateBindingText = () => {
+                const isKj = bindingUnit && bindingUnit.value === 'kJ';
+                let val = window.currentBindingEnergy_eV;
+                let unitStr = "eV";
+                
+                if (isKj) {
+                    val *= 96.485;
+                    unitStr = "kJ/mol";
+                } else {
+                    if (val >= 1000) {
+                        val /= 1000;
+                        unitStr = "keV";
+                    }
+                }
+                // Orbital energy is negative
+                bindingBox.textContent = `E ≈ -${parseFloat(val.toFixed(2))} ${unitStr}`;
+            };
+            
+            // Set up dropdown listener if not already there
+            if (bindingUnit && !bindingUnit.hasAttribute('data-listener-attached')) {
+                bindingUnit.setAttribute('data-listener-attached', 'true');
+                bindingUnit.addEventListener('change', updateBindingText);
+            }
+            
+            updateBindingText();
         }
     },
 
@@ -183,8 +215,28 @@ window.OrbitalViewer = {
             const k = Math.log(baseR / r1) / (outerN - 1);
             specificRadius = r1 * Math.exp(k * (n - 1));
         }
+
+        // Calculate Binding Energy
+        let specificBindingEnergy = 0; // in eV
+        const ie = (this.currentElementData && this.currentElementData.ionizationEnergies && this.currentElementData.ionizationEnergies.length > 0) 
+                   ? this.currentElementData.ionizationEnergies[0] / 96.485
+                   : 13.6; 
+                   
+        const e1 = 13.6 * Math.pow(Math.max(1, Z - 1), 2); // Moseley's law for K-shell
+
+        if (outerN <= 1) {
+            specificBindingEnergy = ie;
+        } else if (n === 1) {
+            specificBindingEnergy = e1;
+        } else if (n >= outerN) {
+            specificBindingEnergy = ie;
+        } else {
+            // Exponential interpolation between core X-ray edge and valence ionization
+            const kE = Math.log(ie / e1) / (outerN - 1);
+            specificBindingEnergy = e1 * Math.exp(kE * (n - 1));
+        }
         
-        this.updateInfoOverlay(n, l, mlStr, specificRadius);
+        this.updateInfoOverlay(n, l, mlStr, specificRadius, specificBindingEnergy);
 
         // Clear existing orbital
         if (this.currentOrbitalGroup) {
