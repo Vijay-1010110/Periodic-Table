@@ -28,11 +28,22 @@ function updateIsotopesView(atomicNumber) {
     document.getElementById('iso-name').textContent = elData.name;
     document.getElementById('iso-mass').textContent = elData.mass;
     
-    // Set element card color based on category
+    // Set element card color based on category and state
     const card = document.getElementById('iso-element-card');
-    const color = getCategoryColor(elData.category);
-    card.style.background = `linear-gradient(135deg, ${color} 0%, rgba(0,0,0,0.8) 100%)`;
-    card.style.border = `1px solid ${color}`;
+    const normalizedCategory = getNormalizedCategory(elData.category);
+    card.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
+    card.style.border = `1px solid ${categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)'}`;
+
+    let currentState = 'Unknown';
+    if (elData.meltingPoint && elData.boilingPoint) {
+        if (currentTemp < elData.meltingPoint) currentState = 'Solid';
+        else if (currentTemp >= elData.meltingPoint && currentTemp < elData.boilingPoint) currentState = 'Liquid';
+        else currentState = 'Gas';
+    }
+    const symEl = document.getElementById('iso-symbol');
+    if (symEl) {
+        symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
+    }
     
     // Retrieve isotope data
     if (typeof isotopeData !== 'undefined' && isotopeData[atomicNumber]) {

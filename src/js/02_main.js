@@ -739,7 +739,11 @@ function updateGridVisuals() {
         if (isMain || isIsotopes) {
             if (isIsotopes || currentProperty === 'category') {
                 color = categoryColors[normalizedCategory] || '#333';
-                valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
+                if (isIsotopes) {
+                    valText = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z].length.toString() : '0';
+                } else {
+                    valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
+                }
             } else if (currentProperty === 'state') {
                 color = stateColors[currentState] || '#6b7280';
                 valText = currentState;
