@@ -443,6 +443,33 @@ function renderGrid() {
         grid.appendChild(legendDiv);
         const configStr = selectedElement ? selectedElement.electronConfiguration : "";
         setTimeout(() => renderAufbauDiagram(configStr), 0);
+    } else if (currentView === 'isotopes') {
+        const legendDiv = document.createElement('div');
+        legendDiv.id = 'iso-in-grid-legend';
+        legendDiv.className = 'in-grid-legend';
+        
+        // Static Decay Mode Legend
+        const decayModes = [
+            { name: 'Stable', color: '#222222' },
+            { name: 'Alpha Decay', color: '#facc15' }, // Yellow
+            { name: 'Beta Decay', color: '#3b82f6' }, // Blue
+            { name: 'Positron Emission / EC', color: '#ef4444' }, // Red
+            { name: 'Proton Emission', color: '#f97316' }, // Orange
+            { name: 'Neutron Emission', color: '#06b6d4' }, // Cyan
+            { name: 'Spontaneous Fission', color: '#22c55e' } // Green
+        ];
+        
+        let html = '<div class="legend-group" style="display: flex; flex-wrap: wrap; gap: 10px;">';
+        decayModes.forEach(mode => {
+            html += `<div class="legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #fff; cursor: default;">
+                <div style="width: 12px; height: 12px; background: ${mode.color}; border: 1px solid rgba(255,255,255,0.2);"></div>
+                ${mode.name}
+            </div>`;
+        });
+        html += '</div>';
+        
+        legendDiv.innerHTML = html;
+        grid.appendChild(legendDiv);
     }
     
     for (let i = 1; i <= 118; i++) {
