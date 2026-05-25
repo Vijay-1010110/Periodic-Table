@@ -110,14 +110,14 @@ window.OrbitalViewer = {
         const elNameBox = document.getElementById('oi-element');
         const orbitalBox = document.getElementById('oi-orbital');
         const radiusBox = document.getElementById('oi-radius');
+        const quantumBox = document.getElementById('oi-quantum');
         
         if (elNameBox && this.currentElementData) {
             elNameBox.textContent = `${this.currentElementData.name} (${this.currentElementData.symbol})`;
         }
         
         if (orbitalBox) {
-            const lNames = ['s', 'p', 'd', 'f'];
-            const lChar = lNames[l] || 's';
+            const lChar = l === 0 ? 's' : (l === 1 ? 'p' : (l === 2 ? 'd' : 'f'));
             let orientation = '';
             if (mlStr !== 'all') {
                 if (lChar === 'p') {
@@ -134,6 +134,14 @@ window.OrbitalViewer = {
         if (radiusBox) {
             let formattedRadius = parseFloat(calculatedRadius.toFixed(2));
             radiusBox.textContent = `Radius: ~${formattedRadius} pm`;
+        }
+
+        if (quantumBox) {
+            if (mlStr === 'all') {
+                quantumBox.innerHTML = `n=${n}, ℓ=${l}, m<sub>ℓ</sub>=...`;
+            } else {
+                quantumBox.innerHTML = `n=${n}, ℓ=${l}, m<sub>ℓ</sub>=${mlStr}`;
+            }
         }
     },
 
@@ -206,7 +214,7 @@ window.OrbitalViewer = {
         const layers = Math.max(1, n - l);
         
         const sliceLabel = document.getElementById('slice-orbital').parentElement;
-        if (layers <= 1) {
+        if (layers <= 1 || mlStr === 'all') {
             sliceLabel.style.display = 'none';
             if (doSlice) {
                 document.getElementById('slice-orbital').checked = false;
