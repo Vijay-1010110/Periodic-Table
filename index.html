@@ -75239,7 +75239,7 @@ function renderGrid() {
             { name: 'Spontaneous Fission', color: '#22c55e' } // Green
         ];
         
-        let html = '<div class="legend-group" style="display: flex; flex-wrap: wrap; gap: 10px;">';
+        let html = '<div class="legend-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">';
         decayModes.forEach(mode => {
             html += `<div class="legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #fff; cursor: default;">
                 <div style="width: 12px; height: 12px; background: ${mode.color}; border: 1px solid rgba(255,255,255,0.2);"></div>
