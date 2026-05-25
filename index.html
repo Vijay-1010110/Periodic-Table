@@ -74642,14 +74642,14 @@ function updateIsotopesView(atomicNumber) {
     document.getElementById('iso-details').classList.remove('hidden');
     
     // Retrieve element info from 01_data.js
-    const elData = elementsData[atomicNumber];
+    const elData = elementsData[atomicNumber - 1];
     if (!elData) return;
     
     // Set basic element card details
-    document.getElementById('iso-number').textContent = elData.number;
+    document.getElementById('iso-number').textContent = elData.atomicNumber;
     document.getElementById('iso-symbol').textContent = elData.symbol;
     document.getElementById('iso-name').textContent = elData.name;
-    document.getElementById('iso-mass').textContent = elData.mass;
+    document.getElementById('iso-mass').textContent = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
     
     // Set element card color based on category and state
     const card = document.getElementById('iso-element-card');
