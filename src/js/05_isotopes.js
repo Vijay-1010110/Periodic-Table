@@ -54,29 +54,57 @@ function updateIsotopesView(atomicNumber) {
                 p.style.cssText = `position: relative; overflow: hidden; padding: 4px 10px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 500; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none;`;
                 p.innerHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%); pointer-events: none; border-radius: 6px 6px 0 0;"></div><span style="position:relative; z-index:1;">${mode.name}</span>`;
                 
+                const applyFilter = (mode) => {
+                    const divM = document.getElementById('iso-div-matched');
+                    const divO = document.getElementById('iso-div-other');
+                    if (divM) {
+                        divM.style.display = 'block';
+                        divM.style.color = mode.color;
+                        divM.style.borderBottomColor = mode.color;
+                        divM.textContent = mode.name;
+                    }
+                    if (divO) divO.style.display = 'block';
+
+                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                        if (el.dataset.decayColor !== mode.color) {
+                            el.style.order = '3';
+                            el.style.opacity = '0.2';
+                        } else {
+                            el.style.order = '1';
+                            el.style.opacity = '1';
+                        }
+                    });
+                };
+
+                const clearFilter = () => {
+                    const divM = document.getElementById('iso-div-matched');
+                    const divO = document.getElementById('iso-div-other');
+                    if (divM) divM.style.display = 'none';
+                    if (divO) divO.style.display = 'none';
+
+                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                        el.style.order = '1';
+                        el.style.opacity = '1';
+                    });
+                };
+
                 p.onmouseover = () => {
                     if (window.activeIsotopeFilter) return;
-                    document.querySelectorAll('.iso-list-item').forEach(el => {
-                        if (el.dataset.decayColor !== mode.color) el.style.opacity = '0.2';
-                        else el.style.opacity = '1';
-                    });
+                    applyFilter(mode);
                 };
                 p.onmouseout = () => {
                     if (window.activeIsotopeFilter) return;
-                    document.querySelectorAll('.iso-list-item').forEach(el => el.style.opacity = '1');
+                    clearFilter();
                 };
                 p.onclick = () => {
                     if (window.activeIsotopeFilter === mode.color) {
                         window.activeIsotopeFilter = null;
-                        document.querySelectorAll('.iso-list-item').forEach(el => el.style.opacity = '1');
+                        clearFilter();
                         p.style.transform = 'scale(1)';
                         p.style.boxShadow = 'none';
                     } else {
                         window.activeIsotopeFilter = mode.color;
-                        document.querySelectorAll('.iso-list-item').forEach(el => {
-                            if (el.dataset.decayColor !== mode.color) el.style.opacity = '0.2';
-                            else el.style.opacity = '1';
-                        });
+                        applyFilter(mode);
                         Array.from(legendContainer.children).forEach(l => {
                             l.style.transform = 'scale(1)';
                             l.style.boxShadow = 'none';
@@ -119,6 +147,19 @@ function updateIsotopesView(atomicNumber) {
     const listContainer = document.getElementById('modal-isotope-list');
     listContainer.innerHTML = '';
     
+    // Create dividers for filtering
+    const divMatched = document.createElement('div');
+    divMatched.id = 'iso-div-matched';
+    divMatched.style.cssText = 'grid-column: 1 / -1; font-family: var(--font-ui); font-size: 0.9rem; font-weight: bold; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 4px; display: none; order: 0; text-transform: uppercase; letter-spacing: 1px; width: 100%;';
+    
+    const divOther = document.createElement('div');
+    divOther.id = 'iso-div-other';
+    divOther.style.cssText = 'grid-column: 1 / -1; font-family: var(--font-ui); font-size: 0.9rem; font-weight: bold; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin-top: 10px; margin-bottom: 4px; display: none; order: 2; text-transform: uppercase; letter-spacing: 1px; color: #888; width: 100%;';
+    divOther.textContent = 'Other Isotopes';
+
+    listContainer.appendChild(divMatched);
+    listContainer.appendChild(divOther);
+    
     const formatValue = (val) => val !== null && val !== undefined ? val.toFixed(4) : '-';
     const formatExp = (val, dec = 2) => {
         if (val === null || val === undefined) return '-';
@@ -139,6 +180,7 @@ function updateIsotopesView(atomicNumber) {
         item.style.aspectRatio = '0.8';
         item.style.minHeight = '90px'; // Prevent grid from squishing height
         item.style.width = '100%';
+        item.style.order = '1'; // Default order
         
         const Z = elData.atomicNumber;
         const N = iso.massNumber - Z;
@@ -235,19 +277,82 @@ function renderIsotopeDetails(index) {
     
     // Set Element info in left pane header (only needs doing once but fine here)
     const elData = elementsData[currentAtomicNumber - 1];
+    
+    const isoCard = document.getElementById('modal-iso-card');
+    if (isoCard && elData) {
+        const dColor = getDecayColor(iso.decayMode);
+        const stateColor = typeof stateTextColors !== 'undefined' ? (stateTextColors[elData.phase] || stateTextColors['Unknown']) : '#e2e8f0';
+        isoCard.style.display = 'flex';
+        isoCard.style.background = getGlossyBackground(dColor, 'metal');
+        isoCard.style.border = `1px solid ${dColor}`;
+        const Z = elData.atomicNumber;
+        const N = iso.massNumber - Z;
+        
+        let isoName = `${elData.name}-${iso.massNumber}`;
+        if (Z === 1 && iso.massNumber === 1) isoName = 'Protium';
+        if (Z === 1 && iso.massNumber === 2) isoName = 'Deuterium';
+        if (Z === 1 && iso.massNumber === 3) isoName = 'Tritium';
+        
+        const massStr = iso.mass ? iso.mass.toFixed(4) : iso.massNumber;
+        const statusHtml = iso.isStable ? '<span style="color: #4ade80;">Stable Isotope</span>' : `<span style="color: ${dColor};">${iso.decayMode || 'Unstable'} Decay</span>`;
+
+        isoCard.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1;">
+                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${iso.massNumber}</span>
+                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${Z}</span>
+                </div>
+                <div style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: 600; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; margin-left: 10px;">
+                    <span style="font-size: 1.4rem; font-weight: 600; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${isoName}</span>
+                    <span style="font-size: 0.9rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: bold;">${statusHtml}</span>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Mass: <span style="color:#fff">${massStr} u</span></div>
+                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Neutrons: <span style="color:#fff">${N}</span></div>
+            </div>
+        `;
+    }
+
     if (elData) {
-        document.getElementById('modal-element-name').textContent = elData.name;
-        document.getElementById('modal-element-meta').textContent = `Atomic No. ${elData.atomicNumber} — Symbol ${elData.symbol}`;
+        const elCard = document.getElementById('modal-el-card');
+        if (elCard) {
+            const catName = getNormalizedCategory(elData.category);
+            const catColor = categoryColors[catName] || '#333';
+            const stateColor = typeof stateTextColors !== 'undefined' ? (stateTextColors[elData.phase] || stateTextColors['Unknown']) : '#e2e8f0';
+            const defaultN = Math.round(elData.atomicMass) - elData.atomicNumber;
+            elCard.style.background = getGlossyBackground(catColor, catName);
+            elCard.style.border = `1px solid ${catColor}`;
+            elCard.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: 600; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                    <div style="display: flex; flex-direction: column; margin-left: 10px;">
+                        <span style="font-size: 1.4rem; font-weight: 600; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); line-height: 1.2;">${elData.name}</span>
+                        <span style="font-size: 0.85rem; color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8); letter-spacing: 0.5px;">Atomic No. ${elData.atomicNumber} &mdash; ${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                    <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Protons (Z): <span style="color:#fff">${elData.atomicNumber}</span></div>
+                    <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Neutrons (N): <span style="color:#fff">${defaultN}</span></div>
+                </div>
+            `;
+        }
     }
     
-    document.getElementById('modal-iso-title').innerHTML = `<sup>${iso.massNumber}</sup>${elData ? elData.symbol : ''}`;
+    const isoTitle = document.getElementById('modal-iso-title');
+    if (isoTitle) {
+        isoTitle.innerHTML = `<sup>${iso.massNumber}</sup>${elData ? elData.symbol : ''}`;
+    }
     
     // Status text
     const statusEl = document.getElementById('modal-iso-status');
-    if (iso.isStable) {
-        statusEl.innerHTML = '<span style="color: #4ade80;">Stable Isotope</span>';
-    } else {
-        statusEl.innerHTML = `<span style="color: ${getDecayColor(iso.decayMode)};">${iso.decayMode || 'Unstable'} Decay</span>`;
+    if (statusEl) {
+        if (iso.isStable) {
+            statusEl.innerHTML = '<span style="color: #4ade80;">Stable Isotope</span>';
+        } else {
+            statusEl.innerHTML = `<span style="color: ${getDecayColor(iso.decayMode)};">${iso.decayMode || 'Unstable'} Decay</span>`;
+        }
     }
     
     // Helper to format values

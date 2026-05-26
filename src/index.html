@@ -272,10 +272,10 @@
 
                     <!-- Left Pane: Isotope List -->
                     <div id="modal-left-pane" style="flex: 0 0 400px; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; background: rgba(10, 15, 30, 0.5);">
-                        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <h2 id="modal-element-name" style="margin: 0; font-size: 1.8rem; color: #fff;">Element</h2>
-                            <div id="modal-element-meta" style="color: #aaa; font-size: 0.9rem;">Atomic No. - Symbol</div>
-                            <div id="modal-isotope-count" style="margin-top: 10px; font-size: 0.85rem; color: #64ffda; margin-bottom: 15px;"></div>
+                        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
+                            <div id="modal-el-card" class="element-cell" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 15px; padding: 0 20px; box-sizing: border-box;"></div>
+                            
+                            <div id="modal-isotope-count" style="margin-bottom: 10px; font-size: 0.85rem; color: #4ade80; font-family: var(--font-ui);"></div>
                             
                             <!-- Decay Mode Legend (Populated by JS) -->
                             <div id="modal-decay-legend" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.75rem; color: #fff; align-items: center;"></div>
@@ -284,11 +284,13 @@
                             <!-- Populated by JS -->
                         </div>
                     </div>
-
-                    <!-- Right Pane: Details & Emulator -->
-                    <div id="modal-right-pane" style="flex: 1; display: flex; flex-direction: column; padding: 20px; position: relative; overflow-y: auto;">
-                        <h3 id="modal-iso-title" style="margin-top: 0; margin-bottom: 5px; font-size: 2rem; color: #fff;">Isotope</h3>
-                        <div id="modal-iso-status" style="font-size: 1.1rem; margin-bottom: 20px; font-weight: bold;"></div>
+                    
+                    <!-- Right Pane: Isotope Details & Visualization -->
+                    <div style="flex: 2; display: flex; flex-direction: column; background: rgba(0,0,0,0.2);">
+                        <!-- Right Header -->
+                        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div id="modal-iso-card" class="element-cell" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; padding: 0 20px; box-sizing: border-box;"></div>
+                        </div>
                         
                         <!-- Nuclear Emulator Section -->
                         <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(20,40,60,0.5) 0%, rgba(10,15,30,0) 70%); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; min-height: 300px; position: relative; overflow: hidden;">
