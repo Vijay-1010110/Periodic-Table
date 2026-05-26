@@ -26,22 +26,24 @@ This is a highly interactive, visually stunning Periodic Table web application b
 * **Filter Sorting Engine**: Instead of destroying and recreating DOM elements when filtering isotopes by decay mode, we implemented a lightning-fast approach using the CSS `order` property. Hovering or clicking a decay mode legend dynamically changes the `order` of matching isotopes to `1` (pushing them to the top), and fades non-matching isotopes to `order: 3`, with dynamically visible section dividers injected at `order: 0` and `order: 2`.
 
 ## What We Built Recently
-- Fixed isotope modal headers using wide banner cards (removing `element-cell` conflicts).
-- Removed the interactive decay particle emulator.
-- Implemented an embedded Wikipedia iframe modal that bypasses `X-Frame-Options` by fetching the official mobile-html API instead.
-- Created a beautiful, fully customized SVG-based Decay Infographic that visualizes the parent nucleus, decay event sunburst, daughter nucleus, and emitted particles (alpha, beta, etc.) using overlapping proton/neutron clusters in the exact style of the provided educational reference diagram.
+- Fixed isotope modal headers using wide banner cards.
+- Embedded Wikipedia iframe modal successfully bypassing `X-Frame-Options`.
+- Created a beautiful, fully customized SVG-based Decay Infographic that visualizes the parent nucleus, decay event, daughter nucleus, and emitted particles.
+- **Improved Decay Infographic:** Fixed 2D "sausage" visual artifacts by implementing a true 3D randomized spherical volume with Z-depth sorting for protons and neutrons.
+- Added explicit full names to the graphical products (e.g., Parent Nucleus (Nickel-49), Emitted Positron, Daughter Nucleus (Cobalt-49)).
 
 ## What's Working
-- The main periodic table renders beautifully with orbital shell backgrounds and element categories.
-- Isotope modal is working flawlessly with the new header styles and the new visual decay diagram generator.
-- Clicking "Read Wikipedia ↗" successfully loads the isotope's Wikipedia page inside a sleek popup modal.
+- Main periodic table rendering and element modal UI.
+- Isotope modal is working flawlessly with the new visual decay diagram generator.
+- Clicking "Read Wikipedia ↗" successfully loads the isotope's Wikipedia page inside a popup modal.
+- The decay infographic generates perfect 3D nuclear clusters dynamically.
 
 ## What's In Progress
+- Refinement Phase (new branch `refinement`).
 - Continuous UI refinements based on user feedback.
 
 ## Next Steps
-- Await user feedback on the new graphical decay infographic.
-- Add any requested features or finalize the remaining UI styling.
+- Implement UI refinements as requested in the new refinement branch.
 
 ## AI Agent Instructions
 * **Tool Usage**: Strictly avoid general bash commands for file reading/writing (no `cat`, `grep`, or `sed` in bash). Prioritize specialized native tools (`view_file`, `replace_file_content`, `grep_search`).

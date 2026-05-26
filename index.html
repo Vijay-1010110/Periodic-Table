@@ -75077,66 +75077,78 @@ function renderIsotopeDetails(index) {
             const A = iso.massNumber;
             
             let dZ = Z, dA = A;
-            let pZ = '', pA = '', pSym = '', pName = '';
+            let pZ = '', pA = '', pSym = '', pName = '', pFullName = '';
             let particleSvg = '';
             let isSpontaneousFission = false;
             let hasParticle = true;
             
-            if (/\\bA\\b/.test(dMode) || dMode.includes('Alpha')) {
+            if (/\bA\b/.test(dMode) || dMode.includes('Alpha')) {
                 dZ = Z - 2; dA = A - 4;
-                pZ = '2'; pA = '4'; pSym = 'He'; pName = 'α';
+                pZ = '2'; pA = '4'; pSym = 'He'; pName = 'α'; pFullName = 'Alpha particle';
                 particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="pGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient><radialGradient id="nGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs><circle cx="15" cy="15" r="8" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="25" cy="15" r="8" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="15" cy="25" r="8" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="25" cy="25" r="8" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /></svg>`;
             } else if (dMode.includes('B-')) {
                 dZ = Z + 1; dA = A;
-                pZ = '-1'; pA = '0'; pSym = 'e'; pName = 'β⁻';
+                pZ = '-1'; pA = '0'; pSym = 'e'; pName = 'β⁻'; pFullName = 'Electron';
                 particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="eGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#38bdf8" /><stop offset="100%" stop-color="#0284c7" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#eGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">e⁻</text></svg>`;
             } else if (dMode.includes('B+') || dMode.includes('EC')) {
                 dZ = Z - 1; dA = A;
-                pZ = '+1'; pA = '0'; pSym = 'e'; pName = dMode.includes('B+') ? 'β⁺' : 'ν';
+                pZ = '+1'; pA = '0'; pSym = 'e'; pName = dMode.includes('B+') ? 'β⁺' : 'ν'; pFullName = dMode.includes('B+') ? 'Positron' : 'Neutrino';
                 particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="posGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#c084fc" /><stop offset="100%" stop-color="#7e22ce" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#posGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">e⁺</text></svg>`;
             } else if (dMode.includes('SF')) {
                 isSpontaneousFission = true;
                 dZ = Math.floor(Z / 2); dA = Math.floor(A / 2);
                 pZ = Math.ceil(Z / 2); pA = Math.ceil(A / 2);
-            } else if (/\\bp\\b/.test(dMode)) {
+            } else if (/\bp\b/.test(dMode)) {
                 dZ = Z - 1; dA = A - 1;
-                pZ = '1'; pA = '1'; pSym = 'p'; pName = 'Proton';
+                pZ = '1'; pA = '1'; pSym = 'p'; pName = 'Proton'; pFullName = 'Proton';
                 particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="pGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">p⁺</text></svg>`;
-            } else if (/\\bn\\b/.test(dMode)) {
+            } else if (/\bn\b/.test(dMode)) {
                 dZ = Z; dA = A - 1;
-                pZ = '0'; pA = '1'; pSym = 'n'; pName = 'Neutron';
+                pZ = '0'; pA = '1'; pSym = 'n'; pName = 'Neutron'; pFullName = 'Neutron';
                 particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="nGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">n⁰</text></svg>`;
             } else {
                 hasParticle = false;
             }
 
             const getSym = (targetZ) => {
-                for (const cat in window.periodicTableData) {
-                    const els = window.periodicTableData[cat];
-                    for (const elName in els) {
-                        if (els[elName].atomicNumber === targetZ) return els[elName].symbol;
-                    }
+                if (window.elementsData) {
+                    const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+                    if (el) return el.symbol;
                 }
                 return '?';
             };
+
+            const getName = (targetZ) => {
+                if (window.elementsData) {
+                    const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+                    if (el) return el.name;
+                }
+                return 'Unknown';
+            };
             
             const dSym = getSym(dZ);
+            const dName = getName(dZ);
+            const pNameFragment = getName(pZ);
             
             const genNuc = (mass) => {
-                const numSpheres = Math.min(mass, 70);
+                const numSpheres = Math.min(mass, 80);
                 let svg = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><radialGradient id="pGradN" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient><radialGradient id="nGradN" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs>`;
                 const spheres = [];
                 for (let i = 0; i < numSpheres; i++) {
-                    const r = Math.sqrt(Math.random()) * 30;
-                    const theta = Math.random() * 2 * Math.PI;
-                    const cx = 50 + r * Math.cos(theta);
-                    const cy = 50 + r * Math.sin(theta);
+                    const u = Math.random();
+                    const v = Math.random();
+                    const theta = u * 2 * Math.PI;
+                    const phi = Math.acos(2 * v - 1);
+                    const r = Math.cbrt(Math.random()) * 25; // 3D spherical volume distribution
+                    const cx = 50 + r * Math.sin(phi) * Math.cos(theta);
+                    const cy = 50 + r * Math.sin(phi) * Math.sin(theta);
+                    const z = r * Math.cos(phi);
                     const fill = Math.random() > 0.5 ? 'url(#pGradN)' : 'url(#nGradN)';
-                    spheres.push({ cx, cy, fill });
+                    spheres.push({ cx, cy, z, fill });
                 }
-                spheres.sort((a, b) => a.cy - b.cy);
+                spheres.sort((a, b) => a.z - b.z); // Sort by Z depth!
                 for (const s of spheres) {
-                    svg += `<circle cx="${s.cx}" cy="${s.cy}" r="10" fill="${s.fill}" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" />`;
+                    svg += `<circle cx="${s.cx}" cy="${s.cy}" r="9" fill="${s.fill}" stroke="rgba(0,0,0,0.4)" stroke-width="0.8" />`;
                 }
                 svg += `</svg>`;
                 return svg;
@@ -75162,7 +75174,7 @@ function renderIsotopeDetails(index) {
 
                     <!-- Parent Nucleus -->
                     <div style="display: flex; flex-direction: column; align-items: center; width: 150px; margin-top: 30px;">
-                        <div style="color: #9333ea; font-weight: bold; text-align: center; line-height: 1.1; font-size: 1.1rem;">Parent<br>nucleus</div>
+                        <div style="color: #9333ea; font-weight: bold; text-align: center; line-height: 1.1; font-size: 1.1rem;">Parent<br>nucleus<br><span style="font-size: 0.9rem; color: #a855f7;">(${elData.name}-${A})</span></div>
                         <div style="width: 120px; height: 120px; margin: 10px 0;">${parentSvg}</div>
                         <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 3rem;">
                             <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1.2rem; line-height: 1; margin-right: 5px;">
@@ -75203,7 +75215,7 @@ function renderIsotopeDetails(index) {
                                     </div>
                                     <span style="line-height: 1;">${getSym(pZ)}</span>
                                 </div>
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem;">Fragment 1</div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem; text-align: center;">Fragment 1<br><span style="font-size: 0.8rem; color: #a855f7;">(${pNameFragment}-${pA})</span></div>
                             </div>
                         </div>
 
@@ -75211,7 +75223,7 @@ function renderIsotopeDetails(index) {
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 70px; height: 70px;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem;">Fragment 2</div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem; text-align: center;">Fragment 2<br><span style="font-size: 0.8rem; color: #a855f7;">(${dName}-${dA})</span></div>
                                 <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.2rem;">
                                     <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
                                         <span>${dA}</span>
@@ -75255,7 +75267,7 @@ function renderIsotopeDetails(index) {
                                     ` : ''}
                                     <span style="line-height: 1;">${pSym}</span>
                                 </div>
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Emitted ${pName}<br>particle</div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Emitted ${pName}<br>particle<br><span style="font-size: 0.9rem; color: #a855f7;">(${pFullName})</span></div>
                             </div>
                         </div>
 
@@ -75263,7 +75275,7 @@ function renderIsotopeDetails(index) {
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 90px; height: 90px;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Daughter<br>nucleus</div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Daughter<br>nucleus<br><span style="font-size: 0.9rem; color: #a855f7;">(${dName}-${dA})</span></div>
                                 <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.5rem;">
                                     <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
                                         <span>${dA}</span>
