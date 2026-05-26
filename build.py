@@ -19,6 +19,7 @@ def build():
         'src/js/01_data.js',
         'src/js/04_isotopes_data.js',
         'src/js/05_isotopes.js',
+        'src/js/06_emulator.js',
         'src/js/02_main.js',
         'src/js/03_orbitals.js'
     ]

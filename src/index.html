@@ -14,6 +14,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
+    <!-- Scripts -->
+    <script src="js/01_data.js"></script>
+    <script src="js/04_isotopes_data.js"></script>
+    <script src="js/05_isotopes.js"></script>
+    <script src="js/06_emulator.js"></script>
+    <script src="js/02_main.js"></script>
+    <script src="js/03_orbitals.js"></script>
+
     <!-- CSS_INJECT -->
 </head>
 <body class="theme-dark">
@@ -244,81 +252,107 @@
         <!-- VIEW: ISOTOPES -->
         <section class="view-mode" id="view-isotopes">
             <div class="view-left">
-                <div class="grid-wrapper">
+                <div class="grid-wrapper" id="isotopes-grid-wrapper">
                     <div class="periodic-grid" id="isotopes-grid"></div>
                 </div>
             </div>
-            <div class="view-right sidebar">
-                <h3>Isotope Properties</h3>
-                <div id="iso-empty-state" class="empty-state">Select an element</div>
-                
-                <div id="iso-details" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1;">
-                    <div id="iso-element-card" class="element-card" style="position: relative; overflow: hidden; min-height: 120px; margin-bottom: 20px;">
-                        <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                            <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold;">
-                                <span id="iso-number"></span>
-                                <span id="iso-mass"></span>
-                            </div>
-                            <div class="ec-symbol mono-text" id="iso-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
-                            <div class="ec-name" id="iso-name" style="color: #ffffff; font-weight: 500; padding-bottom: 5px;"></div>
+            <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">⚛️</div>
+                    <h3 style="margin-bottom: 5px;">Isotopes Explorer</h3>
+                    <p style="font-size: 0.9rem;">Click any element in the grid<br>to explore its isotopes.</p>
+                </div>
+            </div>
+            
+            <!-- ISOTOPE MODAL OVERLAY -->
+            <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); background: rgba(15, 23, 42, 0.7); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
+                <div id="isotope-modal" style="width: 90%; height: 90%; max-width: 1400px; background: rgba(20, 30, 50, 0.95); border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: row; box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+                    
+                    <button id="close-modal-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; z-index: 10; font-family: 'Inter', sans-serif; transition: background 0.2s;">✕ Close</button>
+
+                    <!-- Left Pane: Isotope List -->
+                    <div id="modal-left-pane" style="flex: 0 0 400px; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; background: rgba(10, 15, 30, 0.5);">
+                        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <h2 id="modal-element-name" style="margin: 0; font-size: 1.8rem; color: #fff;">Element</h2>
+                            <div id="modal-element-meta" style="color: #aaa; font-size: 0.9rem;">Atomic No. - Symbol</div>
+                            <div id="modal-isotope-count" style="margin-top: 10px; font-size: 0.85rem; color: #64ffda; margin-bottom: 15px;"></div>
+                            
+                            <!-- Decay Mode Legend (Populated by JS) -->
+                            <div id="modal-decay-legend" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.75rem; color: #fff; align-items: center;"></div>
+                        </div>
+                        <div id="modal-isotope-list" style="flex: 1; overflow-y: auto; padding: 15px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; align-content: start;">
+                            <!-- Populated by JS -->
                         </div>
                     </div>
-                    
-                    <div class="prop-list" id="iso-prop-list">
-                        <div class="prop-item iso-prop-item" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="prop-label">Selected Isotope</span>
-                            <select id="iso-selector" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.9rem; padding: 2px 4px; outline: none; cursor: pointer; max-width: 120px;">
-                                <!-- Options will be populated by JS -->
-                            </select>
+
+                    <!-- Right Pane: Details & Emulator -->
+                    <div id="modal-right-pane" style="flex: 1; display: flex; flex-direction: column; padding: 20px; position: relative; overflow-y: auto;">
+                        <h3 id="modal-iso-title" style="margin-top: 0; margin-bottom: 5px; font-size: 2rem; color: #fff;">Isotope</h3>
+                        <div id="modal-iso-status" style="font-size: 1.1rem; margin-bottom: 20px; font-weight: bold;"></div>
+                        
+                        <!-- Nuclear Emulator Section -->
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(20,40,60,0.5) 0%, rgba(10,15,30,0) 70%); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; min-height: 300px; position: relative; overflow: hidden;">
+                            <canvas id="nuclear-emulator-canvas" width="600" height="400" style="width: 100%; height: 100%;"></canvas>
+                            
+                            <div style="position: absolute; bottom: 20px; display: flex; gap: 10px;">
+                                <button id="btn-simulate-decay" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: bold; box-shadow: 0 4px 10px rgba(59,130,246,0.4); transition: transform 0.1s, background 0.2s;">Simulate Decay</button>
+                                <button id="btn-reset-emulator" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s;">Reset</button>
+                            </div>
                         </div>
 
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Count</span>
-                            <span class="prop-value mono-text" id="val-iso-count">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Write-up</span>
-                            <span class="prop-value mono-text" id="val-iso-writeup">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Mass</span>
-                            <span class="prop-value mono-text" id="val-iso-mass-val">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Mass excess</span>
-                            <span class="prop-value mono-text" id="val-iso-mass-excess">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Binding energy</span>
-                            <span class="prop-value mono-text" id="val-iso-binding">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Abundance</span>
-                            <span class="prop-value mono-text" id="val-iso-abundance">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Half-life</span>
-                            <span class="prop-value mono-text" id="val-iso-halflife">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Decay mode</span>
-                            <span class="prop-value mono-text" id="val-iso-decay">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Decay width</span>
-                            <span class="prop-value mono-text" id="val-iso-decay-width">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Specific activity</span>
-                            <span class="prop-value mono-text" id="val-iso-specific-activity">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Magnetic moment</span>
-                            <span class="prop-value mono-text" id="val-iso-magnetic">-</span>
-                        </div>
-                        <div class="prop-item iso-prop-item">
-                            <span class="prop-label">Quadrupole moment</span>
-                            <span class="prop-value mono-text" id="val-iso-quadrupole">-</span>
+                        <!-- Details Grid Card -->
+                        <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.05);">
+                            <h4 style="margin-top: 0; margin-bottom: 15px; color: #fff; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Physical Properties</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Write-up</span>
+                                    <span class="prop-value mono-text" id="m-iso-wiki">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Mass</span>
+                                    <span class="prop-value mono-text" id="m-iso-mass">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Mass excess</span>
+                                    <span class="prop-value mono-text" id="m-iso-excess">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Binding energy</span>
+                                    <span class="prop-value mono-text" id="m-iso-binding">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Abundance</span>
+                                    <span class="prop-value mono-text" id="m-iso-abundance">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Half-life</span>
+                                    <span class="prop-value mono-text" id="m-iso-halflife">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Decay mode</span>
+                                    <span class="prop-value mono-text" id="m-iso-decay">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Decay width</span>
+                                    <span class="prop-value mono-text" id="m-iso-width">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Specific activity</span>
+                                    <span class="prop-value mono-text" id="m-iso-activity">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Magnetic moment</span>
+                                    <span class="prop-value mono-text" id="m-iso-magnetic">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Quadrupole moment</span>
+                                    <span class="prop-value mono-text" id="m-iso-quadrupole">-</span>
+                                </div>
+                                <div class="prop-item" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <span class="prop-label">Spin/Parity</span>
+                                    <span class="prop-value mono-text" id="m-iso-spin">-</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -450,13 +450,13 @@ function renderGrid() {
         
         // Static Decay Mode Legend
         const decayModes = [
-            { name: 'Stable', color: '#222222' },
-            { name: 'Alpha Decay', color: '#facc15' }, // Yellow
-            { name: 'Beta Decay', color: '#3b82f6' }, // Blue
-            { name: 'Positron Emission / EC', color: '#ef4444' }, // Red
-            { name: 'Proton Emission', color: '#f97316' }, // Orange
-            { name: 'Neutron Emission', color: '#06b6d4' }, // Cyan
-            { name: 'Spontaneous Fission', color: '#22c55e' } // Green
+            { name: 'Stable', color: '#4ade80' },
+            { name: 'Alpha Decay', color: '#facc15' },
+            { name: 'Beta- Decay', color: '#38bdf8' },
+            { name: 'Positron Emission / EC', color: '#c084fc' },
+            { name: 'Spontaneous Fission', color: '#f87171' },
+            { name: 'Proton Emission', color: '#fb923c' },
+            { name: 'Neutron Emission', color: '#2dd4bf' }
         ];
         
         let html = '<div class="legend-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">';
