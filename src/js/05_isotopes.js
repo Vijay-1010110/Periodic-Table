@@ -365,7 +365,7 @@ function renderIsotopeDetails(index) {
     
     // Write-up link
     if (elData && elData.name) {
-        document.getElementById('m-iso-wiki').innerHTML = `<a href="https://en.wikipedia.org/wiki/${elData.name}-${iso.massNumber}" target="_blank" style="color: #3b82f6; text-decoration: none;">${elData.name}-${iso.massNumber} Wikipedia ↗</a>`;
+        document.getElementById('m-iso-wiki').innerHTML = `<button onclick="window.openWikiModal('${elData.name}', ${iso.massNumber})" style="background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #60a5fa; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-family: var(--font-ui); font-size: 0.85rem; transition: all 0.2s;">Read Wikipedia ↗</button>`;
     } else {
         document.getElementById('m-iso-wiki').textContent = '-';
     }
@@ -387,14 +387,254 @@ function renderIsotopeDetails(index) {
     document.getElementById('m-iso-width').innerHTML = iso.decayWidth !== null ? formatExp(iso.decayWidth, 4) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
     document.getElementById('m-iso-activity').innerHTML = iso.specificActivity !== null ? formatExp(iso.specificActivity, 2) + ' <span style="font-size: 0.8em; color: #888;">Bq/g</span>' : '-';
     document.getElementById('m-iso-magnetic').innerHTML = iso.magneticMoment !== null ? format(iso.magneticMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">μN</span>' : '-';
-    document.getElementById('m-iso-quadrupole').innerHTML = iso.quadrupoleMoment !== null ? format(iso.quadrupoleMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">b</span>' : '-';
-    document.getElementById('m-iso-spin').textContent = iso.spin ? `${iso.spin}${iso.parity || ''}` : '-';
-    
-    // Trigger emulator rendering
-    if (window.NuclearEmulator) {
-        window.NuclearEmulator.loadIsotope(iso, elData);
+    // Render Detailed Scientific Infographic
+    const infoContainer = document.getElementById('decay-infographic-container');
+    if (infoContainer && elData) {
+        if (iso.isStable) {
+            infoContainer.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px;">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #166534 100%); box-shadow: 0 0 30px rgba(74, 222, 128, 0.4), inset 0 0 20px rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; border: 2px solid #86efac;">
+                        <span style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: bold; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${elData.symbol}</span>
+                    </div>
+                    <div style="font-size: 1.5rem; font-family: var(--font-ui); font-weight: bold; color: #4ade80; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(74,222,128,0.5);">Stable Isotope (Valley of Stability)</div>
+                </div>
+            `;
+        } else {
+            const dMode = iso.decayMode || '';
+            const Z = elData.atomicNumber;
+            const A = iso.massNumber;
+            
+            let dZ = Z, dA = A;
+            let pZ = '', pA = '', pSym = '', pName = '';
+            let particleSvg = '';
+            let isSpontaneousFission = false;
+            let hasParticle = true;
+            
+            if (/\\bA\\b/.test(dMode) || dMode.includes('Alpha')) {
+                dZ = Z - 2; dA = A - 4;
+                pZ = '2'; pA = '4'; pSym = 'He'; pName = 'α';
+                particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="pGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient><radialGradient id="nGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs><circle cx="15" cy="15" r="8" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="25" cy="15" r="8" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="15" cy="25" r="8" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /><circle cx="25" cy="25" r="8" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" /></svg>`;
+            } else if (dMode.includes('B-')) {
+                dZ = Z + 1; dA = A;
+                pZ = '-1'; pA = '0'; pSym = 'e'; pName = 'β⁻';
+                particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="eGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#38bdf8" /><stop offset="100%" stop-color="#0284c7" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#eGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">e⁻</text></svg>`;
+            } else if (dMode.includes('B+') || dMode.includes('EC')) {
+                dZ = Z - 1; dA = A;
+                pZ = '+1'; pA = '0'; pSym = 'e'; pName = dMode.includes('B+') ? 'β⁺' : 'ν';
+                particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="posGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#c084fc" /><stop offset="100%" stop-color="#7e22ce" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#posGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">e⁺</text></svg>`;
+            } else if (dMode.includes('SF')) {
+                isSpontaneousFission = true;
+                dZ = Math.floor(Z / 2); dA = Math.floor(A / 2);
+                pZ = Math.ceil(Z / 2); pA = Math.ceil(A / 2);
+            } else if (/\\bp\\b/.test(dMode)) {
+                dZ = Z - 1; dA = A - 1;
+                pZ = '1'; pA = '1'; pSym = 'p'; pName = 'Proton';
+                particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="pGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#pGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">p⁺</text></svg>`;
+            } else if (/\\bn\\b/.test(dMode)) {
+                dZ = Z; dA = A - 1;
+                pZ = '0'; pA = '1'; pSym = 'n'; pName = 'Neutron';
+                particleSvg = `<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="nGrad" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs><circle cx="20" cy="20" r="12" fill="url(#nGrad)" stroke="rgba(0,0,0,0.3)" stroke-width="1" /><text x="20" y="25" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">n⁰</text></svg>`;
+            } else {
+                hasParticle = false;
+            }
+
+            const getSym = (targetZ) => {
+                for (const cat in window.periodicTableData) {
+                    const els = window.periodicTableData[cat];
+                    for (const elName in els) {
+                        if (els[elName].atomicNumber === targetZ) return els[elName].symbol;
+                    }
+                }
+                return '?';
+            };
+            
+            const dSym = getSym(dZ);
+            
+            const genNuc = (mass) => {
+                const numSpheres = Math.min(mass, 70);
+                let svg = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><radialGradient id="pGradN" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#60a5fa" /><stop offset="100%" stop-color="#1d4ed8" /></radialGradient><radialGradient id="nGradN" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#f472b6" /><stop offset="100%" stop-color="#be185d" /></radialGradient></defs>`;
+                const spheres = [];
+                for (let i = 0; i < numSpheres; i++) {
+                    const r = Math.sqrt(Math.random()) * 30;
+                    const theta = Math.random() * 2 * Math.PI;
+                    const cx = 50 + r * Math.cos(theta);
+                    const cy = 50 + r * Math.sin(theta);
+                    const fill = Math.random() > 0.5 ? 'url(#pGradN)' : 'url(#nGradN)';
+                    spheres.push({ cx, cy, fill });
+                }
+                spheres.sort((a, b) => a.cy - b.cy);
+                for (const s of spheres) {
+                    svg += `<circle cx="${s.cx}" cy="${s.cy}" r="10" fill="${s.fill}" stroke="rgba(0,0,0,0.3)" stroke-width="0.5" />`;
+                }
+                svg += `</svg>`;
+                return svg;
+            };
+
+            const parentSvg = genNuc(A);
+            const daughterSvg = genNuc(dA);
+            
+            let html = `
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 100%; position: relative; font-family: var(--font-ui); background: #ffffff; border-radius: 10px; color: #333; overflow: hidden;">
+                    
+                    <!-- Header Title -->
+                    <div style="position: absolute; top: 0; left: 0; background: #86198f; color: #fff; padding: 5px 20px 5px 15px; font-weight: bold; font-size: 1.1rem; border-bottom-right-radius: 20px; text-transform: uppercase;">
+                        ${dMode} DECAY OF ${elData.name.toUpperCase()} ${A}
+                    </div>
+
+                    <!-- Legend Key -->
+                    <div style="position: absolute; top: 15px; right: 15px; background: #fef08a; border: 1px solid #ca8a04; border-radius: 8px; padding: 10px; color: #000; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <div style="font-weight: bold; text-align: center; margin-bottom: 5px; color: #854d0e; font-size: 0.9rem;">Key</div>
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold; color: #4338ca;"><div style="width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #1d4ed8 100%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);"></div> Proton</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 0.8rem; font-weight: bold; color: #9d174d;"><div style="width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #be185d 100%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);"></div> Neutron</div>
+                    </div>
+
+                    <!-- Parent Nucleus -->
+                    <div style="display: flex; flex-direction: column; align-items: center; width: 150px; margin-top: 30px;">
+                        <div style="color: #9333ea; font-weight: bold; text-align: center; line-height: 1.1; font-size: 1.1rem;">Parent<br>nucleus</div>
+                        <div style="width: 120px; height: 120px; margin: 10px 0;">${parentSvg}</div>
+                        <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 3rem;">
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1.2rem; line-height: 1; margin-right: 5px;">
+                                <span>${A}</span>
+                                <span>${Z}</span>
+                            </div>
+                            <span style="line-height: 1;">${elData.symbol}</span>
+                        </div>
+                    </div>
+            `;
+
+            if (isSpontaneousFission || !hasParticle) {
+                html += `
+                    <!-- Center Arrow -->
+                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 120px; height: 200px; margin-top: 30px;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9333ea; font-weight: bold; text-align: center; z-index: 2; background: radial-gradient(circle, #fef08a 0%, #fef08a 40%, transparent 70%); padding: 25px; font-size: 1.1rem; line-height: 1.1;">Decay<br>event</div>
+                        <svg width="120" height="200" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,100 L 100,50" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                            <path d="M 0,100 L 100,150" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#84cc16" />
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <!-- Right Side (Fragments) -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; height: 100%; width: 220px; margin-top: 30px;">
+                        <!-- Fragment 1 -->
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 70px; height: 70px;">${genNuc(pA)}</div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.2rem;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                        <span>${pA}</span>
+                                        <span>${pZ}</span>
+                                    </div>
+                                    <span style="line-height: 1;">${getSym(pZ)}</span>
+                                </div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem;">Fragment 1</div>
+                            </div>
+                        </div>
+
+                        <!-- Fragment 2 -->
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 70px; height: 70px;">${daughterSvg}</div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem;">Fragment 2</div>
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.2rem;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                        <span>${dA}</span>
+                                        <span>${dZ}</span>
+                                    </div>
+                                    <span style="line-height: 1;">${dSym}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <!-- Center Arrow -->
+                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 120px; height: 200px; margin-top: 30px;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9333ea; font-weight: bold; text-align: center; z-index: 2; background: radial-gradient(circle, #fef08a 0%, #fef08a 40%, transparent 70%); padding: 25px; font-size: 1.1rem; line-height: 1.1;">Decay<br>event</div>
+                        <svg width="120" height="200" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,100 L 100,50" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                            <path d="M 0,100 L 100,150" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#84cc16" />
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <!-- Right Side (Products) -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; height: 100%; width: 220px; margin-top: 30px;">
+                        
+                        <!-- Emitted Particle (Top) -->
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px;">${particleSvg}</div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.5rem;">
+                                    ${pA ? `
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                        <span>${pA}</span>
+                                        <span>${pZ}</span>
+                                    </div>
+                                    ` : ''}
+                                    <span style="line-height: 1;">${pSym}</span>
+                                </div>
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Emitted ${pName}<br>particle</div>
+                            </div>
+                        </div>
+
+                        <!-- Daughter Nucleus (Bottom) -->
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 90px; height: 90px;">${daughterSvg}</div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Daughter<br>nucleus</div>
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.5rem;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                        <span>${dA}</span>
+                                        <span>${dZ}</span>
+                                    </div>
+                                    <span style="line-height: 1;">${dSym}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            infoContainer.innerHTML = html;
+        }
     }
 }
+
+// Wiki Modal Logic
+window.openWikiModal = function(elName, massNum) {
+    const modal = document.getElementById('wiki-modal');
+    const iframe = document.getElementById('wiki-iframe');
+    modal.style.display = 'flex';
+    iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; text-align: center; color: #333;">Loading Wikipedia article...</div>';
+    
+    // Use Wikipedia's mobile-html REST API to fetch a fully rendered page that avoids X-Frame-Options
+    const exactPage = `${elName}-${massNum}`;
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/${exactPage}`)
+        .then(res => {
+            if (res.ok) return res.text();
+            // Fallback
+            return fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/Isotopes_of_${elName.toLowerCase()}`).then(r => r.text());
+        })
+        .then(html => {
+            // Inject base URL so images and styles load correctly
+            const injectedHtml = html.replace('<head>', '<head><base href="https://en.wikipedia.org/wiki/">');
+            iframe.srcdoc = injectedHtml;
+        })
+        .catch(err => {
+            iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; color: red;">Failed to load Wikipedia article.</div>';
+        });
+};
 
 function closeIsotopeModal() {
     const overlay = document.getElementById('isotope-modal-overlay');

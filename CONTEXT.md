@@ -25,16 +25,23 @@ This is a highly interactive, visually stunning Periodic Table web application b
     * We designed highly dense, rectangular isotope cards showing Atomic Number (Z) top-left, Neutrons (N) top-right, custom names (e.g., Protium), and exact atomic mass. We forced `aspect-ratio: 0.8` and `min-height` to prevent browser flex/grid engines from squishing the cards.
 * **Filter Sorting Engine**: Instead of destroying and recreating DOM elements when filtering isotopes by decay mode, we implemented a lightning-fast approach using the CSS `order` property. Hovering or clicking a decay mode legend dynamically changes the `order` of matching isotopes to `1` (pushing them to the top), and fades non-matching isotopes to `order: 3`, with dynamically visible section dividers injected at `order: 0` and `order: 2`.
 
-## What's Working
-* The main periodic table grid is fully functional and perfectly styled.
-* The element detail rendering and orbital visualizations.
-* The Isotope modal populates instantly, the decay legend filtering works flawlessly using CSS `order`, and the UI cards are dimensionally stable and visually stunning.
-* The custom Python build script successfully bundles the app.
+## What We Built Recently
+- Fixed isotope modal headers using wide banner cards (removing `element-cell` conflicts).
+- Removed the interactive decay particle emulator.
+- Implemented an embedded Wikipedia iframe modal that bypasses `X-Frame-Options` by fetching the official mobile-html API instead.
+- Created a beautiful, fully customized SVG-based Decay Infographic that visualizes the parent nucleus, decay event sunburst, daughter nucleus, and emitted particles (alpha, beta, etc.) using overlapping proton/neutron clusters in the exact style of the provided educational reference diagram.
 
-## What's In Progress / Next Steps
-* The user may want further enhancements to the Nuclear Emulator (`06_emulator.js`) which currently acts as a placeholder for simulating actual radioactive decay processes.
-* Ensuring all edge-case isotopes (e.g., extremely unstable or theoretical isotopes) render gracefully without breaking the UI.
-* General polish and additional micro-animations across the newer modal components.
+## What's Working
+- The main periodic table renders beautifully with orbital shell backgrounds and element categories.
+- Isotope modal is working flawlessly with the new header styles and the new visual decay diagram generator.
+- Clicking "Read Wikipedia ↗" successfully loads the isotope's Wikipedia page inside a sleek popup modal.
+
+## What's In Progress
+- Continuous UI refinements based on user feedback.
+
+## Next Steps
+- Await user feedback on the new graphical decay infographic.
+- Add any requested features or finalize the remaining UI styling.
 
 ## AI Agent Instructions
 * **Tool Usage**: Strictly avoid general bash commands for file reading/writing (no `cat`, `grep`, or `sed` in bash). Prioritize specialized native tools (`view_file`, `replace_file_content`, `grep_search`).

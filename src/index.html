@@ -273,7 +273,7 @@
                     <!-- Left Pane: Isotope List -->
                     <div id="modal-left-pane" style="flex: 0 0 400px; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; background: rgba(10, 15, 30, 0.5);">
                         <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
-                            <div id="modal-el-card" class="element-cell" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 15px; padding: 0 20px; box-sizing: border-box;"></div>
+                            <div id="modal-el-card" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 15px; padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff;"></div>
                             
                             <div id="modal-isotope-count" style="margin-bottom: 10px; font-size: 0.85rem; color: #4ade80; font-family: var(--font-ui);"></div>
                             
@@ -288,17 +288,13 @@
                     <!-- Right Pane: Isotope Details & Visualization -->
                     <div style="flex: 2; display: flex; flex-direction: column; background: rgba(0,0,0,0.2);">
                         <!-- Right Header -->
-                        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div id="modal-iso-card" class="element-cell" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; padding: 0 20px; box-sizing: border-box;"></div>
+                        <div style="padding: 20px 90px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div id="modal-iso-card" style="width: 100%; height: 80px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff;"></div>
                         </div>
                         
-                        <!-- Nuclear Emulator Section -->
+                        <!-- Nuclear Infographic Section -->
                         <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(20,40,60,0.5) 0%, rgba(10,15,30,0) 70%); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; min-height: 300px; position: relative; overflow: hidden;">
-                            <canvas id="nuclear-emulator-canvas" width="600" height="400" style="width: 100%; height: 100%;"></canvas>
-                            
-                            <div style="position: absolute; bottom: 20px; display: flex; gap: 10px;">
-                                <button id="btn-simulate-decay" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: bold; box-shadow: 0 4px 10px rgba(59,130,246,0.4); transition: transform 0.1s, background 0.2s;">Simulate Decay</button>
-                                <button id="btn-reset-emulator" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s;">Reset</button>
+                            <div id="decay-infographic-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
                             </div>
                         </div>
 
@@ -371,6 +367,23 @@
     </main>
 
     <!-- JS_DATA_INJECT -->
+
+    <!-- Wikipedia Modal -->
+    <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div style="width: 80vw; max-width: 1000px; height: 85vh; background: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.7);">
+            <div style="padding: 15px 25px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="margin: 0; color: #fff; font-family: var(--font-ui); font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                    Wikipedia Reference
+                </h3>
+                <button onclick="document.getElementById('wiki-modal').style.display='none'" style="background: transparent; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
+            </div>
+            <div style="flex: 1; position: relative; background: #fff;">
+                <iframe id="wiki-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- JS_MAIN_INJECT -->
 </body>
 </html>
