@@ -687,8 +687,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .property-list { 
     background: transparent;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2px;
+    flex: 1;
+    min-width: 0;
 }
 
 .prop-item {
@@ -867,13 +869,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* Responsive Design */
 @media (max-width: 1200px) {
     /* Layout is vertical by default, just adjust spacing if needed */
-    .view-left { padding: 15px 20px; position: relative; }
-    .view-right { padding: 20px; gap: 15px; }
+    .view-left { padding: 10px 20px; position: relative; }
+    .view-right { padding: 15px 20px; gap: 20px; flex-wrap: nowrap; }
     
     /* Fix element card size */
     #element-detail-card {
-        flex: 0 0 220px;
-        height: 220px;
+        flex: 0 0 180px;
+        height: 180px;
         border-radius: 8px;
     }
     
@@ -891,57 +893,64 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
     .temp-controller {
         background: transparent;
-        padding: 5px;
+        padding: 0;
         flex: 1;
         justify-content: center;
         max-width: 800px;
+        gap: 2px;
     }
     #temp-slider, #timeline-slider {
         width: 100%;
         max-width: none;
+        margin: 2px 0;
     }
 
     /* Make legends structurally smaller and fit rows 3-4 (Li and Na rows) */
     .in-grid-legend {
-        gap: 8px;
+        gap: 4px; /* Reduced from 8px */
         padding: 0;
         width: 100%;
         max-width: 100%;
+        height: 0; /* PREVENT LEGEND FROM EXPANDING GRID ROWS */
+        overflow: visible; /* Let it render downwards if taller than 0 */
         grid-row: 3 / 5; /* Restrict to row 3 and 4 (Li and Na rows) */
         grid-column: 3 / 13; /* Stay within empty space */
         justify-content: center;
         align-items: flex-start;
+        transform: scale(0.95); /* Slight scale down to ensure it never overflows */
+        transform-origin: top center;
+        margin-top: 5px; /* slight push down so it doesn't hug the top */
     }
     
     /* Shrink legend contents to fit */
-    .legend-box { padding: 6px 8px; }
-    .legend-box-content { gap: 6px; }
+    .legend-box { padding: 4px; }
+    .legend-box-content { gap: 2px; }
     .legend-group {
         min-width: 0;
-        gap: 2px;
+        gap: 1px;
     }
     .legend-box-title {
-        font-size: 0.6rem;
-        margin-bottom: 4px;
-    }
-    .legend-group-title { font-size: 0.55rem; letter-spacing: 0; }
-    .legend-item {
         font-size: 0.55rem;
-        gap: 3px;
-        padding: 2px 4px !important;
+        margin-bottom: 2px;
+    }
+    .legend-group-title { font-size: 0.5rem; letter-spacing: 0; }
+    .legend-item {
+        font-size: 0.5rem;
+        gap: 2px;
+        padding: 1px 3px !important;
         margin-left: 0;
-        margin-bottom: 2px !important;
+        margin-bottom: 1px !important;
     }
     .legend-item span {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 
     /* Grid layout for metals to reduce height */
     .in-grid-legend .legend-box:first-child .legend-group:first-child {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 2px 6px;
-        min-width: 160px;
+        gap: 1px 4px;
+        min-width: 140px; /* Reduced from 160px */
     }
     .in-grid-legend .legend-box:first-child .legend-group:first-child .legend-group-title { grid-column: 1 / -1; }
     
@@ -1031,12 +1040,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                         <div class="table-controls">
                             <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
-                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
+                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                             </div>
                             <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
-                                <label id="timeline-display-container">Year: <input type="number" id="timeline-input" class="mono-text" min="1650" max="2025" value="2025"></label>
                                 <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
+                                <label id="timeline-display-container">Year: <input type="number" id="timeline-input" class="mono-text" min="1650" max="2025" value="2025"></label>
                             </div>
                         </div>
 
