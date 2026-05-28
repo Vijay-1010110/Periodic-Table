@@ -784,12 +784,16 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
                         <span class="prop-value mono-text"><span id="val-heat">-</span> <span id="unit-heat-span">J/kgK</span></span>
                     </div>
                     <div class="prop-item" data-prop="abundance">
-                        <span class="prop-label">Abundance, <select id="sub-abundance" class="inline-select sub-select"><option value="universe">universe</option><option value="sun">sun</option><option value="oceans">oceans</option><option value="human">human</option><option value="earthCrust">earth crust</option><option value="meteorites">meteorites</option></select></span>
+                        <span class="prop-label">Abundance, <select id="sub-abundance" class="inline-select sub-select"><option value="universe">universe</option><option value="sun">sun</option><option value="oceans">oceans</option><option value="human">human</option><option value="earthCrust" selected>earth crust</option><option value="meteorites">meteorites</option></select></span>
                         <span class="prop-value mono-text"><span id="val-abundance">-</span> %</span>
                     </div>
                     <div class="prop-item" data-prop="discoveryYear">
                         <span class="prop-label">Discovered in</span>
                         <span class="prop-value mono-text" id="val-discovered">-</span>
+                    </div>
+                    <div class="prop-item" data-prop="wiki">
+                        <span class="prop-label">Wikipedia Writeup</span>
+                        <span class="prop-value mono-text" id="val-wiki" style="color: #fff; text-decoration: underline;">Read ↗</span>
                     </div>
                 </div>
             </div>
@@ -1002,15 +1006,21 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     <!-- Wikipedia Modal -->
     <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
         <div style="width: 80vw; max-width: 1000px; height: 85vh; background: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.7);">
-            <div style="padding: 15px 25px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div id="wiki-modal-header" style="padding: 15px 25px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
                 <h3 style="margin: 0; color: #fff; font-family: var(--font-ui); font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                    <span id="wiki-modal-symbol" style="font-family: var(--font-mono); font-weight: 700; font-size: 1.4rem; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); display: none;"></span>
+                    <svg id="wiki-modal-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                     Wikipedia Reference
                 </h3>
                 <button onclick="document.getElementById('wiki-modal').style.display='none'" style="background: transparent; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
             </div>
             <div style="flex: 1; position: relative; background: #fff;">
-                <iframe id="wiki-iframe" style="width: 100%; height: 100%; border: none;"></iframe>
+                <div id="wiki-loader-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background:#0f172a; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:10; transition: opacity 0.3s ease;">
+                    <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+                    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+                    <h2 style="margin: 0; font-weight: 500; font-size: 1.2rem; color: #cbd5e1; font-family: 'Inter', sans-serif;">Loading Wikipedia Content...</h2>
+                </div>
+                <iframe id="wiki-iframe" style="width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.3s ease;"></iframe>
             </div>
         </div>
     </div>
@@ -75299,24 +75309,103 @@ function renderIsotopeDetails(index) {
 window.openWikiModal = function(elName, massNum) {
     const modal = document.getElementById('wiki-modal');
     const iframe = document.getElementById('wiki-iframe');
-    modal.style.display = 'flex';
-    iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; text-align: center; color: #333;">Loading Wikipedia article...</div>';
+    const loaderOverlay = document.getElementById('wiki-loader-overlay');
+    const header = document.getElementById('wiki-modal-header');
+    const symbolSpan = document.getElementById('wiki-modal-symbol');
+    const iconSvg = document.getElementById('wiki-modal-icon');
     
-    // Use Wikipedia's mobile-html REST API to fetch a fully rendered page that avoids X-Frame-Options
-    const exactPage = `${elName}-${massNum}`;
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/${exactPage}`)
+    // Style the modal header if element data is available
+    let el = null;
+    if (typeof elementsData !== 'undefined') {
+        el = elementsData.find(e => e.name === elName);
+    }
+    if (el && header) {
+        const normalizedCategory = getNormalizedCategory(el.category);
+        header.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
+        header.style.borderBottom = `1px solid ${categoryColors[normalizedCategory] || 'rgba(255,255,255,0.2)'}`;
+        if (symbolSpan && iconSvg) {
+            symbolSpan.innerHTML = massNum ? `<sup>${massNum}</sup>${el.symbol}` : el.symbol;
+            symbolSpan.style.display = 'inline';
+            iconSvg.style.display = 'none';
+        }
+    } else if (header) {
+        header.style.background = 'rgba(255,255,255,0.05)';
+        header.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+        if (symbolSpan && iconSvg) {
+            symbolSpan.style.display = 'none';
+            iconSvg.style.display = 'inline';
+        }
+    }
+    
+    let pageName = elName;
+    if (massNum) {
+        pageName = `${elName}-${massNum}`;
+    }
+    
+    // Reset states
+    if (loaderOverlay) {
+        loaderOverlay.style.display = 'flex';
+        loaderOverlay.style.opacity = '1';
+    }
+    iframe.style.opacity = '0';
+    iframe.srcdoc = '';
+    
+    modal.style.display = 'flex';
+    
+    // Use the official Wikimedia REST API to get a mobile-friendly HTML page that doesn't set X-Frame-Options
+    const url = `https://en.wikipedia.org/api/rest_v1/page/mobile-html/${encodeURIComponent(pageName)}`;
+    
+    // Once the iframe has finished rendering the injected HTML (including CSS!)
+    iframe.onload = () => {
+        if (iframe.srcdoc) {
+            if (loaderOverlay) loaderOverlay.style.opacity = '0';
+            iframe.style.opacity = '1';
+            setTimeout(() => {
+                if (loaderOverlay) loaderOverlay.style.display = 'none';
+            }, 300);
+        }
+    };
+    
+    fetch(url)
         .then(res => {
-            if (res.ok) return res.text();
-            // Fallback
-            return fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/Isotopes_of_${elName.toLowerCase()}`).then(r => r.text());
+            if (!res.ok) {
+                if (!massNum) return fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/${encodeURIComponent(elName)}`).then(r => r.text());
+                throw new Error('Network error');
+            }
+            return res.text();
         })
         .then(html => {
-            // Inject base URL so images and styles load correctly
-            const injectedHtml = html.replace('<head>', '<head><base href="https://en.wikipedia.org/wiki/">');
+            // Inject custom CSS to style the Wikipedia Infobox table headers!
+            let injectedCss = '';
+            if (el) {
+                const normalizedCategory = getNormalizedCategory(el.category);
+                const bgColor = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory).replace(/"/g, "'");
+                const borderColor = categoryColors[normalizedCategory] || 'rgba(255,255,255,0.2)';
+                
+                injectedCss = `
+                <style>
+                    table.infobox th.infobox-header {
+                        background: ${bgColor} !important;
+                        color: white !important;
+                        text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+                        border-bottom: 2px solid ${borderColor} !important;
+                    }
+                    /* Also style the title caption */
+                    table.infobox caption.infobox-title {
+                        background: ${bgColor} !important;
+                        color: white !important;
+                        text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+                        border-bottom: 2px solid ${borderColor} !important;
+                    }
+                </style>`;
+            }
+
+            // Wikipedia mobile HTML API returns a full HTML document, but we inject a base tag to ensure all relative links and resources resolve to Wikipedia domain.
+            const injectedHtml = html.replace('<head>', '<head><base href="https://en.wikipedia.org/wiki/">' + injectedCss);
             iframe.srcdoc = injectedHtml;
         })
         .catch(err => {
-            iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; color: red;">Failed to load Wikipedia article.</div>';
+            iframe.srcdoc = `<html style="background:#0f172a;"><body style="color:red;padding:20px;font-family:sans-serif;background:#0f172a;">Error loading Wikipedia page.</body></html>`;
         });
 };
 
@@ -75606,6 +75695,12 @@ function setupUI() {
             target.classList.add('active');
             currentProperty = target.dataset.prop;
             updateGridVisuals();
+            
+            const wikiViewBtn = document.getElementById('wiki-writeup-view');
+            if (wikiViewBtn) {
+                if (currentProperty === 'wiki') wikiViewBtn.classList.remove('hidden');
+                else wikiViewBtn.classList.add('hidden');
+            }
         });
     });
 
@@ -76078,10 +76173,12 @@ function updateGridVisuals() {
         let valText = '';
 
         if (isMain || isIsotopes) {
-            if (isIsotopes || currentProperty === 'category') {
+            if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
                 color = categoryColors[normalizedCategory] || '#333';
                 if (isIsotopes) {
                     valText = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z].length.toString() : '0';
+                } else if (currentProperty === 'wiki') {
+                    valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
                 } else {
                     valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
                 }
@@ -76685,6 +76782,30 @@ function updateSidebarValues() {
     document.getElementById('val-energyLevels').innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
     document.getElementById('val-electronegativity').innerText = el.electronegativity || '-';
     document.getElementById('val-discovered').innerText = el.discoveryYear || '-';
+    
+    const wikiBtn = document.getElementById('val-wiki');
+    if (wikiBtn) {
+        wikiBtn.parentElement.onclick = () => {
+            // Let the prop-item click handler do its thing to set it as active,
+            // but also we can directly open the modal if we want.
+            // Wait, if they just want it to be a normal property row, it will get selected by the prop-item listener.
+        };
+        wikiBtn.onclick = (e) => {
+            e.stopPropagation(); // prevent row click
+            if (window.openWikiModal) window.openWikiModal(el.name);
+        };
+    }
+    
+    const wikiViewBtn = document.getElementById('wiki-writeup-view');
+    if (wikiViewBtn) {
+        if (currentProperty === 'wiki') {
+            wikiViewBtn.classList.remove('hidden');
+        } else {
+            wikiViewBtn.classList.add('hidden');
+        }
+        const nameEl = document.getElementById('wiki-element-name');
+        if (nameEl) nameEl.innerText = el.name;
+    }
     
     let currentState = 'Unknown';
     if (el.meltingPoint && el.boilingPoint) {

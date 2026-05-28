@@ -265,6 +265,12 @@ function setupUI() {
             target.classList.add('active');
             currentProperty = target.dataset.prop;
             updateGridVisuals();
+            
+            const wikiViewBtn = document.getElementById('wiki-writeup-view');
+            if (wikiViewBtn) {
+                if (currentProperty === 'wiki') wikiViewBtn.classList.remove('hidden');
+                else wikiViewBtn.classList.add('hidden');
+            }
         });
     });
 
@@ -737,10 +743,12 @@ function updateGridVisuals() {
         let valText = '';
 
         if (isMain || isIsotopes) {
-            if (isIsotopes || currentProperty === 'category') {
+            if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
                 color = categoryColors[normalizedCategory] || '#333';
                 if (isIsotopes) {
                     valText = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z].length.toString() : '0';
+                } else if (currentProperty === 'wiki') {
+                    valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
                 } else {
                     valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
                 }
@@ -1344,6 +1352,30 @@ function updateSidebarValues() {
     document.getElementById('val-energyLevels').innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
     document.getElementById('val-electronegativity').innerText = el.electronegativity || '-';
     document.getElementById('val-discovered').innerText = el.discoveryYear || '-';
+    
+    const wikiBtn = document.getElementById('val-wiki');
+    if (wikiBtn) {
+        wikiBtn.parentElement.onclick = () => {
+            // Let the prop-item click handler do its thing to set it as active,
+            // but also we can directly open the modal if we want.
+            // Wait, if they just want it to be a normal property row, it will get selected by the prop-item listener.
+        };
+        wikiBtn.onclick = (e) => {
+            e.stopPropagation(); // prevent row click
+            if (window.openWikiModal) window.openWikiModal(el.name);
+        };
+    }
+    
+    const wikiViewBtn = document.getElementById('wiki-writeup-view');
+    if (wikiViewBtn) {
+        if (currentProperty === 'wiki') {
+            wikiViewBtn.classList.remove('hidden');
+        } else {
+            wikiViewBtn.classList.add('hidden');
+        }
+        const nameEl = document.getElementById('wiki-element-name');
+        if (nameEl) nameEl.innerText = el.name;
+    }
     
     let currentState = 'Unknown';
     if (el.meltingPoint && el.boilingPoint) {

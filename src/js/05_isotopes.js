@@ -627,24 +627,103 @@ function renderIsotopeDetails(index) {
 window.openWikiModal = function(elName, massNum) {
     const modal = document.getElementById('wiki-modal');
     const iframe = document.getElementById('wiki-iframe');
-    modal.style.display = 'flex';
-    iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; text-align: center; color: #333;">Loading Wikipedia article...</div>';
+    const loaderOverlay = document.getElementById('wiki-loader-overlay');
+    const header = document.getElementById('wiki-modal-header');
+    const symbolSpan = document.getElementById('wiki-modal-symbol');
+    const iconSvg = document.getElementById('wiki-modal-icon');
     
-    // Use Wikipedia's mobile-html REST API to fetch a fully rendered page that avoids X-Frame-Options
-    const exactPage = `${elName}-${massNum}`;
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/${exactPage}`)
+    // Style the modal header if element data is available
+    let el = null;
+    if (typeof elementsData !== 'undefined') {
+        el = elementsData.find(e => e.name === elName);
+    }
+    if (el && header) {
+        const normalizedCategory = getNormalizedCategory(el.category);
+        header.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
+        header.style.borderBottom = `1px solid ${categoryColors[normalizedCategory] || 'rgba(255,255,255,0.2)'}`;
+        if (symbolSpan && iconSvg) {
+            symbolSpan.innerHTML = massNum ? `<sup>${massNum}</sup>${el.symbol}` : el.symbol;
+            symbolSpan.style.display = 'inline';
+            iconSvg.style.display = 'none';
+        }
+    } else if (header) {
+        header.style.background = 'rgba(255,255,255,0.05)';
+        header.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+        if (symbolSpan && iconSvg) {
+            symbolSpan.style.display = 'none';
+            iconSvg.style.display = 'inline';
+        }
+    }
+    
+    let pageName = elName;
+    if (massNum) {
+        pageName = `${elName}-${massNum}`;
+    }
+    
+    // Reset states
+    if (loaderOverlay) {
+        loaderOverlay.style.display = 'flex';
+        loaderOverlay.style.opacity = '1';
+    }
+    iframe.style.opacity = '0';
+    iframe.srcdoc = '';
+    
+    modal.style.display = 'flex';
+    
+    // Use the official Wikimedia REST API to get a mobile-friendly HTML page that doesn't set X-Frame-Options
+    const url = `https://en.wikipedia.org/api/rest_v1/page/mobile-html/${encodeURIComponent(pageName)}`;
+    
+    // Once the iframe has finished rendering the injected HTML (including CSS!)
+    iframe.onload = () => {
+        if (iframe.srcdoc) {
+            if (loaderOverlay) loaderOverlay.style.opacity = '0';
+            iframe.style.opacity = '1';
+            setTimeout(() => {
+                if (loaderOverlay) loaderOverlay.style.display = 'none';
+            }, 300);
+        }
+    };
+    
+    fetch(url)
         .then(res => {
-            if (res.ok) return res.text();
-            // Fallback
-            return fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/Isotopes_of_${elName.toLowerCase()}`).then(r => r.text());
+            if (!res.ok) {
+                if (!massNum) return fetch(`https://en.wikipedia.org/api/rest_v1/page/mobile-html/${encodeURIComponent(elName)}`).then(r => r.text());
+                throw new Error('Network error');
+            }
+            return res.text();
         })
         .then(html => {
-            // Inject base URL so images and styles load correctly
-            const injectedHtml = html.replace('<head>', '<head><base href="https://en.wikipedia.org/wiki/">');
+            // Inject custom CSS to style the Wikipedia Infobox table headers!
+            let injectedCss = '';
+            if (el) {
+                const normalizedCategory = getNormalizedCategory(el.category);
+                const bgColor = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory).replace(/"/g, "'");
+                const borderColor = categoryColors[normalizedCategory] || 'rgba(255,255,255,0.2)';
+                
+                injectedCss = `
+                <style>
+                    table.infobox th.infobox-header {
+                        background: ${bgColor} !important;
+                        color: white !important;
+                        text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+                        border-bottom: 2px solid ${borderColor} !important;
+                    }
+                    /* Also style the title caption */
+                    table.infobox caption.infobox-title {
+                        background: ${bgColor} !important;
+                        color: white !important;
+                        text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+                        border-bottom: 2px solid ${borderColor} !important;
+                    }
+                </style>`;
+            }
+
+            // Wikipedia mobile HTML API returns a full HTML document, but we inject a base tag to ensure all relative links and resources resolve to Wikipedia domain.
+            const injectedHtml = html.replace('<head>', '<head><base href="https://en.wikipedia.org/wiki/">' + injectedCss);
             iframe.srcdoc = injectedHtml;
         })
         .catch(err => {
-            iframe.srcdoc = '<div style="font-family: sans-serif; padding: 40px; color: red;">Failed to load Wikipedia article.</div>';
+            iframe.srcdoc = `<html style="background:#0f172a;"><body style="color:red;padding:20px;font-family:sans-serif;background:#0f172a;">Error loading Wikipedia page.</body></html>`;
         });
 };
 
