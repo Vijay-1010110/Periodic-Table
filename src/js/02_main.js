@@ -435,7 +435,15 @@ function renderGrid() {
     const grid = document.getElementById(gridId);
     if (!grid) return;
     
+    // Save table controls before clearing grid
+    let tableControls = grid.querySelector('.table-controls');
+    
     grid.innerHTML = '';
+    
+    // Restore table controls
+    if (tableControls) {
+        grid.appendChild(tableControls);
+    }
     
     if (currentView === 'main') {
         const legendDiv = document.createElement('div');
@@ -486,7 +494,11 @@ function renderGrid() {
         cell.className = 'element-cell';
         cell.dataset.z = i;
         cell.style.gridColumn = pos.col;
-        cell.style.gridRow = pos.row;
+        if (gridId === 'main-grid') {
+            cell.style.gridRow = pos.row + 1;
+        } else {
+            cell.style.gridRow = pos.row;
+        }
         
         let bohrHtml = '';
         if (currentView === 'electrons' && elData) {
