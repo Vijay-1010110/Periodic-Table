@@ -200,7 +200,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     padding-bottom: 20px;
 }
 .element-cell {
-    aspect-ratio: 1 / 1.15;
+    aspect-ratio: 1 / 1;
     width: 100%;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.2);
@@ -353,41 +353,43 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* In-Grid Legend */
 .in-grid-legend {
     grid-column: 3 / 13;
-    grid-row: 2 / 5;
+    grid-row: 2;
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 30px;
-    padding: 10px;
-    padding-bottom: 30px;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 0px;
     pointer-events: auto;
+    height: 0;
+    min-height: 0;
+    overflow: visible;
 }
 .legend-box {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 8px;
-    padding: 12px 15px;
+    padding: 8px 12px;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
 }
 .legend-box-title {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--accent-cyan);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: center;
     border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-    padding-bottom: 4px;
+    padding-bottom: 3px;
 }
 .legend-box-content {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 }
 .legend-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 110px;
+    gap: 2px;
+    min-width: 100px;
 }
 .legend-group-title {
     font-size: 0.7rem;
@@ -852,6 +854,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         background: rgba(0,0,0,0.3);
         border-radius: 4px;
         border: 1px solid rgba(255,255,255,0.02);
+        height: 36px; /* Fixed height to prevent table jumping */
+        overflow: hidden; /* Hide overflow if it wraps too much */
     }
     
     /* Fix element card size */
