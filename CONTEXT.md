@@ -31,19 +31,22 @@ This is a highly interactive, visually stunning Periodic Table web application b
 - Created a beautiful, fully customized SVG-based Decay Infographic that visualizes the parent nucleus, decay event, daughter nucleus, and emitted particles.
 - **Improved Decay Infographic:** Fixed 2D "sausage" visual artifacts by implementing a true 3D randomized spherical volume with Z-depth sorting for protons and neutrons.
 - Added explicit full names to the graphical products (e.g., Parent Nucleus (Nickel-49), Emitted Positron, Daughter Nucleus (Cobalt-49)).
+- **Aufbau Diagram Layout Redesign:** Reshaped the electron configuration diagram from a tall 8-row staircase into a tight 4-row Madelung-style table grouped by subshell.
+- **Responsive Layout Fixes:** Resolved overlapping issues on `< 1400px` screens by physically moving the electron legend to the very top row (`grid-row: 1`) to perfectly align with the Hydrogen line and fully clear the transition metals. Implemented specific size constraints for orbital boxes to ensure it always fits in the available vertical space.
 
 ## What's Working
 - Main periodic table rendering and element modal UI.
 - Isotope modal is working flawlessly with the new visual decay diagram generator.
 - Clicking "Read Wikipedia ↗" successfully loads the isotope's Wikipedia page inside a popup modal.
 - The decay infographic generates perfect 3D nuclear clusters dynamically.
+- The Electron Configuration Aufbau diagram responds flawlessly to different screen widths without overlapping grid elements.
 
 ## What's In Progress
 - Refinement Phase (new branch `refinement`).
 - Continuous UI refinements based on user feedback.
 
 ## Next Steps
-- Implement UI refinements as requested in the new refinement branch.
+- Continue implementing UI refinements and user layout requests on the refinement branch.
 
 ## AI Agent Instructions
 * **Tool Usage**: Strictly avoid general bash commands for file reading/writing (no `cat`, `grep`, or `sed` in bash). Prioritize specialized native tools (`view_file`, `replace_file_content`, `grep_search`).
