@@ -1167,14 +1167,10 @@ function renderAufbauDiagram(configStr) {
         if (match) configMap[match[1]] = parseInt(match[2]);
     });    
     const rows = [
-        [null, '7p', '6d', '5f'],
-        ['7s', '6p', '5d', '4f'],
-        ['6s', '5p', '4d', null],
-        ['5s', '4p', '3d', null],
-        ['4s', '3p', null, null],
-        ['3s', '2p', null, null],
-        ['2s', null, null, null],
-        ['1s', null, null, null]
+        ['1s', '2s', '3s', '4s', '5s', '6s', '7s'],
+        ['2p', '3p', '4p', '5p', '6p', '7p'],
+        ['3d', '4d', '5d', '6d'],
+        ['4f', '5f']
     ];
 
     const blockCap = { s: 1, p: 3, d: 5, f: 7 }; // number of orbitals
@@ -1188,7 +1184,7 @@ function renderAufbauDiagram(configStr) {
     <div class="legend-box aufbau-box" style="display: flex; flex-direction: column;">
         <div class="legend-box-title">Electron Configuration</div>
         <div class="legend-box-content" style="gap: 20px;">
-            <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-end; padding: 0;">
+            <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-start; padding: 0;">
                 <div class="aufbau-legend" style="margin-bottom: 0;">
                     <div class="legend-item" data-key="s" data-type="block" style="background: ${getGlossyBackground(blockColors.s)}; border: 1px solid ${blockColors.s}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">s-block</div>
                     <div class="legend-item" data-key="p" data-type="block" style="background: ${getGlossyBackground(blockColors.p)}; border: 1px solid ${blockColors.p}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">p-block</div>
@@ -1208,14 +1204,9 @@ function renderAufbauDiagram(configStr) {
 
     rows.forEach(row => {
         html += `<div class="aufbau-row">`;
-        row.forEach((subshell, colIndex) => {
-            const blockType = ['s', 'p', 'd', 'f'][colIndex];
+        row.forEach((subshell) => {
+            const blockType = subshell[1];
             
-            if (!subshell) {
-                html += `<div class="subshell-group block-type-${blockType}"></div>`;
-                return;
-            }
-
             const nValue = parseInt(subshell[0]);
             const lValue = getLValue(subshell[1]);
             const block = subshell[1];

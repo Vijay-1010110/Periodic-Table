@@ -355,14 +355,21 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     grid-column: 3 / 13;
     grid-row: 2;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Anchor to the left instead of centering */
     align-items: flex-start;
     gap: 15px;
     padding: 0px;
+    padding-left: 10px; /* Slight indent from Scandium column */
     pointer-events: auto;
     height: 0;
     min-height: 0;
     overflow: visible;
+}
+#elec-in-grid-legend {
+    grid-row: 1 / 4 !important; /* Start at Row 1 (Hydrogen line) to fully clear transition metals below */
+    grid-column: 3 / 15 !important; /* Stay safely to the right of group 1 & 2 metals */
+    margin-top: 0 !important; /* Align exactly with the top of Hydrogen */
+    padding-left: 0 !important;
 }
 .legend-box {
     background: rgba(0, 0, 0, 0.4);
@@ -767,13 +774,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .aufbau-grid {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
 .aufbau-row {
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: 8px;
     justify-content: flex-start;
 }
 
@@ -901,10 +908,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         overflow: visible; /* Let it render downwards if taller than 0 */
         grid-row: 3 / 5; /* Restrict to row 3 and 4 (Li and Na rows) */
         grid-column: 3 / 13; /* Stay within empty space */
-        justify-content: center;
+        justify-content: flex-start; /* Anchor to the left (Scandium column) */
         align-items: flex-start;
         transform: scale(0.95); /* Slight scale down to ensure it never overflows */
-        transform-origin: top center;
+        transform-origin: top left;
         margin-top: 5px; /* slight push down so it doesn't hug the top */
     }
     
@@ -930,6 +937,23 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .legend-item span {
         font-size: 0.5rem;
     }
+    
+    /* Shrink Aufbau specific boxes for smaller screens */
+    .orbital-box {
+        width: 12px !important;
+        height: 14px !important;
+        font-size: 0.5rem !important;
+    }
+    .subshell-label {
+        font-size: 0.55rem !important;
+        width: 14px !important;
+    }
+    .aufbau-row { gap: 4px !important; }
+    .aufbau-grid { gap: 2px !important; }
+    .block-type-s { width: 28px !important; }
+    .block-type-p { width: 56px !important; }
+    .block-type-d { width: 84px !important; }
+    .block-type-f { width: 112px !important; }
 
     /* Grid layout for metals to reduce height */
     .in-grid-legend .legend-box:first-child .legend-group:first-child {
