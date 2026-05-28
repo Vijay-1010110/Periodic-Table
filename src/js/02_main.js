@@ -1080,6 +1080,9 @@ function selectElement(z) {
     const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${z}"]`);
     if (cell) cell.classList.add('selected');
     
+    // Open sidebar on mobile when element is clicked
+    document.querySelectorAll('.view-right.sidebar').forEach(sb => sb.classList.add('open'));
+    
     if (currentView === 'main') {
         document.getElementById('empty-state').classList.add('hidden');
         document.getElementById('element-detail-card').classList.remove('hidden');

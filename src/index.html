@@ -68,7 +68,8 @@
             </div>
 
             <!-- Right: Property Sidebar -->
-            <div class="view-right sidebar">
+            <div class="view-right sidebar" style="position: relative;">
+                <button class="sidebar-close-btn" style="display: none; position: absolute; top: 15px; left: 15px; background: transparent; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; z-index: 10;" onclick="this.parentElement.classList.remove('open')">&times;</button>
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">⚛️</div>
                     <p>Select an element to view details</p>
@@ -178,7 +179,8 @@
                     </div>
                 </div>
             </div>
-            <div class="view-right sidebar">
+            <div class="view-right sidebar" style="position: relative;">
+                <button class="sidebar-close-btn" style="display: none; position: absolute; top: 15px; left: 15px; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10;" onclick="this.parentElement.classList.remove('open')">&times;</button>
                 <h3>Electron Configuration</h3>
                 <div id="elec-empty-state" class="empty-state">Select an element</div>
                 
@@ -260,7 +262,8 @@
                     <div class="periodic-grid" id="isotopes-grid"></div>
                 </div>
             </div>
-            <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5;">
+            <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5; position: relative;">
+                <button class="sidebar-close-btn" style="display: none; position: absolute; top: 15px; left: 15px; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10;" onclick="this.parentElement.classList.remove('open')">&times;</button>
                 <div style="text-align: center;">
                     <div style="font-size: 3rem; margin-bottom: 10px;">⚛️</div>
                     <h3 style="margin-bottom: 5px;">Isotopes Explorer</h3>
