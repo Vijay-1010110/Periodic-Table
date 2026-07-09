@@ -1,31 +1,68 @@
-# Interactive Periodic Table
+<div align="center">
+  <h1>⚛️ PeriodicaX</h1>
+  <p><strong>The Definitive Interactive 3D Periodic Table & Isotope Emulator</strong></p>
+  
+  [![Live Demo](https://img.shields.io/badge/Live_Demo-periodica--x--app.web.app-00C7B7?style=for-the-badge&logo=firebase)](https://periodica-x-app.web.app)
+  [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)](#)
+  [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](#)
+</div>
 
-An interactive, responsive Periodic Table application built with HTML, CSS, and Vanilla JavaScript.
+<br>
 
-## Features
+PeriodicaX is a highly interactive, visually stunning educational web application built to bring chemistry and nuclear physics to life. It moves beyond static data by providing interactive 3D electron orbital visualizations and a real-time nuclear decay emulator.
 
-- **Dynamic Visualization:** Color-code the table based on different elemental properties like:
-  - Series (Alkali metal, Noble gas, etc.)
-  - State of Matter (Solid, Liquid, Gas)
-  - Atomic Weight
-  - Electronegativity
-  - Discovery Year timeline
-  - And many more...
-- **Temperature Controller:** Interactively slide through temperatures (K, °C, °F) and watch elements change states dynamically.
-- **Historical Timeline:** Travel through time and visualize when elements were discovered throughout history.
-- **Mini Bohr Models:** See animated mini Bohr electron configurations for each element.
-- **Responsive Design:** A beautifully styled user interface with glossy themes and smooth interactions.
+## ✨ Features
 
-## How to Run
+- **Interactive Periodic Table:** Browse all 118 elements with beautiful, color-coded categorizations (glassmorphism UI, dynamic gradients).
+- **3D Electron Orbitals:** Drag, rotate, and zoom into fully rendered 3D electron clouds (s, p, d, f blocks) built with Three.js.
+- **Isotope Decay Emulator:** Select from hundreds of isotopes to view precise nuclear data. Watch a dynamically generated 3D nuclear cluster undergo Alpha, Beta, and Positron decay in real-time.
+- **Responsive Aufbau Diagram:** An elegantly responsive electron configuration chart that scales flawlessly to any screen size.
+- **Wikipedia Integration:** Learn more about any element or isotope instantly via an embedded modal bypass.
+- **Auto-Updating SEO Engine:** A custom build script dynamically parses the element database to generate hundreds of targeted keywords, a sitemap, and JSON-LD structured data upon every build.
 
-Since the application uses standard web technologies, you can easily run it locally:
+## 🛠️ Technology Stack
 
-1. Clone this repository.
-2. Open `index.html` in your web browser (or serve the directory using a simple local web server like `python -m http.server`).
-3. If you make changes to `src/`, run `python build.py` to compile changes into the `index.html` file.
+PeriodicaX is built entirely from scratch with zero heavy frameworks, prioritizing raw performance and vanilla mastery:
+- **HTML5 & Vanilla CSS3** (No Tailwind, No Bootstrap)
+- **Vanilla JavaScript (ES6)** (No React, No Vue)
+- **Three.js** (For 3D rendering)
+- **Python** (Custom static site generator and SEO compiler)
+- **Firebase Hosting** (For global CDN delivery)
 
-## Technologies Used
+## 🚀 Quick Start (Local Development)
 
-- HTML5
-- CSS3 (Vanilla)
-- JavaScript (Vanilla, ES6+)
+Since PeriodicaX uses a custom build pipeline, you need to compile the source files into the final `public/index.html` file.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/Periodic-Table.git
+   cd Periodic-Table
+   ```
+
+2. **Run the build script:**
+   The `build.py` script concatenates all CSS and JS, injects them into the HTML, generates the SEO tags, and outputs everything to the `public/` folder.
+   ```bash
+   python build.py
+   ```
+
+3. **Serve locally:**
+   You can use any local web server to view the `public/` directory.
+   ```bash
+   cd public
+   python -m http.server 8000
+   ```
+   Open `http://localhost:8000` in your browser.
+
+## 🤝 Contributing
+
+Contributions are always welcome! Whether it's adding new physical properties to the database, improving the 3D renderer, or fixing UI bugs:
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Run `python build.py` to ensure everything compiles.
+4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License.
