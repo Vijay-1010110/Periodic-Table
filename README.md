@@ -4,7 +4,7 @@
   
   [![Live Demo](https://img.shields.io/badge/Live_Demo-periodica--x--app.web.app-00C7B7?style=for-the-badge&logo=firebase)](https://periodica-x-app.web.app)
   [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)](#)
-  [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](#)
+  [![License](https://img.shields.io/badge/license-Custom-blue?style=for-the-badge)](#)
 </div>
 
 <br>
@@ -65,4 +65,12 @@ Contributions are always welcome! Whether it's adding new physical properties to
 
 ## 📄 License
 
-Distributed under the MIT License.
+Distributed under the **PeriodicaX Personal Use & Attribution License**. 
+See `LICENSE` for more information.
+
+In short:
+* ✅ You can use this for personal and educational projects.
+* ✅ You can modify the code.
+* ❌ You may NOT publish this website publicly as your own product/website.
+* ❌ You may NOT use this for commercial purposes.
+* ⚠️ You must provide proper credit if you use parts of this code elsewhere.
