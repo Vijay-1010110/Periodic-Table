@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://interactive-periodic-table.web.app/sitemap.xml
