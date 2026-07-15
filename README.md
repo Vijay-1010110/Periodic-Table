@@ -9,6 +9,8 @@
 
 <br>
 
+**🔗 Live Demo:** [https://periodica-x-app.web.app](https://periodica-x-app.web.app)
+
 PeriodicaX is a highly interactive, visually stunning educational web application built to bring chemistry and nuclear physics to life. It moves beyond static data by providing interactive 3D electron orbital visualizations and a real-time nuclear decay emulator.
 
 ## ✨ Features
@@ -35,7 +37,7 @@ Since PeriodicaX uses a custom build pipeline, you need to compile the source fi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/Periodic-Table.git
+   git clone https://github.com/Vijay-1010110/Periodic-Table.git
    cd Periodic-Table
    ```
 
