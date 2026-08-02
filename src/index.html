@@ -60,6 +60,7 @@
             <button class="nav-btn" data-view="electrons">Electrons & Orbitals</button>
             <button class="nav-btn" data-view="isotopes">Isotopes</button>
             <button class="nav-btn" data-view="compounds">Compounds</button>
+            <button class="nav-btn" data-view="reactions">Reactions</button>
         </div>
         <div class="nav-controls">
             <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings">⚙️</button>
@@ -479,6 +480,64 @@
                         <button id="comp-wiki-btn" class="comp-wiki-button">
                             📖 Read Wikipedia Article
                         </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: REACTIONS -->
+        <section class="view-mode" id="view-reactions">
+            <div class="view-left">
+                <!-- Balancer Input Card -->
+                <div class="reaction-input-card">
+                    <h2 style="margin-top:0; color:#00d4ff; font-family: var(--font-ui);">Chemical Reaction Balancer & Simulator</h2>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 15px;">
+                        Enter an unbalanced reaction equation (e.g. <code>CH4 + O2 -> CO2 + H2O</code> or <code>Fe + O2 = Fe2O3</code>) to solve stoichiometric coefficients.
+                    </p>
+                    <div class="reaction-input-wrap">
+                        <input type="text" id="reaction-input" placeholder="Type chemical equation here..." value="CH4 + O2 -> CO2 + H2O">
+                        <button id="balance-btn">Balance ⚡</button>
+                    </div>
+                    <div id="reaction-error" class="reaction-error-msg" style="display: none;"></div>
+                </div>
+
+                <!-- Balanced Equation Display -->
+                <div class="balanced-result-card" id="balanced-result-card">
+                    <div class="result-header">
+                        <span class="result-title">Balanced Chemical Equation</span>
+                        <span class="reaction-type-badge" id="reaction-type-badge">Combustion</span>
+                    </div>
+                    <div class="balanced-equation-text" id="balanced-equation-text">
+                        CH₄ + 2O₂ &nbsp;➔&nbsp; CO₂ + 2H₂O
+                    </div>
+                </div>
+
+                <!-- Preset Reactions Library -->
+                <div class="reaction-presets-section">
+                    <div class="presets-header">
+                        <h3 style="margin:0; color:#fff; font-size: 1.1rem;">Preset Reactions Library</h3>
+                        <div class="reaction-cat-pills">
+                            <button class="reaction-cat-btn active" data-cat="All">All</button>
+                            <button class="reaction-cat-btn" data-cat="Combustion">Combustion</button>
+                            <button class="reaction-cat-btn" data-cat="Synthesis">Synthesis</button>
+                            <button class="reaction-cat-btn" data-cat="Decomposition">Decomposition</button>
+                            <button class="reaction-cat-btn" data-cat="Acid-Base">Acid-Base</button>
+                            <button class="reaction-cat-btn" data-cat="Redox">Redox</button>
+                            <button class="reaction-cat-btn" data-cat="Biological">Biological</button>
+                        </div>
+                    </div>
+                    <div class="reaction-presets-grid" id="reaction-presets-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reactions Right Sidebar -->
+            <div class="view-right sidebar" id="reactions-sidebar">
+                <div class="stoichiometry-panel">
+                    <h3 style="margin-top:0; color:#38bdf8; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Stoichiometric Analysis</h3>
+                    <div id="stoichiometry-breakdown">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
             </div>

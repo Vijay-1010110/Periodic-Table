@@ -256,6 +256,10 @@ function setupUI() {
                 if (typeof initCompoundsView === 'function') {
                     initCompoundsView();
                 }
+            } else if (viewId === 'reactions') {
+                if (typeof initReactionsView === 'function') {
+                    initReactionsView();
+                }
             }
         });
     });
