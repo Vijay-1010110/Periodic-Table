@@ -260,6 +260,10 @@ function setupUI() {
                 if (typeof initReactionsView === 'function') {
                     initReactionsView();
                 }
+            } else if (viewId === 'crystals') {
+                if (typeof initCrystalsView === 'function') {
+                    initCrystalsView();
+                }
             }
         });
     });

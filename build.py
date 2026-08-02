@@ -80,6 +80,8 @@ def build():
         'src/js/06_compounds_data.js',
         'src/js/07_compounds.js',
         'src/js/08_reactions.js',
+        'src/js/09_crystals_data.js',
+        'src/js/10_crystals.js',
         'src/js/02_main.js',
         'src/js/03_orbitals.js'
     ]

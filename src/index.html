@@ -61,6 +61,7 @@
             <button class="nav-btn" data-view="isotopes">Isotopes</button>
             <button class="nav-btn" data-view="compounds">Compounds</button>
             <button class="nav-btn" data-view="reactions">Reactions</button>
+            <button class="nav-btn" data-view="crystals">Crystals</button>
         </div>
         <div class="nav-controls">
             <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings">⚙️</button>
@@ -538,6 +539,73 @@
                     <h3 style="margin-top:0; color:#38bdf8; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Stoichiometric Analysis</h3>
                     <div id="stoichiometry-breakdown">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: CRYSTALS -->
+        <section class="view-mode" id="view-crystals">
+            <div class="view-left">
+                <!-- Controls Header -->
+                <div class="crystal-controls-card">
+                    <h2 style="margin-top:0; color:#00d4ff; font-family: var(--font-ui);">3D Crystal Lattice & Solid-State Viewer</h2>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 15px;">
+                        Explore 3D unit cells, atomic packing efficiency, coordination numbers, and Miller index crystallographic planes.
+                    </p>
+                    <div class="crystal-grid-select" id="crystals-list-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 3D Canvas Box -->
+                <div class="crystal-3d-card">
+                    <div class="crystal-canvas-header">
+                        <div class="crystal-mode-toggle">
+                            <button id="btn-mode-unitcell" class="crystal-toggle-btn active">Unit Cell (1x1x1)</button>
+                            <button id="btn-mode-supercell" class="crystal-toggle-btn">Lattice Network (2x2x2)</button>
+                        </div>
+                        <div class="miller-planes-toggle">
+                            <span style="font-size:0.75rem; color:rgba(255,255,255,0.6);">Miller Plane:</span>
+                            <button class="miller-btn active" data-plane="none">None</button>
+                            <button class="miller-btn" data-plane="100">(100)</button>
+                            <button class="miller-btn" data-plane="110">(110)</button>
+                            <button class="miller-btn" data-plane="111">(111)</button>
+                        </div>
+                    </div>
+                    <div id="crystal-canvas-container"></div>
+                </div>
+            </div>
+
+            <!-- Crystals Right Sidebar -->
+            <div class="view-right sidebar" id="crystals-sidebar">
+                <div class="crystal-detail-container">
+                    <div class="comp-header-card">
+                        <h2 class="comp-title-large" id="crystal-detail-name">Face-Centered Cubic (FCC)</h2>
+                        <div class="comp-iupac-sub" id="crystal-detail-system">System: Cubic</div>
+                    </div>
+
+                    <div class="comp-section-card">
+                        <h4>Solid-State Parameters</h4>
+                        <div class="comp-props-grid">
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Packing Efficiency</span>
+                                <span class="prop-value mono-text" id="crystal-detail-packing">74%</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Coordination No.</span>
+                                <span class="prop-value mono-text" id="crystal-detail-coord">12</span>
+                            </div>
+                            <div class="comp-prop-item" style="grid-column: 1 / -1;">
+                                <span class="prop-label">Example Elements / Materials</span>
+                                <span class="prop-value" id="crystal-detail-examples" style="font-size:0.8rem; color:#00d4ff;">Cu, Au, Al, Pb</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comp-section-card">
+                        <h4>Description</h4>
+                        <p id="crystal-detail-desc" style="font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.8); margin: 0;"></p>
                     </div>
                 </div>
             </div>
