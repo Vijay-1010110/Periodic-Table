@@ -63,6 +63,7 @@
             <button class="nav-btn" data-view="reactions">Reactions</button>
             <button class="nav-btn" data-view="crystals">Crystals</button>
             <button class="nav-btn" data-view="compare">Compare</button>
+            <button class="nav-btn" data-view="quiz">Quiz</button>
         </div>
         <div class="nav-controls">
             <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings">⚙️</button>
@@ -649,6 +650,48 @@
                 <div class="compare-radar-card">
                     <h3 style="margin-top:0; color:#38bdf8; font-size:1.05rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Property Radar Profile</h3>
                     <div id="compare-radar-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: QUIZ -->
+        <section class="view-mode" id="view-quiz">
+            <div class="view-left">
+                <!-- Quiz Card -->
+                <div class="quiz-card">
+                    <div class="quiz-card-header">
+                        <span class="quiz-cat-badge" id="quiz-cat-badge">Symbol</span>
+                        <span class="quiz-q-num" id="quiz-q-num">Question 1 of 7</span>
+                    </div>
+
+                    <h2 class="quiz-question-text" id="quiz-q-text">What is the chemical symbol for Gold?</h2>
+
+                    <div class="quiz-options-container" id="quiz-options-container">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="quiz-explanation-box" id="quiz-explanation-box" style="display: none;"></div>
+
+                    <div class="quiz-actions">
+                        <button id="quiz-next-btn" class="quiz-btn-primary" style="display: none;">Next Question ➔</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Right Sidebar (Scoreboard) -->
+            <div class="view-right sidebar" id="quiz-sidebar">
+                <div class="quiz-scoreboard-card">
+                    <h3 style="margin-top:0; color:#38bdf8; font-size:1.05rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Quiz Scoreboard</h3>
+                    <div class="quiz-score-item">
+                        <span class="score-label">Total Score</span>
+                        <span class="score-val" id="quiz-score-val">0</span>
+                    </div>
+                    <div class="quiz-score-item">
+                        <span class="score-label">Current Streak</span>
+                        <span class="score-val" id="quiz-streak-val">0</span>
+                    </div>
+
+                    <button id="quiz-reset-btn" class="quiz-btn-secondary" style="margin-top: 15px; width: 100%;">Restart Quiz 🔄</button>
                 </div>
             </div>
         </section>

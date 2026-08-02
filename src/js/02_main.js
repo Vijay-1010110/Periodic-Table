@@ -268,6 +268,10 @@ function setupUI() {
                 if (typeof initCompareView === 'function') {
                     initCompareView();
                 }
+            } else if (viewId === 'quiz') {
+                if (typeof initQuizView === 'function') {
+                    initQuizView();
+                }
             }
         });
     });

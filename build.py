@@ -83,6 +83,7 @@ def build():
         'src/js/09_crystals_data.js',
         'src/js/10_crystals.js',
         'src/js/11_compare.js',
+        'src/js/12_quiz.js',
         'src/js/02_main.js',
         'src/js/03_orbitals.js'
     ]
