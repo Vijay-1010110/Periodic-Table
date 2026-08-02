@@ -264,6 +264,10 @@ function setupUI() {
                 if (typeof initCrystalsView === 'function') {
                     initCrystalsView();
                 }
+            } else if (viewId === 'compare') {
+                if (typeof initCompareView === 'function') {
+                    initCompareView();
+                }
             }
         });
     });
