@@ -1078,6 +1078,84 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
 }
 
+/* Isotopes View & Modal Mobile Responsiveness */
+@media (max-width: 900px) {
+    #view-isotopes .view-right {
+        display: none !important;
+    }
+    #view-isotopes .view-left {
+        width: 100% !important;
+        flex: 1 !important;
+        padding: 10px !important;
+    }
+
+    #isotope-modal {
+        flex-direction: column !important;
+        width: 95% !important;
+        height: 92% !important;
+        max-height: 92vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px !important;
+    }
+
+    #modal-left-pane {
+        flex: none !important;
+        width: 100% !important;
+        max-height: 260px !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    #modal-isotope-list {
+        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
+        gap: 6px !important;
+        padding: 10px !important;
+    }
+
+    #modal-decay-legend {
+        gap: 4px !important;
+        font-size: 0.7rem !important;
+    }
+
+    #close-modal-btn {
+        top: 10px !important;
+        right: 10px !important;
+        padding: 4px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    #decay-infographic-container {
+        padding: 10px !important;
+        min-height: 220px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    #isotope-modal {
+        width: 98% !important;
+        height: 95% !important;
+    }
+
+    #modal-left-pane {
+        max-height: 220px !important;
+    }
+
+    #modal-isotope-list {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)) !important;
+        gap: 4px !important;
+    }
+
+    #modal-el-card, #modal-iso-card {
+        height: 65px !important;
+        padding: 0 10px !important;
+    }
+    
+    #modal-left-pane > div:first-child {
+        padding: 10px !important;
+    }
+}
+
 </style>
 <script>
 
