@@ -117,5 +117,12 @@ def build():
     generate_sitemap_and_robots()
     print("Generated sitemap.xml and robots.txt in public/")
 
+    import shutil
+    if os.path.exists('manifest.json'):
+        shutil.copy('manifest.json', 'public/manifest.json')
+    if os.path.exists('sw.js'):
+        shutil.copy('sw.js', 'public/sw.js')
+    print("Copied manifest.json and sw.js to public/")
+
 if __name__ == '__main__':
     build()

@@ -15,7 +15,16 @@
       gtag('config', 'G-4EN5NFDF90');
     </script>
 
-    <meta name="description" content="A visually stunning, interactive periodic table featuring 3D electron orbitals and an advanced isotope decay emulator.">
+    <meta name="description" content="A visually stunning, interactive periodic table featuring 3D electron orbitals, chemical reaction balancer, isotope decay emulator, 3D crystal lattices & chemistry quiz.">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg failed: ', err));
+        });
+      }
+    </script>
     
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="ZbZNjpiUNBseMfcBvLLECTlBmqwCRTB-NCTmpHa0e70" />

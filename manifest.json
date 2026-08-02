@@ -1,0 +1,16 @@
+{
+  "name": "PeriodicaX - Interactive 3D Periodic Table & Chemistry Suite",
+  "short_name": "PeriodicaX",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#00d4ff",
+  "description": "3D Periodic Table, Reaction Balancer, Isotope Viewer, 3D Crystal Lattices & Interactive Chemistry Tools.",
+  "icons": [
+    {
+      "src": "https://periodica-x-app.web.app/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
