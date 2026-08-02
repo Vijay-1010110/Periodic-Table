@@ -393,8 +393,94 @@
 
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
-            <div class="full-panel">
-                <h2>Compounds Panel (Coming Soon)</h2>
+            <div class="view-left">
+                <!-- Controls & Filters Header -->
+                <div class="compounds-controls">
+                    <div class="compounds-search-wrap">
+                        <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
+                    </div>
+                    <div class="compounds-filter-pills">
+                        <button class="compound-filter-btn active" data-type="All">All</button>
+                        <button class="compound-filter-btn" data-type="Organic">Organic</button>
+                        <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
+                        <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
+                        <button class="compound-filter-btn" data-type="Acid">Acids</button>
+                        <button class="compound-filter-btn" data-type="Base">Bases</button>
+                        <button class="compound-filter-btn" data-type="Gas">Gases</button>
+                        <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
+                        <button class="compound-filter-btn" data-type="Solid">Solids</button>
+                    </div>
+                </div>
+
+                <!-- Compounds Cards Grid -->
+                <div class="compounds-grid-container" id="compounds-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Compounds Right Sidebar Detail Pane -->
+            <div class="view-right sidebar" id="compounds-sidebar">
+                <div class="compound-detail-container">
+                    <div class="comp-header-card">
+                        <div class="comp-header-top">
+                            <span class="comp-formula-large" id="comp-detail-formula">H₂O</span>
+                            <span class="comp-type-pill" id="comp-detail-type">Covalent</span>
+                        </div>
+                        <h2 class="comp-title-large" id="comp-detail-name">Water</h2>
+                        <div class="comp-iupac-sub" id="comp-detail-iupac">IUPAC: Oxidane</div>
+                    </div>
+
+                    <!-- 3D Molecular Viewer -->
+                    <div class="molecule-3d-card">
+                        <div class="molecule-card-header">
+                            <span>3D Molecular Model</span>
+                            <span style="font-size: 0.75rem; opacity: 0.7;">Drag to rotate</span>
+                        </div>
+                        <div id="molecule-canvas-container"></div>
+                    </div>
+
+                    <!-- Element Composition Section -->
+                    <div class="comp-section-card">
+                        <h4>Element Composition (% Mass)</h4>
+                        <div id="comp-element-breakdown"></div>
+                    </div>
+
+                    <!-- Physical Properties -->
+                    <div class="comp-section-card">
+                        <h4>Physical & Chemical Properties</h4>
+                        <div class="comp-props-grid">
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Molar Mass</span>
+                                <span class="prop-value mono-text" id="comp-detail-mass">18.015 g/mol</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">State (STP)</span>
+                                <span class="prop-value mono-text" id="comp-detail-state">Liquid</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Melting Point</span>
+                                <span class="prop-value mono-text" id="comp-prop-mp">0 °C</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Boiling Point</span>
+                                <span class="prop-value mono-text" id="comp-prop-bp">100 °C</span>
+                            </div>
+                            <div class="comp-prop-item" style="grid-column: 1 / -1;">
+                                <span class="prop-label">Density</span>
+                                <span class="prop-value mono-text" id="comp-prop-density">0.998 g/cm³</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description & Wikipedia -->
+                    <div class="comp-section-card">
+                        <h4>Description</h4>
+                        <p id="comp-detail-desc" style="font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.8); margin-bottom: 12px;"></p>
+                        <button id="comp-wiki-btn" class="comp-wiki-button">
+                            📖 Read Wikipedia Article
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 

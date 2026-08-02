@@ -1156,6 +1156,345 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 }
 
+/* Compounds View Styles */
+.compounds-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.compounds-search-wrap input {
+    width: 100%;
+    padding: 12px 18px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.compounds-search-wrap input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.25);
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.compounds-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.compound-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-ui);
+}
+
+.compound-filter-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.compound-filter-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+    color: #00d4ff;
+    font-weight: 600;
+}
+
+.compounds-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 15px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.compound-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.compound-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    background: rgba(20, 32, 55, 0.75);
+}
+
+.compound-card.active {
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.08);
+}
+
+.compound-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.compound-formula-badge {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.compound-type-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #38bdf8;
+}
+
+.compound-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.compound-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 4px;
+}
+
+.compound-state-dot {
+    padding-left: 10px;
+    position: relative;
+}
+
+.compound-state-dot::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.compound-state-dot.state-gas::before { background: #38bdf8; }
+.compound-state-dot.state-liquid::before { background: #4ade80; }
+.compound-state-dot.state-solid::before { background: #facc15; }
+
+/* Compound Detail Sidebar */
+.compound-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comp-header-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.comp-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.comp-formula-large {
+    font-family: var(--font-mono);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+
+.comp-type-pill {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #38bdf8;
+    font-weight: 600;
+}
+
+.comp-title-large {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.comp-iupac-sub {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+}
+
+.molecule-3d-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.molecule-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+    font-family: var(--font-ui);
+}
+
+#molecule-canvas-container {
+    width: 100%;
+    height: 220px;
+    background: radial-gradient(circle, rgba(15, 30, 50, 0.5) 0%, rgba(5, 10, 20, 0.8) 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: grab;
+}
+
+#molecule-canvas-container:active {
+    cursor: grabbing;
+}
+
+.comp-section-card {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.comp-section-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 0.88rem;
+    color: #38bdf8;
+    font-family: var(--font-ui);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.comp-bar-container {
+    height: 14px;
+    width: 100%;
+    border-radius: 7px;
+    overflow: hidden;
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+}
+
+.comp-bar-seg {
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.comp-legend-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.comp-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.chip-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.comp-props-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.comp-prop-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comp-wiki-button {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.comp-wiki-button:hover {
+    background: rgba(0, 212, 255, 0.25);
+    border-color: #00d4ff;
+}
+
+/* Compounds Mobile View */
+@media (max-width: 900px) {
+    #view-compounds {
+        flex-direction: column !important;
+    }
+    
+    .compounds-grid-container {
+        max-height: none !important;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    }
+    
+    #compounds-sidebar {
+        width: 100% !important;
+        position: relative !important;
+        right: 0 !important;
+        box-shadow: none !important;
+    }
+}
+
 </style>
 <script>
 
@@ -75559,6 +75898,782 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
 });
 
+// 06_compounds_data.js
+/**
+ * 06_compounds_data.js
+ * Comprehensive chemical compounds database with 3D atomic coordinates,
+ * element mass breakdowns, physical properties, and classification.
+ */
+
+const CPK_COLORS = {
+    1: '#ffffff',   // H: White
+    6: '#909090',   // C: Dark Gray
+    7: '#3050f8',   // N: Blue
+    8: '#ff0d0d',   // O: Red
+    9: '#90e050',   // F: Green
+    11: '#ab5cf2',  // Na: Purple
+    12: '#8aff00',  // Mg: Light Green
+    13: '#ffa0a0',  // Al: Pink
+    14: '#f0c8a0',  // Si: Tan
+    15: '#ff8000',  // P: Orange
+    16: '#ffff30',  // S: Yellow
+    17: '#1ff01f',  // Cl: Green
+    19: '#8f40d4',  // K: Deep Purple
+    20: '#3dff00',  // Ca: Lime
+    26: '#e06633',  // Fe: Rust
+    29: '#c88033',  // Cu: Copper
+    30: '#7d80b0',  // Zn: Slate
+    35: '#a62929',  // Br: Dark Red
+    53: '#940094'   // I: Violet
+};
+
+const compoundsData = [
+    {
+        id: 'water',
+        name: 'Water',
+        formula: 'H₂O',
+        iupacName: 'Oxidane',
+        type: 'Covalent',
+        state: 'Liquid',
+        molarMass: 18.015,
+        density: '0.998 g/cm³',
+        meltingPoint: '0 °C',
+        boilingPoint: '100 °C',
+        description: 'The universal solvent essential for all known forms of life. Displays unique hydrogen bonding properties.',
+        elements: [
+            { atomicNumber: 1, symbol: 'H', count: 2, massPercent: 11.19 },
+            { atomicNumber: 8, symbol: 'O', count: 1, massPercent: 88.81 }
+        ],
+        atoms: [
+            { elem: 8, symbol: 'O', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 0.76, y: 0.59, z: 0.0 },
+            { elem: 1, symbol: 'H', x: -0.76, y: 0.59, z: 0.0 }
+        ]
+    },
+    {
+        id: 'carbon-dioxide',
+        name: 'Carbon Dioxide',
+        formula: 'CO₂',
+        iupacName: 'Carbon Dioxide',
+        type: 'Oxide',
+        state: 'Gas',
+        molarMass: 44.009,
+        density: '1.98 kg/m³',
+        meltingPoint: '-78.5 °C (Sublimes)',
+        boilingPoint: '-78.5 °C',
+        description: 'A linear greenhouse gas crucial for plant photosynthesis and carbon cycle regulations.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 1, massPercent: 27.29 },
+            { atomicNumber: 8, symbol: 'O', count: 2, massPercent: 72.71 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -1.16, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.16, y: 0.0, z: 0.0 }
+        ]
+    },
+    {
+        id: 'methane',
+        name: 'Methane',
+        formula: 'CH₄',
+        iupacName: 'Methane',
+        type: 'Organic',
+        state: 'Gas',
+        molarMass: 16.043,
+        density: '0.657 kg/m³',
+        meltingPoint: '-182.5 °C',
+        boilingPoint: '-161.5 °C',
+        description: 'The simplest alkane and primary component of natural gas. Tetrahedral molecular geometry.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 1, massPercent: 74.87 },
+            { atomicNumber: 1, symbol: 'H', count: 4, massPercent: 25.13 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 0.63, y: 0.63, z: 0.63 },
+            { elem: 1, symbol: 'H', x: -0.63, y: -0.63, z: 0.63 },
+            { elem: 1, symbol: 'H', x: -0.63, y: 0.63, z: -0.63 },
+            { elem: 1, symbol: 'H', x: 0.63, y: -0.63, z: -0.63 }
+        ]
+    },
+    {
+        id: 'ammonia',
+        name: 'Ammonia',
+        formula: 'NH₃',
+        iupacName: 'Azane',
+        type: 'Base',
+        state: 'Gas',
+        molarMass: 17.031,
+        density: '0.73 kg/m³',
+        meltingPoint: '-77.7 °C',
+        boilingPoint: '-33.3 °C',
+        description: 'Trigonal pyramidal gas with a pungent odor. Fundamental building block for fertilizers.',
+        elements: [
+            { atomicNumber: 7, symbol: 'N', count: 1, massPercent: 82.24 },
+            { atomicNumber: 1, symbol: 'H', count: 3, massPercent: 17.76 }
+        ],
+        atoms: [
+            { elem: 7, symbol: 'N', x: 0.0, y: 0.0, z: 0.12 },
+            { elem: 1, symbol: 'H', x: 0.0, y: 0.94, z: -0.27 },
+            { elem: 1, symbol: 'H', x: 0.81, y: -0.47, z: -0.27 },
+            { elem: 1, symbol: 'H', x: -0.81, y: -0.47, z: -0.27 }
+        ]
+    },
+    {
+        id: 'sodium-chloride',
+        name: 'Sodium Chloride (Table Salt)',
+        formula: 'NaCl',
+        iupacName: 'Sodium Chloride',
+        type: 'Ionic',
+        state: 'Solid',
+        molarMass: 58.443,
+        density: '2.16 g/cm³',
+        meltingPoint: '801 °C',
+        boilingPoint: '1465 °C',
+        description: 'Ionic crystal lattice formed by Na+ and Cl- ions. Essential dietary electrolyte.',
+        elements: [
+            { atomicNumber: 11, symbol: 'Na', count: 1, massPercent: 39.34 },
+            { atomicNumber: 17, symbol: 'Cl', count: 1, massPercent: 60.66 }
+        ],
+        atoms: [
+            { elem: 11, symbol: 'Na', x: -0.8, y: 0.0, z: 0.0 },
+            { elem: 17, symbol: 'Cl', x: 0.8, y: 0.0, z: 0.0 }
+        ]
+    },
+    {
+        id: 'sulfuric-acid',
+        name: 'Sulfuric Acid',
+        formula: 'H₂SO₄',
+        iupacName: 'Sulfuric Acid',
+        type: 'Acid',
+        state: 'Liquid',
+        molarMass: 98.079,
+        density: '1.83 g/cm³',
+        meltingPoint: '10.3 °C',
+        boilingPoint: '337 °C',
+        description: 'A highly corrosive diprotic mineral acid widely used in industrial chemical synthesis.',
+        elements: [
+            { atomicNumber: 1, symbol: 'H', count: 2, massPercent: 2.06 },
+            { atomicNumber: 16, symbol: 'S', count: 1, massPercent: 32.69 },
+            { atomicNumber: 8, symbol: 'O', count: 4, massPercent: 65.25 }
+        ],
+        atoms: [
+            { elem: 16, symbol: 'S', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.0, y: 1.2, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.0, y: -1.2, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.1, y: 0.0, z: 0.6 },
+            { elem: 8, symbol: 'O', x: -1.1, y: 0.0, z: 0.6 },
+            { elem: 1, symbol: 'H', x: 1.6, y: 0.0, z: 1.1 },
+            { elem: 1, symbol: 'H', x: -1.6, y: 0.0, z: 1.1 }
+        ]
+    },
+    {
+        id: 'ethanol',
+        name: 'Ethanol',
+        formula: 'C₂H₅OH',
+        iupacName: 'Ethanol',
+        type: 'Organic',
+        state: 'Liquid',
+        molarMass: 46.069,
+        density: '0.789 g/cm³',
+        meltingPoint: '-114.1 °C',
+        boilingPoint: '78.37 °C',
+        description: 'A volatile organic alcohol used as a solvent, biofuel, and in alcoholic beverages.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 2, massPercent: 52.14 },
+            { atomicNumber: 1, symbol: 'H', count: 6, massPercent: 13.13 },
+            { atomicNumber: 8, symbol: 'O', count: 1, massPercent: 34.73 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: -0.75, y: -0.2, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 0.55, y: 0.5, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.65, y: -0.35, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 2.45, y: 0.15, z: 0.0 },
+            { elem: 1, symbol: 'H', x: -0.75, y: -0.8, z: 0.9 },
+            { elem: 1, symbol: 'H', x: -0.75, y: -0.8, z: -0.9 },
+            { elem: 1, symbol: 'H', x: -1.6, y: 0.5, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 0.55, y: 1.1, z: 0.9 },
+            { elem: 1, symbol: 'H', x: 0.55, y: 1.1, z: -0.9 }
+        ]
+    },
+    {
+        id: 'glucose',
+        name: 'Glucose',
+        formula: 'C₆H₁₂O₆',
+        iupacName: 'D-Glucose',
+        type: 'Organic',
+        state: 'Solid',
+        molarMass: 180.156,
+        density: '1.54 g/cm³',
+        meltingPoint: '146 °C',
+        boilingPoint: 'Decomposes',
+        description: 'Primary monosaccharide energy source for cellular respiration in living organisms.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 6, massPercent: 40.00 },
+            { atomicNumber: 1, symbol: 'H', count: 12, massPercent: 6.71 },
+            { atomicNumber: 8, symbol: 'O', count: 6, massPercent: 53.29 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: 0.0, y: 1.2, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 1.1, y: 0.4, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 0.8, y: -1.0, z: 0.0 },
+            { elem: 6, symbol: 'C', x: -0.6, y: -1.2, z: 0.0 },
+            { elem: 6, symbol: 'C', x: -1.2, y: 0.1, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -0.5, y: 1.3, z: 0.6 },
+            { elem: 8, symbol: 'O', x: 2.3, y: 0.8, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.7, y: -1.8, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -1.2, y: -2.3, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -2.5, y: 0.2, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 0.2, y: 2.2, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 1.1, y: 0.4, z: -1.0 },
+            { elem: 1, symbol: 'H', x: 0.8, y: -1.0, z: -1.0 },
+            { elem: 1, symbol: 'H', x: -0.6, y: -1.2, z: -1.0 },
+            { elem: 1, symbol: 'H', x: -1.2, y: 0.1, z: -1.0 }
+        ]
+    },
+    {
+        id: 'caffeine',
+        name: 'Caffeine',
+        formula: 'C₈H₁₀N₄O₂',
+        iupacName: '1,3,7-Trimethylxanthine',
+        type: 'Organic',
+        state: 'Solid',
+        molarMass: 194.19,
+        density: '1.23 g/cm³',
+        meltingPoint: '235 °C',
+        boilingPoint: '178 °C (Sublimes)',
+        description: 'A central nervous system stimulant of the methylxanthine class found in coffee and tea.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 8, massPercent: 49.48 },
+            { atomicNumber: 1, symbol: 'H', count: 10, massPercent: 5.19 },
+            { atomicNumber: 7, symbol: 'N', count: 4, massPercent: 28.85 },
+            { atomicNumber: 8, symbol: 'O', count: 2, massPercent: 16.48 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: 0.0, y: 1.2, z: 0.0 },
+            { elem: 7, symbol: 'N', x: 1.1, y: 0.5, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 1.0, y: -0.8, z: 0.0 },
+            { elem: 6, symbol: 'C', x: -0.3, y: -1.3, z: 0.0 },
+            { elem: 7, symbol: 'N', x: -1.3, y: -0.4, z: 0.0 },
+            { elem: 6, symbol: 'C', x: -1.2, y: 0.9, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.1, y: 2.4, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -2.1, y: 1.7, z: 0.0 },
+            { elem: 7, symbol: 'N', x: 2.1, y: -1.5, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 1.7, y: -2.7, z: 0.0 },
+            { elem: 7, symbol: 'N', x: 0.3, y: -2.6, z: 0.0 }
+        ]
+    },
+    {
+        id: 'hydrochloric-acid',
+        name: 'Hydrochloric Acid',
+        formula: 'HCl',
+        iupacName: 'Chlorane',
+        type: 'Acid',
+        state: 'Liquid',
+        molarMass: 36.46,
+        density: '1.19 g/cm³',
+        meltingPoint: '-30 °C',
+        boilingPoint: '108.5 °C',
+        description: 'Strong monoprotic mineral acid that is the main component of gastric acid in the stomach.',
+        elements: [
+            { atomicNumber: 1, symbol: 'H', count: 1, massPercent: 2.77 },
+            { atomicNumber: 17, symbol: 'Cl', count: 1, massPercent: 97.23 }
+        ],
+        atoms: [
+            { elem: 17, symbol: 'Cl', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 1.27, y: 0.0, z: 0.0 }
+        ]
+    },
+    {
+        id: 'sodium-hydroxide',
+        name: 'Sodium Hydroxide (Caustic Soda)',
+        formula: 'NaOH',
+        iupacName: 'Sodium Oxidanide',
+        type: 'Base',
+        state: 'Solid',
+        molarMass: 39.997,
+        density: '2.13 g/cm³',
+        meltingPoint: '318 °C',
+        boilingPoint: '1388 °C',
+        description: 'Strong metallic base and alkali salt used in soap making and chemical processing.',
+        elements: [
+            { atomicNumber: 11, symbol: 'Na', count: 1, massPercent: 57.48 },
+            { atomicNumber: 8, symbol: 'O', count: 1, massPercent: 40.00 },
+            { atomicNumber: 1, symbol: 'H', count: 1, massPercent: 2.52 }
+        ],
+        atoms: [
+            { elem: 11, symbol: 'Na', x: -1.2, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.6, y: 0.0, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 1.5, y: 0.0, z: 0.0 }
+        ]
+    },
+    {
+        id: 'hydrogen-peroxide',
+        name: 'Hydrogen Peroxide',
+        formula: 'H₂O₂',
+        iupacName: 'Dioxidane',
+        type: 'Covalent',
+        state: 'Liquid',
+        molarMass: 34.015,
+        density: '1.45 g/cm³',
+        meltingPoint: '-0.43 °C',
+        boilingPoint: '150.2 °C',
+        description: 'Powerful oxidizer with a non-planar skew molecular geometry. Used as a disinfectant.',
+        elements: [
+            { atomicNumber: 1, symbol: 'H', count: 2, massPercent: 5.93 },
+            { atomicNumber: 8, symbol: 'O', count: 2, massPercent: 94.07 }
+        ],
+        atoms: [
+            { elem: 8, symbol: 'O', x: -0.7, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.7, y: 0.0, z: 0.0 },
+            { elem: 1, symbol: 'H', x: -1.1, y: 0.8, z: 0.4 },
+            { elem: 1, symbol: 'H', x: 1.1, y: -0.8, z: 0.4 }
+        ]
+    },
+    {
+        id: 'calcium-carbonate',
+        name: 'Calcium Carbonate',
+        formula: 'CaCO₃',
+        iupacName: 'Calcium Carbonate',
+        type: 'Ionic',
+        state: 'Solid',
+        molarMass: 100.086,
+        density: '2.71 g/cm³',
+        meltingPoint: '1339 °C',
+        boilingPoint: 'Decomposes',
+        description: 'Found in rocks as minerals calcite and aragonite, and primary component of eggshells and sea shells.',
+        elements: [
+            { atomicNumber: 20, symbol: 'Ca', count: 1, massPercent: 40.04 },
+            { atomicNumber: 6, symbol: 'C', count: 1, massPercent: 12.00 },
+            { atomicNumber: 8, symbol: 'O', count: 3, massPercent: 47.96 }
+        ],
+        atoms: [
+            { elem: 20, symbol: 'Ca', x: -1.5, y: 0.0, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 0.8, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.9, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.3, y: 1.1, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.3, y: -1.1, z: 0.0 }
+        ]
+    },
+    {
+        id: 'nitric-acid',
+        name: 'Nitric Acid',
+        formula: 'HNO₃',
+        iupacName: 'Nitric Acid',
+        type: 'Acid',
+        state: 'Liquid',
+        molarMass: 63.01,
+        density: '1.51 g/cm³',
+        meltingPoint: '-42 °C',
+        boilingPoint: '83 °C',
+        description: 'Highly corrosive mineral acid used in the production of fertilizers and explosives.',
+        elements: [
+            { atomicNumber: 1, symbol: 'H', count: 1, massPercent: 1.60 },
+            { atomicNumber: 7, symbol: 'N', count: 1, massPercent: 22.23 },
+            { atomicNumber: 8, symbol: 'O', count: 3, massPercent: 76.17 }
+        ],
+        atoms: [
+            { elem: 7, symbol: 'N', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.0, y: 1.2, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 1.1, y: -0.6, z: 0.0 },
+            { elem: 8, symbol: 'O', x: -1.1, y: -0.6, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 1.8, y: -0.1, z: 0.0 }
+        ]
+    },
+    {
+        id: 'acetone',
+        name: 'Acetone',
+        formula: 'C₃H₆O',
+        iupacName: 'Propan-2-one',
+        type: 'Organic',
+        state: 'Liquid',
+        molarMass: 58.08,
+        density: '0.784 g/cm³',
+        meltingPoint: '-94.7 °C',
+        boilingPoint: '56.05 °C',
+        description: 'Simplest ketone, colorless, volatile, flammable organic solvent.',
+        elements: [
+            { atomicNumber: 6, symbol: 'C', count: 3, massPercent: 62.04 },
+            { atomicNumber: 1, symbol: 'H', count: 6, massPercent: 10.41 },
+            { atomicNumber: 8, symbol: 'O', count: 1, massPercent: 27.55 }
+        ],
+        atoms: [
+            { elem: 6, symbol: 'C', x: 0.0, y: 0.0, z: 0.0 },
+            { elem: 8, symbol: 'O', x: 0.0, y: 1.2, z: 0.0 },
+            { elem: 6, symbol: 'C', x: 1.2, y: -0.7, z: 0.0 },
+            { elem: 6, symbol: 'C', x: -1.2, y: -0.7, z: 0.0 },
+            { elem: 1, symbol: 'H', x: 1.2, y: -1.3, z: 0.9 },
+            { elem: 1, symbol: 'H', x: 1.2, y: -1.3, z: -0.9 },
+            { elem: 1, symbol: 'H', x: 2.0, y: -0.1, z: 0.0 },
+            { elem: 1, symbol: 'H', x: -1.2, y: -1.3, z: 0.9 },
+            { elem: 1, symbol: 'H', x: -1.2, y: -1.3, z: -0.9 },
+            { elem: 1, symbol: 'H', x: -2.0, y: -0.1, z: 0.0 }
+        ]
+    }
+];
+
+// 07_compounds.js
+/**
+ * 07_compounds.js
+ * Controller for Compounds View & 3D Molecule Renderer using Three.js
+ */
+
+let selectedCompoundId = 'water';
+let compoundFilterType = 'All';
+let compoundSearchQuery = '';
+let activeElementFilter = null;
+
+// Three.js Molecular Viewer globals
+let molScene = null;
+let molCamera = null;
+let molRenderer = null;
+let molGroup = null;
+let isMolRotating = true;
+let isDraggingMol = false;
+let previousMousePosition = { x: 0, y: 0 };
+
+function initCompoundsView() {
+    setupCompoundsEvents();
+    renderCompoundsGrid();
+    initMoleculeViewer();
+    selectCompound('water');
+}
+
+function setupCompoundsEvents() {
+    const searchInput = document.getElementById('compound-search-bar');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            compoundSearchQuery = e.target.value.trim().toLowerCase();
+            renderCompoundsGrid();
+        });
+    }
+
+    const typePills = document.querySelectorAll('.compound-filter-btn');
+    typePills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            typePills.forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            compoundFilterType = e.target.dataset.type || 'All';
+            renderCompoundsGrid();
+        });
+    });
+}
+
+function renderCompoundsGrid() {
+    const gridContainer = document.getElementById('compounds-grid');
+    if (!gridContainer) return;
+
+    gridContainer.innerHTML = '';
+
+    const filtered = compoundsData.filter(comp => {
+        // Filter by Type
+        if (compoundFilterType !== 'All') {
+            if (compoundFilterType === 'Solid' || compoundFilterType === 'Liquid' || compoundFilterType === 'Gas') {
+                if (comp.state !== compoundFilterType) return false;
+            } else {
+                if (comp.type !== compoundFilterType) return false;
+            }
+        }
+
+        // Filter by Element
+        if (activeElementFilter) {
+            const hasElem = comp.elements.some(e => e.atomicNumber === activeElementFilter || e.symbol.toLowerCase() === activeElementFilter.toString().toLowerCase());
+            if (!hasElem) return false;
+        }
+
+        // Search Query
+        if (compoundSearchQuery) {
+            const matchName = comp.name.toLowerCase().includes(compoundSearchQuery);
+            const matchFormula = comp.formula.toLowerCase().includes(compoundSearchQuery);
+            const matchIupac = comp.iupacName.toLowerCase().includes(compoundSearchQuery);
+            if (!matchName && !matchFormula && !matchIupac) return false;
+        }
+
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        gridContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🧪</div>
+                <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your filter</div>
+            </div>
+        `;
+        return;
+    }
+
+    filtered.forEach(comp => {
+        const card = document.createElement('div');
+        card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
+        card.dataset.id = comp.id;
+
+        const mainElem = comp.elements[0] ? comp.elements[0].atomicNumber : 6;
+        const mainColor = CPK_COLORS[mainElem] || '#00d4ff';
+
+        card.innerHTML = `
+            <div class="compound-card-header">
+                <span class="compound-formula-badge">${comp.formula}</span>
+                <span class="compound-type-tag">${comp.type}</span>
+            </div>
+            <div class="compound-card-title">${comp.name}</div>
+            <div class="compound-card-meta">
+                <span>Mass: ${comp.molarMass} g/mol</span>
+                <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            selectCompound(comp.id);
+        });
+
+        gridContainer.appendChild(card);
+    });
+}
+
+function selectCompound(id) {
+    const comp = compoundsData.find(c => c.id === id);
+    if (!comp) return;
+
+    selectedCompoundId = id;
+
+    // Update Header Card
+    const nameEl = document.getElementById('comp-detail-name');
+    const formulaEl = document.getElementById('comp-detail-formula');
+    const iupacEl = document.getElementById('comp-detail-iupac');
+    const massEl = document.getElementById('comp-detail-mass');
+    const stateEl = document.getElementById('comp-detail-state');
+    const descEl = document.getElementById('comp-detail-desc');
+    const typeEl = document.getElementById('comp-detail-type');
+    const wikiBtn = document.getElementById('comp-wiki-btn');
+
+    if (nameEl) nameEl.textContent = comp.name;
+    if (formulaEl) formulaEl.textContent = comp.formula;
+    if (iupacEl) iupacEl.textContent = `IUPAC: ${comp.iupacName}`;
+    if (massEl) massEl.textContent = `${comp.molarMass} g/mol`;
+    if (stateEl) stateEl.textContent = comp.state;
+    if (descEl) descEl.textContent = comp.description;
+    if (typeEl) typeEl.textContent = comp.type;
+
+    if (wikiBtn) {
+        wikiBtn.onclick = () => {
+            if (typeof openWikiModal === 'function') {
+                openWikiModal(comp.name, comp.formula);
+            } else {
+                window.open(`https://en.wikipedia.org/wiki/${encodeURIComponent(comp.name)}`, '_blank');
+            }
+        };
+    }
+
+    // Physical Properties Table
+    const mpEl = document.getElementById('comp-prop-mp');
+    const bpEl = document.getElementById('comp-prop-bp');
+    const densityEl = document.getElementById('comp-prop-density');
+    if (mpEl) mpEl.textContent = comp.meltingPoint;
+    if (bpEl) bpEl.textContent = comp.boilingPoint;
+    if (densityEl) densityEl.textContent = comp.density;
+
+    // Render Element Composition Bar
+    renderElementComposition(comp);
+
+    // Render 3D Molecule
+    render3DMolecule(comp);
+}
+
+function renderElementComposition(comp) {
+    const container = document.getElementById('comp-element-breakdown');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // Create stacked percentage bar
+    const bar = document.createElement('div');
+    bar.className = 'comp-bar-container';
+
+    comp.elements.forEach(el => {
+        const seg = document.createElement('div');
+        seg.className = 'comp-bar-seg';
+        seg.style.width = `${el.massPercent}%`;
+        const color = CPK_COLORS[el.atomicNumber] || '#00d4ff';
+        seg.style.backgroundColor = color;
+        seg.title = `${el.symbol}: ${el.massPercent}% by mass`;
+        bar.appendChild(seg);
+    });
+
+    container.appendChild(bar);
+
+    // Create legend chips
+    const legend = document.createElement('div');
+    legend.className = 'comp-legend-chips';
+
+    comp.elements.forEach(el => {
+        const chip = document.createElement('div');
+        chip.className = 'comp-chip';
+        const color = CPK_COLORS[el.atomicNumber] || '#00d4ff';
+        chip.innerHTML = `
+            <span class="chip-color" style="background:${color};"></span>
+            <span class="chip-label"><b>${el.symbol}</b> (${el.count}): ${el.massPercent}%</span>
+        `;
+        legend.appendChild(chip);
+    });
+
+    container.appendChild(legend);
+}
+
+function initMoleculeViewer() {
+    const canvasContainer = document.getElementById('molecule-canvas-container');
+    if (!canvasContainer || typeof THREE === 'undefined') return;
+
+    canvasContainer.innerHTML = '';
+
+    const width = canvasContainer.clientWidth || 300;
+    const height = canvasContainer.clientHeight || 260;
+
+    molScene = new THREE.Scene();
+    molCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    molCamera.position.z = 6;
+
+    molRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    molRenderer.setSize(width, height);
+    molRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    canvasContainer.appendChild(molRenderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    molScene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight1.position.set(5, 10, 7);
+    molScene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x00d4ff, 0.4);
+    dirLight2.position.set(-5, -5, -5);
+    molScene.add(dirLight2);
+
+    molGroup = new THREE.Group();
+    molScene.add(molGroup);
+
+    // Drag Interaction
+    const dom = molRenderer.domElement;
+    dom.addEventListener('mousedown', (e) => {
+        isDraggingMol = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+    dom.addEventListener('mousemove', (e) => {
+        if (!isDraggingMol || !molGroup) return;
+        const deltaMove = { x: e.clientX - previousMousePosition.x, y: e.clientY - previousMousePosition.y };
+        molGroup.rotation.y += deltaMove.x * 0.01;
+        molGroup.rotation.x += deltaMove.y * 0.01;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+    window.addEventListener('mouseup', () => { isDraggingMol = false; });
+
+    // Touch support
+    dom.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            isDraggingMol = true;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+    });
+    dom.addEventListener('touchmove', (e) => {
+        if (!isDraggingMol || !molGroup || e.touches.length !== 1) return;
+        const deltaMove = { x: e.touches[0].clientX - previousMousePosition.x, y: e.touches[0].clientY - previousMousePosition.y };
+        molGroup.rotation.y += deltaMove.x * 0.01;
+        molGroup.rotation.x += deltaMove.y * 0.01;
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    });
+    dom.addEventListener('touchend', () => { isDraggingMol = false; });
+
+    // Animation Loop
+    function animate() {
+        requestAnimationFrame(animate);
+        if (molGroup && isMolRotating && !isDraggingMol) {
+            molGroup.rotation.y += 0.005;
+        }
+        if (molRenderer && molScene && molCamera) {
+            molRenderer.render(molScene, molCamera);
+        }
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        if (!canvasContainer || !molRenderer || !molCamera) return;
+        const w = canvasContainer.clientWidth;
+        const h = canvasContainer.clientHeight;
+        if (w > 0 && h > 0) {
+            molCamera.aspect = w / h;
+            molCamera.updateProjectionMatrix();
+            molRenderer.setSize(w, h);
+        }
+    });
+}
+
+function render3DMolecule(comp) {
+    if (!molGroup || !comp || !comp.atoms) return;
+
+    // Clear previous group
+    while (molGroup.children.length > 0) {
+        const obj = molGroup.children[0];
+        molGroup.remove(obj);
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+    }
+
+    const atoms = comp.atoms;
+    const atomSpheres = [];
+
+    // Render Atom Spheres
+    atoms.forEach(a => {
+        const radius = a.elem === 1 ? 0.28 : (a.elem === 6 ? 0.42 : (a.elem === 8 ? 0.38 : (a.elem === 7 ? 0.40 : 0.45)));
+        const geom = new THREE.SphereGeometry(radius, 32, 32);
+        const hexColor = CPK_COLORS[a.elem] || '#00d4ff';
+        const mat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(hexColor),
+            roughness: 0.3,
+            metalness: 0.2
+        });
+
+        const sphere = new THREE.Mesh(geom, mat);
+        sphere.position.set(a.x, a.y, a.z);
+        molGroup.add(sphere);
+        atomSpheres.push({ mesh: sphere, pos: new THREE.Vector3(a.x, a.y, a.z), elem: a.elem });
+    });
+
+    // Render Bonds between nearby atoms
+    for (let i = 0; i < atomSpheres.length; i++) {
+        for (let j = i + 1; j < atomSpheres.length; j++) {
+            const p1 = atomSpheres[i].pos;
+            const p2 = atomSpheres[j].pos;
+            const dist = p1.distanceTo(p2);
+
+            // Create bond if distance is within covalent bond threshold
+            if (dist > 0.4 && dist < 1.85) {
+                createBondCylinder(p1, p2, molGroup);
+            }
+        }
+    }
+
+    // Reset rotation
+    molGroup.rotation.set(0, 0, 0);
+}
+
+function createBondCylinder(p1, p2, group) {
+    const direction = new THREE.Vector3().subVectors(p2, p1);
+    const orientation = new THREE.Matrix4();
+    orientation.lookAt(p1, p2, new THREE.Object3D().up);
+
+    const length = direction.length();
+    const geom = new THREE.CylinderGeometry(0.08, 0.08, length, 16);
+    const mat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.4, metalness: 0.1 });
+
+    const cylinder = new THREE.Mesh(geom, mat);
+    cylinder.position.copy(p1).add(p2).multiplyScalar(0.5);
+    cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+
+    group.add(cylinder);
+}
+
 // 02_main.js
 // Constants & State
 let currentTemp = 298; // Kelvin
@@ -75813,6 +76928,10 @@ function setupUI() {
                 if (window.OrbitalViewer) {
                     // Small delay to ensure CSS display:block has taken effect
                     setTimeout(() => window.OrbitalViewer.resize(), 50);
+                }
+            } else if (viewId === 'compounds') {
+                if (typeof initCompoundsView === 'function') {
+                    initCompoundsView();
                 }
             }
         });
@@ -78023,8 +79142,94 @@ window.OrbitalViewer = {
 
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
-            <div class="full-panel">
-                <h2>Compounds Panel (Coming Soon)</h2>
+            <div class="view-left">
+                <!-- Controls & Filters Header -->
+                <div class="compounds-controls">
+                    <div class="compounds-search-wrap">
+                        <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
+                    </div>
+                    <div class="compounds-filter-pills">
+                        <button class="compound-filter-btn active" data-type="All">All</button>
+                        <button class="compound-filter-btn" data-type="Organic">Organic</button>
+                        <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
+                        <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
+                        <button class="compound-filter-btn" data-type="Acid">Acids</button>
+                        <button class="compound-filter-btn" data-type="Base">Bases</button>
+                        <button class="compound-filter-btn" data-type="Gas">Gases</button>
+                        <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
+                        <button class="compound-filter-btn" data-type="Solid">Solids</button>
+                    </div>
+                </div>
+
+                <!-- Compounds Cards Grid -->
+                <div class="compounds-grid-container" id="compounds-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Compounds Right Sidebar Detail Pane -->
+            <div class="view-right sidebar" id="compounds-sidebar">
+                <div class="compound-detail-container">
+                    <div class="comp-header-card">
+                        <div class="comp-header-top">
+                            <span class="comp-formula-large" id="comp-detail-formula">H₂O</span>
+                            <span class="comp-type-pill" id="comp-detail-type">Covalent</span>
+                        </div>
+                        <h2 class="comp-title-large" id="comp-detail-name">Water</h2>
+                        <div class="comp-iupac-sub" id="comp-detail-iupac">IUPAC: Oxidane</div>
+                    </div>
+
+                    <!-- 3D Molecular Viewer -->
+                    <div class="molecule-3d-card">
+                        <div class="molecule-card-header">
+                            <span>3D Molecular Model</span>
+                            <span style="font-size: 0.75rem; opacity: 0.7;">Drag to rotate</span>
+                        </div>
+                        <div id="molecule-canvas-container"></div>
+                    </div>
+
+                    <!-- Element Composition Section -->
+                    <div class="comp-section-card">
+                        <h4>Element Composition (% Mass)</h4>
+                        <div id="comp-element-breakdown"></div>
+                    </div>
+
+                    <!-- Physical Properties -->
+                    <div class="comp-section-card">
+                        <h4>Physical & Chemical Properties</h4>
+                        <div class="comp-props-grid">
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Molar Mass</span>
+                                <span class="prop-value mono-text" id="comp-detail-mass">18.015 g/mol</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">State (STP)</span>
+                                <span class="prop-value mono-text" id="comp-detail-state">Liquid</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Melting Point</span>
+                                <span class="prop-value mono-text" id="comp-prop-mp">0 °C</span>
+                            </div>
+                            <div class="comp-prop-item">
+                                <span class="prop-label">Boiling Point</span>
+                                <span class="prop-value mono-text" id="comp-prop-bp">100 °C</span>
+                            </div>
+                            <div class="comp-prop-item" style="grid-column: 1 / -1;">
+                                <span class="prop-label">Density</span>
+                                <span class="prop-value mono-text" id="comp-prop-density">0.998 g/cm³</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description & Wikipedia -->
+                    <div class="comp-section-card">
+                        <h4>Description</h4>
+                        <p id="comp-detail-desc" style="font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.8); margin-bottom: 12px;"></p>
+                        <button id="comp-wiki-btn" class="comp-wiki-button">
+                            📖 Read Wikipedia Article
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 

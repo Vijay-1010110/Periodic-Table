@@ -252,6 +252,10 @@ function setupUI() {
                     // Small delay to ensure CSS display:block has taken effect
                     setTimeout(() => window.OrbitalViewer.resize(), 50);
                 }
+            } else if (viewId === 'compounds') {
+                if (typeof initCompoundsView === 'function') {
+                    initCompoundsView();
+                }
             }
         });
     });
