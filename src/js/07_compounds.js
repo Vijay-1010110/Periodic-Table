@@ -46,66 +46,74 @@ function setupCompoundsEvents() {
 }
 
 function initSynthesizerUI() {
-    const carousel = document.getElementById('synth-element-carousel');
+    const gridContainer = document.getElementById('compounds-periodic-grid');
     const dropzone = document.getElementById('synth-dropzone');
-    if (!carousel || !dropzone) return;
+    const clearBtn = document.getElementById('clear-synth-btn');
+    if (!gridContainer || !dropzone) return;
 
-    // Populate carousel with common elements (top ~50 most used in compounds)
-    const commonElements = [1, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 22, 26, 29, 30, 35, 47, 53];
-    carousel.innerHTML = '';
+    // Render full 118 element selection grid
+    gridContainer.innerHTML = '';
     
-    commonElements.forEach(z => {
-        const el = typeof elementsData !== 'undefined' ? elementsData[z - 1] : null;
-        if (!el) return;
+    for (let i = 1; i <= 118; i++) {
+        const elData = typeof getElementByNumber === 'function' ? getElementByNumber(i) : (elementsData ? elementsData[i - 1] : null);
+        if (!elData) continue;
         
-        const tile = document.createElement('div');
-        tile.className = 'synth-el-tile';
-        tile.draggable = true;
-        tile.dataset.z = z;
-        tile.dataset.sym = el.symbol;
-        
-        // Styling for tile
-        const cat = typeof getNormalizedCategory === 'function' ? getNormalizedCategory(el.category) : 'unknown';
+        const pos = typeof getGridPosition === 'function' ? getGridPosition(i) : { col: (i % 18) || 18, row: Math.ceil(i / 18) };
+        const cat = typeof getNormalizedCategory === 'function' ? getNormalizedCategory(elData.category) : 'unknown';
         const color = (typeof categoryColors !== 'undefined' && categoryColors[cat]) ? categoryColors[cat] : '#00d4ff';
-        tile.style.cssText = `
-            width: 45px; height: 45px; min-width: 45px;
-            background: rgba(15, 23, 42, 0.8); border: 2px solid ${color};
-            border-radius: 8px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            cursor: pointer; user-select: none; transition: all 0.2s ease;
-            box-shadow: 0 0 8px rgba(0,0,0,0.4);
-        `;
-        tile.innerHTML = `
-            <span style="font-size: 0.6rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">${z}</span>
-            <span style="font-size: 1.1rem; font-weight: bold; color: ${color}; line-height: 1; font-family: var(--font-mono);">${el.symbol}</span>
+        
+        const cell = document.createElement('div');
+        cell.className = 'element-cell';
+        cell.draggable = true;
+        cell.dataset.z = i;
+        cell.dataset.sym = elData.symbol;
+        cell.style.gridColumn = pos.col;
+        cell.style.gridRow = pos.row;
+        cell.style.cursor = 'pointer';
+        cell.style.border = `1px solid ${color}`;
+        cell.style.background = typeof getGlossyBackground === 'function' ? getGlossyBackground(color, cat) : 'rgba(15, 23, 42, 0.8)';
+        
+        cell.innerHTML = `
+            <span class="cell-num">${i}</span>
+            <span class="cell-sym">${elData.symbol}</span>
+            <span class="cell-name">${elData.name}</span>
         `;
         
-        // Hover effects
-        tile.addEventListener('mouseenter', () => {
-            tile.style.transform = 'scale(1.1)';
-            tile.style.boxShadow = `0 0 12px ${color}`;
+        // Hover effect
+        cell.addEventListener('mouseenter', () => {
+            cell.style.boxShadow = `0 0 14px ${color}`;
+            cell.style.zIndex = '10';
         });
-        tile.addEventListener('mouseleave', () => {
-            tile.style.transform = 'scale(1)';
-            tile.style.boxShadow = '0 0 8px rgba(0,0,0,0.4)';
+        cell.addEventListener('mouseleave', () => {
+            cell.style.boxShadow = 'none';
+            cell.style.zIndex = '1';
         });
 
         // Click / Tap Fallback
-        tile.addEventListener('click', () => {
-            addFilterElement(z, el.symbol, color);
+        cell.addEventListener('click', () => {
+            addFilterElement(i, elData.symbol, color);
         });
         
         // Drag and Drop
-        tile.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', JSON.stringify({ z: z, sym: el.symbol, color: color }));
-            tile.style.opacity = '0.5';
+        cell.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ z: i, sym: elData.symbol, color: color }));
+            cell.style.opacity = '0.5';
         });
-        tile.addEventListener('dragend', () => {
-            tile.style.opacity = '1';
+        cell.addEventListener('dragend', () => {
+            cell.style.opacity = '1';
         });
         
-        carousel.appendChild(tile);
-    });
+        gridContainer.appendChild(cell);
+    }
+
+    // Clear Button
+    if (clearBtn) {
+        clearBtn.onclick = () => {
+            activeElementFilters = [];
+            updateDropzoneUI();
+            renderCompoundsGrid();
+        };
+    }
 
     // Dropzone logic
     dropzone.addEventListener('dragover', (e) => {
@@ -115,14 +123,14 @@ function initSynthesizerUI() {
     });
     
     dropzone.addEventListener('dragleave', () => {
-        dropzone.style.background = 'transparent';
-        dropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        dropzone.style.background = 'rgba(4, 8, 16, 0.6)';
+        dropzone.style.borderColor = 'rgba(0, 212, 255, 0.4)';
     });
 
     dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropzone.style.background = 'transparent';
-        dropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        dropzone.style.background = 'rgba(4, 8, 16, 0.6)';
+        dropzone.style.borderColor = 'rgba(0, 212, 255, 0.4)';
         
         const dataStr = e.dataTransfer.getData('text/plain');
         if (!dataStr) return;
@@ -146,41 +154,43 @@ function addFilterElement(z, sym, color) {
 }
 
 function updateDropzoneUI() {
-    const dropzone = document.getElementById('synth-dropzone');
     const hint = document.getElementById('synth-drop-hint');
-    if (!dropzone || !hint) return;
+    const container = document.getElementById('synth-pills-container');
+    const clearBtn = document.getElementById('clear-synth-btn');
+    if (!container || !hint) return;
     
-    // Clear existing dropped pills (keep hint)
-    Array.from(dropzone.children).forEach(c => {
-        if (c.id !== 'synth-drop-hint') c.remove();
-    });
+    container.innerHTML = '';
     
     if (activeElementFilters.length === 0) {
-        hint.style.display = 'block';
+        hint.style.display = 'inline';
+        if (clearBtn) clearBtn.style.display = 'none';
     } else {
         hint.style.display = 'none';
+        if (clearBtn) clearBtn.style.display = 'inline-block';
         
         activeElementFilters.forEach(f => {
             const pill = document.createElement('div');
             pill.style.cssText = `
-                background: rgba(0,0,0,0.5); border: 1px solid ${f.color};
-                border-radius: 20px; padding: 4px 10px 4px 12px;
+                background: rgba(0,0,0,0.6); border: 1px solid ${f.color};
+                border-radius: 20px; padding: 4px 12px;
                 display: flex; align-items: center; gap: 8px;
                 color: ${f.color}; font-weight: bold; font-family: var(--font-mono);
                 animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 0 10px ${f.color}44;
             `;
             pill.innerHTML = `
-                ${f.symbol}
+                ${f.symbol} (${f.atomicNumber})
                 <span class="remove-synth-btn" style="cursor: pointer; background: rgba(255,255,255,0.2); width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #fff;">&times;</span>
             `;
             
-            pill.querySelector('.remove-synth-btn').addEventListener('click', () => {
+            pill.querySelector('.remove-synth-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
                 activeElementFilters = activeElementFilters.filter(el => el.atomicNumber != f.atomicNumber);
                 updateDropzoneUI();
                 renderCompoundsGrid();
             });
             
-            dropzone.appendChild(pill);
+            container.appendChild(pill);
         });
     }
 }

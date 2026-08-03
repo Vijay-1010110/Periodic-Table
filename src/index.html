@@ -464,24 +464,32 @@
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
             <div class="view-left">
-                <!-- Controls & Elemental Synthesizer Header -->
+                <!-- Controls & Full Periodic Table Elemental Synthesizer Header -->
                 <div class="compounds-controls" style="flex-direction: column; gap: 15px;">
                     
-                    <!-- Drag & Drop Synthesizer -->
-                    <div class="synthesis-panel" style="display: flex; gap: 15px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 12px; padding: 15px;">
-                        
-                        <!-- Mini Element Carousel (Draggables) -->
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
-                            <div style="font-family: var(--font-ui); font-size: 0.85rem; color: #00d4ff; text-transform: uppercase; letter-spacing: 1px;">Drag Elements to Synthesize</div>
-                            <div id="synth-element-carousel" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-                                <!-- JS will populate draggable element tiles here -->
-                            </div>
+                    <!-- Synthesis Drop Zone Banner -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 14px 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h4 style="margin: 0; color: #00d4ff; font-family: var(--font-ui); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">⚛️ Elemental Synthesizer Box</h4>
+                            <p style="margin: 3px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Click or Drag any element from the full Periodic Table below into this box to discover compounds!</p>
                         </div>
+                        <div id="synth-dropzone" style="flex: 1; min-width: 280px; min-height: 50px; border: 2px dashed rgba(0, 212, 255, 0.4); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 10px; background: rgba(4, 8, 16, 0.6); transition: all 0.3s ease;">
+                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.85rem; pointer-events: none;">Drop or click elements here...</span>
+                            <div id="synth-pills-container" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
+                            <button id="clear-synth-btn" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; font-family: var(--font-ui);">Clear Box</button>
+                        </div>
+                    </div>
 
-                        <!-- Drop Zone -->
-                        <div id="synth-dropzone" style="min-width: 250px; border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 10px; gap: 10px; transition: all 0.3s ease; position: relative;">
-                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.9rem; pointer-events: none;">Drop elements here...</span>
-                            <!-- JS will append dropped elements here -->
+                    <!-- Collapsible Full 118-Element Periodic Table -->
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-family: var(--font-ui); font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: bold;">Full 118-Element Selection Grid</span>
+                            <span style="font-size: 0.75rem; color: #00d4ff; font-family: var(--font-mono);">Click or Drag an Element Tile</span>
+                        </div>
+                        <div class="grid-wrapper" style="max-height: 280px; overflow-y: auto; padding: 4px;">
+                            <div class="periodic-grid" id="compounds-periodic-grid" style="transform: scale(0.95); transform-origin: top left;">
+                                <!-- Standard 118 element grid rendered by JS -->
+                            </div>
                         </div>
                     </div>
 
