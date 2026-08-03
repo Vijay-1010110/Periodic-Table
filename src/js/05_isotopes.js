@@ -169,18 +169,24 @@ function updateIsotopesView(atomicNumber) {
     
     currentIsotopeData.forEach((iso, index) => {
         const item = document.createElement('div');
-        // Give it the exact same class as periodic table cells
         item.className = 'iso-list-item element-cell';
         const dColor = getDecayColor(iso.decayMode);
         item.dataset.decayColor = dColor;
         
-        // Use the glossy metallic background style
         item.style.background = getGlossyBackground(dColor, 'metal');
         item.style.border = `1px solid ${dColor}`;
-        item.style.aspectRatio = '0.8';
-        item.style.minHeight = '90px'; // Prevent grid from squishing height
-        item.style.width = '100%';
-        item.style.order = '1'; // Default order
+        item.style.flex = '0 0 110px';
+        item.style.minWidth = '110px';
+        item.style.height = '76px';
+        item.style.borderRadius = '10px';
+        item.style.order = '1';
+        item.style.position = 'relative';
+        item.style.display = 'flex';
+        item.style.flexDirection = 'column';
+        item.style.justifyContent = 'space-between';
+        item.style.padding = '6px 8px';
+        item.style.boxSizing = 'border-box';
+        item.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease';
         
         const Z = elData.atomicNumber;
         const N = iso.massNumber - Z;
@@ -189,32 +195,36 @@ function updateIsotopesView(atomicNumber) {
         if (Z === 1 && iso.massNumber === 1) isoName = 'Protium';
         if (Z === 1 && iso.massNumber === 2) isoName = 'Deuterium';
         if (Z === 1 && iso.massNumber === 3) isoName = 'Tritium';
-        
-        const massStr = iso.mass ? iso.mass.toFixed(4) : iso.massNumber;
 
         item.innerHTML = `
-            <span style="position:absolute; top:4px; left:6px; font-size:0.65rem; font-family:var(--font-mono); color:#ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${Z}</span>
-            <span style="position:absolute; top:4px; right:6px; font-size:0.65rem; font-family:var(--font-mono); color:#ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${N}</span>
-            
-            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:1; margin-top: 8px;">
-                <span style="font-size:1.6rem; font-family:var(--font-mono); font-weight:600; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1.1;">${elData.symbol}</span>
-                <span style="font-size:0.5rem; color: ${iso.isStable ? '#4ade80' : '#ddd'}; text-shadow: 0 1px 2px rgba(0,0,0,0.8); letter-spacing:0.5px; text-transform: uppercase;">${isoName}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7); z-index: 1;">
+                <span>A=${iso.massNumber}</span>
+                <span>N=${N}</span>
             </div>
             
-            <div style="width:100%; display:flex; justify-content:center; align-items:center; padding-bottom: 6px; box-sizing:border-box; z-index:1;">
-                <span style="font-size:0.55rem; font-family:var(--font-mono); color:#bbb; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${massStr} u</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 4px; z-index: 1;">
+                <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: #00d4ff;">${iso.massNumber}</sup>
+                <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1;">${elData.symbol}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
+                <span style="font-size: 0.6rem; color: ${iso.isStable ? '#4ade80' : '#facc15'}; font-weight: 600; text-transform: uppercase;">${iso.isStable ? 'Stable' : (iso.decayMode ? iso.decayMode.split(' ')[0] : 'Decay')}</span>
+                ${iso.abundance ? `<span style="font-size: 0.58rem; color: #4ade80; font-family: var(--font-mono);">${iso.abundance.toFixed(1)}%</span>` : ''}
             </div>
         `;
-        
-        // No need for custom hover logic, .element-cell:hover handles it
         
         item.onclick = () => {
             document.querySelectorAll('.iso-list-item').forEach((el, i) => {
                 el.classList.remove('selected');
                 el.style.borderColor = getDecayColor(currentIsotopeData[i].decayMode);
+                el.style.boxShadow = 'none';
+                el.style.transform = 'scale(1)';
             });
             item.classList.add('selected');
-            item.style.borderColor = '#00d4ff'; // Cyan active border
+            item.style.borderColor = '#00d4ff';
+            item.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.6)';
+            item.style.transform = 'scale(1.05)';
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             renderIsotopeDetails(index);
         };
         
@@ -226,6 +236,7 @@ function updateIsotopesView(atomicNumber) {
     if (firstItem) {
         firstItem.classList.add('selected');
         firstItem.style.borderColor = '#00d4ff';
+        firstItem.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.6)';
     }
     renderIsotopeDetails(0);
     
