@@ -76519,6 +76519,9 @@ function renderIsotopeDetails(index) {
             infoContainer.innerHTML = html;
         }
     }
+    
+    // Initialize Half-Life Simulator for this selected isotope
+    initHalfLifeSimulator(iso);
 }
 
 // Wiki Modal Logic
@@ -76625,6 +76628,63 @@ window.openWikiModal = function(elName, massNum) {
         });
 };
 
+// Half-Life Simulator Logic
+function initHalfLifeSimulator(iso) {
+    const badge = document.getElementById('sim-halflife-badge');
+    const slider = document.getElementById('sim-time-slider');
+    const textTime = document.getElementById('sim-time-text');
+    const textAtoms = document.getElementById('sim-atoms-text');
+    const chamber = document.getElementById('sim-atom-chamber');
+    
+    if (!badge || !slider || !chamber) return;
+    
+    const hlStr = iso.isStable ? 'Stable (∞)' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unknown');
+    badge.textContent = `T½ = ${hlStr}`;
+    slider.value = 0;
+    
+    // Generate 100 atoms
+    chamber.innerHTML = '';
+    for (let i = 0; i < 100; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'sim-atom-dot';
+        dot.style.cssText = 'width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%); box-shadow: 0 0 8px rgba(74, 222, 128, 0.6); transition: all 0.3s ease;';
+        chamber.appendChild(dot);
+    }
+    
+    const updateSim = () => {
+        const tVal = parseFloat(slider.value);
+        const fraction = Math.pow(0.5, tVal);
+        const remainingCount = Math.round(100 * fraction);
+        
+        let timeLabel = `${tVal.toFixed(1)} Half-lives`;
+        if (!iso.isStable && iso.halfLife) {
+            const realTime = (tVal * iso.halfLife);
+            timeLabel += ` (${formatHalfLife(realTime, iso.halfLifeUnit)})`;
+        }
+        
+        textTime.textContent = timeLabel;
+        textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
+        
+        const dots = chamber.querySelectorAll('.sim-atom-dot');
+        dots.forEach((dot, index) => {
+            if (index < remainingCount) {
+                dot.style.background = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
+                dot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
+                dot.style.opacity = '1';
+                dot.style.transform = 'scale(1)';
+            } else {
+                dot.style.background = 'radial-gradient(circle at 30% 30%, #a855f7 0%, #581c87 100%)';
+                dot.style.boxShadow = '0 0 4px rgba(168, 85, 247, 0.3)';
+                dot.style.opacity = '0.35';
+                dot.style.transform = 'scale(0.85)';
+            }
+        });
+    };
+    
+    slider.oninput = updateSim;
+    updateSim();
+}
+
 function closeIsotopeModal() {
     const overlay = document.getElementById('isotope-modal-overlay');
     const modal = document.getElementById('isotope-modal');
@@ -76637,7 +76697,7 @@ function closeIsotopeModal() {
     }, 400);
 }
 
-// Setup close button and keyboard/backdrop shortcuts
+// Setup close button, tab switching, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
@@ -76656,6 +76716,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeIsotopeModal();
             }
         }
+    });
+
+    // Setup Inspector Tab Switching
+    document.querySelectorAll('.iso-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.iso-tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'rgba(255, 255, 255, 0.04)';
+                b.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                b.style.color = 'rgba(255,255,255,0.7)';
+            });
+            btn.classList.add('active');
+            btn.style.background = 'rgba(0, 212, 255, 0.15)';
+            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
+            btn.style.color = '#00d4ff';
+
+            const targetTab = btn.dataset.tab;
+            document.querySelectorAll('.iso-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const activeContent = document.getElementById(`iso-tab-${targetTab}`);
+            if (activeContent) activeContent.style.display = 'flex';
+        });
     });
 });
 
@@ -81018,100 +81101,150 @@ window.OrbitalViewer = {
             </div>
             
             <!-- ISOTOPE MODAL OVERLAY -->
-            <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(16px); background: rgba(5, 10, 20, 0.88); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
-                <div id="isotope-modal" style="width: 94%; height: 92%; max-width: 1440px; background: rgba(10, 18, 35, 0.96); border-radius: 16px; border: 1px solid rgba(0, 212, 255, 0.3); display: flex; flex-direction: row; box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 40px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+            <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(18px); background: rgba(3, 7, 18, 0.92); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
+                <div id="isotope-modal" style="width: 95%; height: 93%; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
                     
-                    <button id="close-modal-btn" style="position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 16px; border-radius: 20px; cursor: pointer; z-index: 10; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; transition: all 0.2s ease;">✕ Close</button>
+                    <!-- Close Button -->
+                    <button id="close-modal-btn" style="position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 18px; border-radius: 20px; cursor: pointer; z-index: 20; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); transition: all 0.2s ease;">✕ Close</button>
 
-                    <!-- LEFT PANE: ISOTOPE SELECTOR & SEARCH HUB -->
-                    <div id="modal-left-pane" style="flex: 0 0 440px; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; background: rgba(8, 14, 28, 0.75); overflow: hidden;">
+                    <!-- 1. TOP HERO HEADER & ELEMENT BANNER -->
+                    <div style="padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); background: linear-gradient(180deg, rgba(12, 22, 45, 0.9) 0%, rgba(8, 14, 28, 0.7) 100%); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; flex-shrink: 0; padding-right: 100px;">
+                        <div id="modal-el-card" style="display: flex; align-items: center; gap: 16px; min-height: 60px;"></div>
                         
-                        <!-- Element Identity Header -->
-                        <div style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.25); display: flex; flex-direction: column; gap: 12px;">
-                            <div id="modal-el-card" style="width: 100%; min-height: 76px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 10px 16px; box-sizing: border-box; overflow: hidden; color: #fff;"></div>
-                            
-                            <!-- Search & Isotope Counter Row -->
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="text" id="iso-search-input" placeholder="Search isotope (e.g. 99, stable)..." style="flex: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 6px 14px; color: #fff; font-size: 0.8rem; font-family: var(--font-ui); outline: none; transition: border-color 0.2s;" />
-                                <div id="modal-isotope-count" style="font-size: 0.8rem; color: #00d4ff; font-family: var(--font-ui); font-weight: 700; white-space: nowrap;"></div>
+                        <!-- Element Stability Summary & Filters -->
+                        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 99m, stable)..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; font-family: var(--font-ui); outline: none; width: 150px;" />
+                                <div id="modal-isotope-count" style="font-size: 0.8rem; color: #00d4ff; font-weight: 700; white-space: nowrap;"></div>
                             </div>
-                            
-                            <!-- Decay Mode Filter Legend -->
                             <div id="modal-decay-legend" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.75rem; color: #fff; align-items: center;"></div>
-                        </div>
-
-                        <!-- Isotope Card Grid List (2 Columns) -->
-                        <div id="modal-isotope-list" style="flex: 1; overflow-y: auto; padding: 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; align-content: start; scrollbar-width: thin;">
-                            <!-- Populated by JS -->
                         </div>
                     </div>
 
-                    <!-- RIGHT PANE: DECAY VISUALIZER & PROPERTIES MATRIX -->
-                    <div style="flex: 1; display: flex; flex-direction: column; background: rgba(10, 15, 30, 0.4); padding: 20px; overflow-y: auto; gap: 18px;">
+                    <!-- 2. MASS & STABILITY SPECTRUM TIMELINE RIBBON -->
+                    <div style="background: rgba(5, 10, 20, 0.8); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 20px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-ui);">
+                            <span>Isotope Mass Spectrum Timeline (A = Z + N) &mdash; Scroll & Select</span>
+                            <span style="color: #00d4ff;">🟢 Stable &bull; 🔵 Beta- &bull; 🟣 Beta+/EC &bull; 🟡 Alpha &bull; 🔴 Fission</span>
+                        </div>
+                        <div id="modal-isotope-list" style="display: flex; gap: 8px; overflow-x: auto; padding: 6px 2px 8px 2px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: thin;">
+                            <!-- Populated dynamically as horizontal pills -->
+                        </div>
+                    </div>
+
+                    <!-- 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB -->
+                    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; background: rgba(6, 11, 22, 0.6);">
                         
-                        <!-- Selected Isotope Header Banner -->
-                        <div id="modal-iso-card" style="width: 100%; height: 76px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff; flex-shrink: 0;"></div>
-                        
-                        <!-- Dynamic Nuclear Decay Infographic Box -->
-                        <div style="flex: 1; min-height: 280px; background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(4, 8, 18, 0.95) 100%); border-radius: 14px; border: 1px solid rgba(0, 212, 255, 0.2); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.8);">
-                            <div id="decay-infographic-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box;">
+                        <!-- Tab Header Navigation -->
+                        <div style="display: flex; gap: 4px; padding: 10px 24px 0 24px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3); flex-shrink: 0;">
+                            <button class="iso-tab-btn active" data-tab="decay" style="padding: 10px 20px; background: rgba(0, 212, 255, 0.15); border: 1px solid rgba(0, 212, 255, 0.4); border-bottom: none; border-radius: 10px 10px 0 0; color: #00d4ff; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">☢️ Nuclear Decay & Reaction</button>
+                            <button class="iso-tab-btn" data-tab="physics" style="padding: 10px 20px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: none; border-radius: 10px 10px 0 0; color: rgba(255,255,255,0.7); font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">📊 Physical & Nuclear Properties</button>
+                            <button class="iso-tab-btn" data-tab="simulator" style="padding: 10px 20px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: none; border-radius: 10px 10px 0 0; color: rgba(255,255,255,0.7); font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">⏳ Half-Life Decay Simulator</button>
+                        </div>
+
+                        <!-- Tab Content 1: Decay Visualizer -->
+                        <div id="iso-tab-decay" class="iso-tab-content" style="flex: 1; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; gap: 16px;">
+                            <div id="modal-iso-card" style="width: 100%; height: 72px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff; flex-shrink: 0;"></div>
+                            
+                            <div style="flex: 1; min-height: 280px; background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(3, 7, 16, 0.95) 100%); border-radius: 14px; border: 1px solid rgba(0, 212, 255, 0.25); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 35px rgba(0,0,0,0.85);">
+                                <div id="decay-infographic-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box;">
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Physical & Nuclear Properties Dashboard Matrix -->
-                        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); flex-shrink: 0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 14px;">
-                                <h4 style="margin: 0; color: #00d4ff; font-size: 1rem; font-family: var(--font-ui);">Nuclear & Physical Properties Matrix</h4>
+                        <!-- Tab Content 2: Physical & Nuclear Properties Matrix -->
+                        <div id="iso-tab-physics" class="iso-tab-content" style="flex: 1; display: none; flex-direction: column; padding: 20px; overflow-y: auto; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                                <h4 style="margin: 0; color: #00d4ff; font-size: 1.05rem; font-family: var(--font-ui);">Comprehensive Nuclear Data & Physical Constants</h4>
                                 <div id="m-iso-wiki"></div>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Exact Mass</span>
-                                    <span class="prop-value mono-text" id="m-iso-mass" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px;">
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Exact Atomic Mass</span>
+                                    <span class="prop-value mono-text" id="m-iso-mass" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Mass Excess</span>
-                                    <span class="prop-value mono-text" id="m-iso-excess" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Mass Excess (Δ)</span>
+                                    <span class="prop-value mono-text" id="m-iso-excess" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Binding Energy</span>
-                                    <span class="prop-value mono-text" id="m-iso-binding" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Binding Energy / Nucleon</span>
+                                    <span class="prop-value mono-text" id="m-iso-binding" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Abundance</span>
-                                    <span class="prop-value mono-text" id="m-iso-abundance" style="font-size: 0.92rem; font-weight: 700; color: #4ade80;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Natural Abundance</span>
+                                    <span class="prop-value mono-text" id="m-iso-abundance" style="font-size: 1rem; font-weight: 700; color: #4ade80;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Half-Life (T½)</span>
-                                    <span class="prop-value mono-text" id="m-iso-halflife" style="font-size: 0.92rem; font-weight: 700; color: #facc15;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Half-Life (T½)</span>
+                                    <span class="prop-value mono-text" id="m-iso-halflife" style="font-size: 1rem; font-weight: 700; color: #facc15;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Mode</span>
-                                    <span class="prop-value mono-text" id="m-iso-decay" style="font-size: 0.92rem; font-weight: 700; color: #38bdf8;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Mode & Branching</span>
+                                    <span class="prop-value mono-text" id="m-iso-decay" style="font-size: 1rem; font-weight: 700; color: #38bdf8;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Width</span>
-                                    <span class="prop-value mono-text" id="m-iso-width" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Width (Γ)</span>
+                                    <span class="prop-value mono-text" id="m-iso-width" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Specific Activity</span>
-                                    <span class="prop-value mono-text" id="m-iso-activity" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Specific Activity</span>
+                                    <span class="prop-value mono-text" id="m-iso-activity" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Spin / Parity (Jπ)</span>
-                                    <span class="prop-value mono-text" id="m-iso-spin" style="font-size: 0.92rem; font-weight: 700; color: #c084fc;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Spin & Parity (Jπ)</span>
+                                    <span class="prop-value mono-text" id="m-iso-spin" style="font-size: 1rem; font-weight: 700; color: #c084fc;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Magnetic Moment</span>
-                                    <span class="prop-value mono-text" id="m-iso-magnetic" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Magnetic Dipole Moment</span>
+                                    <span class="prop-value mono-text" id="m-iso-magnetic" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 2px;">
-                                    <span class="prop-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Quadrupole Moment</span>
-                                    <span class="prop-value mono-text" id="m-iso-quadrupole" style="font-size: 0.92rem; font-weight: 700; color: #fff;">-</span>
+                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
+                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Electric Quadrupole Moment</span>
+                                    <span class="prop-value mono-text" id="m-iso-quadrupole" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Tab Content 3: Half-Life Decay Simulator -->
+                        <div id="iso-tab-simulator" class="iso-tab-content" style="flex: 1; display: none; flex-direction: column; padding: 20px; overflow-y: auto; gap: 16px;">
+                            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                    <div>
+                                        <h4 style="margin: 0; color: #00d4ff; font-size: 1.1rem; font-family: var(--font-ui);">Interactive Radioactive Half-Life Simulator</h4>
+                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (1/2)^(t / T½)</span></p>
+                                    </div>
+                                    <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-family: var(--font-mono); font-size: 0.85rem;">T½ = -</div>
+                                </div>
+
+                                <!-- Time Slider Controls -->
+                                <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                                        <span style="color: rgba(255,255,255,0.7);">Elapsed Time (t): <strong id="sim-time-text" style="color: #00d4ff;">0 Half-lives (0 s)</strong></span>
+                                        <span style="color: #4ade80;">Remaining Atoms: <strong id="sim-atoms-text">100 / 100 (100.0%)</strong></span>
+                                    </div>
+                                    <input type="range" id="sim-time-slider" min="0" max="7" step="0.1" value="0" style="width: 100%; accent-color: #00d4ff; cursor: pointer;" />
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: var(--font-mono);">
+                                        <span>t = 0 (100%)</span>
+                                        <span>t = 1 T½ (50%)</span>
+                                        <span>t = 2 T½ (25%)</span>
+                                        <span>t = 3 T½ (12.5%)</span>
+                                        <span>t = 5 T½ (3.1%)</span>
+                                        <span>t = 7 T½ (0.8%)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Atom Decay Visual Grid (100 Dots) -->
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="font-size: 0.78rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-ui);">100-Atom Particle Chamber:</div>
+                                    <div id="sim-atom-chamber" style="display: grid; grid-template-columns: repeat(20, 1fr); gap: 6px; background: rgba(4, 8, 16, 0.9); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                                        <!-- Populated by JS with 100 animated glowing dots -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -666,6 +666,9 @@ function renderIsotopeDetails(index) {
             infoContainer.innerHTML = html;
         }
     }
+    
+    // Initialize Half-Life Simulator for this selected isotope
+    initHalfLifeSimulator(iso);
 }
 
 // Wiki Modal Logic
@@ -772,6 +775,63 @@ window.openWikiModal = function(elName, massNum) {
         });
 };
 
+// Half-Life Simulator Logic
+function initHalfLifeSimulator(iso) {
+    const badge = document.getElementById('sim-halflife-badge');
+    const slider = document.getElementById('sim-time-slider');
+    const textTime = document.getElementById('sim-time-text');
+    const textAtoms = document.getElementById('sim-atoms-text');
+    const chamber = document.getElementById('sim-atom-chamber');
+    
+    if (!badge || !slider || !chamber) return;
+    
+    const hlStr = iso.isStable ? 'Stable (∞)' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unknown');
+    badge.textContent = `T½ = ${hlStr}`;
+    slider.value = 0;
+    
+    // Generate 100 atoms
+    chamber.innerHTML = '';
+    for (let i = 0; i < 100; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'sim-atom-dot';
+        dot.style.cssText = 'width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%); box-shadow: 0 0 8px rgba(74, 222, 128, 0.6); transition: all 0.3s ease;';
+        chamber.appendChild(dot);
+    }
+    
+    const updateSim = () => {
+        const tVal = parseFloat(slider.value);
+        const fraction = Math.pow(0.5, tVal);
+        const remainingCount = Math.round(100 * fraction);
+        
+        let timeLabel = `${tVal.toFixed(1)} Half-lives`;
+        if (!iso.isStable && iso.halfLife) {
+            const realTime = (tVal * iso.halfLife);
+            timeLabel += ` (${formatHalfLife(realTime, iso.halfLifeUnit)})`;
+        }
+        
+        textTime.textContent = timeLabel;
+        textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
+        
+        const dots = chamber.querySelectorAll('.sim-atom-dot');
+        dots.forEach((dot, index) => {
+            if (index < remainingCount) {
+                dot.style.background = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
+                dot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
+                dot.style.opacity = '1';
+                dot.style.transform = 'scale(1)';
+            } else {
+                dot.style.background = 'radial-gradient(circle at 30% 30%, #a855f7 0%, #581c87 100%)';
+                dot.style.boxShadow = '0 0 4px rgba(168, 85, 247, 0.3)';
+                dot.style.opacity = '0.35';
+                dot.style.transform = 'scale(0.85)';
+            }
+        });
+    };
+    
+    slider.oninput = updateSim;
+    updateSim();
+}
+
 function closeIsotopeModal() {
     const overlay = document.getElementById('isotope-modal-overlay');
     const modal = document.getElementById('isotope-modal');
@@ -784,7 +844,7 @@ function closeIsotopeModal() {
     }, 400);
 }
 
-// Setup close button and keyboard/backdrop shortcuts
+// Setup close button, tab switching, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
@@ -803,5 +863,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeIsotopeModal();
             }
         }
+    });
+
+    // Setup Inspector Tab Switching
+    document.querySelectorAll('.iso-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.iso-tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'rgba(255, 255, 255, 0.04)';
+                b.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                b.style.color = 'rgba(255,255,255,0.7)';
+            });
+            btn.classList.add('active');
+            btn.style.background = 'rgba(0, 212, 255, 0.15)';
+            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
+            btn.style.color = '#00d4ff';
+
+            const targetTab = btn.dataset.tab;
+            document.querySelectorAll('.iso-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const activeContent = document.getElementById(`iso-tab-${targetTab}`);
+            if (activeContent) activeContent.style.display = 'flex';
+        });
     });
 });
