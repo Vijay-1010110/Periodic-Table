@@ -486,26 +486,26 @@ function renderIsotopeDetails(index) {
             const daughterSvg = genNuc(dA);
             
             let html = `
-                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 100%; position: relative; font-family: var(--font-ui); background: #ffffff; border-radius: 10px; color: #333; overflow: hidden;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; height: 100%; position: relative; font-family: var(--font-ui); background: rgba(5, 12, 25, 0.9); border-radius: 12px; color: #fff; overflow: hidden; border: 1px solid rgba(0, 212, 255, 0.15);">
                     
                     <!-- Header Title -->
-                    <div style="position: absolute; top: 0; left: 0; background: #86198f; color: #fff; padding: 5px 20px 5px 15px; font-weight: bold; font-size: 1.1rem; border-bottom-right-radius: 20px; text-transform: uppercase;">
-                        ${dMode} DECAY OF ${elData.name.toUpperCase()} ${A}
+                    <div style="position: absolute; top: 0; left: 0; background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(2, 132, 199, 0.3) 100%); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 6px 22px 6px 16px; font-weight: bold; font-size: 0.95rem; border-bottom-right-radius: 20px; text-transform: uppercase; letter-spacing: 1px;">
+                        ${dMode} DECAY OF ${elData.name.toUpperCase()}-${A}
                     </div>
 
                     <!-- Legend Key -->
-                    <div style="position: absolute; top: 15px; right: 15px; background: #fef08a; border: 1px solid #ca8a04; border-radius: 8px; padding: 10px; color: #000; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="font-weight: bold; text-align: center; margin-bottom: 5px; color: #854d0e; font-size: 0.9rem;">Key</div>
-                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold; color: #4338ca;"><div style="width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #1d4ed8 100%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);"></div> Proton</div>
-                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 0.8rem; font-weight: bold; color: #9d174d;"><div style="width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #be185d 100%); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);"></div> Neutron</div>
+                    <div style="position: absolute; top: 12px; right: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 8px 12px; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+                        <div style="font-weight: bold; text-align: center; margin-bottom: 4px; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-transform: uppercase;">Key</div>
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: #38bdf8;"><div style="width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #1d4ed8 100%); box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);"></div> Proton (p⁺)</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 0.78rem; font-weight: 600; color: #f472b6;"><div style="width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #be185d 100%); box-shadow: 0 0 8px rgba(244, 114, 182, 0.6);"></div> Neutron (n⁰)</div>
                     </div>
 
                     <!-- Parent Nucleus -->
-                    <div style="display: flex; flex-direction: column; align-items: center; width: 150px; margin-top: 30px;">
-                        <div style="color: #9333ea; font-weight: bold; text-align: center; line-height: 1.1; font-size: 1.1rem;">Parent<br>nucleus<br><span style="font-size: 0.9rem; color: #a855f7;">(${elData.name}-${A})</span></div>
-                        <div style="width: 120px; height: 120px; margin: 10px 0;">${parentSvg}</div>
-                        <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 3rem;">
-                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1.2rem; line-height: 1; margin-right: 5px;">
+                    <div style="display: flex; flex-direction: column; align-items: center; width: 140px; margin-top: 25px;">
+                        <div style="color: #38bdf8; font-weight: bold; text-align: center; line-height: 1.1; font-size: 0.95rem;">Parent Nucleus<br><span style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">(${elData.name}-${A})</span></div>
+                        <div style="width: 110px; height: 110px; margin: 8px 0;">${parentSvg}</div>
+                        <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 2.2rem; font-family: var(--font-mono);">
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.95rem; line-height: 1; margin-right: 5px; color: #00d4ff;">
                                 <span>${A}</span>
                                 <span>${Z}</span>
                             </div>
@@ -517,48 +517,48 @@ function renderIsotopeDetails(index) {
             if (isSpontaneousFission || !hasParticle) {
                 html += `
                     <!-- Center Arrow -->
-                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 120px; height: 200px; margin-top: 30px;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9333ea; font-weight: bold; text-align: center; z-index: 2; background: radial-gradient(circle, #fef08a 0%, #fef08a 40%, transparent 70%); padding: 25px; font-size: 1.1rem; line-height: 1.1;">Decay<br>event</div>
-                        <svg width="120" height="200" style="position: absolute; top: 0; left: 0;">
-                            <path d="M 0,100 L 100,50" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
-                            <path d="M 0,100 L 100,150" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px; height: 180px; margin-top: 25px;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.7); border: 1px solid #facc15; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);">Nuclear<br>Fission</div>
+                        <svg width="100" height="180" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,90 L 90,40" stroke="#facc15" stroke-width="3" marker-end="url(#arrow)" />
+                            <path d="M 0,90 L 90,140" stroke="#facc15" stroke-width="3" marker-end="url(#arrow)" />
                             <defs>
                                 <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#84cc16" />
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
                                 </marker>
                             </defs>
                         </svg>
                     </div>
 
                     <!-- Right Side (Fragments) -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; height: 100%; width: 220px; margin-top: 30px;">
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 15px; height: 100%; width: 200px; margin-top: 25px;">
                         <!-- Fragment 1 -->
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 70px; height: 70px;">${genNuc(pA)}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 60px; height: 60px;">${genNuc(pA)}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.2rem;">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${getSym(pZ)}</span>
                                 </div>
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem; text-align: center;">Fragment 1<br><span style="font-size: 0.8rem; color: #a855f7;">(${pNameFragment}-${pA})</span></div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Fragment 1 (${pNameFragment}-${pA})</div>
                             </div>
                         </div>
 
                         <!-- Fragment 2 -->
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 70px; height: 70px;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 60px; height: 60px;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 0.95rem; text-align: center;">Fragment 2<br><span style="font-size: 0.8rem; color: #a855f7;">(${dName}-${dA})</span></div>
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.2rem;">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Fragment 2 (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
@@ -566,51 +566,51 @@ function renderIsotopeDetails(index) {
             } else {
                 html += `
                     <!-- Center Arrow -->
-                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 120px; height: 200px; margin-top: 30px;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9333ea; font-weight: bold; text-align: center; z-index: 2; background: radial-gradient(circle, #fef08a 0%, #fef08a 40%, transparent 70%); padding: 25px; font-size: 1.1rem; line-height: 1.1;">Decay<br>event</div>
-                        <svg width="120" height="200" style="position: absolute; top: 0; left: 0;">
-                            <path d="M 0,100 L 100,50" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
-                            <path d="M 0,100 L 100,150" stroke="#84cc16" stroke-width="4" marker-end="url(#arrow)" />
+                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px; height: 180px; margin-top: 25px;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #4ade80; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.7); border: 1px solid #4ade80; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);">Decay<br>Event</div>
+                        <svg width="100" height="180" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,90 L 90,40" stroke="#4ade80" stroke-width="3" marker-end="url(#arrow)" />
+                            <path d="M 0,90 L 90,140" stroke="#4ade80" stroke-width="3" marker-end="url(#arrow)" />
                             <defs>
                                 <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#84cc16" />
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4ade80" />
                                 </marker>
                             </defs>
                         </svg>
                     </div>
 
                     <!-- Right Side (Products) -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px; height: 100%; width: 220px; margin-top: 30px;">
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 15px; height: 100%; width: 200px; margin-top: 25px;">
                         
                         <!-- Emitted Particle (Top) -->
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 50px; height: 50px;">${particleSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 44px; height: 44px;">${particleSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.5rem;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
                                     ${pA ? `
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     ` : ''}
                                     <span style="line-height: 1;">${pSym}</span>
                                 </div>
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Emitted ${pName}<br>particle<br><span style="font-size: 0.9rem; color: #a855f7;">(${pFullName})</span></div>
+                                <div style="color: #facc15; font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Emitted ${pName} (${pFullName})</div>
                             </div>
                         </div>
 
                         <!-- Daughter Nucleus (Bottom) -->
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 90px; height: 90px;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 60px; height: 60px;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="color: #9333ea; font-weight: bold; line-height: 1.1; font-size: 1.05rem;">Daughter<br>nucleus<br><span style="font-size: 0.9rem; color: #a855f7;">(${dName}-${dA})</span></div>
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #9333ea; font-size: 2.5rem;">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 1rem; line-height: 1; margin-right: 5px;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Daughter Nucleus (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
@@ -739,8 +739,24 @@ function closeIsotopeModal() {
     }, 400);
 }
 
-// Setup close button
+// Setup close button and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
+
+    const overlay = document.getElementById('isotope-modal-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeIsotopeModal();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const overlay = document.getElementById('isotope-modal-overlay');
+            if (overlay && !overlay.classList.contains('hidden')) {
+                closeIsotopeModal();
+            }
+        }
+    });
 });
