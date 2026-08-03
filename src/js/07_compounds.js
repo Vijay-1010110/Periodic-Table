@@ -6,7 +6,7 @@
 let selectedCompoundId = 'water';
 let compoundFilterType = 'All';
 let compoundSearchQuery = '';
-let activeElementFilter = null;
+let activeElementFilters = []; // Array of {atomicNumber, symbol}
 
 // Three.js Molecular Viewer globals
 let molScene = null;
@@ -21,6 +21,7 @@ function initCompoundsView() {
     setupCompoundsEvents();
     renderCompoundsGrid();
     initMoleculeViewer();
+    initSynthesizerUI();
     selectCompound('water');
 }
 
@@ -44,6 +45,125 @@ function setupCompoundsEvents() {
     });
 }
 
+function initSynthesizerUI() {
+    const carousel = document.getElementById('synth-element-carousel');
+    const dropzone = document.getElementById('synth-dropzone');
+    if (!carousel || !dropzone) return;
+
+    // Populate carousel with common elements (top ~50 most used in compounds)
+    const commonElements = [1, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 22, 26, 29, 30, 35, 47, 53];
+    carousel.innerHTML = '';
+    
+    commonElements.forEach(z => {
+        const el = elementsData[z - 1]; // elementsData is from 01_data.js
+        if (!el) return;
+        
+        const tile = document.createElement('div');
+        tile.className = 'synth-el-tile';
+        tile.draggable = true;
+        tile.dataset.z = z;
+        tile.dataset.sym = el.symbol;
+        
+        // Styling for tile
+        const cat = getNormalizedCategory(el.category);
+        const color = categoryColors[cat] || '#ffffff';
+        tile.style.cssText = `
+            width: 45px; height: 45px; min-width: 45px;
+            background: rgba(0,0,0,0.4); border: 2px solid ${color};
+            border-radius: 8px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: grab; user-select: none; transition: transform 0.2s;
+        `;
+        tile.innerHTML = `
+            <span style="font-size: 0.6rem; color: rgba(255,255,255,0.7);">${z}</span>
+            <span style="font-size: 1.1rem; font-weight: bold; color: ${color}; line-height: 1;">${el.symbol}</span>
+        `;
+        
+        tile.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ z: z, sym: el.symbol, color: color }));
+            tile.style.opacity = '0.5';
+        });
+        tile.addEventListener('dragend', () => {
+            tile.style.opacity = '1';
+        });
+        
+        carousel.appendChild(tile);
+    });
+
+    // Dropzone logic
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.style.background = 'rgba(255, 255, 255, 0.1)';
+        dropzone.style.borderColor = '#00d4ff';
+    });
+    
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.style.background = 'transparent';
+        dropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.background = 'transparent';
+        dropzone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        
+        const dataStr = e.dataTransfer.getData('text/plain');
+        if (!dataStr) return;
+        
+        try {
+            const data = JSON.parse(dataStr);
+            // Check if already in filter
+            if (activeElementFilters.some(f => f.atomicNumber == data.z)) return;
+            
+            activeElementFilters.push({ atomicNumber: data.z, symbol: data.sym, color: data.color });
+            updateDropzoneUI();
+            renderCompoundsGrid();
+        } catch (err) {
+            console.error(err);
+        }
+    });
+}
+
+function updateDropzoneUI() {
+    const dropzone = document.getElementById('synth-dropzone');
+    const hint = document.getElementById('synth-drop-hint');
+    if (!dropzone || !hint) return;
+    
+    // Clear existing dropped pills (keep hint)
+    Array.from(dropzone.children).forEach(c => {
+        if (c.id !== 'synth-drop-hint') c.remove();
+    });
+    
+    if (activeElementFilters.length === 0) {
+        hint.style.display = 'block';
+    } else {
+        hint.style.display = 'none';
+        
+        activeElementFilters.forEach(f => {
+            const pill = document.createElement('div');
+            pill.style.cssText = `
+                background: rgba(0,0,0,0.5); border: 1px solid ${f.color};
+                border-radius: 20px; padding: 4px 10px 4px 12px;
+                display: flex; align-items: center; gap: 8px;
+                color: ${f.color}; font-weight: bold; font-family: var(--font-mono);
+                animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            `;
+            pill.innerHTML = `
+                ${f.symbol}
+                <span class="remove-synth-btn" style="cursor: pointer; background: rgba(255,255,255,0.2); width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #fff;">&times;</span>
+            `;
+            
+            pill.querySelector('.remove-synth-btn').addEventListener('click', () => {
+                activeElementFilters = activeElementFilters.filter(el => el.atomicNumber != f.atomicNumber);
+                updateDropzoneUI();
+                renderCompoundsGrid();
+            });
+            
+            dropzone.appendChild(pill);
+        });
+    }
+}
+
 function renderCompoundsGrid() {
     const gridContainer = document.getElementById('compounds-grid');
     if (!gridContainer) return;
@@ -60,10 +180,13 @@ function renderCompoundsGrid() {
             }
         }
 
-        // Filter by Element
-        if (activeElementFilter) {
-            const hasElem = comp.elements.some(e => e.atomicNumber === activeElementFilter || e.symbol.toLowerCase() === activeElementFilter.toString().toLowerCase());
-            if (!hasElem) return false;
+        // Filter by Element(s)
+        if (activeElementFilters.length > 0) {
+            // Must contain ALL dragged elements
+            const containsAll = activeElementFilters.every(activeEl => {
+                return comp.elements.some(e => e.atomicNumber == activeEl.atomicNumber || e.symbol.toLowerCase() === activeEl.symbol.toLowerCase());
+            });
+            if (!containsAll) return false;
         }
 
         // Search Query

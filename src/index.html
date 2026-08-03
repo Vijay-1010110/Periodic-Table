@@ -464,21 +464,43 @@
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
             <div class="view-left">
-                <!-- Controls & Filters Header -->
-                <div class="compounds-controls">
-                    <div class="compounds-search-wrap">
-                        <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
+                <!-- Controls & Elemental Synthesizer Header -->
+                <div class="compounds-controls" style="flex-direction: column; gap: 15px;">
+                    
+                    <!-- Drag & Drop Synthesizer -->
+                    <div class="synthesis-panel" style="display: flex; gap: 15px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 12px; padding: 15px;">
+                        
+                        <!-- Mini Element Carousel (Draggables) -->
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="font-family: var(--font-ui); font-size: 0.85rem; color: #00d4ff; text-transform: uppercase; letter-spacing: 1px;">Drag Elements to Synthesize</div>
+                            <div id="synth-element-carousel" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
+                                <!-- JS will populate draggable element tiles here -->
+                            </div>
+                        </div>
+
+                        <!-- Drop Zone -->
+                        <div id="synth-dropzone" style="min-width: 250px; border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 10px; gap: 10px; transition: all 0.3s ease; position: relative;">
+                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.9rem; pointer-events: none;">Drop elements here...</span>
+                            <!-- JS will append dropped elements here -->
+                        </div>
                     </div>
-                    <div class="compounds-filter-pills">
-                        <button class="compound-filter-btn active" data-type="All">All</button>
-                        <button class="compound-filter-btn" data-type="Organic">Organic</button>
-                        <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
-                        <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
-                        <button class="compound-filter-btn" data-type="Acid">Acids</button>
-                        <button class="compound-filter-btn" data-type="Base">Bases</button>
-                        <button class="compound-filter-btn" data-type="Gas">Gases</button>
-                        <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
-                        <button class="compound-filter-btn" data-type="Solid">Solids</button>
+
+                    <!-- Search and Pills -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;">
+                        <div class="compounds-search-wrap" style="flex: 1; margin-bottom: 0;">
+                            <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
+                        </div>
+                        <div class="compounds-filter-pills" style="margin-bottom: 0;">
+                            <button class="compound-filter-btn active" data-type="All">All</button>
+                            <button class="compound-filter-btn" data-type="Organic">Organic</button>
+                            <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
+                            <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
+                            <button class="compound-filter-btn" data-type="Acid">Acids</button>
+                            <button class="compound-filter-btn" data-type="Base">Bases</button>
+                            <button class="compound-filter-btn" data-type="Gas">Gases</button>
+                            <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
+                            <button class="compound-filter-btn" data-type="Solid">Solids</button>
+                        </div>
                     </div>
                 </div>
 
