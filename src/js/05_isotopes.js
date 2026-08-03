@@ -169,74 +169,102 @@ function updateIsotopesView(atomicNumber) {
     
     currentIsotopeData.forEach((iso, index) => {
         const item = document.createElement('div');
-        item.className = 'iso-list-item element-cell';
+        item.className = 'iso-list-item';
         const dColor = getDecayColor(iso.decayMode);
         item.dataset.decayColor = dColor;
+        item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
-        item.style.background = getGlossyBackground(dColor, 'metal');
-        item.style.border = `1px solid ${dColor}`;
-        item.style.flex = '0 0 110px';
-        item.style.minWidth = '110px';
-        item.style.height = '76px';
+        item.style.background = 'rgba(15, 23, 42, 0.75)';
+        item.style.border = `1px solid rgba(255, 255, 255, 0.12)`;
         item.style.borderRadius = '10px';
-        item.style.order = '1';
-        item.style.position = 'relative';
+        item.style.padding = '10px 12px';
+        item.style.boxSizing = 'border-box';
+        item.style.cursor = 'pointer';
         item.style.display = 'flex';
         item.style.flexDirection = 'column';
         item.style.justifyContent = 'space-between';
-        item.style.padding = '6px 8px';
-        item.style.boxSizing = 'border-box';
-        item.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease';
+        item.style.gap = '6px';
+        item.style.transition = 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+        item.style.order = '1';
         
         const Z = elData.atomicNumber;
         const N = iso.massNumber - Z;
-        
-        let isoName = `${elData.name}-${iso.massNumber}`;
-        if (Z === 1 && iso.massNumber === 1) isoName = 'Protium';
-        if (Z === 1 && iso.massNumber === 2) isoName = 'Deuterium';
-        if (Z === 1 && iso.massNumber === 3) isoName = 'Tritium';
+        const hlStr = iso.isStable ? 'Stable' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unstable');
+        const modeBadge = iso.isStable 
+            ? '<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); padding: 2px 6px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">STABLE</span>' 
+            : `<span style="background: ${dColor}22; color: ${dColor}; border: 1px solid ${dColor}44; padding: 2px 6px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">${iso.decayMode ? iso.decayMode.split(' ')[0] : 'DECAY'}</span>`;
 
         item.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7); z-index: 1;">
-                <span>A=${iso.massNumber}</span>
-                <span>N=${N}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="display: flex; align-items: baseline; gap: 3px;">
+                    <sup style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: 700; color: #00d4ff;">${iso.massNumber}</sup>
+                    <span style="font-size: 1.25rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1;">${elData.symbol}</span>
+                </div>
+                <span style="font-size: 0.68rem; font-family: var(--font-mono); color: ${iso.isStable ? '#4ade80' : '#facc15'}; text-align: right; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${hlStr}</span>
             </div>
             
-            <div style="display: flex; align-items: center; justify-content: center; gap: 4px; z-index: 1;">
-                <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: #00d4ff;">${iso.massNumber}</sup>
-                <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1;">${elData.symbol}</span>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
-                <span style="font-size: 0.6rem; color: ${iso.isStable ? '#4ade80' : '#facc15'}; font-weight: 600; text-transform: uppercase;">${iso.isStable ? 'Stable' : (iso.decayMode ? iso.decayMode.split(' ')[0] : 'Decay')}</span>
-                ${iso.abundance ? `<span style="font-size: 0.58rem; color: #4ade80; font-family: var(--font-mono);">${iso.abundance.toFixed(1)}%</span>` : ''}
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 2px;">
+                ${modeBadge}
+                <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.5);">N=${N}</span>
             </div>
         `;
         
+        item.onmouseenter = () => {
+            if (!item.classList.contains('selected')) {
+                item.style.borderColor = 'rgba(0, 212, 255, 0.5)';
+                item.style.transform = 'translateY(-2px)';
+                item.style.background = 'rgba(20, 30, 55, 0.85)';
+            }
+        };
+        item.onmouseleave = () => {
+            if (!item.classList.contains('selected')) {
+                item.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                item.style.transform = 'translateY(0)';
+                item.style.background = 'rgba(15, 23, 42, 0.75)';
+            }
+        };
+        
         item.onclick = () => {
-            document.querySelectorAll('.iso-list-item').forEach((el, i) => {
+            document.querySelectorAll('.iso-list-item').forEach(el => {
                 el.classList.remove('selected');
-                el.style.borderColor = getDecayColor(currentIsotopeData[i].decayMode);
+                el.style.borderColor = 'rgba(255, 255, 255, 0.12)';
                 el.style.boxShadow = 'none';
-                el.style.transform = 'scale(1)';
+                el.style.background = 'rgba(15, 23, 42, 0.75)';
+                el.style.transform = 'translateY(0)';
             });
             item.classList.add('selected');
             item.style.borderColor = '#00d4ff';
-            item.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.6)';
-            item.style.transform = 'scale(1.05)';
-            item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            item.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4), inset 0 0 10px rgba(0, 212, 255, 0.1)';
+            item.style.background = 'rgba(10, 25, 45, 0.9)';
             renderIsotopeDetails(index);
         };
         
         listContainer.appendChild(item);
     });
     
+    // Setup Search Filter Input
+    const searchInput = document.getElementById('iso-search-input');
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.oninput = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            document.querySelectorAll('.iso-list-item').forEach(el => {
+                if (!query || el.dataset.searchKey.includes(query)) {
+                    el.style.display = 'flex';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        };
+    }
+    
     // Default select first
     const firstItem = listContainer.querySelector('.iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
         firstItem.style.borderColor = '#00d4ff';
-        firstItem.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.6)';
+        firstItem.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4)';
+        firstItem.style.background = 'rgba(10, 25, 45, 0.9)';
     }
     renderIsotopeDetails(0);
     
@@ -336,16 +364,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <div style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: 600; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
-                    <div style="display: flex; flex-direction: column; margin-left: 10px;">
-                        <span style="font-size: 1.4rem; font-weight: 600; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); line-height: 1.2;">${elData.name}</span>
-                        <span style="font-size: 0.85rem; color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8); letter-spacing: 0.5px;">Atomic No. ${elData.atomicNumber} &mdash; ${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                        <span style="position: absolute; top: 2px; left: 4px; font-size: 0.55rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
+                        <span style="font-size: 1.5rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
+                            <span style="font-size: 0.72rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                        </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                    <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Protons (Z): <span style="color:#fff">${elData.atomicNumber}</span></div>
-                    <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Neutrons (N): <span style="color:#fff">${defaultN}</span></div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-family: var(--font-mono); font-size: 0.72rem;">
+                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
