@@ -28,9 +28,10 @@ const CPK_COLORS = {
     53: '#940094'   // I: Violet
 };
 
-const compoundsData = [
+const compoundsData = 
+[
     {
-        id: "hydrochloricacid",
+        "id": "hydrochloricacid",
         "name": "Hydrochloric Acid",
         "formula": "HCl",
         "iupacName": "Chlorane",
@@ -42,38 +43,38 @@ const compoundsData = [
         "boilingPoint": "48 \u00b0C",
         "description": "A strongly acidic solution of hydrogen chloride in water.",
         "elements": [
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 2.76
-                },
-                {
-                        "atomicNumber": 17,
-                        "symbol": "Cl",
-                        "count": 1,
-                        "massPercent": 97.24
-                }
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 2.76
+            },
+            {
+                "atomicNumber": 17,
+                "symbol": "Cl",
+                "count": 1,
+                "massPercent": 97.24
+            }
         ],
         "atoms": [
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "sulfuricacid",
+        "id": "sulfuricacid",
         "name": "Sulfuric Acid",
         "formula": "H2SO4",
         "iupacName": "Dihydrogen sulfate",
@@ -85,79 +86,79 @@ const compoundsData = [
         "boilingPoint": "337 \u00b0C",
         "description": "A strong mineral acid, highly corrosive.",
         "elements": [
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 2,
-                        "massPercent": 2.06
-                },
-                {
-                        "atomicNumber": 16,
-                        "symbol": "S",
-                        "count": 1,
-                        "massPercent": 32.69
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 4,
-                        "massPercent": 65.25
-                }
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 2.06
+            },
+            {
+                "atomicNumber": 16,
+                "symbol": "S",
+                "count": 1,
+                "massPercent": 32.69
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 4,
+                "massPercent": 65.25
+            }
         ],
         "atoms": [
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 16,
-                        "symbol": "S",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 0,
-                        "z": 1.5
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1,
-                        "y": 1,
-                        "z": 1.5
-                }
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 16,
+                "symbol": "S",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 0,
+                "z": 1.5
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1,
+                "y": 1,
+                "z": 1.5
+            }
         ]
-}
+    },
     {
-        id: "nitricacid",
+        "id": "nitricacid",
         "name": "Nitric Acid",
         "formula": "HNO3",
         "iupacName": "Hydrogen nitrate",
@@ -169,65 +170,65 @@ const compoundsData = [
         "boilingPoint": "83 \u00b0C",
         "description": "A highly corrosive mineral acid.",
         "elements": [
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 1.6
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 22.23
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 76.17
-                }
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 1.6
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 22.23
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 76.17
+            }
         ],
         "atoms": [
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 0,
-                        "y": 1.4,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 4,
-                        "y": 0,
-                        "z": 1.0
-                }
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 0,
+                "y": 1.4,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 4,
+                "y": 0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "ammonia",
+        "id": "ammonia",
         "name": "Ammonia",
         "formula": "NH3",
         "iupacName": "Azane",
@@ -239,52 +240,52 @@ const compoundsData = [
         "boilingPoint": "-33.3 \u00b0C",
         "description": "A colorless gas with a characteristic pungent smell.",
         "elements": [
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 82.24
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 3,
-                        "massPercent": 17.76
-                }
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 82.24
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 3,
+                "massPercent": 17.76
+            }
         ],
         "atoms": [
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "methane",
+        "id": "methane",
         "name": "Methane",
         "formula": "CH4",
         "iupacName": "Methane",
@@ -296,59 +297,59 @@ const compoundsData = [
         "boilingPoint": "-161.5 \u00b0C",
         "description": "The simplest alkane and the main constituent of natural gas.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 74.87
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 4,
-                        "massPercent": 25.13
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 74.87
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 4,
+                "massPercent": 25.13
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            }
         ]
-}
+    },
     {
-        id: "sodiumchloride",
+        "id": "sodiumchloride",
         "name": "Sodium Chloride",
         "formula": "NaCl",
         "iupacName": "Sodium chloride",
@@ -360,38 +361,38 @@ const compoundsData = [
         "boilingPoint": "1465 \u00b0C",
         "description": "Common table salt.",
         "elements": [
-                {
-                        "atomicNumber": 11,
-                        "symbol": "Na",
-                        "count": 1,
-                        "massPercent": 39.34
-                },
-                {
-                        "atomicNumber": 17,
-                        "symbol": "Cl",
-                        "count": 1,
-                        "massPercent": 60.66
-                }
+            {
+                "atomicNumber": 11,
+                "symbol": "Na",
+                "count": 1,
+                "massPercent": 39.34
+            },
+            {
+                "atomicNumber": 17,
+                "symbol": "Cl",
+                "count": 1,
+                "massPercent": 60.66
+            }
         ],
         "atoms": [
-                {
-                        "elem": 11,
-                        "symbol": "Na",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 11,
+                "symbol": "Na",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "carbondioxide",
+        "id": "carbondioxide",
         "name": "Carbon Dioxide",
         "formula": "CO2",
         "iupacName": "Carbon dioxide",
@@ -403,45 +404,45 @@ const compoundsData = [
         "boilingPoint": "-78.5 \u00b0C",
         "description": "A colorless gas vital to life on Earth.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 72.71
-                },
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 27.29
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 72.71
+            },
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 27.29
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "ethanol",
+        "id": "ethanol",
         "name": "Ethanol",
         "formula": "C2H5OH",
         "iupacName": "Ethanol",
@@ -453,93 +454,93 @@ const compoundsData = [
         "boilingPoint": "78.2 \u00b0C",
         "description": "A volatile, flammable, colorless liquid.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 2,
-                        "massPercent": 52.14
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 34.73
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 6,
-                        "massPercent": 13.13
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 2,
+                "massPercent": 52.14
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 34.73
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 6,
+                "massPercent": 13.13
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "glucose",
+        "id": "glucose",
         "name": "Glucose",
         "formula": "C6H12O6",
         "iupacName": "D-glucose",
@@ -551,198 +552,198 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "A simple sugar which is an important energy source in living organisms.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 6,
-                        "massPercent": 40.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 6,
-                        "massPercent": 53.28
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 12,
-                        "massPercent": 6.71
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 6,
+                "massPercent": 40.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 6,
+                "massPercent": 53.28
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 12,
+                "massPercent": 6.71
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "benzene",
+        "id": "benzene",
         "name": "Benzene",
         "formula": "C6H6",
         "iupacName": "Benzene",
@@ -754,108 +755,108 @@ const compoundsData = [
         "boilingPoint": "80.1 \u00b0C",
         "description": "An important organic chemical compound with the chemical formula C6H6.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 6,
-                        "massPercent": 92.26
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 6,
-                        "massPercent": 7.74
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 6,
+                "massPercent": 92.26
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 6,
+                "massPercent": 7.74
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "acetone",
+        "id": "acetone",
         "name": "Acetone",
         "formula": "CH3COCH3",
         "iupacName": "Propan-2-one",
@@ -867,100 +868,100 @@ const compoundsData = [
         "boilingPoint": "56.0 \u00b0C",
         "description": "A colorless, volatile, flammable liquid, the simplest ketone.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 3,
-                        "massPercent": 62.04
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 27.55
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 6,
-                        "massPercent": 10.41
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 3,
+                "massPercent": 62.04
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 27.55
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 6,
+                "massPercent": 10.41
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "aceticacid",
+        "id": "aceticacid",
         "name": "Acetic Acid",
         "formula": "CH3COOH",
         "iupacName": "Ethanoic acid",
@@ -972,86 +973,86 @@ const compoundsData = [
         "boilingPoint": "118.1 \u00b0C",
         "description": "A colorless liquid organic compound that gives vinegar its sour taste.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 2,
-                        "massPercent": 40.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 53.28
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 4,
-                        "massPercent": 6.71
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 2,
+                "massPercent": 40.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 53.28
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 4,
+                "massPercent": 6.71
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "hydrogenperoxide",
+        "id": "hydrogenperoxide",
         "name": "Hydrogen Peroxide",
         "formula": "H2O2",
         "iupacName": "Dihydrogen dioxide",
@@ -1063,52 +1064,52 @@ const compoundsData = [
         "boilingPoint": "150.2 \u00b0C",
         "description": "A pale blue liquid, slightly more viscous than water.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 94.07
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 2,
-                        "massPercent": 5.93
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 94.07
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 5.93
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "ozone",
+        "id": "ozone",
         "name": "Ozone",
         "formula": "O3",
         "iupacName": "Trioxygen",
@@ -1120,39 +1121,39 @@ const compoundsData = [
         "boilingPoint": "-112.0 \u00b0C",
         "description": "A highly reactive gas composed of three oxygen atoms.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 100.0
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 100.0
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": -0.8,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 0.5,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": -0.8,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": -0.8,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 0.5,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": -0.8,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "sodiumhydroxide",
+        "id": "sodiumhydroxide",
         "name": "Sodium Hydroxide",
         "formula": "NaOH",
         "iupacName": "Sodium hydroxide",
@@ -1164,51 +1165,51 @@ const compoundsData = [
         "boilingPoint": "1388 \u00b0C",
         "description": "Lye and caustic soda, an inorganic compound.",
         "elements": [
-                {
-                        "atomicNumber": 11,
-                        "symbol": "Na",
-                        "count": 1,
-                        "massPercent": 57.48
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 40.0
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 2.52
-                }
+            {
+                "atomicNumber": 11,
+                "symbol": "Na",
+                "count": 1,
+                "massPercent": 57.48
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 40.0
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 2.52
+            }
         ],
         "atoms": [
-                {
-                        "elem": 11,
-                        "symbol": "Na",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 11,
+                "symbol": "Na",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "potassiumhydroxide",
+        "id": "potassiumhydroxide",
         "name": "Potassium Hydroxide",
         "formula": "KOH",
         "iupacName": "Potassium hydroxide",
@@ -1220,51 +1221,51 @@ const compoundsData = [
         "boilingPoint": "1327 \u00b0C",
         "description": "An inorganic compound, commonly called caustic potash.",
         "elements": [
-                {
-                        "atomicNumber": 19,
-                        "symbol": "K",
-                        "count": 1,
-                        "massPercent": 69.69
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 28.52
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 1.8
-                }
+            {
+                "atomicNumber": 19,
+                "symbol": "K",
+                "count": 1,
+                "massPercent": 69.69
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 28.52
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 1.8
+            }
         ],
         "atoms": [
-                {
-                        "elem": 19,
-                        "symbol": "K",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 19,
+                "symbol": "K",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "calciumcarbonate",
+        "id": "calciumcarbonate",
         "name": "Calcium Carbonate",
         "formula": "CaCO3",
         "iupacName": "Calcium carbonate",
@@ -1276,65 +1277,65 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "A chemical compound found in rocks as the minerals calcite and aragonite.",
         "elements": [
-                {
-                        "atomicNumber": 20,
-                        "symbol": "Ca",
-                        "count": 1,
-                        "massPercent": 40.04
-                },
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 12.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 47.96
-                }
+            {
+                "atomicNumber": 20,
+                "symbol": "Ca",
+                "count": 1,
+                "massPercent": 40.04
+            },
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 12.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 47.96
+            }
         ],
         "atoms": [
-                {
-                        "elem": 20,
-                        "symbol": "Ca",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 20,
+                "symbol": "Ca",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "magnesiumoxide",
+        "id": "magnesiumoxide",
         "name": "Magnesium Oxide",
         "formula": "MgO",
         "iupacName": "Magnesium oxide",
@@ -1346,38 +1347,38 @@ const compoundsData = [
         "boilingPoint": "3600 \u00b0C",
         "description": "A white hygroscopic solid mineral.",
         "elements": [
-                {
-                        "atomicNumber": 12,
-                        "symbol": "Mg",
-                        "count": 1,
-                        "massPercent": 60.3
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 39.7
-                }
+            {
+                "atomicNumber": 12,
+                "symbol": "Mg",
+                "count": 1,
+                "massPercent": 60.3
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 39.7
+            }
         ],
         "atoms": [
-                {
-                        "elem": 12,
-                        "symbol": "Mg",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 12,
+                "symbol": "Mg",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "ironiiioxide",
+        "id": "ironiiioxide",
         "name": "Iron(III) Oxide",
         "formula": "Fe2O3",
         "iupacName": "Iron(III) oxide",
@@ -1389,59 +1390,59 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "One of the three main oxides of iron, known as rust.",
         "elements": [
-                {
-                        "atomicNumber": 26,
-                        "symbol": "Fe",
-                        "count": 2,
-                        "massPercent": 69.94
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 30.06
-                }
+            {
+                "atomicNumber": 26,
+                "symbol": "Fe",
+                "count": 2,
+                "massPercent": 69.94
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 30.06
+            }
         ],
         "atoms": [
-                {
-                        "elem": 26,
-                        "symbol": "Fe",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 26,
-                        "symbol": "Fe",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 26,
+                "symbol": "Fe",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 26,
+                "symbol": "Fe",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "aluminumoxide",
+        "id": "aluminumoxide",
         "name": "Aluminum Oxide",
         "formula": "Al2O3",
         "iupacName": "Aluminum oxide",
@@ -1453,59 +1454,59 @@ const compoundsData = [
         "boilingPoint": "2977 \u00b0C",
         "description": "A chemical compound of aluminium and oxygen.",
         "elements": [
-                {
-                        "atomicNumber": 13,
-                        "symbol": "Al",
-                        "count": 2,
-                        "massPercent": 52.93
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 47.07
-                }
+            {
+                "atomicNumber": 13,
+                "symbol": "Al",
+                "count": 2,
+                "massPercent": 52.93
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 47.07
+            }
         ],
         "atoms": [
-                {
-                        "elem": 13,
-                        "symbol": "Al",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 13,
-                        "symbol": "Al",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 13,
+                "symbol": "Al",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 13,
+                "symbol": "Al",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "silicondioxide",
+        "id": "silicondioxide",
         "name": "Silicon Dioxide",
         "formula": "SiO2",
         "iupacName": "Silicon dioxide",
@@ -1517,45 +1518,45 @@ const compoundsData = [
         "boilingPoint": "2950 \u00b0C",
         "description": "Most commonly found in nature as quartz.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 53.26
-                },
-                {
-                        "atomicNumber": 14,
-                        "symbol": "Si",
-                        "count": 1,
-                        "massPercent": 46.74
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 53.26
+            },
+            {
+                "atomicNumber": 14,
+                "symbol": "Si",
+                "count": 1,
+                "massPercent": 46.74
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 14,
-                        "symbol": "Si",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 14,
+                "symbol": "Si",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "titaniumdioxide",
+        "id": "titaniumdioxide",
         "name": "Titanium Dioxide",
         "formula": "TiO2",
         "iupacName": "Titanium dioxide",
@@ -1567,45 +1568,45 @@ const compoundsData = [
         "boilingPoint": "2972 \u00b0C",
         "description": "The naturally occurring oxide of titanium.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 40.07
-                },
-                {
-                        "atomicNumber": 22,
-                        "symbol": "Ti",
-                        "count": 1,
-                        "massPercent": 59.93
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 40.07
+            },
+            {
+                "atomicNumber": 22,
+                "symbol": "Ti",
+                "count": 1,
+                "massPercent": 59.93
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 22,
-                        "symbol": "Ti",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 22,
+                "symbol": "Ti",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "zincoxide",
+        "id": "zincoxide",
         "name": "Zinc Oxide",
         "formula": "ZnO",
         "iupacName": "Zinc oxide",
@@ -1617,38 +1618,38 @@ const compoundsData = [
         "boilingPoint": "2360 \u00b0C",
         "description": "An inorganic compound, a white powder insoluble in water.",
         "elements": [
-                {
-                        "atomicNumber": 30,
-                        "symbol": "Zn",
-                        "count": 1,
-                        "massPercent": 80.34
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 19.66
-                }
+            {
+                "atomicNumber": 30,
+                "symbol": "Zn",
+                "count": 1,
+                "massPercent": 80.34
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 19.66
+            }
         ],
         "atoms": [
-                {
-                        "elem": 30,
-                        "symbol": "Zn",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 30,
+                "symbol": "Zn",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "sodiumbicarbonate",
+        "id": "sodiumbicarbonate",
         "name": "Sodium Bicarbonate",
         "formula": "NaHCO3",
         "iupacName": "Sodium hydrogen carbonate",
@@ -1660,78 +1661,78 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "Baking soda.",
         "elements": [
-                {
-                        "atomicNumber": 11,
-                        "symbol": "Na",
-                        "count": 1,
-                        "massPercent": 27.37
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 1.2
-                },
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 14.3
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 57.14
-                }
+            {
+                "atomicNumber": 11,
+                "symbol": "Na",
+                "count": 1,
+                "massPercent": 27.37
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 1.2
+            },
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 14.3
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 57.14
+            }
         ],
         "atoms": [
-                {
-                        "elem": 11,
-                        "symbol": "Na",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 11,
+                "symbol": "Na",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "sodiumcarbonate",
+        "id": "sodiumcarbonate",
         "name": "Sodium Carbonate",
         "formula": "Na2CO3",
         "iupacName": "Sodium carbonate",
@@ -1743,72 +1744,72 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "Washing soda.",
         "elements": [
-                {
-                        "atomicNumber": 11,
-                        "symbol": "Na",
-                        "count": 2,
-                        "massPercent": 43.38
-                },
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 11.33
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 45.29
-                }
+            {
+                "atomicNumber": 11,
+                "symbol": "Na",
+                "count": 2,
+                "massPercent": 43.38
+            },
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 11.33
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 45.29
+            }
         ],
         "atoms": [
-                {
-                        "elem": 11,
-                        "symbol": "Na",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 11,
-                        "symbol": "Na",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 11,
+                "symbol": "Na",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 11,
+                "symbol": "Na",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "silvernitrate",
+        "id": "silvernitrate",
         "name": "Silver Nitrate",
         "formula": "AgNO3",
         "iupacName": "Silver nitrate",
@@ -1820,65 +1821,65 @@ const compoundsData = [
         "boilingPoint": "444 \u00b0C",
         "description": "A versatile precursor to many other silver compounds.",
         "elements": [
-                {
-                        "atomicNumber": 47,
-                        "symbol": "Ag",
-                        "count": 1,
-                        "massPercent": 63.5
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 8.25
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 28.25
-                }
+            {
+                "atomicNumber": 47,
+                "symbol": "Ag",
+                "count": 1,
+                "massPercent": 63.5
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 8.25
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 28.25
+            }
         ],
         "atoms": [
-                {
-                        "elem": 47,
-                        "symbol": "Ag",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 47,
+                "symbol": "Ag",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "copperiisulfate",
+        "id": "copperiisulfate",
         "name": "Copper(II) Sulfate",
         "formula": "CuSO4",
         "iupacName": "Copper(II) sulfate",
@@ -1890,72 +1891,72 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "Often encountered as the bright blue pentahydrate.",
         "elements": [
-                {
-                        "atomicNumber": 29,
-                        "symbol": "Cu",
-                        "count": 1,
-                        "massPercent": 39.82
-                },
-                {
-                        "atomicNumber": 16,
-                        "symbol": "S",
-                        "count": 1,
-                        "massPercent": 20.09
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 4,
-                        "massPercent": 40.1
-                }
+            {
+                "atomicNumber": 29,
+                "symbol": "Cu",
+                "count": 1,
+                "massPercent": 39.82
+            },
+            {
+                "atomicNumber": 16,
+                "symbol": "S",
+                "count": 1,
+                "massPercent": 20.09
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 4,
+                "massPercent": 40.1
+            }
         ],
         "atoms": [
-                {
-                        "elem": 29,
-                        "symbol": "Cu",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 16,
-                        "symbol": "S",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 0,
-                        "z": 1.5
-                }
+            {
+                "elem": 29,
+                "symbol": "Cu",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 16,
+                "symbol": "S",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 0,
+                "z": 1.5
+            }
         ]
-}
+    },
     {
-        id: "urea",
+        "id": "urea",
         "name": "Urea",
         "formula": "CH4N2O",
         "iupacName": "Carbamide",
@@ -1967,92 +1968,92 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "Important in the metabolism of nitrogen-containing compounds.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 20.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 26.64
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 2,
-                        "massPercent": 46.65
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 4,
-                        "massPercent": 6.71
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 20.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 26.64
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 2,
+                "massPercent": 46.65
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 4,
+                "massPercent": 6.71
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 1.4,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": -1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 4,
-                        "y": 0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 5,
-                        "y": 0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 6,
-                        "y": 0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 7,
-                        "y": 0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 1.4,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": -1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 4,
+                "y": 0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 5,
+                "y": 0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 6,
+                "y": 0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 7,
+                "y": 0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "ascorbicacid",
+        "id": "ascorbicacid",
         "name": "Ascorbic Acid",
         "formula": "C6H8O6",
         "iupacName": "Vitamin C",
@@ -2064,170 +2065,170 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "An essential nutrient involved in the repair of tissue.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 6,
-                        "massPercent": 40.92
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 6,
-                        "massPercent": 54.5
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 4.58
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 6,
+                "massPercent": 40.92
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 6,
+                "massPercent": 54.5
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 4.58
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "caffeine",
+        "id": "caffeine",
         "name": "Caffeine",
         "formula": "C8H10N4O2",
         "iupacName": "1,3,7-Trimethylxanthine",
@@ -2239,204 +2240,204 @@ const compoundsData = [
         "boilingPoint": "Sublimes",
         "description": "A central nervous system stimulant.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 8,
-                        "massPercent": 49.48
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 4,
-                        "massPercent": 28.85
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 16.48
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 10,
-                        "massPercent": 5.19
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 8,
+                "massPercent": 49.48
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 4,
+                "massPercent": 28.85
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 16.48
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 10,
+                "massPercent": 5.19
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 4.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 5.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 6.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 4.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 5.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 6.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 6.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 6.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "aspirin",
+        "id": "aspirin",
         "name": "Aspirin",
         "formula": "C9H8O4",
         "iupacName": "Acetylsalicylic acid",
@@ -2448,177 +2449,177 @@ const compoundsData = [
         "boilingPoint": "140 \u00b0C",
         "description": "A medication used to reduce pain, fever, or inflammation.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 9,
-                        "massPercent": 60.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 4,
-                        "massPercent": 35.52
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 4.48
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 9,
+                "massPercent": 60.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 4,
+                "massPercent": 35.52
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 4.48
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 4.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 5.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 4.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 5.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 5.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "sucrose",
+        "id": "sucrose",
         "name": "Sucrose",
         "formula": "C12H22O11",
         "iupacName": "Saccharose",
@@ -2630,345 +2631,345 @@ const compoundsData = [
         "boilingPoint": "Decomposes",
         "description": "Common table sugar.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 12,
-                        "massPercent": 42.11
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 11,
-                        "massPercent": 51.41
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 22,
-                        "massPercent": 6.48
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 12,
+                "massPercent": 42.11
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 11,
+                "massPercent": 51.41
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 22,
+                "massPercent": 6.48
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 4.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 5.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 6.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 7.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 7.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 7.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 8.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 8.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 8.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 9.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 9.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 9.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 10.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 10.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 10.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 11.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 11.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 11.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 12.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 12.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 12.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 13.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 13.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 13.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 4.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 5.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 6.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 6.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 6.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 7.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 7.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 7.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 8.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 8.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 8.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 9.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 9.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 9.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 10.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 10.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 10.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 11.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 11.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 11.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 12.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 12.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 12.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 13.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 13.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 13.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "hydrogensulfide",
+        "id": "hydrogensulfide",
         "name": "Hydrogen Sulfide",
         "formula": "H2S",
         "iupacName": "Sulfane",
@@ -2980,45 +2981,45 @@ const compoundsData = [
         "boilingPoint": "-60 \u00b0C",
         "description": "A colorless chalcogen hydride gas with the characteristic foul odor of rotten eggs.",
         "elements": [
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 2,
-                        "massPercent": 5.92
-                },
-                {
-                        "atomicNumber": 16,
-                        "symbol": "S",
-                        "count": 1,
-                        "massPercent": 94.08
-                }
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 5.92
+            },
+            {
+                "atomicNumber": 16,
+                "symbol": "S",
+                "count": 1,
+                "massPercent": 94.08
+            }
         ],
         "atoms": [
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -0.8,
-                        "z": 0
-                },
-                {
-                        "elem": 16,
-                        "symbol": "S",
-                        "x": 0,
-                        "y": 0.5,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -0.8,
-                        "z": 0
-                }
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -0.8,
+                "z": 0
+            },
+            {
+                "elem": 16,
+                "symbol": "S",
+                "x": 0,
+                "y": 0.5,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -0.8,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "sulfurdioxide",
+        "id": "sulfurdioxide",
         "name": "Sulfur Dioxide",
         "formula": "SO2",
         "iupacName": "Sulfur dioxide",
@@ -3030,45 +3031,45 @@ const compoundsData = [
         "boilingPoint": "-10 \u00b0C",
         "description": "A toxic gas responsible for the smell of burnt matches.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 49.95
-                },
-                {
-                        "atomicNumber": 16,
-                        "symbol": "S",
-                        "count": 1,
-                        "massPercent": 50.05
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 49.95
+            },
+            {
+                "atomicNumber": 16,
+                "symbol": "S",
+                "count": 1,
+                "massPercent": 50.05
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": -0.8,
-                        "z": 0
-                },
-                {
-                        "elem": 16,
-                        "symbol": "S",
-                        "x": 0,
-                        "y": 0.5,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": -0.8,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": -0.8,
+                "z": 0
+            },
+            {
+                "elem": 16,
+                "symbol": "S",
+                "x": 0,
+                "y": 0.5,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": -0.8,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "sulfurtrioxide",
+        "id": "sulfurtrioxide",
         "name": "Sulfur Trioxide",
         "formula": "SO3",
         "iupacName": "Sulfur trioxide",
@@ -3080,52 +3081,52 @@ const compoundsData = [
         "boilingPoint": "44.9 \u00b0C",
         "description": "A primary agent in acid rain.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 59.95
-                },
-                {
-                        "atomicNumber": 16,
-                        "symbol": "S",
-                        "count": 1,
-                        "massPercent": 40.05
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 59.95
+            },
+            {
+                "atomicNumber": 16,
+                "symbol": "S",
+                "count": 1,
+                "massPercent": 40.05
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 16,
-                        "symbol": "S",
-                        "x": 0,
-                        "y": 1.4,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.21,
-                        "y": -0.7,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 16,
+                "symbol": "S",
+                "x": 0,
+                "y": 1.4,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.21,
+                "y": -0.7,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "nitricoxide",
+        "id": "nitricoxide",
         "name": "Nitric Oxide",
         "formula": "NO",
         "iupacName": "Nitrogen monoxide",
@@ -3137,38 +3138,38 @@ const compoundsData = [
         "boilingPoint": "-152 \u00b0C",
         "description": "A colorless gas and a free radical.",
         "elements": [
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 46.68
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 53.32
-                }
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 46.68
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 53.32
+            }
         ],
         "atoms": [
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "nitrousoxide",
+        "id": "nitrousoxide",
         "name": "Nitrous Oxide",
         "formula": "N2O",
         "iupacName": "Dinitrogen monoxide",
@@ -3180,45 +3181,45 @@ const compoundsData = [
         "boilingPoint": "-88.5 \u00b0C",
         "description": "Laughing gas.",
         "elements": [
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 2,
-                        "massPercent": 63.65
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 36.35
-                }
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 2,
+                "massPercent": 63.65
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 36.35
+            }
         ],
         "atoms": [
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "nitrogendioxide",
+        "id": "nitrogendioxide",
         "name": "Nitrogen Dioxide",
         "formula": "NO2",
         "iupacName": "Nitrogen dioxide",
@@ -3230,45 +3231,45 @@ const compoundsData = [
         "boilingPoint": "21.2 \u00b0C",
         "description": "An intermediate in the industrial synthesis of nitric acid.",
         "elements": [
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 2,
-                        "massPercent": 69.55
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 30.45
-                }
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 2,
+                "massPercent": 69.55
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 30.45
+            }
         ],
         "atoms": [
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.2,
-                        "y": -0.8,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 0,
-                        "y": 0.5,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.2,
-                        "y": -0.8,
-                        "z": 0
-                }
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.2,
+                "y": -0.8,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 0,
+                "y": 0.5,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.2,
+                "y": -0.8,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "carbonmonoxide",
+        "id": "carbonmonoxide",
         "name": "Carbon Monoxide",
         "formula": "CO",
         "iupacName": "Carbon monoxide",
@@ -3280,38 +3281,38 @@ const compoundsData = [
         "boilingPoint": "-191.5 \u00b0C",
         "description": "A colorless, odorless, and tasteless flammable gas that is slightly less dense than air.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 42.88
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 57.12
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 42.88
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 57.12
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.75,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.75,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.75,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.75,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "cyanide",
+        "id": "cyanide",
         "name": "Cyanide",
         "formula": "HCN",
         "iupacName": "Hydrogen cyanide",
@@ -3323,51 +3324,51 @@ const compoundsData = [
         "boilingPoint": "25.6 \u00b0C",
         "description": "Extremely poisonous liquid that boils slightly above room temperature.",
         "elements": [
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 3.73
-                },
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 44.44
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 51.83
-                }
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 3.73
+            },
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 44.44
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 51.83
+            }
         ],
         "atoms": [
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.5,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 1.5,
-                        "y": 0,
-                        "z": 0
-                }
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.5,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 1.5,
+                "y": 0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "formaldehyde",
+        "id": "formaldehyde",
         "name": "Formaldehyde",
         "formula": "CH2O",
         "iupacName": "Methanal",
@@ -3379,58 +3380,58 @@ const compoundsData = [
         "boilingPoint": "-19 \u00b0C",
         "description": "The simplest aldehyde.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 40.0
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 53.28
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 2,
-                        "massPercent": 6.71
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 40.0
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 53.28
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 6.71
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 1.4,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.21,
-                        "y": -0.7,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.21,
-                        "y": -0.7,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 1.4,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.21,
+                "y": -0.7,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.21,
+                "y": -0.7,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "propane",
+        "id": "propane",
         "name": "Propane",
         "formula": "C3H8",
         "iupacName": "Propane",
@@ -3442,101 +3443,101 @@ const compoundsData = [
         "boilingPoint": "-42.25 \u00b0C",
         "description": "A three-carbon alkane, usually a gas, compressible to a transportable liquid.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 3,
-                        "massPercent": 81.71
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 18.29
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 3,
+                "massPercent": 81.71
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 18.29
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            }
         ]
-}
+    },
     {
-        id: "butane",
+        "id": "butane",
         "name": "Butane",
         "formula": "C4H10",
         "iupacName": "Butane",
@@ -3548,122 +3549,122 @@ const compoundsData = [
         "boilingPoint": "-0.5 \u00b0C",
         "description": "A highly flammable, colorless, easily liquefied gas.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 4,
-                        "massPercent": 82.66
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 10,
-                        "massPercent": 17.34
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 4,
+                "massPercent": 82.66
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 10,
+                "massPercent": 17.34
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "octane",
+        "id": "octane",
         "name": "Octane",
         "formula": "C8H18",
         "iupacName": "Octane",
@@ -3675,206 +3676,206 @@ const compoundsData = [
         "boilingPoint": "125 \u00b0C",
         "description": "An important component of gasoline.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 8,
-                        "massPercent": 84.12
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 18,
-                        "massPercent": 15.88
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 8,
+                "massPercent": 84.12
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 18,
+                "massPercent": 15.88
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 4.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 4.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 5.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 5.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 6.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 6.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 7.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 7.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 4.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 4.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 5.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 5.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 6.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 6.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 6.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 7.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 7.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "methanol",
+        "id": "methanol",
         "name": "Methanol",
         "formula": "CH3OH",
         "iupacName": "Methanol",
@@ -3886,72 +3887,72 @@ const compoundsData = [
         "boilingPoint": "64.7 \u00b0C",
         "description": "The simplest alcohol, toxic to humans.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 37.49
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 49.93
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 4,
-                        "massPercent": 12.58
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 37.49
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 49.93
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 4,
+                "massPercent": 12.58
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0,
-                        "y": 0,
-                        "z": 1.5
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0,
+                "y": 0,
+                "z": 1.5
+            }
         ]
-}
+    },
     {
-        id: "isopropanol",
+        "id": "isopropanol",
         "name": "Isopropanol",
         "formula": "C3H8O",
         "iupacName": "Propan-2-ol",
@@ -3963,114 +3964,114 @@ const compoundsData = [
         "boilingPoint": "82.6 \u00b0C",
         "description": "Rubbing alcohol.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 3,
-                        "massPercent": 59.96
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 26.62
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 13.42
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 3,
+                "massPercent": 59.96
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 26.62
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 13.42
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "glycerol",
+        "id": "glycerol",
         "name": "Glycerol",
         "formula": "C3H8O3",
         "iupacName": "Propane-1,2,3-triol",
@@ -4082,128 +4083,128 @@ const compoundsData = [
         "boilingPoint": "290 \u00b0C",
         "description": "A simple polyol compound.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 3,
-                        "massPercent": 39.13
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 3,
-                        "massPercent": 52.12
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 8.76
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 3,
+                "massPercent": 39.13
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 3,
+                "massPercent": 52.12
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 8.76
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.0,
-                        "y": -1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 1.0,
-                        "y": 0.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 1.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 2.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.0,
-                        "y": 2.0,
-                        "z": 1.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.0,
-                        "y": 3.0,
-                        "z": 0.0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 0.0,
-                        "y": 3.0,
-                        "z": 1.0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.0,
+                "y": -1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.0,
+                "y": -1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": -1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 2.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.0,
+                "y": 3.0,
+                "z": 0.0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.0,
+                "y": 3.0,
+                "z": 1.0
+            }
         ]
-}
+    },
     {
-        id: "toluene",
+        "id": "toluene",
         "name": "Toluene",
         "formula": "C7H8",
         "iupacName": "Methylbenzene",
@@ -4215,129 +4216,129 @@ const compoundsData = [
         "boilingPoint": "110.6 \u00b0C",
         "description": "An aromatic hydrocarbon.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 7,
-                        "massPercent": 91.25
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 8,
-                        "massPercent": 8.75
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 7,
+                "massPercent": 91.25
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 8,
+                "massPercent": 8.75
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "phenol",
+        "id": "phenol",
         "name": "Phenol",
         "formula": "C6H6O",
         "iupacName": "Phenol",
@@ -4349,121 +4350,121 @@ const compoundsData = [
         "boilingPoint": "181.7 \u00b0C",
         "description": "An aromatic organic compound with the molecular formula C6H5OH.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 6,
-                        "massPercent": 76.57
-                },
-                {
-                        "atomicNumber": 8,
-                        "symbol": "O",
-                        "count": 1,
-                        "massPercent": 17.0
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 6,
-                        "massPercent": 6.43
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 6,
+                "massPercent": 76.57
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 17.0
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 6,
+                "massPercent": 6.43
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 8,
-                        "symbol": "O",
-                        "x": 2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "aniline",
+        "id": "aniline",
         "name": "Aniline",
         "formula": "C6H7N",
         "iupacName": "Phenylamine",
@@ -4475,128 +4476,128 @@ const compoundsData = [
         "boilingPoint": "184.1 \u00b0C",
         "description": "The simplest aromatic amine.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 6,
-                        "massPercent": 77.38
-                },
-                {
-                        "atomicNumber": 7,
-                        "symbol": "N",
-                        "count": 1,
-                        "massPercent": 15.04
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 7,
-                        "massPercent": 7.58
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 6,
+                "massPercent": 77.38
+            },
+            {
+                "atomicNumber": 7,
+                "symbol": "N",
+                "count": 1,
+                "massPercent": 15.04
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 7,
+                "massPercent": 7.58
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": 1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -1.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": -0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0.7,
-                        "y": -1.21,
-                        "z": 0
-                },
-                {
-                        "elem": 7,
-                        "symbol": "N",
-                        "x": 2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": 2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -2.4,
-                        "y": 0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": -2.08,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 2.4,
-                        "y": -0.0,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": 1.2,
-                        "y": 2.08,
-                        "z": 0
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": 1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -1.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": -0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0.7,
+                "y": -1.21,
+                "z": 0
+            },
+            {
+                "elem": 7,
+                "symbol": "N",
+                "x": 2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": 2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -2.4,
+                "y": 0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": -2.08,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 2.4,
+                "y": -0.0,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 1.2,
+                "y": 2.08,
+                "z": 0
+            }
         ]
-}
+    },
     {
-        id: "chloroform",
+        "id": "chloroform",
         "name": "Chloroform",
         "formula": "CHCl3",
         "iupacName": "Trichloromethane",
@@ -4608,65 +4609,65 @@ const compoundsData = [
         "boilingPoint": "61.15 \u00b0C",
         "description": "A colorless, strong-smelling, dense liquid.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 10.06
-                },
-                {
-                        "atomicNumber": 17,
-                        "symbol": "Cl",
-                        "count": 3,
-                        "massPercent": 89.09
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 1,
-                        "massPercent": 0.84
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 10.06
+            },
+            {
+                "atomicNumber": 17,
+                "symbol": "Cl",
+                "count": 3,
+                "massPercent": 89.09
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 1,
+                "massPercent": 0.84
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            }
         ]
-}
+    },
     {
-        id: "carbontetrachloride",
+        "id": "carbontetrachloride",
         "name": "Carbon Tetrachloride",
         "formula": "CCl4",
         "iupacName": "Tetrachloromethane",
@@ -4678,59 +4679,59 @@ const compoundsData = [
         "boilingPoint": "76.7 \u00b0C",
         "description": "A colorless liquid with a 'sweet' smell that can be detected at low levels.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 7.81
-                },
-                {
-                        "atomicNumber": 17,
-                        "symbol": "Cl",
-                        "count": 4,
-                        "massPercent": 92.19
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 7.81
+            },
+            {
+                "atomicNumber": 17,
+                "symbol": "Cl",
+                "count": 4,
+                "massPercent": 92.19
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            }
         ]
-}
+    },
     {
-        id: "dichloromethane",
+        "id": "dichloromethane",
         "name": "Dichloromethane",
         "formula": "CH2Cl2",
         "iupacName": "Dichloromethane",
@@ -4742,61 +4743,61 @@ const compoundsData = [
         "boilingPoint": "39.6 \u00b0C",
         "description": "A widely used organic solvent.",
         "elements": [
-                {
-                        "atomicNumber": 6,
-                        "symbol": "C",
-                        "count": 1,
-                        "massPercent": 14.14
-                },
-                {
-                        "atomicNumber": 17,
-                        "symbol": "Cl",
-                        "count": 2,
-                        "massPercent": 83.48
-                },
-                {
-                        "atomicNumber": 1,
-                        "symbol": "H",
-                        "count": 2,
-                        "massPercent": 2.37
-                }
+            {
+                "atomicNumber": 6,
+                "symbol": "C",
+                "count": 1,
+                "massPercent": 14.14
+            },
+            {
+                "atomicNumber": 17,
+                "symbol": "Cl",
+                "count": 2,
+                "massPercent": 83.48
+            },
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 2.37
+            }
         ],
         "atoms": [
-                {
-                        "elem": 6,
-                        "symbol": "C",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 0,
-                        "y": 1.2,
-                        "z": 0
-                },
-                {
-                        "elem": 17,
-                        "symbol": "Cl",
-                        "x": 1.13,
-                        "y": -0.4,
-                        "z": 0
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": 0.98
-                },
-                {
-                        "elem": 1,
-                        "symbol": "H",
-                        "x": -0.56,
-                        "y": -0.4,
-                        "z": -0.98
-                }
+            {
+                "elem": 6,
+                "symbol": "C",
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 0,
+                "y": 1.2,
+                "z": 0
+            },
+            {
+                "elem": 17,
+                "symbol": "Cl",
+                "x": 1.13,
+                "y": -0.4,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": 0.98
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.56,
+                "y": -0.4,
+                "z": -0.98
+            }
         ]
-}
+    }
 ];
