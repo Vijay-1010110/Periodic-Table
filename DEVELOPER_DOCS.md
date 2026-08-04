@@ -103,3 +103,15 @@ All deep-linking features use relative URL hashes (`./#<route>`), making the app
 - **Robots.txt Location:** `https://vijay-1010110.github.io/Periodic-Table/robots.txt`
 - **Google Search Console Verification Tag:** `ZbZNjpiUNBseMfcBvLLECTlBmqwCRTB-NCTmpHa0e70`
 - **GA4 Measurement ID:** `G-4EN5NFDF90`
+
+---
+
+## 📌 6. Reminder / Next Session Tool Integrations
+
+These webmaster tools and analytics integrations are queued for implementation in future sessions:
+
+- [ ] **Bing Webmaster Tools:** Import Google Search Console property into Bing Webmaster Tools for auto-indexing on Bing & Yahoo.
+- [ ] **Google Search Console Sitemap Submission:** Submit `sitemap.xml` under GSC dashboard.
+- [ ] **Microsoft Clarity / Hotjar:** Install heatmap & session recording script in `src/index.html` to monitor user clicks on 3D Orbitals & Isotope Simulator.
+- [ ] **Yandex Webmaster & Baidu Webmaster:** Add verification tags for global search engine reach.
+- [ ] **Custom Domain DNS / Cloudflare Integration:** Set up custom domain routing and Cloudflare CDN speed optimization.
