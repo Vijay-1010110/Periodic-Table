@@ -124,7 +124,9 @@ def build():
         shutil.copy('manifest.json', 'public/manifest.json')
     if os.path.exists('sw.js'):
         shutil.copy('sw.js', 'public/sw.js')
-    print("Copied manifest.json and sw.js to public/")
+    if os.path.exists('assets'):
+        shutil.copytree('assets', 'public/assets', dirs_exist_ok=True)
+    print("Copied manifest.json, sw.js, and assets/ to public/")
 
 if __name__ == '__main__':
     build()

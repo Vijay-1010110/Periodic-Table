@@ -83408,6 +83408,85 @@ const stateTextColors = {
     'Unknown': '#94a3b8' // Gray
 };
 
+// Dynamic Social Share Meta Updater (OG image, Twitter cards, document title)
+function updateSocialShareMeta(viewId) {
+    const metaMap = {
+        'properties': {
+            title: 'PeriodicaX - Definitive 3D Interactive Periodic Table',
+            desc: 'Explore all 118 chemical elements with high-density property matrices, Bohr models, and state filters.',
+            img: 'assets/showcase/main_interface.png'
+        },
+        'electrons': {
+            title: '3D Electron Orbitals Visualizer | PeriodicaX',
+            desc: 'Interactive 3D quantum mechanical electron orbital probability density visualizers for atomic s, p, d, f orbitals.',
+            img: 'assets/showcase/orbitals.png'
+        },
+        'isotopes': {
+            title: 'Nuclear Isotopes & Half-Life Simulator | PeriodicaX',
+            desc: 'Simulate nuclear half-life decay with an interactive 100-atom particle chamber for stable and radioactive isotopes.',
+            img: 'assets/showcase/isotopes.png'
+        },
+        'compounds': {
+            title: 'Chemical Compounds Database & 3D Molecules | PeriodicaX',
+            desc: 'Interactive database of chemical compounds, IUPAC naming, molecular weights, and 3D structural formulas.',
+            img: 'assets/showcase/compounds.png'
+        },
+        'reactions': {
+            title: 'Chemical Reaction Balancer & Thermodynamics | PeriodicaX',
+            desc: 'Instant chemical equation balancer with stoichiometric coefficient calculations and reaction energy states.',
+            img: 'assets/showcase/compounds.png'
+        },
+        'crystals': {
+            title: '3D Crystal Lattice Structures & Unit Cells | PeriodicaX',
+            desc: 'Interactive 3D crystal structure visualizer for FCC, BCC, HCP, diamond cubic, and ionic crystal lattices.',
+            img: 'assets/showcase/crystals.png'
+        },
+        'compare': {
+            title: 'Side-by-Side Element Comparison Matrix | PeriodicaX',
+            desc: 'Compare physical and chemical properties of multiple elements side-by-side with interactive radar charts.',
+            img: 'assets/showcase/main_interface.png'
+        },
+        'quiz': {
+            title: 'Interactive Chemistry & Periodic Table Quiz | PeriodicaX',
+            desc: 'Test your knowledge of chemical elements, electron configurations, and periodic trends with interactive quizzes.',
+            img: 'assets/showcase/main_interface.png'
+        }
+    };
+
+    const config = metaMap[viewId] || metaMap['properties'];
+    document.title = config.title;
+
+    try {
+        const origin = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '/');
+        const fullImgUrl = new URL(config.img, origin).href;
+
+        const setMeta = (selector, content) => {
+            let tag = document.querySelector(selector);
+            if (!tag) {
+                tag = document.createElement('meta');
+                if (selector.includes('property=')) {
+                    const prop = selector.match(/property="(.*?)"/)[1];
+                    tag.setAttribute('property', prop);
+                } else if (selector.includes('name=')) {
+                    const name = selector.match(/name="(.*?)"/)[1];
+                    tag.setAttribute('name', name);
+                }
+                document.head.appendChild(tag);
+            }
+            tag.setAttribute('content', content);
+        };
+
+        setMeta('meta[property="og:title"]', config.title);
+        setMeta('meta[property="og:description"]', config.desc);
+        setMeta('meta[property="og:image"]', fullImgUrl);
+        setMeta('meta[property="twitter:title"]', config.title);
+        setMeta('meta[property="twitter:description"]', config.desc);
+        setMeta('meta[property="twitter:image"]', fullImgUrl);
+    } catch (e) {
+        console.warn('Social meta update skipped:', e);
+    }
+}
+
 // View switching helper with hash routing
 function switchView(viewId, updateHash = true) {
     const btn = document.querySelector(`.nav-btn[data-view="${viewId}"]`);
@@ -83441,6 +83520,9 @@ function switchView(viewId, updateHash = true) {
     } else if (viewId === 'quiz') {
         if (typeof initQuizView === 'function') initQuizView();
     }
+
+    // Update social preview image, page title & meta descriptions dynamically
+    updateSocialShareMeta(viewId);
 
     if (updateHash) {
         if (window.location.hash !== '#' + viewId) {
