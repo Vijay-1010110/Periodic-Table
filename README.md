@@ -13,11 +13,16 @@
 
 PeriodicaX is a highly interactive, visually stunning educational web application built to bring chemistry and nuclear physics to life. It moves beyond static data by providing interactive 3D electron orbital visualizations and a real-time nuclear decay emulator.
 
-## 📸 Screenshots
+## 📸 Showcase
 
 <div align="center">
-  <img src="assets/electrons_orbitals.png" alt="Electrons and 3D Orbitals View" width="49%">
-  <img src="assets/property_interface.png" alt="Property Interface and Heatmap" width="49%">
+  <img src="assets/showcase/main_interface.png" alt="Main Periodic Table Interface" width="100%" style="margin-bottom: 10px;">
+  <br>
+  <img src="assets/showcase/compounds.png" alt="Interactive 3D Molecular Models" width="49%" style="margin-right: 1%;">
+  <img src="assets/showcase/crystals.png" alt="Interactive 3D Crystal Structures" width="49%">
+  <br>
+  <img src="assets/showcase/orbitals.png" alt="3D Electron Orbitals View" width="49%" style="margin-right: 1%; margin-top: 10px;">
+  <img src="assets/showcase/isotopes.png" alt="Dynamic Isotope Decay Emulator" width="49%" style="margin-top: 10px;">
 </div>
 
 ## ✨ Features
