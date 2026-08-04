@@ -79,21 +79,21 @@ firebase deploy
 
 ---
 
-## 🔗 4. Deep-Linking & Hash Routing Reference
+## 🔗 4. Portable Deep-Linking & Hash Routing Reference
 
-You can link directly to specific views or elements on the site using URL hashes:
+All deep-linking features use relative URL hashes (`./#<route>`), making the application **100% portable** to any domain or hosting provider (GitHub Pages, Firebase, Vercel, Netlify, or Custom Domain) without modifying a single line of code!
 
-| Deep Link | Destination |
-| :--- | :--- |
-| `/#isotopes` | Opens Isotopes & Half-Life Simulator |
-| `/#orbitals` | Opens 3D Electron Orbitals View |
-| `/#compounds` | Opens Chemical Compounds Matrix |
-| `/#reactions` | Opens Chemical Reaction Balancer |
-| `/#crystals` | Opens 3D Crystal Lattices View |
-| `/#compare` | Opens Element Comparison Matrix |
-| `/#quiz` | Opens Interactive Chemistry Quiz |
-| `/#element-carbon` | Opens Element detail card for Carbon |
-| `/#isotope-carbon` | Opens Isotope decay simulator modal for Carbon |
+| Relative Deep Link | Destination | Example Full URL Format |
+| :--- | :--- | :--- |
+| `./#isotopes` | Opens Isotopes & Half-Life Simulator | `{YOUR_DOMAIN}/#isotopes` |
+| `./#orbitals` | Opens 3D Electron Orbitals View | `{YOUR_DOMAIN}/#orbitals` |
+| `./#compounds` | Opens Chemical Compounds Matrix | `{YOUR_DOMAIN}/#compounds` |
+| `./#reactions` | Opens Chemical Reaction Balancer | `{YOUR_DOMAIN}/#reactions` |
+| `./#crystals` | Opens 3D Crystal Lattices View | `{YOUR_DOMAIN}/#crystals` |
+| `./#compare` | Opens Element Comparison Matrix | `{YOUR_DOMAIN}/#compare` |
+| `./#quiz` | Opens Interactive Chemistry Quiz | `{YOUR_DOMAIN}/#quiz` |
+| `./#element-carbon` | Opens Element detail card for Carbon | `{YOUR_DOMAIN}/#element-carbon` |
+| `./#isotope-carbon` | Opens Isotope decay simulator modal for Carbon | `{YOUR_DOMAIN}/#isotope-carbon` |
 
 ---
 

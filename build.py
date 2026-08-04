@@ -3,6 +3,8 @@ import glob
 import re
 import datetime
 
+SITE_URL = os.getenv('SITE_URL', 'https://vijay-1010110.github.io/Periodic-Table').rstrip('/')
+
 def generate_seo_tags():
     try:
         with open('src/js/01_data.js', 'r', encoding='utf-8') as f:
@@ -19,16 +21,16 @@ def generate_seo_tags():
         
         meta_keywords = f'<meta name="keywords" content="{", ".join(keywords)}">\n'
         
-        schema = """<script type="application/ld+json">
-{
+        schema = f"""<script type="application/ld+json">
+{{
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "PeriodicaX - Definitive Periodic Table",
-  "url": "https://interactive-periodic-table.web.app",
+  "url": "{SITE_URL}",
   "description": "A visually stunning, interactive periodic table featuring 3D electron orbitals and an advanced isotope decay emulator.",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "All"
-}
+}}
 </script>"""
         return meta_keywords + schema
     except Exception as e:
@@ -41,7 +43,7 @@ def generate_sitemap_and_robots():
     sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
-      <loc>https://interactive-periodic-table.web.app/</loc>
+      <loc>{SITE_URL}/</loc>
       <lastmod>{datetime.datetime.now().strftime("%Y-%m-%d")}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>1.0</priority>
@@ -50,10 +52,10 @@ def generate_sitemap_and_robots():
     with open('public/sitemap.xml', 'w', encoding='utf-8') as f:
         f.write(sitemap)
         
-    robots = """User-agent: *
+    robots = f"""User-agent: *
 Allow: /
 
-Sitemap: https://interactive-periodic-table.web.app/sitemap.xml"""
+Sitemap: {SITE_URL}/sitemap.xml"""
     with open('public/robots.txt', 'w', encoding='utf-8') as f:
         f.write(robots)
 
