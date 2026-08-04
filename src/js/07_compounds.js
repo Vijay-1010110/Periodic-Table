@@ -256,7 +256,8 @@ function renderCompoundsGrid() {
     gridContainer.innerHTML = '';
     if (synthGridContainer) synthGridContainer.innerHTML = '';
 
-    const filtered = compoundsData.filter(comp => {
+    // 1. Render Catalog Grid (#compounds-grid)
+    const catalogFiltered = compoundsData.filter(comp => {
         // Filter by Type
         if (compoundFilterType !== 'All') {
             if (compoundFilterType === 'Solid' || compoundFilterType === 'Liquid' || compoundFilterType === 'Gas') {
@@ -264,15 +265,6 @@ function renderCompoundsGrid() {
             } else {
                 if (comp.type !== compoundFilterType) return false;
             }
-        }
-
-        // Filter by Element(s)
-        if (activeElementFilters.length > 0) {
-            // Must contain ALL dragged elements
-            const containsAll = activeElementFilters.every(activeEl => {
-                return comp.elements.some(e => e.atomicNumber == activeEl.atomicNumber || e.symbol.toLowerCase() === activeEl.symbol.toLowerCase());
-            });
-            if (!containsAll) return false;
         }
 
         // Search Query
@@ -286,25 +278,17 @@ function renderCompoundsGrid() {
         return true;
     });
 
-    if (countBadge) {
-        countBadge.textContent = `${filtered.length} Compounds Participating`;
-    }
-
-    const emptyHtml = `
+    const catalogEmptyHtml = `
         <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">
             <div style="font-size: 2.5rem; margin-bottom: 10px;">🧪</div>
-            <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your filter</div>
+            <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your search</div>
         </div>
     `;
 
-    if (filtered.length === 0) {
-        gridContainer.innerHTML = emptyHtml;
-        if (synthGridContainer) synthGridContainer.innerHTML = emptyHtml;
-        return;
-    }
-
-    filtered.forEach(comp => {
-        const createCard = () => {
+    if (catalogFiltered.length === 0) {
+        gridContainer.innerHTML = catalogEmptyHtml;
+    } else {
+        catalogFiltered.forEach(comp => {
             const theme = getBondTheme(comp.type);
             const card = document.createElement('div');
             card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
@@ -331,11 +315,75 @@ function renderCompoundsGrid() {
                 selectCompound(comp.id);
             });
 
-            return card;
-        };
+            gridContainer.appendChild(card);
+        });
+    }
 
-        gridContainer.appendChild(createCard());
-        if (synthGridContainer) synthGridContainer.appendChild(createCard());
+    // 2. Render Table Builder Grid (#synth-compounds-grid)
+    if (!synthGridContainer) return;
+
+    if (activeElementFilters.length === 0) {
+        if (countBadge) countBadge.textContent = '0 Elements Selected';
+        synthGridContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 35px 20px; text-align: center; color: rgba(255,255,255,0.5); background: rgba(15,23,42,0.4); border: 1px dashed rgba(0,212,255,0.25); border-radius: 12px;">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">⚛️</div>
+                <div style="font-size: 1rem; font-family: var(--font-ui); color: #00d4ff; font-weight: bold;">Drop or click elements into the box above</div>
+                <div style="font-size: 0.8rem; margin-top: 4px; color: rgba(255,255,255,0.5);">Select elements from the 118-element periodic table to discover all participating compounds!</div>
+            </div>
+        `;
+        return;
+    }
+
+    // Filter compounds that contain ALL dragged elements
+    const synthFiltered = compoundsData.filter(comp => {
+        return activeElementFilters.every(activeEl => {
+            return comp.elements.some(e => e.atomicNumber == activeEl.atomicNumber || e.symbol.toLowerCase() === activeEl.symbol.toLowerCase());
+        });
+    });
+
+    if (countBadge) {
+        countBadge.textContent = `${synthFiltered.length} Compounds Participating`;
+    }
+
+    if (synthFiltered.length === 0) {
+        synthGridContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 35px 20px; text-align: center; color: rgba(255,255,255,0.5); background: rgba(15,23,42,0.4); border: 1px dashed rgba(239,68,68,0.25); border-radius: 12px;">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">🧪</div>
+                <div style="font-size: 1rem; font-family: var(--font-ui); color: #ef4444; font-weight: bold;">No compounds found</div>
+                <div style="font-size: 0.8rem; margin-top: 4px; color: rgba(255,255,255,0.5);">No known compound contains all selected elements (${activeElementFilters.map(e => e.symbol).join(', ')}).</div>
+            </div>
+        `;
+        return;
+    }
+
+    synthFiltered.forEach(comp => {
+        const theme = getBondTheme(comp.type);
+        const card = document.createElement('div');
+        card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
+        card.dataset.id = comp.id;
+        
+        card.style.background = theme.bg;
+        card.style.borderColor = theme.border;
+
+        card.innerHTML = `
+            <div class="compound-card-header">
+                <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
+                <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${comp.type}</span>
+            </div>
+            <div class="compound-card-title">${comp.name}</div>
+            <div class="compound-card-meta">
+                <span>Mass: ${comp.molarMass} g/mol</span>
+                <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            selectCompound(comp.id);
+        });
+
+        synthGridContainer.appendChild(card);
     });
 }
 
