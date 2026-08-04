@@ -43,6 +43,28 @@ function setupCompoundsEvents() {
             renderCompoundsGrid();
         });
     });
+
+    // Sub-Tab Switcher
+    const subTabBtns = document.querySelectorAll('.comp-sub-tab-btn');
+    subTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            subTabBtns.forEach(b => {
+                b.classList.remove('active');
+                b.style.borderColor = 'rgba(255,255,255,0.15)';
+                b.style.background = 'rgba(255,255,255,0.05)';
+                b.style.color = 'rgba(255,255,255,0.7)';
+            });
+            btn.classList.add('active');
+            btn.style.borderColor = '#00d4ff';
+            btn.style.background = 'rgba(0, 212, 255, 0.15)';
+            btn.style.color = '#00d4ff';
+
+            const subTab = btn.dataset.subtab;
+            document.querySelectorAll('.comp-subtab-content').forEach(c => c.style.display = 'none');
+            const targetContent = document.getElementById(`comp-subtab-${subTab}`);
+            if (targetContent) targetContent.style.display = 'flex';
+        });
+    });
 }
 
 function initSynthesizerUI() {
@@ -197,9 +219,13 @@ function updateDropzoneUI() {
 
 function renderCompoundsGrid() {
     const gridContainer = document.getElementById('compounds-grid');
+    const synthGridContainer = document.getElementById('synth-compounds-grid');
+    const countBadge = document.getElementById('synth-count-badge');
+    
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
+    if (synthGridContainer) synthGridContainer.innerHTML = '';
 
     const filtered = compoundsData.filter(comp => {
         // Filter by Type
@@ -231,43 +257,52 @@ function renderCompoundsGrid() {
         return true;
     });
 
+    if (countBadge) {
+        countBadge.textContent = `${filtered.length} Compounds Participating`;
+    }
+
+    const emptyHtml = `
+        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">🧪</div>
+            <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your filter</div>
+        </div>
+    `;
+
     if (filtered.length === 0) {
-        gridContainer.innerHTML = `
-            <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">
-                <div style="font-size: 2.5rem; margin-bottom: 10px;">🧪</div>
-                <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your filter</div>
-            </div>
-        `;
+        gridContainer.innerHTML = emptyHtml;
+        if (synthGridContainer) synthGridContainer.innerHTML = emptyHtml;
         return;
     }
 
     filtered.forEach(comp => {
-        const card = document.createElement('div');
-        card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
-        card.dataset.id = comp.id;
+        const createCard = () => {
+            const card = document.createElement('div');
+            card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
+            card.dataset.id = comp.id;
 
-        const mainElem = comp.elements[0] ? comp.elements[0].atomicNumber : 6;
-        const mainColor = CPK_COLORS[mainElem] || '#00d4ff';
+            card.innerHTML = `
+                <div class="compound-card-header">
+                    <span class="compound-formula-badge">${comp.formula}</span>
+                    <span class="compound-type-tag">${comp.type}</span>
+                </div>
+                <div class="compound-card-title">${comp.name}</div>
+                <div class="compound-card-meta">
+                    <span>Mass: ${comp.molarMass} g/mol</span>
+                    <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
+                </div>
+            `;
 
-        card.innerHTML = `
-            <div class="compound-card-header">
-                <span class="compound-formula-badge">${comp.formula}</span>
-                <span class="compound-type-tag">${comp.type}</span>
-            </div>
-            <div class="compound-card-title">${comp.name}</div>
-            <div class="compound-card-meta">
-                <span>Mass: ${comp.molarMass} g/mol</span>
-                <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
-            </div>
-        `;
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                selectCompound(comp.id);
+            });
 
-        card.addEventListener('click', () => {
-            document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            selectCompound(comp.id);
-        });
+            return card;
+        };
 
-        gridContainer.appendChild(card);
+        gridContainer.appendChild(createCard());
+        if (synthGridContainer) synthGridContainer.appendChild(createCard());
     });
 }
 

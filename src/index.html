@@ -464,41 +464,23 @@
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
             <div class="view-left">
-                <!-- Controls & Full Periodic Table Elemental Synthesizer Header -->
-                <div class="compounds-controls" style="flex-direction: column; gap: 15px;">
-                    
-                    <!-- Synthesis Drop Zone Banner -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 14px 20px; flex-wrap: wrap; gap: 12px;">
-                        <div>
-                            <h4 style="margin: 0; color: #00d4ff; font-family: var(--font-ui); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">⚛️ Elemental Synthesizer Box</h4>
-                            <p style="margin: 3px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Click or Drag any element from the full Periodic Table below into this box to discover compounds!</p>
-                        </div>
-                        <div id="synth-dropzone" style="flex: 1; min-width: 280px; min-height: 50px; border: 2px dashed rgba(0, 212, 255, 0.4); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 10px; background: rgba(4, 8, 16, 0.6); transition: all 0.3s ease;">
-                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.85rem; pointer-events: none;">Drop or click elements here...</span>
-                            <div id="synth-pills-container" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
-                            <button id="clear-synth-btn" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; font-family: var(--font-ui);">Clear Box</button>
-                        </div>
-                    </div>
+                <!-- Compounds 2 Sub-Tabs Header Navigation -->
+                <div class="compounds-sub-tabs" style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <button class="comp-sub-tab-btn active" data-subtab="catalog" style="padding: 10px 20px; border-radius: 8px; border: 1px solid #00d4ff; background: rgba(0, 212, 255, 0.15); color: #00d4ff; font-weight: bold; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s;">
+                        🔍 Compound Catalog & Search
+                    </button>
+                    <button class="comp-sub-tab-btn" data-subtab="synthesizer" style="padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); font-weight: bold; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s;">
+                        ⚛️ Element Drag & Drop Workbench
+                    </button>
+                </div>
 
-                    <!-- Collapsible Full 118-Element Periodic Table -->
-                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-family: var(--font-ui); font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: bold;">Full 118-Element Selection Grid</span>
-                            <span style="font-size: 0.75rem; color: #00d4ff; font-family: var(--font-mono);">Click or Drag an Element Tile</span>
-                        </div>
-                        <div class="grid-wrapper" style="max-height: 280px; overflow-y: auto; padding: 4px;">
-                            <div class="periodic-grid" id="compounds-periodic-grid" style="transform: scale(0.95); transform-origin: top left;">
-                                <!-- Standard 118 element grid rendered by JS -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Search and Pills -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; width: 100%;">
-                        <div class="compounds-search-wrap" style="flex: 1; margin-bottom: 0;">
+                <!-- SUB-TAB 1: CATALOG & SEARCH -->
+                <div id="comp-subtab-catalog" class="comp-subtab-content" style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
+                    <div class="compounds-controls" style="margin-bottom: 0;">
+                        <div class="compounds-search-wrap">
                             <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
                         </div>
-                        <div class="compounds-filter-pills" style="margin-bottom: 0;">
+                        <div class="compounds-filter-pills">
                             <button class="compound-filter-btn active" data-type="All">All</button>
                             <button class="compound-filter-btn" data-type="Organic">Organic</button>
                             <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
@@ -510,11 +492,53 @@
                             <button class="compound-filter-btn" data-type="Solid">Solids</button>
                         </div>
                     </div>
+
+                    <!-- Compounds Cards Grid -->
+                    <div class="compounds-grid-container" id="compounds-grid">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
 
-                <!-- Compounds Cards Grid -->
-                <div class="compounds-grid-container" id="compounds-grid">
-                    <!-- Populated by JS -->
+                <!-- SUB-TAB 2: ELEMENT WORKBENCH (FULL TABLE + DRAG & DROP) -->
+                <div id="comp-subtab-synthesizer" class="comp-subtab-content" style="display: none; flex-direction: column; gap: 16px; flex: 1;">
+                    
+                    <!-- Synthesis Drop Zone Banner & Live Counter -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 16px 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+                        <div style="flex: 1; min-width: 240px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h4 style="margin: 0; color: #00d4ff; font-family: var(--font-ui); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px;">⚛️ Element Participation Box</h4>
+                                <span id="synth-count-badge" style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; color: #4ade80; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-family: var(--font-mono); font-weight: bold;">0 Compounds Participating</span>
+                            </div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Click or Drag elements from the table below into this box to see all compounds they participate in!</p>
+                        </div>
+                        
+                        <div id="synth-dropzone" style="flex: 1.5; min-width: 280px; min-height: 54px; border: 2px dashed rgba(0, 212, 255, 0.4); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 10px; background: rgba(4, 8, 16, 0.6); transition: all 0.3s ease;">
+                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.85rem; pointer-events: none;">Drop or click elements here...</span>
+                            <div id="synth-pills-container" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
+                            <button id="clear-synth-btn" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; font-family: var(--font-ui);">Clear Box</button>
+                        </div>
+                    </div>
+
+                    <!-- Full 118-Element Selection Grid -->
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-family: var(--font-ui); font-size: 0.9rem; color: #ffffff; font-weight: bold;">Full 118-Element Periodic Table Selector</span>
+                            <span style="font-size: 0.75rem; color: #00d4ff; font-family: var(--font-mono);">Click or Drag any Element Tile into the Box</span>
+                        </div>
+                        <div class="grid-wrapper" style="max-height: 280px; overflow-y: auto; padding: 4px; border-radius: 8px; background: rgba(0,0,0,0.3);">
+                            <div class="periodic-grid" id="compounds-periodic-grid" style="transform: scale(0.95); transform-origin: top left;">
+                                <!-- Standard 118 element grid rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Participating Compounds Results Grid -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                        <h4 style="margin: 0; font-family: var(--font-ui); font-size: 0.95rem; color: rgba(255,255,255,0.8);">Participating Compounds Results:</h4>
+                        <div class="compounds-grid-container" id="synth-compounds-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
