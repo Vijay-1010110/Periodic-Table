@@ -113,6 +113,7 @@ function renderCompoundsGrid() {
                     <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
                 </div>
             `;
+            if (comp.id === 'hydrochloricacid') console.log("Rendered card HTML for HCl:", card.innerHTML);
 
             card.addEventListener('click', () => {
                 document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));

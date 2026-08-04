@@ -20,10 +20,13 @@
     <link rel="manifest" href="manifest.json">
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg failed: ', err));
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+                console.log("Unregistered service worker");
+            }
         });
-      }
+    }
     </script>
     
     <!-- Google Search Console Verification -->
@@ -1243,7 +1246,6 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     flex-direction: column;
     gap: 8px;
     position: relative;
-    overflow: hidden;
 }
 
 .compound-card:hover {
@@ -1266,9 +1268,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .compound-formula-badge {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-family: var(--font-main);
     font-weight: 700;
+    font-size: 1.2rem;
     color: #fff;
     letter-spacing: 0.5px;
 }
@@ -81663,6 +81665,7 @@ function renderCompoundsGrid() {
                     <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
                 </div>
             `;
+            if (comp.id === 'hydrochloricacid') console.log("Rendered card HTML for HCl:", card.innerHTML);
 
             card.addEventListener('click', () => {
                 document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));

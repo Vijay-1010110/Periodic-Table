@@ -1179,7 +1179,6 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     flex-direction: column;
     gap: 8px;
     position: relative;
-    overflow: hidden;
 }
 
 .compound-card:hover {
@@ -1202,9 +1201,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .compound-formula-badge {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-family: var(--font-main);
     font-weight: 700;
+    font-size: 1.2rem;
     color: #fff;
     letter-spacing: 0.5px;
 }
