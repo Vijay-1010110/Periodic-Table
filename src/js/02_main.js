@@ -230,51 +230,121 @@ const stateTextColors = {
     'Unknown': '#94a3b8' // Gray
 };
 
+// View switching helper with hash routing
+function switchView(viewId, updateHash = true) {
+    const btn = document.querySelector(`.nav-btn[data-view="${viewId}"]`);
+    if (!btn) return;
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentView = viewId;
+    document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
+    const targetView = document.getElementById('view-' + viewId);
+    if (targetView) targetView.classList.add('active');
+    
+    renderGrid();
+    if (selectedElement) {
+        selectElement(selectedElement.atomicNumber);
+    }
+    
+    if (viewId === 'electrons') {
+        if (window.OrbitalViewer) {
+            setTimeout(() => window.OrbitalViewer.resize(), 50);
+        }
+    } else if (viewId === 'compounds') {
+        if (typeof initCompoundsView === 'function') initCompoundsView();
+    } else if (viewId === 'reactions') {
+        if (typeof initReactionsView === 'function') initReactionsView();
+    } else if (viewId === 'crystals') {
+        if (typeof initCrystalsView === 'function') initCrystalsView();
+    } else if (viewId === 'compare') {
+        if (typeof initCompareView === 'function') initCompareView();
+    } else if (viewId === 'quiz') {
+        if (typeof initQuizView === 'function') initQuizView();
+    }
+
+    if (updateHash) {
+        if (window.location.hash !== '#' + viewId) {
+            history.replaceState(null, null, '#' + viewId);
+        }
+    }
+}
+
+// Handle URL Hash Deep-linking
+function handleHashRouting() {
+    const hash = window.location.hash.replace('#', '').trim().toLowerCase();
+    if (!hash) return;
+
+    const viewMap = {
+        'isotopes': 'isotopes',
+        'isotope': 'isotopes',
+        'compounds': 'compounds',
+        'compound': 'compounds',
+        'orbitals': 'electrons',
+        'orbital': 'electrons',
+        'electrons': 'electrons',
+        'reactions': 'reactions',
+        'reaction': 'reactions',
+        'crystals': 'crystals',
+        'crystal': 'crystals',
+        'compare': 'compare',
+        'quiz': 'quiz',
+        'properties': 'properties',
+        'property': 'properties',
+        'main': 'properties'
+    };
+
+    if (viewMap[hash]) {
+        switchView(viewMap[hash], false);
+        return;
+    }
+
+    // Direct element or isotope deep link (e.g. #isotope-carbon, #element-6, #gold, #fe)
+    if (hash.startsWith('isotope-')) {
+        const query = hash.replace('isotope-', '');
+        switchView('isotopes', false);
+        openElementOrIsotopeByQuery(query, true);
+    } else if (hash.startsWith('element-')) {
+        const query = hash.replace('element-', '');
+        openElementOrIsotopeByQuery(query, false);
+    } else {
+        openElementOrIsotopeByQuery(hash, false);
+    }
+}
+
+function openElementOrIsotopeByQuery(query, isIsotopeModal = false) {
+    if (typeof elementsData === 'undefined') return;
+    let target = null;
+    const qLower = query.toLowerCase();
+
+    const num = parseInt(query, 10);
+    if (!isNaN(num) && num >= 1 && num <= 118) {
+        target = elementsData.find(e => e.atomicNumber === num);
+    } else {
+        target = elementsData.find(e => e.symbol.toLowerCase() === qLower || e.name.toLowerCase() === qLower);
+    }
+
+    if (target) {
+        if (isIsotopeModal && typeof openIsotopeModal === 'function') {
+            openIsotopeModal(target.atomicNumber);
+        } else {
+            selectElement(target.atomicNumber);
+        }
+    }
+}
+
 // UI Setup
 function setupUI() {
     // Mode toggle
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
             const viewId = e.target.dataset.view;
-            currentView = viewId;
-            document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            renderGrid();
-            if (selectedElement) {
-                selectElement(selectedElement.atomicNumber);
-            }
-            if (viewId === 'electrons') {
-                if (window.OrbitalViewer) {
-                    // Small delay to ensure CSS display:block has taken effect
-                    setTimeout(() => window.OrbitalViewer.resize(), 50);
-                }
-            } else if (viewId === 'compounds') {
-                if (typeof initCompoundsView === 'function') {
-                    initCompoundsView();
-                }
-            } else if (viewId === 'reactions') {
-                if (typeof initReactionsView === 'function') {
-                    initReactionsView();
-                }
-            } else if (viewId === 'crystals') {
-                if (typeof initCrystalsView === 'function') {
-                    initCrystalsView();
-                }
-            } else if (viewId === 'compare') {
-                if (typeof initCompareView === 'function') {
-                    initCompareView();
-                }
-            } else if (viewId === 'quiz') {
-                if (typeof initQuizView === 'function') {
-                    initQuizView();
-                }
-            }
+            switchView(viewId, true);
         });
     });
+    
+    window.addEventListener('hashchange', handleHashRouting);
     
     // Property Sidebar selection
     document.querySelectorAll('.prop-item:not(.non-interactive):not(.elec-prop-item)').forEach(item => {
@@ -1554,6 +1624,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('three-canvas-container')) {
         if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
     }
+
+    // Process deep-link URL hash if present
+    handleHashRouting();
 });
 
 function generateMiniBohrSVG(shells) {

@@ -16,7 +16,10 @@
     </script>
 
     <meta name="description" content="A visually stunning, interactive periodic table featuring 3D electron orbitals, chemical reaction balancer, isotope decay emulator, 3D crystal lattices & chemistry quiz.">
+    <meta name="keywords" content="periodic table, interactive periodic table, chemical elements, 3D electron orbitals, nuclear isotopes, half-life simulator, chemical compounds, crystal structures, chemical reactions, chemistry quiz, mendeleev table, atomic mass, electronegativity, atomic radius">
+    <meta name="author" content="PeriodicaX Team">
     <meta name="theme-color" content="#0f172a">
+    <link rel="canonical" href="https://vijay-1010110.github.io/Periodic-Table/" />
     <link rel="manifest" href="manifest.json">
     <script>
       if ('serviceWorker' in navigator) {
@@ -34,17 +37,65 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://interactive-periodic-table.web.app/">
-    <meta property="og:title" content="PeriodicaX - Definitive Periodic Table">
-    <meta property="og:description" content="A visually stunning, interactive periodic table featuring 3D electron orbitals and an advanced isotope decay emulator.">
-    <meta property="og:image" content="https://interactive-periodic-table.web.app/preview.jpg">
+    <meta property="og:url" content="https://vijay-1010110.github.io/Periodic-Table/">
+    <meta property="og:title" content="PeriodicaX - Definitive 3D Interactive Periodic Table">
+    <meta property="og:description" content="Explore the periodic table in 3D: interactive electron orbitals, nuclear isotope decay simulator, chemical reaction balancer, crystal lattices & quizzes.">
+    <meta property="og:image" content="https://vijay-1010110.github.io/Periodic-Table/assets/showcase/main_interface.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://interactive-periodic-table.web.app/">
-    <meta property="twitter:title" content="PeriodicaX - Definitive Periodic Table">
-    <meta property="twitter:description" content="A visually stunning, interactive periodic table featuring 3D electron orbitals and an advanced isotope decay emulator.">
-    <meta property="twitter:image" content="https://interactive-periodic-table.web.app/preview.jpg">
+    <meta property="twitter:url" content="https://vijay-1010110.github.io/Periodic-Table/">
+    <meta property="twitter:title" content="PeriodicaX - Definitive 3D Interactive Periodic Table">
+    <meta property="twitter:description" content="Explore the periodic table in 3D: interactive electron orbitals, nuclear isotope decay simulator, chemical reaction balancer, crystal lattices & quizzes.">
+    <meta property="twitter:image" content="https://vijay-1010110.github.io/Periodic-Table/assets/showcase/main_interface.png">
+
+    <!-- Structured Data JSON-LD for Google Search & SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://vijay-1010110.github.io/Periodic-Table/#webapp",
+          "url": "https://vijay-1010110.github.io/Periodic-Table/",
+          "name": "PeriodicaX - Interactive 3D Periodic Table of Elements",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "description": "Interactive Periodic Table featuring 3D electron orbitals, chemical reactions, nuclear isotopes half-life simulator, 3D crystal structures, and element comparison matrix."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is PeriodicaX?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PeriodicaX is an interactive, modern 3D web platform for exploring the periodic table of elements, 3D atomic orbitals, nuclear isotope decay simulations, chemical reaction balancing, and crystal lattices."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I view 3D electron orbitals?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Navigate to the 'Electrons & Orbitals' tab or URL hashtag #orbitals to interact with real-time 3D quantum mechanical orbital visualizers for any element."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does PeriodicaX support isotope decay simulations?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, under the 'Isotopes' tab (#isotopes), you can simulate nuclear half-lives with an interactive 100-atom particle chamber for both stable and radioactive isotopes."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1927,6 +1978,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     font-size: 0.9rem;
     font-family: var(--font-body);
     outline: none;
+}
+.compare-dropdown option {
+    background: #0f172a;
+    color: #e2e8f0;
 }
 
 .compare-cards-header {
@@ -76157,6 +76212,8 @@ function updateIsotopesView(atomicNumber) {
  */
 function formatHalfLife(val, unit) {
     if (val === null || val === undefined) return '-';
+    if (unit === 'Gyears' || unit === 'Gyear') unit = 'billion years';
+    if (unit === 'Myears' || unit === 'Myear') unit = 'million years';
     if (val > 1e6) {
         return val.toExponential(2) + ' ' + unit;
     }
@@ -76646,6 +76703,12 @@ function initHalfLifeSimulator(iso) {
     
     // Generate 100 atoms
     chamber.innerHTML = '';
+    const decayOrder = Array.from({length: 100}, (_, i) => i);
+    for (let i = decayOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [decayOrder[i], decayOrder[j]] = [decayOrder[j], decayOrder[i]];
+    }
+
     for (let i = 0; i < 100; i++) {
         const dot = document.createElement('div');
         dot.className = 'sim-atom-dot';
@@ -76667,9 +76730,10 @@ function initHalfLifeSimulator(iso) {
         textTime.textContent = timeLabel;
         textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
         
+        const activeIndices = new Set(decayOrder.slice(0, remainingCount));
         const dots = chamber.querySelectorAll('.sim-atom-dot');
         dots.forEach((dot, index) => {
-            if (index < remainingCount) {
+            if (activeIndices.has(index)) {
                 dot.style.background = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
                 dot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
                 dot.style.opacity = '1';
@@ -82784,7 +82848,7 @@ function populateElementDropdown(selectEl, selectedZ) {
     elementsData.forEach(el => {
         const opt = document.createElement('option');
         opt.value = el.atomicNumber;
-        opt.textContent = `${el.atomicNumber}. ${el.name} (${el.symbol})`;
+        opt.textContent = `Atomic No. ${el.atomicNumber} - ${el.name} (${el.symbol})`;
         if (el.atomicNumber === selectedZ) opt.selected = true;
         selectEl.appendChild(opt);
     });
@@ -82832,7 +82896,7 @@ function renderComparison() {
     const cardsContainer = document.getElementById('compare-cards-header');
     if (cardsContainer) {
         cardsContainer.innerHTML = list.map(el => `
-            <div class="compare-card-head" style="border-top: 3px solid ${getCategoryColor(el.category)};">
+            <div class="compare-card-head" style="border-top: 3px solid ${getCategoryColor(el.category)}; background: ${getGlossyBackground(getCategoryColor(el.category), el.category)}; box-shadow: inset 0 0 20px rgba(255,255,255,0.02), 0 4px 15px rgba(0,0,0,0.3); border-radius: 12px; padding: 20px 15px;">
                 <span class="compare-z">${el.atomicNumber}</span>
                 <span class="compare-symbol">${el.symbol}</span>
                 <div class="compare-name">${el.name}</div>
@@ -83344,51 +83408,121 @@ const stateTextColors = {
     'Unknown': '#94a3b8' // Gray
 };
 
+// View switching helper with hash routing
+function switchView(viewId, updateHash = true) {
+    const btn = document.querySelector(`.nav-btn[data-view="${viewId}"]`);
+    if (!btn) return;
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentView = viewId;
+    document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
+    const targetView = document.getElementById('view-' + viewId);
+    if (targetView) targetView.classList.add('active');
+    
+    renderGrid();
+    if (selectedElement) {
+        selectElement(selectedElement.atomicNumber);
+    }
+    
+    if (viewId === 'electrons') {
+        if (window.OrbitalViewer) {
+            setTimeout(() => window.OrbitalViewer.resize(), 50);
+        }
+    } else if (viewId === 'compounds') {
+        if (typeof initCompoundsView === 'function') initCompoundsView();
+    } else if (viewId === 'reactions') {
+        if (typeof initReactionsView === 'function') initReactionsView();
+    } else if (viewId === 'crystals') {
+        if (typeof initCrystalsView === 'function') initCrystalsView();
+    } else if (viewId === 'compare') {
+        if (typeof initCompareView === 'function') initCompareView();
+    } else if (viewId === 'quiz') {
+        if (typeof initQuizView === 'function') initQuizView();
+    }
+
+    if (updateHash) {
+        if (window.location.hash !== '#' + viewId) {
+            history.replaceState(null, null, '#' + viewId);
+        }
+    }
+}
+
+// Handle URL Hash Deep-linking
+function handleHashRouting() {
+    const hash = window.location.hash.replace('#', '').trim().toLowerCase();
+    if (!hash) return;
+
+    const viewMap = {
+        'isotopes': 'isotopes',
+        'isotope': 'isotopes',
+        'compounds': 'compounds',
+        'compound': 'compounds',
+        'orbitals': 'electrons',
+        'orbital': 'electrons',
+        'electrons': 'electrons',
+        'reactions': 'reactions',
+        'reaction': 'reactions',
+        'crystals': 'crystals',
+        'crystal': 'crystals',
+        'compare': 'compare',
+        'quiz': 'quiz',
+        'properties': 'properties',
+        'property': 'properties',
+        'main': 'properties'
+    };
+
+    if (viewMap[hash]) {
+        switchView(viewMap[hash], false);
+        return;
+    }
+
+    // Direct element or isotope deep link (e.g. #isotope-carbon, #element-6, #gold, #fe)
+    if (hash.startsWith('isotope-')) {
+        const query = hash.replace('isotope-', '');
+        switchView('isotopes', false);
+        openElementOrIsotopeByQuery(query, true);
+    } else if (hash.startsWith('element-')) {
+        const query = hash.replace('element-', '');
+        openElementOrIsotopeByQuery(query, false);
+    } else {
+        openElementOrIsotopeByQuery(hash, false);
+    }
+}
+
+function openElementOrIsotopeByQuery(query, isIsotopeModal = false) {
+    if (typeof elementsData === 'undefined') return;
+    let target = null;
+    const qLower = query.toLowerCase();
+
+    const num = parseInt(query, 10);
+    if (!isNaN(num) && num >= 1 && num <= 118) {
+        target = elementsData.find(e => e.atomicNumber === num);
+    } else {
+        target = elementsData.find(e => e.symbol.toLowerCase() === qLower || e.name.toLowerCase() === qLower);
+    }
+
+    if (target) {
+        if (isIsotopeModal && typeof openIsotopeModal === 'function') {
+            openIsotopeModal(target.atomicNumber);
+        } else {
+            selectElement(target.atomicNumber);
+        }
+    }
+}
+
 // UI Setup
 function setupUI() {
     // Mode toggle
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
             const viewId = e.target.dataset.view;
-            currentView = viewId;
-            document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            renderGrid();
-            if (selectedElement) {
-                selectElement(selectedElement.atomicNumber);
-            }
-            if (viewId === 'electrons') {
-                if (window.OrbitalViewer) {
-                    // Small delay to ensure CSS display:block has taken effect
-                    setTimeout(() => window.OrbitalViewer.resize(), 50);
-                }
-            } else if (viewId === 'compounds') {
-                if (typeof initCompoundsView === 'function') {
-                    initCompoundsView();
-                }
-            } else if (viewId === 'reactions') {
-                if (typeof initReactionsView === 'function') {
-                    initReactionsView();
-                }
-            } else if (viewId === 'crystals') {
-                if (typeof initCrystalsView === 'function') {
-                    initCrystalsView();
-                }
-            } else if (viewId === 'compare') {
-                if (typeof initCompareView === 'function') {
-                    initCompareView();
-                }
-            } else if (viewId === 'quiz') {
-                if (typeof initQuizView === 'function') {
-                    initQuizView();
-                }
-            }
+            switchView(viewId, true);
         });
     });
+    
+    window.addEventListener('hashchange', handleHashRouting);
     
     // Property Sidebar selection
     document.querySelectorAll('.prop-item:not(.non-interactive):not(.elec-prop-item)').forEach(item => {
@@ -83699,8 +83833,17 @@ function getPropertyValue(el, propName) {
 
 function getNormalizedCategory(cat) {
     if (!cat) return 'Unknown';
-    if (cat === 'Diatomic nonmetal' || cat === 'Polyatomic nonmetal') return 'Reactive nonmetal';
-    if (cat.toLowerCase().includes('unknown')) return 'Unknown';
+    const lowerCat = cat.toLowerCase();
+    if (lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal') return 'Reactive nonmetal';
+    if (lowerCat.includes('unknown')) {
+        if (lowerCat.includes('transition metal')) return 'Transition metal';
+        if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
+        if (lowerCat.includes('metalloid')) return 'Metalloid';
+        if (lowerCat.includes('noble gas')) return 'Noble gas';
+        if (lowerCat.includes('alkali metal')) return 'Alkali metal';
+        if (lowerCat.includes('alkaline earth metal')) return 'Alkaline earth metal';
+        return 'Unknown';
+    }
     return cat;
 }
 
@@ -84659,6 +84802,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('three-canvas-container')) {
         if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
     }
+
+    // Process deep-link URL hash if present
+    handleHashRouting();
 });
 
 function generateMiniBohrSVG(shells) {
@@ -85506,7 +85652,7 @@ window.OrbitalViewer = {
             
             <!-- ISOTOPE MODAL OVERLAY -->
             <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(18px); background: rgba(3, 7, 18, 0.92); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
-                <div id="isotope-modal" style="width: 95%; height: 93%; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+                <div id="isotope-modal" style="width: 95%; max-height: 93%; height: auto; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
                     
                     <!-- Close Button -->
                     <button id="close-modal-btn" style="position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 18px; border-radius: 20px; cursor: pointer; z-index: 20; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); transition: all 0.2s ease;">✕ Close</button>
@@ -85617,7 +85763,7 @@ window.OrbitalViewer = {
                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                     <div>
                                         <h4 style="margin: 0; color: #00d4ff; font-size: 1.1rem; font-family: var(--font-ui);">Interactive Radioactive Half-Life Simulator</h4>
-                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (1/2)^(t / T½)</span></p>
+                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (½)<sup>t / T½</sup></span></p>
                                     </div>
                                     <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-family: var(--font-mono); font-size: 0.85rem;">T½ = -</div>
                                 </div>
