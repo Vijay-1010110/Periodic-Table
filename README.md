@@ -2,14 +2,15 @@
   <h1>⚛️ PeriodicaX</h1>
   <p><strong>The Definitive Interactive 3D Periodic Table & Isotope Emulator</strong></p>
   
-  [![Live Demo](https://img.shields.io/badge/Live_Demo-periodica--x--app.web.app-00C7B7?style=for-the-badge&logo=firebase)](https://periodica-x-app.web.app)
-  [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)](#)
-  [![License](https://img.shields.io/badge/license-Custom-blue?style=for-the-badge)](#)
+  [![Live Demo (GitHub Pages)](https://img.shields.io/badge/Live_Demo-GitHub_Pages-2ea44f?style=for-the-badge&logo=github)](https://vijay-1010110.github.io/Periodic-Table/)
+  [![Live Demo (Firebase)](https://img.shields.io/badge/Live_Demo-Firebase_Hosting-00C7B7?style=for-the-badge&logo=firebase)](https://periodica-x-app.web.app)
+  [![Developer Docs](https://img.shields.io/badge/Docs-Developer_Guide-blueviolet?style=for-the-badge)](DEVELOPER_DOCS.md)
 </div>
 
 <br>
 
-**🔗 Live Demo:** [https://periodica-x-app.web.app](https://periodica-x-app.web.app)
+**🔗 Live Demo:** [https://vijay-1010110.github.io/Periodic-Table/](https://vijay-1010110.github.io/Periodic-Table/)  
+**🛠️ Developer Infrastructure & Accounts Guide:** [`DEVELOPER_DOCS.md`](DEVELOPER_DOCS.md)
 
 PeriodicaX is a highly interactive, visually stunning educational web application built to bring chemistry and nuclear physics to life. It moves beyond static data by providing interactive 3D electron orbital visualizations and a real-time nuclear decay emulator.
 
