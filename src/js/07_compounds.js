@@ -71,7 +71,26 @@ function initSynthesizerUI() {
     const gridContainer = document.getElementById('compounds-periodic-grid');
     const dropzone = document.getElementById('synth-dropzone');
     const clearBtn = document.getElementById('clear-synth-btn');
+    const tableToggleBtn = document.getElementById('toggle-table-grid-btn');
+    const tableWrapper = document.getElementById('compounds-table-wrapper');
+    const synthGridContainer = document.getElementById('synth-compounds-grid');
     if (!gridContainer || !dropzone) return;
+
+    // Toggle Table Collapse/Expand
+    if (tableToggleBtn && tableWrapper) {
+        tableToggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (tableWrapper.style.display === 'none') {
+                tableWrapper.style.display = 'block';
+                tableToggleBtn.textContent = '▲ Collapse Table';
+                if (synthGridContainer) synthGridContainer.style.maxHeight = 'calc(100vh - 430px)';
+            } else {
+                tableWrapper.style.display = 'none';
+                tableToggleBtn.textContent = '▼ Expand Table';
+                if (synthGridContainer) synthGridContainer.style.maxHeight = 'calc(100vh - 250px)';
+            }
+        };
+    }
 
     // Render full 118 element selection grid
     gridContainer.innerHTML = '';
