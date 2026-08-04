@@ -43,7 +43,7 @@ function populateElementDropdown(selectEl, selectedZ) {
     elementsData.forEach(el => {
         const opt = document.createElement('option');
         opt.value = el.atomicNumber;
-        opt.textContent = `${el.atomicNumber}. ${el.name} (${el.symbol})`;
+        opt.textContent = `Atomic No. ${el.atomicNumber} - ${el.name} (${el.symbol})`;
         if (el.atomicNumber === selectedZ) opt.selected = true;
         selectEl.appendChild(opt);
     });
@@ -91,7 +91,7 @@ function renderComparison() {
     const cardsContainer = document.getElementById('compare-cards-header');
     if (cardsContainer) {
         cardsContainer.innerHTML = list.map(el => `
-            <div class="compare-card-head" style="border-top: 3px solid ${getCategoryColor(el.category)};">
+            <div class="compare-card-head" style="border-top: 3px solid ${getCategoryColor(el.category)}; background: ${getGlossyBackground(getCategoryColor(el.category), el.category)}; box-shadow: inset 0 0 20px rgba(255,255,255,0.02), 0 4px 15px rgba(0,0,0,0.3); border-radius: 12px; padding: 20px 15px;">
                 <span class="compare-z">${el.atomicNumber}</span>
                 <span class="compare-symbol">${el.symbol}</span>
                 <div class="compare-name">${el.name}</div>

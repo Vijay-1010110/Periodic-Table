@@ -1861,6 +1861,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     font-family: var(--font-body);
     outline: none;
 }
+.compare-dropdown option {
+    background: #0f172a;
+    color: #e2e8f0;
+}
 
 .compare-cards-header {
     display: flex;
