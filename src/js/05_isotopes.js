@@ -302,6 +302,8 @@ function updateIsotopesView(atomicNumber) {
  */
 function formatHalfLife(val, unit) {
     if (val === null || val === undefined) return '-';
+    if (unit === 'Gyears' || unit === 'Gyear') unit = 'billion years';
+    if (unit === 'Myears' || unit === 'Myear') unit = 'million years';
     if (val > 1e6) {
         return val.toExponential(2) + ' ' + unit;
     }
@@ -791,6 +793,12 @@ function initHalfLifeSimulator(iso) {
     
     // Generate 100 atoms
     chamber.innerHTML = '';
+    const decayOrder = Array.from({length: 100}, (_, i) => i);
+    for (let i = decayOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [decayOrder[i], decayOrder[j]] = [decayOrder[j], decayOrder[i]];
+    }
+
     for (let i = 0; i < 100; i++) {
         const dot = document.createElement('div');
         dot.className = 'sim-atom-dot';
@@ -812,9 +820,10 @@ function initHalfLifeSimulator(iso) {
         textTime.textContent = timeLabel;
         textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
         
+        const activeIndices = new Set(decayOrder.slice(0, remainingCount));
         const dots = chamber.querySelectorAll('.sim-atom-dot');
         dots.forEach((dot, index) => {
-            if (index < remainingCount) {
+            if (activeIndices.has(index)) {
                 dot.style.background = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
                 dot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
                 dot.style.opacity = '1';

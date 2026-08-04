@@ -585,8 +585,17 @@ function getPropertyValue(el, propName) {
 
 function getNormalizedCategory(cat) {
     if (!cat) return 'Unknown';
-    if (cat === 'Diatomic nonmetal' || cat === 'Polyatomic nonmetal') return 'Reactive nonmetal';
-    if (cat.toLowerCase().includes('unknown')) return 'Unknown';
+    const lowerCat = cat.toLowerCase();
+    if (lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal') return 'Reactive nonmetal';
+    if (lowerCat.includes('unknown')) {
+        if (lowerCat.includes('transition metal')) return 'Transition metal';
+        if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
+        if (lowerCat.includes('metalloid')) return 'Metalloid';
+        if (lowerCat.includes('noble gas')) return 'Noble gas';
+        if (lowerCat.includes('alkali metal')) return 'Alkali metal';
+        if (lowerCat.includes('alkaline earth metal')) return 'Alkaline earth metal';
+        return 'Unknown';
+    }
     return cat;
 }
 

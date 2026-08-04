@@ -316,7 +316,7 @@
             
             <!-- ISOTOPE MODAL OVERLAY -->
             <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(18px); background: rgba(3, 7, 18, 0.92); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
-                <div id="isotope-modal" style="width: 95%; height: 93%; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+                <div id="isotope-modal" style="width: 95%; max-height: 93%; height: auto; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
                     
                     <!-- Close Button -->
                     <button id="close-modal-btn" style="position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 18px; border-radius: 20px; cursor: pointer; z-index: 20; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); transition: all 0.2s ease;">✕ Close</button>
@@ -427,7 +427,7 @@
                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                     <div>
                                         <h4 style="margin: 0; color: #00d4ff; font-size: 1.1rem; font-family: var(--font-ui);">Interactive Radioactive Half-Life Simulator</h4>
-                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (1/2)^(t / T½)</span></p>
+                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (½)<sup>t / T½</sup></span></p>
                                     </div>
                                     <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-family: var(--font-mono); font-size: 0.85rem;">T½ = -</div>
                                 </div>
