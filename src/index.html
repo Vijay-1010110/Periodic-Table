@@ -464,97 +464,38 @@
         <!-- VIEW: COMPOUNDS -->
         <section class="view-mode" id="view-compounds">
             <div class="view-left">
-                <!-- Compounds 2 Sub-Tabs Header Navigation -->
-                <div class="compounds-sub-tabs" style="display: flex; gap: 12px; margin-bottom: 16px;">
-                    <button class="comp-sub-tab-btn active" data-subtab="synthesizer" style="padding: 10px 22px; border-radius: 8px; border: 1px solid #00d4ff; background: rgba(0, 212, 255, 0.15); color: #00d4ff; font-weight: bold; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s;">
-                        ⚛️ Interactive Table Builder
-                    </button>
-                    <button class="comp-sub-tab-btn" data-subtab="catalog" style="padding: 10px 22px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); font-weight: bold; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s;">
-                        📚 Compounds Catalog
-                    </button>
-                </div>
-
-                <!-- SUB-TAB 1 (DEFAULT): ELEMENT WORKBENCH (FULL TABLE + DRAG & DROP) -->
-                <div id="comp-subtab-synthesizer" class="comp-subtab-content" style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
-                    
-                    <!-- Synthesis Drop Zone Banner & Live Counter -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 16px 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
-                        <div style="flex: 1; min-width: 240px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <h4 style="margin: 0; color: #00d4ff; font-family: var(--font-ui); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px;">⚛️ Element Participation Box</h4>
-                                <span id="synth-count-badge" style="background: rgba(74, 222, 128, 0.15); border: 1px solid #4ade80; color: #4ade80; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-family: var(--font-mono); font-weight: bold;">0 Compounds Participating</span>
-                            </div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Click or Drag elements from the table below into this box to see all compounds they participate in!</p>
+                <div class="compounds-controls" style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap;">
+                        <div class="compounds-search-wrap" style="flex: 1; min-width: 300px;">
+                            <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)..." style="width: 100%;">
                         </div>
                         
-                        <div id="synth-dropzone" style="flex: 1.5; min-width: 280px; min-height: 54px; border: 2px dashed rgba(0, 212, 255, 0.4); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 10px; background: rgba(4, 8, 16, 0.6); transition: all 0.3s ease;">
-                            <span id="synth-drop-hint" style="color: rgba(255,255,255,0.4); font-family: var(--font-ui); font-size: 0.85rem; pointer-events: none;">Drop or click elements here...</span>
-                            <div id="synth-pills-container" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
-                            <button id="clear-synth-btn" style="display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; font-family: var(--font-ui);">Clear Box</button>
+                        <!-- Bond Type Legend -->
+                        <div class="compound-bond-legend" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 8px 14px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.6); font-weight: bold; font-family: var(--font-ui);">Bond Themes:</span>
+                            <span style="font-size: 0.75rem; color: #00d4ff; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #00d4ff;"></span> Covalent</span>
+                            <span style="font-size: 0.75rem; color: #a855f7; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #a855f7;"></span> Ionic</span>
+                            <span style="font-size: 0.75rem; color: #10b981; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span> Organic</span>
+                            <span style="font-size: 0.75rem; color: #ef4444; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span> Acid</span>
+                            <span style="font-size: 0.75rem; color: #f59e0b; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span> Base</span>
                         </div>
                     </div>
-
-                    <!-- Full 118-Element Selection Grid -->
-                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="table-toggle-header">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-family: var(--font-ui); font-size: 0.9rem; color: #ffffff; font-weight: bold;">Full 118-Element Periodic Table Selector</span>
-                                <button id="toggle-table-grid-btn" style="background: rgba(0, 212, 255, 0.15); border: 1px solid #00d4ff; color: #00d4ff; padding: 2px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-family: var(--font-ui); font-weight: bold;">▲ Collapse Table</button>
-                            </div>
-                            <span style="font-size: 0.75rem; color: #00d4ff; font-family: var(--font-mono);">Click or Drag any Element Tile into the Box</span>
-                        </div>
-                        <div class="grid-wrapper" id="compounds-table-wrapper" style="max-height: 220px; overflow-y: auto; padding: 4px; border-radius: 8px; background: rgba(0,0,0,0.3); transition: all 0.3s ease;">
-                            <div class="periodic-grid" id="compounds-periodic-grid" style="transform: scale(0.95); transform-origin: top left;">
-                                <!-- Standard 118 element grid rendered by JS -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Participating Compounds Results Section & Bond Legend -->
-                    <div style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                            <h4 style="margin: 0; font-family: var(--font-ui); font-size: 0.95rem; color: rgba(255,255,255,0.9);">Participating Compounds Results:</h4>
-                            
-                            <!-- Bond Type Legend -->
-                            <div class="compound-bond-legend" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 4px 10px; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
-                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.6); font-weight: bold; font-family: var(--font-ui);">Bond Themes:</span>
-                                <span style="font-size: 0.7rem; color: #00d4ff; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #00d4ff;"></span> Covalent</span>
-                                <span style="font-size: 0.7rem; color: #a855f7; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #a855f7;"></span> Ionic</span>
-                                <span style="font-size: 0.7rem; color: #10b981; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span> Organic</span>
-                                <span style="font-size: 0.7rem; color: #ef4444; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span> Acid</span>
-                                <span style="font-size: 0.7rem; color: #f59e0b; display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span> Base</span>
-                            </div>
-                        </div>
-
-                        <div class="compounds-grid-container" id="synth-compounds-grid" style="max-height: calc(100vh - 430px); overflow-y: auto; padding-right: 6px;">
-                            <!-- Populated by JS -->
-                        </div>
+                    <div class="compounds-filter-pills">
+                        <button class="compound-filter-btn active" data-type="All">All</button>
+                        <button class="compound-filter-btn" data-type="Organic">Organic</button>
+                        <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
+                        <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
+                        <button class="compound-filter-btn" data-type="Acid">Acids</button>
+                        <button class="compound-filter-btn" data-type="Base">Bases</button>
+                        <button class="compound-filter-btn" data-type="Gas">Gases</button>
+                        <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
+                        <button class="compound-filter-btn" data-type="Solid">Solids</button>
                     </div>
                 </div>
 
-                <!-- SUB-TAB 2: CATALOG & SEARCH -->
-                <div id="comp-subtab-catalog" class="comp-subtab-content" style="display: none; flex-direction: column; gap: 16px; flex: 1;">
-                    <div class="compounds-controls" style="margin-bottom: 0;">
-                        <div class="compounds-search-wrap">
-                            <input type="text" id="compound-search-bar" placeholder="Search compounds by formula, name, or IUPAC (e.g. H2O, Methane)...">
-                        </div>
-                        <div class="compounds-filter-pills">
-                            <button class="compound-filter-btn active" data-type="All">All</button>
-                            <button class="compound-filter-btn" data-type="Organic">Organic</button>
-                            <button class="compound-filter-btn" data-type="Covalent">Covalent</button>
-                            <button class="compound-filter-btn" data-type="Ionic">Ionic</button>
-                            <button class="compound-filter-btn" data-type="Acid">Acids</button>
-                            <button class="compound-filter-btn" data-type="Base">Bases</button>
-                            <button class="compound-filter-btn" data-type="Gas">Gases</button>
-                            <button class="compound-filter-btn" data-type="Liquid">Liquids</button>
-                            <button class="compound-filter-btn" data-type="Solid">Solids</button>
-                        </div>
-                    </div>
-
-                    <!-- Compounds Cards Grid -->
-                    <div class="compounds-grid-container" id="compounds-grid">
-                        <!-- Populated by JS -->
-                    </div>
+                <!-- Compounds Cards Grid -->
+                <div class="compounds-grid-container" id="compounds-grid">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 

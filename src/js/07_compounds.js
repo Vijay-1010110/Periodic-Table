@@ -6,7 +6,6 @@
 let selectedCompoundId = 'water';
 let compoundFilterType = 'All';
 let compoundSearchQuery = '';
-let activeElementFilters = []; // Array of {atomicNumber, symbol}
 
 // Three.js Molecular Viewer globals
 let molScene = null;
@@ -21,7 +20,6 @@ function initCompoundsView() {
     setupCompoundsEvents();
     renderCompoundsGrid();
     initMoleculeViewer();
-    initSynthesizerUI();
     selectCompound('water');
 }
 
@@ -43,198 +41,8 @@ function setupCompoundsEvents() {
             renderCompoundsGrid();
         });
     });
-
-    // Sub-Tab Switcher
-    const subTabBtns = document.querySelectorAll('.comp-sub-tab-btn');
-    subTabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            subTabBtns.forEach(b => {
-                b.classList.remove('active');
-                b.style.borderColor = 'rgba(255,255,255,0.15)';
-                b.style.background = 'rgba(255,255,255,0.05)';
-                b.style.color = 'rgba(255,255,255,0.7)';
-            });
-            btn.classList.add('active');
-            btn.style.borderColor = '#00d4ff';
-            btn.style.background = 'rgba(0, 212, 255, 0.15)';
-            btn.style.color = '#00d4ff';
-
-            const subTab = btn.dataset.subtab;
-            document.querySelectorAll('.comp-subtab-content').forEach(c => c.style.display = 'none');
-            const targetContent = document.getElementById(`comp-subtab-${subTab}`);
-            if (targetContent) targetContent.style.display = 'flex';
-        });
-    });
 }
 
-function initSynthesizerUI() {
-    const gridContainer = document.getElementById('compounds-periodic-grid');
-    const dropzone = document.getElementById('synth-dropzone');
-    const clearBtn = document.getElementById('clear-synth-btn');
-    const tableToggleBtn = document.getElementById('toggle-table-grid-btn');
-    const tableWrapper = document.getElementById('compounds-table-wrapper');
-    const synthGridContainer = document.getElementById('synth-compounds-grid');
-    if (!gridContainer || !dropzone) return;
-
-    // Toggle Table Collapse/Expand
-    if (tableToggleBtn && tableWrapper) {
-        tableToggleBtn.onclick = (e) => {
-            e.stopPropagation();
-            if (tableWrapper.style.display === 'none') {
-                tableWrapper.style.display = 'block';
-                tableToggleBtn.textContent = '▲ Collapse Table';
-                if (synthGridContainer) synthGridContainer.style.maxHeight = 'calc(100vh - 430px)';
-            } else {
-                tableWrapper.style.display = 'none';
-                tableToggleBtn.textContent = '▼ Expand Table';
-                if (synthGridContainer) synthGridContainer.style.maxHeight = 'calc(100vh - 250px)';
-            }
-        };
-    }
-
-    // Render full 118 element selection grid
-    gridContainer.innerHTML = '';
-    
-    for (let i = 1; i <= 118; i++) {
-        const elData = typeof getElementByNumber === 'function' ? getElementByNumber(i) : (elementsData ? elementsData[i - 1] : null);
-        if (!elData) continue;
-        
-        const pos = typeof getGridPosition === 'function' ? getGridPosition(i) : { col: (i % 18) || 18, row: Math.ceil(i / 18) };
-        const cat = typeof getNormalizedCategory === 'function' ? getNormalizedCategory(elData.category) : 'unknown';
-        const color = (typeof categoryColors !== 'undefined' && categoryColors[cat]) ? categoryColors[cat] : '#00d4ff';
-        
-        const cell = document.createElement('div');
-        cell.className = 'element-cell';
-        cell.draggable = true;
-        cell.dataset.z = i;
-        cell.dataset.sym = elData.symbol;
-        cell.style.gridColumn = pos.col;
-        cell.style.gridRow = pos.row;
-        cell.style.cursor = 'pointer';
-        cell.style.border = `1px solid ${color}`;
-        cell.style.background = typeof getGlossyBackground === 'function' ? getGlossyBackground(color, cat) : 'rgba(15, 23, 42, 0.8)';
-        
-        cell.innerHTML = `
-            <span class="cell-num">${i}</span>
-            <span class="cell-sym">${elData.symbol}</span>
-            <span class="cell-name">${elData.name}</span>
-        `;
-        
-        // Hover effect
-        cell.addEventListener('mouseenter', () => {
-            cell.style.boxShadow = `0 0 14px ${color}`;
-            cell.style.zIndex = '10';
-        });
-        cell.addEventListener('mouseleave', () => {
-            cell.style.boxShadow = 'none';
-            cell.style.zIndex = '1';
-        });
-
-        // Click / Tap Fallback
-        cell.addEventListener('click', () => {
-            addFilterElement(i, elData.symbol, color);
-        });
-        
-        // Drag and Drop
-        cell.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', JSON.stringify({ z: i, sym: elData.symbol, color: color }));
-            cell.style.opacity = '0.5';
-        });
-        cell.addEventListener('dragend', () => {
-            cell.style.opacity = '1';
-        });
-        
-        gridContainer.appendChild(cell);
-    }
-
-    // Clear Button
-    if (clearBtn) {
-        clearBtn.onclick = () => {
-            activeElementFilters = [];
-            updateDropzoneUI();
-            renderCompoundsGrid();
-        };
-    }
-
-    // Dropzone logic
-    dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.style.background = 'rgba(0, 212, 255, 0.15)';
-        dropzone.style.borderColor = '#00d4ff';
-    });
-    
-    dropzone.addEventListener('dragleave', () => {
-        dropzone.style.background = 'rgba(4, 8, 16, 0.6)';
-        dropzone.style.borderColor = 'rgba(0, 212, 255, 0.4)';
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.style.background = 'rgba(4, 8, 16, 0.6)';
-        dropzone.style.borderColor = 'rgba(0, 212, 255, 0.4)';
-        
-        const dataStr = e.dataTransfer.getData('text/plain');
-        if (!dataStr) return;
-        
-        try {
-            const data = JSON.parse(dataStr);
-            addFilterElement(data.z, data.sym, data.color);
-        } catch (err) {
-            console.error(err);
-        }
-    });
-
-    updateDropzoneUI();
-}
-
-function addFilterElement(z, sym, color) {
-    if (activeElementFilters.some(f => f.atomicNumber == z)) return;
-    activeElementFilters.push({ atomicNumber: z, symbol: sym, color: color });
-    updateDropzoneUI();
-    renderCompoundsGrid();
-}
-
-function updateDropzoneUI() {
-    const hint = document.getElementById('synth-drop-hint');
-    const container = document.getElementById('synth-pills-container');
-    const clearBtn = document.getElementById('clear-synth-btn');
-    if (!container || !hint) return;
-    
-    container.innerHTML = '';
-    
-    if (activeElementFilters.length === 0) {
-        hint.style.display = 'inline';
-        if (clearBtn) clearBtn.style.display = 'none';
-    } else {
-        hint.style.display = 'none';
-        if (clearBtn) clearBtn.style.display = 'inline-block';
-        
-        activeElementFilters.forEach(f => {
-            const pill = document.createElement('div');
-            pill.style.cssText = `
-                background: rgba(0,0,0,0.6); border: 1px solid ${f.color};
-                border-radius: 20px; padding: 4px 12px;
-                display: flex; align-items: center; gap: 8px;
-                color: ${f.color}; font-weight: bold; font-family: var(--font-mono);
-                animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-shadow: 0 0 10px ${f.color}44;
-            `;
-            pill.innerHTML = `
-                ${f.symbol} (${f.atomicNumber})
-                <span class="remove-synth-btn" style="cursor: pointer; background: rgba(255,255,255,0.2); width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #fff;">&times;</span>
-            `;
-            
-            pill.querySelector('.remove-synth-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                activeElementFilters = activeElementFilters.filter(el => el.atomicNumber != f.atomicNumber);
-                updateDropzoneUI();
-                renderCompoundsGrid();
-            });
-            
-            container.appendChild(pill);
-        });
-    }
-}
 
 function getBondTheme(type) {
     const t = (type || '').toLowerCase();
@@ -248,13 +56,10 @@ function getBondTheme(type) {
 
 function renderCompoundsGrid() {
     const gridContainer = document.getElementById('compounds-grid');
-    const synthGridContainer = document.getElementById('synth-compounds-grid');
-    const countBadge = document.getElementById('synth-count-badge');
     
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
-    if (synthGridContainer) synthGridContainer.innerHTML = '';
 
     // 1. Render Catalog Grid (#compounds-grid)
     const catalogFiltered = compoundsData.filter(comp => {
@@ -318,73 +123,6 @@ function renderCompoundsGrid() {
             gridContainer.appendChild(card);
         });
     }
-
-    // 2. Render Table Builder Grid (#synth-compounds-grid)
-    if (!synthGridContainer) return;
-
-    if (activeElementFilters.length === 0) {
-        if (countBadge) countBadge.textContent = '0 Elements Selected';
-        synthGridContainer.innerHTML = `
-            <div style="grid-column: 1 / -1; padding: 35px 20px; text-align: center; color: rgba(255,255,255,0.5); background: rgba(15,23,42,0.4); border: 1px dashed rgba(0,212,255,0.25); border-radius: 12px;">
-                <div style="font-size: 2.2rem; margin-bottom: 8px;">⚛️</div>
-                <div style="font-size: 1rem; font-family: var(--font-ui); color: #00d4ff; font-weight: bold;">Drop or click elements into the box above</div>
-                <div style="font-size: 0.8rem; margin-top: 4px; color: rgba(255,255,255,0.5);">Select elements from the 118-element periodic table to discover all participating compounds!</div>
-            </div>
-        `;
-        return;
-    }
-
-    // Filter compounds that contain ALL dragged elements
-    const synthFiltered = compoundsData.filter(comp => {
-        return activeElementFilters.every(activeEl => {
-            return comp.elements.some(e => e.atomicNumber == activeEl.atomicNumber || e.symbol.toLowerCase() === activeEl.symbol.toLowerCase());
-        });
-    });
-
-    if (countBadge) {
-        countBadge.textContent = `${synthFiltered.length} Compounds Participating`;
-    }
-
-    if (synthFiltered.length === 0) {
-        synthGridContainer.innerHTML = `
-            <div style="grid-column: 1 / -1; padding: 35px 20px; text-align: center; color: rgba(255,255,255,0.5); background: rgba(15,23,42,0.4); border: 1px dashed rgba(239,68,68,0.25); border-radius: 12px;">
-                <div style="font-size: 2.2rem; margin-bottom: 8px;">🧪</div>
-                <div style="font-size: 1rem; font-family: var(--font-ui); color: #ef4444; font-weight: bold;">No compounds found</div>
-                <div style="font-size: 0.8rem; margin-top: 4px; color: rgba(255,255,255,0.5);">No known compound contains all selected elements (${activeElementFilters.map(e => e.symbol).join(', ')}).</div>
-            </div>
-        `;
-        return;
-    }
-
-    synthFiltered.forEach(comp => {
-        const theme = getBondTheme(comp.type);
-        const card = document.createElement('div');
-        card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
-        card.dataset.id = comp.id;
-        
-        card.style.background = theme.bg;
-        card.style.borderColor = theme.border;
-
-        card.innerHTML = `
-            <div class="compound-card-header">
-                <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
-                <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${comp.type}</span>
-            </div>
-            <div class="compound-card-title">${comp.name}</div>
-            <div class="compound-card-meta">
-                <span>Mass: ${comp.molarMass} g/mol</span>
-                <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
-            </div>
-        `;
-
-        card.addEventListener('click', () => {
-            document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            selectCompound(comp.id);
-        });
-
-        synthGridContainer.appendChild(card);
-    });
 }
 
 function selectCompound(id) {
@@ -629,7 +367,4 @@ function createBondCylinder(p1, p2, group) {
     group.add(cylinder);
 }
 
-// Auto-initialize Synthesizer UI when DOM loads
-document.addEventListener('DOMContentLoaded', () => {
-    initSynthesizerUI();
-});
+
