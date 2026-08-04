@@ -217,6 +217,16 @@ function updateDropzoneUI() {
     }
 }
 
+function getBondTheme(type) {
+    const t = (type || '').toLowerCase();
+    if (t.includes('covalent')) return { color: '#00d4ff', bg: 'linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(0, 212, 255, 0.4)', tagBg: 'rgba(0, 212, 255, 0.25)' };
+    if (t.includes('ionic')) return { color: '#a855f7', bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(168, 85, 247, 0.4)', tagBg: 'rgba(168, 85, 247, 0.25)' };
+    if (t.includes('organic')) return { color: '#10b981', bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(16, 185, 129, 0.4)', tagBg: 'rgba(16, 185, 129, 0.25)' };
+    if (t.includes('acid')) return { color: '#ef4444', bg: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(239, 68, 68, 0.4)', tagBg: 'rgba(239, 68, 68, 0.25)' };
+    if (t.includes('base')) return { color: '#f59e0b', bg: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(245, 158, 11, 0.4)', tagBg: 'rgba(245, 158, 11, 0.25)' };
+    return { color: '#3b82f6', bg: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(59, 130, 246, 0.4)', tagBg: 'rgba(59, 130, 246, 0.25)' };
+}
+
 function renderCompoundsGrid() {
     const gridContainer = document.getElementById('compounds-grid');
     const synthGridContainer = document.getElementById('synth-compounds-grid');
@@ -276,14 +286,18 @@ function renderCompoundsGrid() {
 
     filtered.forEach(comp => {
         const createCard = () => {
+            const theme = getBondTheme(comp.type);
             const card = document.createElement('div');
             card.className = `compound-card ${selectedCompoundId === comp.id ? 'active' : ''}`;
             card.dataset.id = comp.id;
+            
+            card.style.background = theme.bg;
+            card.style.borderColor = theme.border;
 
             card.innerHTML = `
                 <div class="compound-card-header">
-                    <span class="compound-formula-badge">${comp.formula}</span>
-                    <span class="compound-type-tag">${comp.type}</span>
+                    <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
+                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${comp.type}</span>
                 </div>
                 <div class="compound-card-title">${comp.name}</div>
                 <div class="compound-card-meta">
