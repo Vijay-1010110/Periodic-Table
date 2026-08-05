@@ -600,13 +600,8 @@ function updateTempDisplay() {
     document.getElementById('temp-display-c').innerText = `${cStr} °C`;
     document.getElementById('temp-display-f').innerText = `${fStr} °F`;
     
-    const displayContainer = document.getElementById('temp-display-container');
-    const color = getTempColor(k);
-    
-    displayContainer.style.color = color;
-    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
-    
     const slider = document.getElementById('temp-slider');
+    const color = getTempColor(k);
     
     // Dynamic glow for the thumb
     const glowIntensity = Math.min(1, k / 6000); // 0 to 1

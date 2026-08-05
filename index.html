@@ -258,8 +258,51 @@ input[type="text"], select {
     width: max-content;
     max-width: 100%;
 }
-#temp-display-container { color: var(--dynamic-temp-color, var(--mono-green)); display: flex; align-items: center; white-space: nowrap; text-align: left; transition: color 0.1s; flex-shrink: 0 !important; }
-#temp-input, #timeline-input {
+#temp-display-container {
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    text-align: left;
+    flex-shrink: 0 !important;
+    background: rgba(10, 15, 26, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    padding: 3px 12px;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+    font-size: 0.88rem;
+}
+#temp-display-container .temp-label-prefix {
+    color: #94a3b8;
+    font-weight: 600;
+    margin-right: 4px;
+}
+#temp-display-container .unit-k-label {
+    color: #fbbf24;
+    font-weight: 700;
+    margin-left: 2px;
+}
+#temp-display-c {
+    color: #00f0ff;
+    font-weight: 600;
+}
+#temp-display-f {
+    color: #ff8800;
+    font-weight: 600;
+}
+#temp-input {
+    width: 62px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: #fbbf24;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    outline: none;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.15);
+}
+#timeline-input {
     width: 60px;
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.2);
@@ -84243,13 +84286,8 @@ function updateTempDisplay() {
     document.getElementById('temp-display-c').innerText = `${cStr} °C`;
     document.getElementById('temp-display-f').innerText = `${fStr} °F`;
     
-    const displayContainer = document.getElementById('temp-display-container');
-    const color = getTempColor(k);
-    
-    displayContainer.style.color = color;
-    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
-    
     const slider = document.getElementById('temp-slider');
+    const color = getTempColor(k);
     
     // Dynamic glow for the thumb
     const glowIntensity = Math.min(1, k / 6000); // 0 to 1
@@ -86178,7 +86216,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.9.1</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.10.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86208,7 +86246,7 @@ window.OrbitalViewer = {
                             <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
-                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
+                                <label id="temp-display-container"><span class="temp-label-prefix">Temp:</span> <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> <span class="unit-k-label">K</span> <span style="opacity: 0.4; margin: 0 6px; color: #64748b;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.4; margin: 0 6px; color: #64748b;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
                             </div>
                             <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
                                 <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
