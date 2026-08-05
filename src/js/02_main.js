@@ -1012,7 +1012,7 @@ function updateGridVisuals() {
 
     const cells = document.querySelectorAll(`${gridId} .element-cell`);
     let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
-    const blockColors = { s: '#0d5f66', p: '#4a5c00', d: '#5d0f40', f: '#0022a1' };
+    const blockColors = { s: '#ef4444', p: '#0284c7', d: '#6366f1', f: '#a855f7' };
 
     cells.forEach(cell => {
         const z = parseInt(cell.dataset.z);
@@ -1405,6 +1405,7 @@ function selectElement(z) {
         updateSidebarValues();
     } else if (currentView === 'electrons') {
         document.getElementById('elec-empty-state').classList.add('hidden');
+        document.getElementById('elec-element-card').classList.remove('hidden');
         document.getElementById('elec-details').classList.remove('hidden');
         
         document.getElementById('elec-number').innerText = el.atomicNumber;
