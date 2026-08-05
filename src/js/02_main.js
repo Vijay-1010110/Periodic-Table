@@ -1623,17 +1623,22 @@ function renderAufbauDiagram(configStr) {
     // Track the highest filled subshell to mark as active
     let lastFilledSubshell = parts.length > 0 ? parts[parts.length-1].match(/(\d[spdf])/)?.[1] : null;
 
-    const blockColors = { s: '#0d5f66', p: '#4a5c00', d: '#5d0f40', f: '#0022a1' };
+    const blockColors = {
+        s: '#00d4ff', // Vibrant Electric Cyan
+        p: '#84cc16', // Vibrant Neon Lime Green
+        d: '#d946ef', // Vibrant Saturated Neon Magenta
+        f: '#3b82f6'  // Vibrant Electric Sapphire Blue
+    };
     let html = `
-    <div class="legend-box aufbau-box" style="display: flex; flex-direction: column;">
-        <div class="legend-box-title">Electron Configuration</div>
+    <div class="legend-box aufbau-box" style="display: flex; flex-direction: column; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 10px 16px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 15px rgba(0,212,255,0.15);">
+        <div class="legend-box-title" style="color: #00d4ff; font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid rgba(0, 212, 255, 0.25); padding-bottom: 4px;">Electron Configuration</div>
         <div class="legend-box-content" style="gap: 20px;">
             <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-start; padding: 0;">
-                <div class="aufbau-legend" style="margin-bottom: 0;">
-                    <div class="legend-item" data-key="s" data-type="block" style="background: ${getGlossyBackground(blockColors.s)}; border: 1px solid ${blockColors.s}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">s-block</div>
-                    <div class="legend-item" data-key="p" data-type="block" style="background: ${getGlossyBackground(blockColors.p)}; border: 1px solid ${blockColors.p}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">p-block</div>
-                    <div class="legend-item" data-key="d" data-type="block" style="background: ${getGlossyBackground(blockColors.d)}; border: 1px solid ${blockColors.d}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">d-block</div>
-                    <div class="legend-item" data-key="f" data-type="block" style="background: ${getGlossyBackground(blockColors.f)}; border: 1px solid ${blockColors.f}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">f-block</div>
+                <div class="aufbau-legend" style="margin-bottom: 0; gap: 6px;">
+                    <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
+                    <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
+                    <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
+                    <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
                 </div>
                 <div class="aufbau-grid">
     `;
@@ -1661,7 +1666,7 @@ function renderAufbauDiagram(configStr) {
             
             html += `<div class="subshell-group interactive-subshell" data-key="${subshell}" data-type="subshell" data-n="${nValue}" data-l="${lValue}" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
             
-            html += `<div class="subshell-label">${subshell}</div><div class="orbital-boxes">`;
+            html += `<div class="subshell-label" style="font-weight: bold; color: #ffffff; text-shadow: 0 0 4px rgba(0,0,0,0.8);">${subshell}</div><div class="orbital-boxes">`;
             
             // Map box index to m values
             // For s: 0. For p: -1, 0, 1. For d: -2, -1, 0, 1, 2.
@@ -1678,8 +1683,8 @@ function renderAufbauDiagram(configStr) {
                 }
                 
                 let arrows = '';
-                if (electronsInThisOrbital === 1) arrows = '<span class="arrow-up">&#x21BF;</span>';
-                if (electronsInThisOrbital === 2) arrows = '<span class="arrow-up">&#x21BF;</span><span class="arrow-down">&#x21C2;</span>';
+                if (electronsInThisOrbital === 1) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.9);">&#x21BF;</span>';
+                if (electronsInThisOrbital === 2) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.9);">&#x21BF;</span><span class="arrow-down" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0,255,255,0.9);">&#x21C2;</span>';
                 
                 let isLastOrbital = false;
                 if (isActive) {
@@ -1689,11 +1694,14 @@ function renderAufbauDiagram(configStr) {
                 const activeClass = isLastOrbital ? 'active-orbital' : '';
                 
                 const boxColor = blockColors[blockType] || '#444';
-                const glossyBg = getGlossyBackground(boxColor);
+                const hasElectrons = electronsInThisOrbital > 0;
+                const glossyBg = hasElectrons ? getGlossyBackground(boxColor) : 'rgba(15, 23, 42, 0.65)';
+                const boxBorder = hasElectrons ? `1.5px solid ${boxColor}` : '1px solid rgba(255, 255, 255, 0.12)';
+                const boxGlow = hasElectrons ? `0 0 8px ${boxColor}` : 'none';
                 
                 const mVal = mValues[i] !== undefined ? mValues[i] : 0;
                 
-                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" style="background: ${glossyBg}; border: 1px solid ${boxColor}; border-radius: 2px; transition: transform 0.1s, box-shadow 0.1s;">${arrows}</div>`;
+                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" style="background: ${glossyBg}; border: ${boxBorder}; box-shadow: ${boxGlow}; border-radius: 3px; transition: transform 0.1s, box-shadow 0.1s;">${arrows}</div>`;
             }
             html += `</div></div>`; // close orbital-boxes and subshell-group
         });

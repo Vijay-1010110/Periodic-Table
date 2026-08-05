@@ -501,10 +501,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     overflow: visible;
 }
 #elec-in-grid-legend {
-    grid-row: 1 / 4 !important; /* Start at Row 1 (Hydrogen line) to fully clear transition metals below */
-    grid-column: 3 / 15 !important; /* Stay safely to the right of group 1 & 2 metals */
-    margin-top: 0 !important; /* Align exactly with the top of Hydrogen */
+    grid-row: 2 / 5 !important; /* Start at Row 2 (Hydrogen line) to fit in the gap above transition metals */
+    grid-column: 3 / 13 !important; /* Fit inside the gap between Group 2 and Group 13 */
+    margin-top: 0 !important;
     padding-left: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 .legend-box {
     background: rgba(0, 0, 0, 0.4);
@@ -760,14 +763,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     border: 1px solid transparent;
 }
 
-.arrow-up { color: #fff; margin-right: -1px; }
-.arrow-down { color: #fff; margin-left: -1px; }
+.arrow-up { color: #ffffff; font-weight: 800; text-shadow: 0 0 4px rgba(255,255,255,0.9); margin-right: -1px; }
+.arrow-down { color: #00f0ff; font-weight: 800; text-shadow: 0 0 4px rgba(0,240,255,0.9); margin-left: -1px; }
 
-/* Block Colors */
-.s-block { background-color: #0d5c63; }
-.p-block { background-color: #4a5d23; }
-.d-block { background-color: #6a1a41; }
-.f-block { background-color: #0b3c8a; }
+/* Block Colors - Saturated & Vibrant Neon Hues */
+.s-block { background-color: rgba(0, 212, 255, 0.25); border: 1px solid #00d4ff; color: #00d4ff; }
+.p-block { background-color: rgba(132, 204, 22, 0.25); border: 1px solid #84cc16; color: #84cc16; }
+.d-block { background-color: rgba(217, 70, 239, 0.25); border: 1px solid #d946ef; color: #d946ef; }
+.f-block { background-color: rgba(59, 130, 246, 0.25); border: 1px solid #3b82f6; color: #3b82f6; }
 
 }
 
