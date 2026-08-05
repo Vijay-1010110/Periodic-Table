@@ -85,7 +85,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px 20px;
+    padding: 15px 25px 25px 25px;
     border-right: 1px solid var(--surface-light);
     overflow: hidden;
     justify-content: center;
@@ -114,8 +114,8 @@ body {
     justify-content: flex-start;
     gap: 15px;
     flex-wrap: nowrap;
-    margin-top: 4px;
-    margin-bottom: 12px;
+    margin-top: 10px;
+    margin-bottom: 22px;
 }
 input[type="text"], select {
     background: var(--surface-light);
@@ -129,11 +129,18 @@ input[type="text"], select {
 
 .temp-controller {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 15px;
     background: var(--surface-light);
-    padding: 6px 14px;
+    padding: 10px 20px;
     border-radius: 8px;
+    width: max-content;
+    max-width: 100%;
+}
+#temp-display-container { color: var(--dynamic-temp-color, var(--mono-green)); display: flex; align-items: center; white-space: nowrap; text-align: left; transition: color 0.1s; flex-shrink: 0 !important; }
 #temp-input, #timeline-input {
     width: 60px;
     background: rgba(0,0,0,0.3);
@@ -187,14 +194,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 /* Grid */
-.grid-wrapper { flex: 1; overflow: auto; padding: 5px 15px 15px 15px; }
+.grid-wrapper { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 5px 15px 5px 15px; }
 .periodic-grid {
     display: grid;
     grid-template-columns: repeat(18, minmax(30px, 1fr));
     grid-template-rows: repeat(10, max-content);
     gap: 4px;
     min-width: 900px;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .periodic-grid.extended-32col {
