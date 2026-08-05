@@ -203,7 +203,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px 40px;
+    padding: 10px 20px 20px 20px;
     border-right: 1px solid var(--surface-light);
     overflow: hidden;
 }
@@ -212,7 +212,7 @@ body {
     width: 400px;
     flex-shrink: 0;
     background: var(--bg-dark);
-    padding: 20px 40px;
+    padding: 15px 25px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -226,10 +226,12 @@ body {
     grid-column: 1 / -1;
     grid-row: 1;
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
+    flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    flex-wrap: nowrap;
+    margin-bottom: 12px;
 }
 input[type="text"], select {
     background: var(--surface-light);
@@ -239,7 +241,7 @@ input[type="text"], select {
     border-radius: 4px;
     font-family: var(--font-ui);
 }
-#search-bar { width: 300px; flex-shrink: 0; }
+#search-bar { width: 280px; min-width: 220px; flex-shrink: 0; }
 
 .temp-controller {
     display: flex;
@@ -308,7 +310,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 /* Grid */
-.grid-wrapper { flex: 1; overflow: auto; padding: 20px; }
+.grid-wrapper { flex: 1; overflow: auto; padding: 5px 15px 15px 15px; }
 .periodic-grid {
     display: grid;
     grid-template-columns: repeat(18, minmax(30px, 1fr));
@@ -85460,23 +85462,22 @@ function setupLayoutToggle() {
     btn.onclick = () => {
         tableLayoutMode = tableLayoutMode === '18col' ? '32col' : '18col';
         
-        const icon = document.getElementById('layout-toggle-icon');
-        const text = document.getElementById('layout-toggle-text');
-        
         if (tableLayoutMode === '32col') {
             grid.classList.add('extended-32col');
-            if (icon) icon.textContent = '↩️';
-            if (text) text.textContent = 'Standard 18-Col View';
+            btn.textContent = '↩️';
+            btn.title = 'Switch to Standard 18-Col View';
+            btn.style.background = 'rgba(74, 222, 128, 0.2)';
             btn.style.borderColor = '#4ade80';
             btn.style.color = '#4ade80';
-            btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.3)';
+            btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
         } else {
             grid.classList.remove('extended-32col');
-            if (icon) icon.textContent = '↔️';
-            if (text) text.textContent = 'Extended 32-Col View';
-            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
+            btn.textContent = '↔️';
+            btn.title = 'Switch to Extended 32-Col View';
+            btn.style.background = 'rgba(0, 212, 255, 0.1)';
+            btn.style.borderColor = 'rgba(0, 212, 255, 0.35)';
             btn.style.color = '#00d4ff';
-            btn.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.15)';
+            btn.style.boxShadow = '0 0 8px rgba(0, 212, 255, 0.15)';
         }
         
         renderGrid();
@@ -86095,7 +86096,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v2.6.1</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v2.7.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86107,8 +86108,9 @@ window.OrbitalViewer = {
             <button class="nav-btn" data-view="compare">Compare</button>
             <button class="nav-btn" data-view="quiz">Quiz</button>
         </div>
-        <div class="nav-controls">
-            <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings">⚙️</button>
+        <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
+            <button class="icon-btn" id="btn-layout-toggle" aria-label="Toggle Extended 32-Col Table Layout" title="Toggle 18-Col / 32-Col Extended Table Layout" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 8px; font-size: 1.1rem; color: #00d4ff; cursor: pointer; transition: all 0.2s ease; margin-left: 0; box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);">↔️</button>
+            <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 1.1rem; color: #e2e8f0; cursor: pointer; transition: all 0.2s ease; margin-left: 0;">⚙️</button>
         </div>
     </nav>
 
@@ -86122,9 +86124,6 @@ window.OrbitalViewer = {
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
                             <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                            <button id="btn-layout-toggle" class="layout-toggle-btn" title="Toggle between Standard 18-Column & Extended 32-Column Table" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 6px 14px; border-radius: 8px; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 700; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);">
-                                <span id="layout-toggle-icon">↔️</span> <span id="layout-toggle-text">Extended 32-Col View</span>
-                            </button>
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>

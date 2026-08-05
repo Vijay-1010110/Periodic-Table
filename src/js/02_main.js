@@ -1821,23 +1821,22 @@ function setupLayoutToggle() {
     btn.onclick = () => {
         tableLayoutMode = tableLayoutMode === '18col' ? '32col' : '18col';
         
-        const icon = document.getElementById('layout-toggle-icon');
-        const text = document.getElementById('layout-toggle-text');
-        
         if (tableLayoutMode === '32col') {
             grid.classList.add('extended-32col');
-            if (icon) icon.textContent = '↩️';
-            if (text) text.textContent = 'Standard 18-Col View';
+            btn.textContent = '↩️';
+            btn.title = 'Switch to Standard 18-Col View';
+            btn.style.background = 'rgba(74, 222, 128, 0.2)';
             btn.style.borderColor = '#4ade80';
             btn.style.color = '#4ade80';
-            btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.3)';
+            btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
         } else {
             grid.classList.remove('extended-32col');
-            if (icon) icon.textContent = '↔️';
-            if (text) text.textContent = 'Extended 32-Col View';
-            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
+            btn.textContent = '↔️';
+            btn.title = 'Switch to Extended 32-Col View';
+            btn.style.background = 'rgba(0, 212, 255, 0.1)';
+            btn.style.borderColor = 'rgba(0, 212, 255, 0.35)';
             btn.style.color = '#00d4ff';
-            btn.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.15)';
+            btn.style.boxShadow = '0 0 8px rgba(0, 212, 255, 0.15)';
         }
         
         renderGrid();
