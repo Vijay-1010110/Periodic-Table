@@ -744,11 +744,7 @@ function renderGrid() {
         cell.className = 'element-cell';
         cell.dataset.z = i;
         cell.style.gridColumn = pos.col;
-        if (gridId === 'main-grid') {
-            cell.style.gridRow = pos.row + 1;
-        } else {
-            cell.style.gridRow = pos.row;
-        }
+        cell.style.gridRow = pos.row + 1;
         
         let bohrHtml = '';
         if (currentView === 'electrons' && elData) {
