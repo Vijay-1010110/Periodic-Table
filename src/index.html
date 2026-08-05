@@ -119,7 +119,7 @@
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.12.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.13.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -146,7 +146,7 @@
                 <div class="grid-wrapper">
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
-                            <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
@@ -273,6 +273,9 @@
                 <div class="grid-wrapper">
                     <!-- Specialized grid showing Bohr models -->
                     <div class="periodic-grid" id="electrons-grid">
+                        <div class="table-controls">
+                            <input type="text" id="elec-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                        </div>
                         <!-- Grid items injected by JS -->
                     </div>
                 </div>
@@ -365,7 +368,11 @@
         <section class="view-mode" id="view-isotopes">
             <div class="view-left">
                 <div class="grid-wrapper" id="isotopes-grid-wrapper">
-                    <div class="periodic-grid" id="isotopes-grid"></div>
+                    <div class="periodic-grid" id="isotopes-grid">
+                        <div class="table-controls">
+                            <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5; position: relative;">

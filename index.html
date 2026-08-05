@@ -83719,6 +83719,7 @@ let lockedLegendKey = null;
 let lockedLegendType = null;
 let lockedLegendGroup = null;
 let currentTimelineYear = 2025;
+let currentSearchQuery = '';
 const aufbauExceptions = {
     24: ['4s', '3d'],    // Cr
     29: ['4s', '3d'],    // Cu
@@ -84196,6 +84197,14 @@ function setupUI() {
         });
         // Prevent click from bubbling to prop-item
         sel.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // Universal Element Search across all grid tabs
+    document.querySelectorAll('.element-search-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value;
+            filterGridElements(currentSearchQuery);
+        });
     });
 
     // Temp slider & input
@@ -84894,6 +84903,50 @@ function updateGridVisuals() {
         renderLegend();
     }
     updateSelectedCardVisuals();
+    filterGridElements(currentSearchQuery);
+}
+
+function filterGridElements(rawQuery) {
+    const q = (rawQuery || '').trim().toLowerCase();
+    
+    // Sync all search inputs across tabs
+    document.querySelectorAll('.element-search-input').forEach(input => {
+        if (input.value !== (rawQuery || '')) input.value = rawQuery || '';
+    });
+
+    document.querySelectorAll('.element-cell').forEach(cell => {
+        const z = cell.dataset.z;
+        if (!z) return;
+        const el = getElementByNumber(parseInt(z));
+        if (!el) return;
+
+        if (!q) {
+            cell.style.opacity = '1';
+            cell.style.filter = 'none';
+            cell.style.transform = 'none';
+            cell.style.zIndex = '1';
+            cell.style.pointerEvents = 'auto';
+            return;
+        }
+
+        const nameMatch = el.name.toLowerCase().includes(q);
+        const symbolMatch = el.symbol.toLowerCase() === q || el.symbol.toLowerCase().startsWith(q);
+        const zMatch = String(el.atomicNumber) === q;
+        const catMatch = el.category ? el.category.toLowerCase().includes(q) : false;
+
+        if (nameMatch || symbolMatch || zMatch || catMatch) {
+            cell.style.opacity = '1';
+            cell.style.filter = 'drop-shadow(0 0 10px rgba(0, 212, 255, 0.9))';
+            cell.style.transform = 'scale(1.06)';
+            cell.style.zIndex = '10';
+            cell.style.pointerEvents = 'auto';
+        } else {
+            cell.style.opacity = '0.15';
+            cell.style.filter = 'grayscale(0.8)';
+            cell.style.transform = 'scale(0.95)';
+            cell.style.zIndex = '1';
+        }
+    });
 }
 
 function updateSelectedCardVisuals() {
@@ -86234,7 +86287,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.12.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.13.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86261,7 +86314,7 @@ window.OrbitalViewer = {
                 <div class="grid-wrapper">
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
-                            <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
@@ -86388,6 +86441,9 @@ window.OrbitalViewer = {
                 <div class="grid-wrapper">
                     <!-- Specialized grid showing Bohr models -->
                     <div class="periodic-grid" id="electrons-grid">
+                        <div class="table-controls">
+                            <input type="text" id="elec-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                        </div>
                         <!-- Grid items injected by JS -->
                     </div>
                 </div>
@@ -86480,7 +86536,11 @@ window.OrbitalViewer = {
         <section class="view-mode" id="view-isotopes">
             <div class="view-left">
                 <div class="grid-wrapper" id="isotopes-grid-wrapper">
-                    <div class="periodic-grid" id="isotopes-grid"></div>
+                    <div class="periodic-grid" id="isotopes-grid">
+                        <div class="table-controls">
+                            <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5; position: relative;">

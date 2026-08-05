@@ -27,6 +27,7 @@ let lockedLegendKey = null;
 let lockedLegendType = null;
 let lockedLegendGroup = null;
 let currentTimelineYear = 2025;
+let currentSearchQuery = '';
 const aufbauExceptions = {
     24: ['4s', '3d'],    // Cr
     29: ['4s', '3d'],    // Cu
@@ -504,6 +505,14 @@ function setupUI() {
         });
         // Prevent click from bubbling to prop-item
         sel.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // Universal Element Search across all grid tabs
+    document.querySelectorAll('.element-search-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value;
+            filterGridElements(currentSearchQuery);
+        });
     });
 
     // Temp slider & input
@@ -1202,6 +1211,50 @@ function updateGridVisuals() {
         renderLegend();
     }
     updateSelectedCardVisuals();
+    filterGridElements(currentSearchQuery);
+}
+
+function filterGridElements(rawQuery) {
+    const q = (rawQuery || '').trim().toLowerCase();
+    
+    // Sync all search inputs across tabs
+    document.querySelectorAll('.element-search-input').forEach(input => {
+        if (input.value !== (rawQuery || '')) input.value = rawQuery || '';
+    });
+
+    document.querySelectorAll('.element-cell').forEach(cell => {
+        const z = cell.dataset.z;
+        if (!z) return;
+        const el = getElementByNumber(parseInt(z));
+        if (!el) return;
+
+        if (!q) {
+            cell.style.opacity = '1';
+            cell.style.filter = 'none';
+            cell.style.transform = 'none';
+            cell.style.zIndex = '1';
+            cell.style.pointerEvents = 'auto';
+            return;
+        }
+
+        const nameMatch = el.name.toLowerCase().includes(q);
+        const symbolMatch = el.symbol.toLowerCase() === q || el.symbol.toLowerCase().startsWith(q);
+        const zMatch = String(el.atomicNumber) === q;
+        const catMatch = el.category ? el.category.toLowerCase().includes(q) : false;
+
+        if (nameMatch || symbolMatch || zMatch || catMatch) {
+            cell.style.opacity = '1';
+            cell.style.filter = 'drop-shadow(0 0 10px rgba(0, 212, 255, 0.9))';
+            cell.style.transform = 'scale(1.06)';
+            cell.style.zIndex = '10';
+            cell.style.pointerEvents = 'auto';
+        } else {
+            cell.style.opacity = '0.15';
+            cell.style.filter = 'grayscale(0.8)';
+            cell.style.transform = 'scale(0.95)';
+            cell.style.zIndex = '1';
+        }
+    });
 }
 
 function updateSelectedCardVisuals() {
