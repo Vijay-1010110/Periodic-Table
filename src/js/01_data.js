@@ -9324,7 +9324,7 @@ const elementsData = [
             8,
             1
         ],
-        "meltingPoint": null,
+        "meltingPoint": 300,
         "boilingPoint": 630,
         "density": {
             "stp": 3,
