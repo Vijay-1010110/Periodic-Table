@@ -838,6 +838,13 @@ window.openWikiModal = function(elName, massNum) {
 // Half-Life Simulator Logic
 function initHalfLifeSimulator(iso) {
     const badge = document.getElementById('sim-halflife-badge');
+    const daughterBadge = document.getElementById('sim-daughter-badge');
+    const reactionEquation = document.getElementById('sim-reaction-equation');
+    const decayTypeLabel = document.getElementById('sim-decay-type');
+    const parentLabel = document.getElementById('sim-parent-label');
+    const daughterLabel = document.getElementById('sim-daughter-label');
+    const parentCountEl = document.getElementById('sim-parent-count');
+    const daughterCountEl = document.getElementById('sim-daughter-count');
     const slider = document.getElementById('sim-time-slider');
     const textTime = document.getElementById('sim-time-text');
     const textAtoms = document.getElementById('sim-atoms-text');
@@ -845,8 +852,96 @@ function initHalfLifeSimulator(iso) {
     
     if (!badge || !slider || !chamber) return;
     
+    const elData = elementsData[currentAtomicNumber - 1];
+    const Z = elData.atomicNumber;
+    const A = iso.massNumber;
+    const mode = iso.decayMode || '';
+
+    let dZ = Z;
+    let dA = A;
+    let particleStr = '';
+
+    if (/\bA\b/.test(mode) || mode.includes('Alpha')) {
+        dZ = Z - 2;
+        dA = A - 4;
+        particleStr = '+ ⁴₂α';
+    } else if (mode.includes('B-') || mode.includes('2B-')) {
+        dZ = Z + 1;
+        dA = A;
+        particleStr = '+ e⁻ + ν̄ₑ';
+    } else if (mode.includes('B+') || mode.includes('EC')) {
+        dZ = Z - 1;
+        dA = A;
+        particleStr = '+ e⁺ + νₑ';
+    } else if (/\bp\b/.test(mode)) {
+        dZ = Z - 1;
+        dA = A - 1;
+        particleStr = '+ p⁺';
+    } else if (/\bn\b/.test(mode)) {
+        dZ = Z;
+        dA = A - 1;
+        particleStr = '+ n⁰';
+    } else if (mode.includes('SF')) {
+        dZ = Math.max(1, Math.floor(Z / 2));
+        dA = Math.max(1, Math.floor((A - 2) / 2));
+        particleStr = '+ Fission Fragments';
+    }
+
+    const getSym = (targetZ) => {
+        if (window.elementsData) {
+            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+            if (el) return el.symbol;
+        }
+        return '?';
+    };
+
+    const getName = (targetZ) => {
+        if (window.elementsData) {
+            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+            if (el) return el.name;
+        }
+        return 'Unknown';
+    };
+
+    const dSym = getSym(dZ);
+    const dName = getName(dZ);
+    const parentFullName = `${elData.name}-${A}`;
+    const daughterFullName = iso.isStable ? 'Stable' : `${dName}-${dA}`;
+
+    // Set simulator headers
     const hlStr = iso.isStable ? 'Stable (∞)' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unknown');
     badge.textContent = `T½ = ${hlStr}`;
+    
+    if (daughterBadge) {
+        if (iso.isStable) {
+            daughterBadge.style.background = 'rgba(74, 222, 128, 0.15)';
+            daughterBadge.style.borderColor = 'rgba(74, 222, 128, 0.4)';
+            daughterBadge.style.color = '#4ade80';
+            daughterBadge.textContent = '🟢 Stable Nucleus (No Decay)';
+        } else {
+            daughterBadge.style.background = 'rgba(192, 132, 252, 0.15)';
+            daughterBadge.style.borderColor = 'rgba(192, 132, 252, 0.4)';
+            daughterBadge.style.color = '#c084fc';
+            daughterBadge.textContent = `⚛️ Decays Into: ${dName}-${dA} (${dSym})`;
+        }
+    }
+
+    if (reactionEquation) {
+        if (iso.isStable) {
+            reactionEquation.innerHTML = `<span style="color:#4ade80;"><sup>${A}</sup><sub>${Z}</sub>${elData.symbol}</span> &bull; Stable Isotope (No Decay Product)`;
+        } else {
+            reactionEquation.innerHTML = `<span style="color:#38bdf8;"><sup>${A}</sup><sub>${Z}</sub>${elData.symbol}</span> ➔ <span style="color:#c084fc;"><sup>${dA}</sup><sub>${dZ}</sub>${dSym}</span> ${particleStr}`;
+        }
+    }
+
+    if (decayTypeLabel) {
+        decayTypeLabel.textContent = iso.isStable ? 'STABLE' : `Mode: ${mode || 'Radioactive Decay'}`;
+        decayTypeLabel.style.color = iso.isStable ? '#4ade80' : getDecayColor(mode);
+    }
+
+    if (parentLabel) parentLabel.textContent = parentFullName;
+    if (daughterLabel) daughterLabel.textContent = daughterFullName;
+
     slider.value = 0;
     
     // Generate 100 atoms
@@ -868,6 +963,7 @@ function initHalfLifeSimulator(iso) {
         const tVal = parseFloat(slider.value);
         const fraction = Math.pow(0.5, tVal);
         const remainingCount = Math.round(100 * fraction);
+        const decayedCount = 100 - remainingCount;
         
         let timeLabel = `${tVal.toFixed(1)} Half-lives`;
         if (!iso.isStable && iso.halfLife) {
@@ -877,6 +973,8 @@ function initHalfLifeSimulator(iso) {
         
         textTime.textContent = timeLabel;
         textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
+        if (parentCountEl) parentCountEl.textContent = remainingCount;
+        if (daughterCountEl) daughterCountEl.textContent = decayedCount;
         
         const activeIndices = new Set(decayOrder.slice(0, remainingCount));
         const dots = chamber.querySelectorAll('.sim-atom-dot');

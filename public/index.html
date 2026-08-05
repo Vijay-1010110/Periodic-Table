@@ -76748,6 +76748,13 @@ window.openWikiModal = function(elName, massNum) {
 // Half-Life Simulator Logic
 function initHalfLifeSimulator(iso) {
     const badge = document.getElementById('sim-halflife-badge');
+    const daughterBadge = document.getElementById('sim-daughter-badge');
+    const reactionEquation = document.getElementById('sim-reaction-equation');
+    const decayTypeLabel = document.getElementById('sim-decay-type');
+    const parentLabel = document.getElementById('sim-parent-label');
+    const daughterLabel = document.getElementById('sim-daughter-label');
+    const parentCountEl = document.getElementById('sim-parent-count');
+    const daughterCountEl = document.getElementById('sim-daughter-count');
     const slider = document.getElementById('sim-time-slider');
     const textTime = document.getElementById('sim-time-text');
     const textAtoms = document.getElementById('sim-atoms-text');
@@ -76755,8 +76762,96 @@ function initHalfLifeSimulator(iso) {
     
     if (!badge || !slider || !chamber) return;
     
+    const elData = elementsData[currentAtomicNumber - 1];
+    const Z = elData.atomicNumber;
+    const A = iso.massNumber;
+    const mode = iso.decayMode || '';
+
+    let dZ = Z;
+    let dA = A;
+    let particleStr = '';
+
+    if (/\bA\b/.test(mode) || mode.includes('Alpha')) {
+        dZ = Z - 2;
+        dA = A - 4;
+        particleStr = '+ ⁴₂α';
+    } else if (mode.includes('B-') || mode.includes('2B-')) {
+        dZ = Z + 1;
+        dA = A;
+        particleStr = '+ e⁻ + ν̄ₑ';
+    } else if (mode.includes('B+') || mode.includes('EC')) {
+        dZ = Z - 1;
+        dA = A;
+        particleStr = '+ e⁺ + νₑ';
+    } else if (/\bp\b/.test(mode)) {
+        dZ = Z - 1;
+        dA = A - 1;
+        particleStr = '+ p⁺';
+    } else if (/\bn\b/.test(mode)) {
+        dZ = Z;
+        dA = A - 1;
+        particleStr = '+ n⁰';
+    } else if (mode.includes('SF')) {
+        dZ = Math.max(1, Math.floor(Z / 2));
+        dA = Math.max(1, Math.floor((A - 2) / 2));
+        particleStr = '+ Fission Fragments';
+    }
+
+    const getSym = (targetZ) => {
+        if (window.elementsData) {
+            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+            if (el) return el.symbol;
+        }
+        return '?';
+    };
+
+    const getName = (targetZ) => {
+        if (window.elementsData) {
+            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
+            if (el) return el.name;
+        }
+        return 'Unknown';
+    };
+
+    const dSym = getSym(dZ);
+    const dName = getName(dZ);
+    const parentFullName = `${elData.name}-${A}`;
+    const daughterFullName = iso.isStable ? 'Stable' : `${dName}-${dA}`;
+
+    // Set simulator headers
     const hlStr = iso.isStable ? 'Stable (∞)' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unknown');
     badge.textContent = `T½ = ${hlStr}`;
+    
+    if (daughterBadge) {
+        if (iso.isStable) {
+            daughterBadge.style.background = 'rgba(74, 222, 128, 0.15)';
+            daughterBadge.style.borderColor = 'rgba(74, 222, 128, 0.4)';
+            daughterBadge.style.color = '#4ade80';
+            daughterBadge.textContent = '🟢 Stable Nucleus (No Decay)';
+        } else {
+            daughterBadge.style.background = 'rgba(192, 132, 252, 0.15)';
+            daughterBadge.style.borderColor = 'rgba(192, 132, 252, 0.4)';
+            daughterBadge.style.color = '#c084fc';
+            daughterBadge.textContent = `⚛️ Decays Into: ${dName}-${dA} (${dSym})`;
+        }
+    }
+
+    if (reactionEquation) {
+        if (iso.isStable) {
+            reactionEquation.innerHTML = `<span style="color:#4ade80;"><sup>${A}</sup><sub>${Z}</sub>${elData.symbol}</span> &bull; Stable Isotope (No Decay Product)`;
+        } else {
+            reactionEquation.innerHTML = `<span style="color:#38bdf8;"><sup>${A}</sup><sub>${Z}</sub>${elData.symbol}</span> ➔ <span style="color:#c084fc;"><sup>${dA}</sup><sub>${dZ}</sub>${dSym}</span> ${particleStr}`;
+        }
+    }
+
+    if (decayTypeLabel) {
+        decayTypeLabel.textContent = iso.isStable ? 'STABLE' : `Mode: ${mode || 'Radioactive Decay'}`;
+        decayTypeLabel.style.color = iso.isStable ? '#4ade80' : getDecayColor(mode);
+    }
+
+    if (parentLabel) parentLabel.textContent = parentFullName;
+    if (daughterLabel) daughterLabel.textContent = daughterFullName;
+
     slider.value = 0;
     
     // Generate 100 atoms
@@ -76778,6 +76873,7 @@ function initHalfLifeSimulator(iso) {
         const tVal = parseFloat(slider.value);
         const fraction = Math.pow(0.5, tVal);
         const remainingCount = Math.round(100 * fraction);
+        const decayedCount = 100 - remainingCount;
         
         let timeLabel = `${tVal.toFixed(1)} Half-lives`;
         if (!iso.isStable && iso.halfLife) {
@@ -76787,6 +76883,8 @@ function initHalfLifeSimulator(iso) {
         
         textTime.textContent = timeLabel;
         textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
+        if (parentCountEl) parentCountEl.textContent = remainingCount;
+        if (daughterCountEl) daughterCountEl.textContent = decayedCount;
         
         const activeIndices = new Set(decayOrder.slice(0, remainingCount));
         const dots = chamber.querySelectorAll('.sim-atom-dot');
@@ -85902,17 +86000,34 @@ window.OrbitalViewer = {
                             <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                     <div>
-                                        <h4 style="margin: 0; color: #00d4ff; font-size: 1.1rem; font-family: var(--font-ui);">Interactive Radioactive Half-Life Simulator</h4>
-                                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.6);">Drag the time slider to observe exponential nuclear decay <span style="font-family: var(--font-mono); color: #00d4ff;">N(t) = N₀ &bull; (½)<sup>t / T½</sup></span></p>
+                                        <h4 style="margin: 0; color: #00d4ff; font-size: 1.15rem; font-family: var(--font-ui); font-weight: 700;">Interactive Radioactive Half-Life Simulator</h4>
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+                                            <span style="font-size: 0.85rem; color: rgba(255,255,255,0.7); font-family: var(--font-ui);">Exponential Decay Formula:</span>
+                                            <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: #00d4ff; background: rgba(0, 212, 255, 0.12); padding: 4px 14px; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.35); box-shadow: 0 0 12px rgba(0, 212, 255, 0.2); display: inline-flex; align-items: center; gap: 4px;">
+                                                N(t) = N₀ &bull; (½)<span style="font-size: 0.82rem; vertical-align: super; font-weight: 800; color: #38bdf8; margin-left: 2px;">t / T½</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-family: var(--font-mono); font-size: 0.85rem;">T½ = -</div>
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                                        <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-family: var(--font-mono); font-size: 0.85rem;">T½ = -</div>
+                                        <div id="sim-daughter-badge" style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.4); color: #c084fc; padding: 4px 12px; border-radius: 12px; font-size: 0.78rem; font-weight: bold; font-family: var(--font-ui);">Decays Into: -</div>
+                                    </div>
+                                </div>
+
+                                <!-- Decay Product Reaction Banner -->
+                                <div id="sim-reaction-banner" style="background: rgba(5, 12, 25, 0.85); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-family: var(--font-ui);">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; font-weight: 600;">Nuclear Reaction:</span>
+                                        <span id="sim-reaction-equation" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: #fff;">-</span>
+                                    </div>
+                                    <div id="sim-decay-type" style="font-size: 0.8rem; font-weight: 700; color: #facc15;">-</div>
                                 </div>
 
                                 <!-- Time Slider Controls -->
                                 <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
                                     <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
                                         <span style="color: rgba(255,255,255,0.7);">Elapsed Time (t): <strong id="sim-time-text" style="color: #00d4ff;">0 Half-lives (0 s)</strong></span>
-                                        <span style="color: #4ade80;">Remaining Atoms: <strong id="sim-atoms-text">100 / 100 (100.0%)</strong></span>
+                                        <span style="color: #4ade80;">Remaining Parent: <strong id="sim-atoms-text">100 / 100 (100.0%)</strong></span>
                                     </div>
                                     <input type="range" id="sim-time-slider" min="0" max="7" step="0.1" value="0" style="width: 100%; accent-color: #00d4ff; cursor: pointer;" />
                                     <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: var(--font-mono);">
@@ -85927,7 +86042,13 @@ window.OrbitalViewer = {
 
                                 <!-- Atom Decay Visual Grid (100 Dots) -->
                                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <div style="font-size: 0.78rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-ui);">100-Atom Particle Chamber:</div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-family: var(--font-ui);">
+                                        <div style="font-size: 0.78rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">100-Atom Particle Chamber:</div>
+                                        <div style="display: flex; align-items: center; gap: 16px; font-size: 0.78rem; font-weight: 600;">
+                                            <span style="display: flex; align-items: center; gap: 6px; color: #4ade80;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80; display: inline-block; box-shadow: 0 0 6px #4ade80;"></span> Parent: <strong id="sim-parent-label" style="color: #fff;">-</strong> (<span id="sim-parent-count">100</span>)</span>
+                                            <span style="display: flex; align-items: center; gap: 6px; color: #c084fc;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #a855f7; display: inline-block; box-shadow: 0 0 6px #a855f7;"></span> Decayed Daughter: <strong id="sim-daughter-label" style="color: #fff;">-</strong> (<span id="sim-daughter-count">0</span>)</span>
+                                        </div>
+                                    </div>
                                     <div id="sim-atom-chamber" style="display: grid; grid-template-columns: repeat(20, 1fr); gap: 6px; background: rgba(4, 8, 16, 0.9); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
                                         <!-- Populated by JS with 100 animated glowing dots -->
                                     </div>
