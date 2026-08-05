@@ -1021,7 +1021,7 @@ function updateGridVisuals() {
         
         // 1. Determine State at currentTemp for text color (always active)
         let currentState = 'Unknown';
-        if (elData.meltingPoint && elData.boilingPoint) {
+        if (elData.meltingPoint !== null && elData.meltingPoint !== undefined && elData.boilingPoint !== null && elData.boilingPoint !== undefined) {
             if (currentTemp < elData.meltingPoint) currentState = 'Solid';
             else if (currentTemp >= elData.meltingPoint && currentTemp < elData.boilingPoint) currentState = 'Liquid';
             else currentState = 'Gas';
@@ -1434,7 +1434,7 @@ function selectElement(z) {
         const symEl = document.getElementById('elec-symbol');
         if (symEl) {
             let currentState = 'Unknown';
-            if (el.meltingPoint && el.boilingPoint) {
+            if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
                 if (currentTemp < el.meltingPoint) currentState = 'Solid';
                 else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
                 else currentState = 'Gas';

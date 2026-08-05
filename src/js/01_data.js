@@ -374,8 +374,8 @@ const elementsData = [
             2,
             4
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 3915,
+        "boilingPoint": 3915,
         "density": {
             "stp": 1.821,
             "liquid": null
@@ -1090,8 +1090,8 @@ const elementsData = [
             8,
             5
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 317.3,
+        "boilingPoint": 553.7,
         "density": {
             "stp": 1.823,
             "liquid": null
@@ -2729,8 +2729,8 @@ const elementsData = [
             18,
             5
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 887,
+        "boilingPoint": 887,
         "density": {
             "stp": 5.727,
             "liquid": null
@@ -7921,7 +7921,7 @@ const elementsData = [
             2
         ],
         "meltingPoint": 1800,
-        "boilingPoint": null,
+        "boilingPoint": 2200,
         "density": {
             "stp": null,
             "liquid": null
@@ -7996,7 +7996,7 @@ const elementsData = [
             2
         ],
         "meltingPoint": 1100,
-        "boilingPoint": null,
+        "boilingPoint": 1400,
         "density": {
             "stp": null,
             "liquid": null
@@ -8071,7 +8071,7 @@ const elementsData = [
             2
         ],
         "meltingPoint": 1100,
-        "boilingPoint": null,
+        "boilingPoint": 1400,
         "density": {
             "stp": null,
             "liquid": null
@@ -8146,7 +8146,7 @@ const elementsData = [
             3
         ],
         "meltingPoint": 1900,
-        "boilingPoint": null,
+        "boilingPoint": 2200,
         "density": {
             "stp": null,
             "liquid": null
@@ -8296,8 +8296,8 @@ const elementsData = [
             11,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 1550,
+        "boilingPoint": 5800,
         "density": {
             "stp": 29.3,
             "liquid": null
@@ -8369,8 +8369,8 @@ const elementsData = [
             12,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 2500,
+        "boilingPoint": 6100,
         "density": {
             "stp": 35,
             "liquid": null
@@ -8443,8 +8443,8 @@ const elementsData = [
             13,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 2500,
+        "boilingPoint": 6000,
         "density": {
             "stp": 37.1,
             "liquid": null
@@ -8517,7 +8517,7 @@ const elementsData = [
             2
         ],
         "meltingPoint": 126,
-        "boilingPoint": null,
+        "boilingPoint": 330,
         "density": {
             "stp": 40.7,
             "liquid": null
@@ -8590,8 +8590,8 @@ const elementsData = [
             15,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 2500,
+        "boilingPoint": 6000,
         "density": {
             "stp": 37.4,
             "liquid": null
@@ -8664,8 +8664,8 @@ const elementsData = [
             16,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 2500,
+        "boilingPoint": 6000,
         "density": {
             "stp": 34.8,
             "liquid": null
@@ -8737,8 +8737,8 @@ const elementsData = [
             17,
             2
         ],
-        "meltingPoint": null,
-        "boilingPoint": null,
+        "meltingPoint": 2500,
+        "boilingPoint": 6000,
         "density": {
             "stp": 28.7,
             "liquid": null
@@ -8811,7 +8811,7 @@ const elementsData = [
             18,
             2
         ],
-        "meltingPoint": null,
+        "meltingPoint": 283,
         "boilingPoint": 3570,
         "density": {
             "stp": 14.0,
@@ -9250,7 +9250,7 @@ const elementsData = [
             18,
             8
         ],
-        "meltingPoint": null,
+        "meltingPoint": 325,
         "boilingPoint": 350,
         "density": {
             "stp": 4.95,
