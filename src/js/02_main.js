@@ -240,18 +240,18 @@ function getGridPosition(z) {
     return { col: 1, row: 1 }; // Fallback
 }
 
-// Category Colors (High Saturation & Rich Vibrant Tones)
+// Category Colors (Full Spectrum High Contrast & Distinct Hues)
 const categoryColors = {
-    'Alkali metal': '#ff2a5f',
-    'Alkaline earth metal': '#ff8c00',
-    'Transition metal': '#9333ea',
-    'Post-transition metal': '#2563eb',
-    'Metalloid': '#10b981',
-    'Reactive nonmetal': '#22c55e',
-    'Noble gas': '#00d4ff',
-    'Lanthanide': '#ec4899',
-    'Actinide': '#f43f5e',
-    'Unknown': '#64748b'
+    'Alkali metal': '#ef4444',        // Pure Red
+    'Alkaline earth metal': '#f97316', // Bright Orange
+    'Transition metal': '#6366f1',     // Indigo Blue
+    'Post-transition metal': '#0284c7',// Steel Blue
+    'Metalloid': '#eab308',            // Canary Yellow / Gold
+    'Reactive nonmetal': '#22c55e',    // Lime Green
+    'Noble gas': '#06b6d4',            // Electric Cyan
+    'Lanthanide': '#ec4899',           // Hot Pink / Magenta
+    'Actinide': '#a855f7',             // Deep Violet Purple
+    'Unknown': '#64748b'              // Slate Gray
 };
 
 // State Colors for Background
@@ -785,8 +785,8 @@ function renderGrid() {
         actPlaceholder.style.cssText = `
             grid-column: 3;
             grid-row: ${isMain ? 8 : 7};
-            border: 2px dashed #f472b6 !important;
-            background: rgba(236, 72, 153, 0.45) !important;
+            border: 2px dashed #a855f7 !important;
+            background: rgba(168, 85, 247, 0.45) !important;
             border-radius: 6px;
             display: flex;
             flex-direction: column;
@@ -795,7 +795,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 0 0 15px rgba(244, 114, 182, 0.4), 0 0 12px rgba(236, 72, 153, 0.5);
+            box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -803,9 +803,9 @@ function renderGrid() {
             padding: 2px;
         `;
         actPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #f472b6; color: #0f172a; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #a855f7; color: #ffffff; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">89–103</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #fbcfe8; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #e9d5ff; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
         `;
         actPlaceholder.onclick = () => {
             highlightCategory('Actinide');
