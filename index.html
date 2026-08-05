@@ -75926,8 +75926,52 @@ function getDecayColor(mode) {
     if (mode.includes('B+') || mode.includes('EC')) return '#c084fc';
     if (mode.includes('SF')) return '#f87171';
     if (/\bp\b/.test(mode)) return '#fb923c';
-    if (/\bn\b/.test(mode)) return '#2dd4bf';
     return '#94a3b8';
+}
+
+function getDecayModeLabel(mode, isStable) {
+    if (isStable || !mode || mode === 'Stable' || mode === '-') return 'STABLE';
+    if (/\bA\b/.test(mode) || mode.includes('Alpha')) return 'α ALPHA';
+    if (mode.includes('B-') || mode.includes('2B-')) return 'β⁻ BETA-';
+    if (mode.includes('B+') || mode.includes('EC')) return 'β⁺/EC';
+    if (mode.includes('SF')) return 'SF FISSION';
+    if (/\bp\b/.test(mode)) return 'p PROTON';
+    if (/\bn\b/.test(mode)) return 'n NEUTRON';
+    return mode.split(' ')[0] || 'UNSTABLE';
+}
+
+function formatCompactHalfLife(iso) {
+    if (iso.isStable) return 'Stable';
+    if (!iso.halfLife) return 'Unstable';
+    const val = iso.halfLife;
+    let unit = iso.halfLifeUnit || '';
+    
+    unit = unit.replace('billion years', 'B yr')
+               .replace('billion year', 'B yr')
+               .replace('million years', 'M yr')
+               .replace('million year', 'M yr')
+               .replace('Gyears', 'B yr')
+               .replace('Gyear', 'B yr')
+               .replace('Myears', 'M yr')
+               .replace('Myear', 'M yr')
+               .replace('kyears', 'k yr')
+               .replace('kyear', 'k yr')
+               .replace('years', 'yr')
+               .replace('year', 'yr')
+               .replace('days', 'd')
+               .replace('day', 'd')
+               .replace('hours', 'h')
+               .replace('hour', 'h')
+               .replace('minutes', 'm')
+               .replace('minute', 'm')
+               .replace('seconds', 's')
+               .replace('second', 's')
+               .replace('msec', 'ms')
+               .replace('usec', 'μs')
+               .replace('nsec', 'ns');
+               
+    const numStr = val % 1 === 0 ? val.toString() : (val >= 100 ? val.toFixed(0) : (val >= 10 ? val.toFixed(1) : val.toFixed(2).replace(/\.?0+$/, '')));
+    return `${numStr} ${unit}`;
 }
 
 /**
@@ -76081,71 +76125,77 @@ function updateIsotopesView(atomicNumber) {
         const item = document.createElement('div');
         item.className = 'iso-list-item';
         const dColor = getDecayColor(iso.decayMode);
+        const mainColor = iso.isStable ? '#4ade80' : dColor;
+        item.dataset.mainColor = mainColor;
         item.dataset.decayColor = dColor;
         item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
-        item.style.background = 'rgba(15, 23, 42, 0.75)';
-        item.style.border = `1px solid rgba(255, 255, 255, 0.12)`;
-        item.style.borderRadius = '10px';
-        item.style.padding = '10px 12px';
-        item.style.boxSizing = 'border-box';
-        item.style.cursor = 'pointer';
-        item.style.display = 'flex';
-        item.style.flexDirection = 'column';
-        item.style.justifyContent = 'space-between';
-        item.style.gap = '6px';
-        item.style.transition = 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
-        item.style.order = '1';
+        item.style.cssText = `
+            min-width: 145px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1.5px solid ${mainColor}66;
+            background: linear-gradient(135deg, ${mainColor}18 0%, rgba(10, 16, 32, 0.85) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mainColor}10;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 6px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+            user-select: none;
+            box-sizing: border-box;
+            order: 1;
+        `;
         
         const Z = elData.atomicNumber;
         const N = iso.massNumber - Z;
-        const hlStr = iso.isStable ? 'Stable' : (iso.halfLife ? formatHalfLife(iso.halfLife, iso.halfLifeUnit) : 'Unstable');
-        const modeBadge = iso.isStable 
-            ? '<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); padding: 2px 6px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">STABLE</span>' 
-            : `<span style="background: ${dColor}22; color: ${dColor}; border: 1px solid ${dColor}44; padding: 2px 6px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;">${iso.decayMode ? iso.decayMode.split(' ')[0] : 'DECAY'}</span>`;
+        const decayBadge = getDecayModeLabel(iso.decayMode, iso.isStable);
+        const compactHalfLife = formatCompactHalfLife(iso);
 
         item.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <div style="display: flex; align-items: baseline; gap: 3px;">
-                    <sup style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: 700; color: #00d4ff;">${iso.massNumber}</sup>
-                    <span style="font-size: 1.25rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1;">${elData.symbol}</span>
+                    <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: ${mainColor};">${iso.massNumber}</sup>
+                    <span style="font-size: 1.25rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
                 </div>
-                <span style="font-size: 0.68rem; font-family: var(--font-mono); color: ${iso.isStable ? '#4ade80' : '#facc15'}; text-align: right; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${hlStr}</span>
+                <span style="background: ${mainColor}22; color: ${mainColor}; border: 1px solid ${mainColor}55; padding: 2px 7px; border-radius: 10px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${mainColor}33;">${decayBadge}</span>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 2px;">
-                ${modeBadge}
-                <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.5);">N=${N}</span>
+                <span style="font-size: 0.72rem; font-family: var(--font-mono); font-weight: 600; color: ${iso.isStable ? '#4ade80' : '#f1f5f9'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
+                <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
             </div>
         `;
         
         item.onmouseenter = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = 'rgba(0, 212, 255, 0.5)';
+                item.style.borderColor = mainColor;
                 item.style.transform = 'translateY(-2px)';
-                item.style.background = 'rgba(20, 30, 55, 0.85)';
+                item.style.boxShadow = `0 6px 16px ${mainColor}44, inset 0 0 12px ${mainColor}20`;
             }
         };
         item.onmouseleave = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                item.style.borderColor = `${mainColor}66`;
                 item.style.transform = 'translateY(0)';
-                item.style.background = 'rgba(15, 23, 42, 0.75)';
+                item.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mainColor}10`;
             }
         };
         
         item.onclick = () => {
             document.querySelectorAll('.iso-list-item').forEach(el => {
                 el.classList.remove('selected');
-                el.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-                el.style.boxShadow = 'none';
-                el.style.background = 'rgba(15, 23, 42, 0.75)';
+                const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.12)';
+                el.style.borderColor = `${mColor}66`;
+                el.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mColor}10`;
                 el.style.transform = 'translateY(0)';
             });
             item.classList.add('selected');
-            item.style.borderColor = '#00d4ff';
-            item.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4), inset 0 0 10px rgba(0, 212, 255, 0.1)';
-            item.style.background = 'rgba(10, 25, 45, 0.9)';
+            item.style.borderColor = mainColor;
+            item.style.boxShadow = `0 0 20px ${mainColor}aa, inset 0 0 14px ${mainColor}33`;
+            item.style.transform = 'translateY(-2px)';
             renderIsotopeDetails(index);
         };
         
@@ -76172,9 +76222,10 @@ function updateIsotopesView(atomicNumber) {
     const firstItem = listContainer.querySelector('.iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
-        firstItem.style.borderColor = '#00d4ff';
-        firstItem.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4)';
-        firstItem.style.background = 'rgba(10, 25, 45, 0.9)';
+        const mColor = firstItem.dataset.mainColor || '#00d4ff';
+        firstItem.style.borderColor = mColor;
+        firstItem.style.boxShadow = `0 0 20px ${mColor}aa, inset 0 0 14px ${mColor}33`;
+        firstItem.style.transform = 'translateY(-2px)';
     }
     renderIsotopeDetails(0);
     
@@ -76231,7 +76282,7 @@ function renderIsotopeDetails(index) {
     
     const isoCard = document.getElementById('modal-iso-card');
     if (isoCard && elData) {
-        const dColor = getDecayColor(iso.decayMode);
+        const dColor = iso.isStable ? '#4ade80' : getDecayColor(iso.decayMode);
         const stateColor = typeof stateTextColors !== 'undefined' ? (stateTextColors[elData.phase] || stateTextColors['Unknown']) : '#e2e8f0';
         isoCard.style.display = 'flex';
         isoCard.style.background = getGlossyBackground(dColor, 'metal');
@@ -85734,7 +85785,7 @@ window.OrbitalViewer = {
             
             <!-- ISOTOPE MODAL OVERLAY -->
             <div id="isotope-modal-overlay" class="hidden" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(18px); background: rgba(3, 7, 18, 0.92); opacity: 0; transition: opacity 0.4s ease; overflow: hidden;">
-                <div id="isotope-modal" style="width: 95%; max-height: 93%; height: auto; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+                <div id="isotope-modal" style="width: 95%; height: 88vh; max-height: 880px; min-height: 560px; max-width: 1460px; background: rgba(8, 14, 28, 0.97); border-radius: 20px; border: 1px solid rgba(0, 212, 255, 0.35); display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,0.95), 0 0 50px rgba(0, 212, 255, 0.2); overflow: hidden; transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
                     
                     <!-- Close Button -->
                     <button id="close-modal-btn" style="position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 18px; border-radius: 20px; cursor: pointer; z-index: 20; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; backdrop-filter: blur(8px); transition: all 0.2s ease;">✕ Close</button>
