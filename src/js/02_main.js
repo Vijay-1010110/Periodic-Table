@@ -551,18 +551,41 @@ function setupUI() {
 }
 
 function getTempColor(k) {
-    if (k < 273) {
-        const pct = k / 273;
-        return `rgb(0, ${Math.round(255 * pct)}, 255)`;
-    } else if (k < 1000) {
-        const pct = (k - 273) / (1000 - 273);
-        return `rgb(${Math.round(255 * pct)}, 255, ${Math.round(255 * (1 - pct))})`;
-    } else if (k < 3000) {
-        const pct = (k - 1000) / (3000 - 1000);
-        return `rgb(255, ${Math.round(255 - 119 * pct)}, 0)`;
+    if (k < 300) {
+        // 0K to 300K: Deep Ice Blue (2,132,199) -> Cyan (6,182,212)
+        const pct = Math.max(0, Math.min(1, k / 300));
+        const r = Math.round(2 + (6 - 2) * pct);
+        const g = Math.round(132 + (182 - 132) * pct);
+        const b = Math.round(199 + (212 - 199) * pct);
+        return `rgb(${r}, ${g}, ${b})`;
+    } else if (k < 1200) {
+        // 300K to 1200K: Cyan -> Amber Gold (245,158,11)
+        const pct = (k - 300) / (1200 - 300);
+        const r = Math.round(6 + (245 - 6) * pct);
+        const g = Math.round(182 + (158 - 182) * pct);
+        const b = Math.round(212 + (11 - 212) * pct);
+        return `rgb(${r}, ${g}, ${b})`;
+    } else if (k < 2800) {
+        // 1200K to 2800K: Amber Gold -> Incandescent Red (239,68,68)
+        const pct = (k - 1200) / (2800 - 1200);
+        const r = Math.round(245 + (239 - 245) * pct);
+        const g = Math.round(158 + (68 - 158) * pct);
+        const b = Math.round(11 + (68 - 11) * pct);
+        return `rgb(${r}, ${g}, ${b})`;
+    } else if (k < 4200) {
+        // 2800K to 4200K: Incandescent Red -> White-Hot (255,255,255)
+        const pct = (k - 2800) / (4200 - 2800);
+        const r = Math.round(239 + (255 - 239) * pct);
+        const g = Math.round(68 + (255 - 68) * pct);
+        const b = Math.round(68 + (255 - 68) * pct);
+        return `rgb(${r}, ${g}, ${b})`;
     } else {
-        const pct = Math.min(1, (k - 3000) / (6000 - 3000));
-        return `rgb(255, ${Math.round(136 * (1 - pct))}, 0)`;
+        // 4200K to 6000K: White-Hot -> Electric Blue-Hot (0,240,255)
+        const pct = Math.min(1, (k - 4200) / (6000 - 4200));
+        const r = Math.round(255 + (0 - 255) * pct);
+        const g = Math.round(255 + (240 - 255) * pct);
+        const b = 255;
+        return `rgb(${r}, ${g}, ${b})`;
     }
 }
 
