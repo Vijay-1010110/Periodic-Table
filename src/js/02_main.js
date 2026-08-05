@@ -1046,7 +1046,7 @@ function updateGridVisuals() {
 
     const cells = document.querySelectorAll(`${gridId} .element-cell`);
     let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
-    const blockColors = { s: '#ef4444', p: '#0284c7', d: '#6366f1', f: '#a855f7' };
+    const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
 
     cells.forEach(cell => {
         const z = parseInt(cell.dataset.z);
@@ -1125,11 +1125,7 @@ function updateGridVisuals() {
                 valText = elData.oxidationStates || '';
             } else if (activeProp === 'configuration' || activeProp === 'expanded') {
                 const isException = (elData.atomicNumber in aufbauExceptions);
-                if (isException) {
-                    color = '#aa0000'; // Dark red background for exception in view
-                } else {
-                    color = blockColors[elData.block] || '#333';
-                }
+                color = blockColors[elData.block] || '#333';
                 
                 let rawConfig = (activeProp === 'configuration' ? elData.electronConfigurationNoble : elData.electronConfiguration) || '';
                 rawConfig = sortElectronConfig(rawConfig);
@@ -1148,7 +1144,7 @@ function updateGridVisuals() {
                     displayStr = parts.slice(Math.max(0, parts.length - 2)).join(' ');
                 }
                 
-                valText = formatElectronConfigHTML(displayStr, 0); // 0 atomicNumber means no red text coloring on the grid itself, since bg is red
+                valText = formatElectronConfigHTML(displayStr, elData.atomicNumber);
             } else if (activeProp === 'energyLevel') {
                 const shells = elData.electronsPerShell ? elData.electronsPerShell.length : 1;
                 color = getHeatmapColor(shells, heatmapConfigs.energyLevels);
@@ -1162,8 +1158,14 @@ function updateGridVisuals() {
         }
 
         cell.style.background = getGlossyBackground(color, normalizedCategory);
-        cell.style.borderColor = color;
-        cell.style.boxShadow = '';
+        
+        if (!isMain && (activeProp === 'configuration' || activeProp === 'expanded') && (elData.atomicNumber in aufbauExceptions)) {
+            cell.style.borderColor = '#ef4444';
+            cell.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.95), inset 0 0 6px rgba(239, 68, 68, 0.5)';
+        } else {
+            cell.style.borderColor = color;
+            cell.style.boxShadow = '';
+        }
 
         // Timeline opacity logic
         if (isMain && currentProperty === 'discoveryYear') {
