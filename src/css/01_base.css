@@ -201,15 +201,41 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .periodic-grid.extended-32col {
-    grid-template-columns: repeat(32, minmax(26px, 1fr)) !important;
-    min-width: 1480px !important;
+    grid-template-columns: repeat(32, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    min-width: 980px !important;
+    gap: 2px !important;
 }
 .periodic-grid.extended-32col .table-controls {
     grid-column: 1 / -1 !important;
 }
 .periodic-grid.extended-32col .in-grid-legend {
-    grid-column: 3 / 27 !important;
+    grid-column: 4 / 27 !important;
     grid-row: 2 !important;
+    padding-left: 5px !important;
+}
+.periodic-grid.extended-32col .element-cell {
+    aspect-ratio: 1 / 1.05;
+    padding: 1px;
+}
+.periodic-grid.extended-32col .cell-num {
+    font-size: clamp(0.35rem, 10cqw, 0.55rem) !important;
+    top: 1px !important;
+    left: 2px !important;
+}
+.periodic-grid.extended-32col .cell-sym {
+    font-size: clamp(0.65rem, 26cqw, 1.1rem) !important;
+    margin-top: 2px !important;
+}
+.periodic-grid.extended-32col .cell-name {
+    font-size: clamp(0.32rem, 9.5cqw, 0.5rem) !important;
+    margin-top: 0px !important;
+    line-height: 1.0 !important;
+}
+.periodic-grid.extended-32col .cell-value {
+    font-size: clamp(0.32rem, 9.5cqw, 0.5rem) !important;
+    margin-top: 0px !important;
+    line-height: 1.0 !important;
 }
 
 /* Vertical gap above f-block in standard 18-col mode */
@@ -238,7 +264,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     cursor: pointer;
     position: relative;
@@ -247,6 +273,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     overflow: hidden;
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -2px 5px rgba(0,0,0,0.4), 0 4px 6px rgba(0,0,0,0.3);
     container-type: inline-size;
+    padding: 2px 1px;
 }
 .element-cell::after {
     content: '';
@@ -270,10 +297,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 /* Standard Cell Content */
-.cell-num { position: absolute; top: 2px; left: 4px; font-family: var(--font-mono); font-size: clamp(0.5rem, 15cqw, 0.7rem); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); }
-.cell-sym { font-family: var(--font-mono); font-size: clamp(1rem, 40cqw, 1.3rem); font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6); }
-.cell-name { font-size: clamp(0.45rem, 14cqw, 0.6rem); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 95%; text-align: center; color: #fff; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); }
-.cell-value { font-family: var(--font-mono); font-size: clamp(0.45rem, 14cqw, 0.6rem); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 95%; text-align: center; color: #fff; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); }
+.cell-num { position: absolute; top: 2px; left: 3px; font-family: var(--font-mono); font-size: clamp(0.42rem, 13cqw, 0.65rem); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); line-height: 1; }
+.cell-sym { font-family: var(--font-mono); font-size: clamp(0.85rem, 34cqw, 1.25rem); font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6); line-height: 1; margin-top: 3px; }
+.cell-name { font-size: clamp(0.38rem, 11cqw, 0.55rem); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 98%; text-align: center; color: #fff; margin-top: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); line-height: 1; }
+.cell-value { font-family: var(--font-mono); font-size: clamp(0.38rem, 11cqw, 0.55rem); white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 98%; text-align: center; color: #fff; margin-top: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6); line-height: 1; }
 
 /* Electrons View Grid Content */
 .cell-bohr { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
