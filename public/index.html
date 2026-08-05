@@ -84960,58 +84960,69 @@ function updateSelectedCardVisuals() {
         else currentState = 'Gas';
     }
     
-    if (currentView === 'main') {
-        const card = document.getElementById('element-detail-card');
-        if (card) {
-            let color = '#333';
-            if (currentProperty === 'category' || currentProperty === 'wiki') {
-                color = categoryColors[normalizedCategory] || '#333';
-            } else if (currentProperty === 'state') {
-                color = stateColors[currentState] || '#6b7280';
-            } else if (heatmapConfigs[currentProperty]) {
-                const numValue = getPropertyValue(el, currentProperty);
-                if (currentProperty === 'discoveryYear' && el.discoveryYear === 'Ancient') {
-                    color = '#ffffff';
-                } else if (numValue === null || numValue === undefined || isNaN(numValue)) {
-                    color = heatmapUnknownColor;
-                } else {
-                    color = getGradientColor(numValue, currentProperty);
-                }
-            } else {
-                color = categoryColors[normalizedCategory] || '#333';
-            }
-
-            const glossBg = (currentProperty === 'category' || currentProperty === 'wiki') ? 
-                getGlossyBackground(color, normalizedCategory) : 
-                getGlossyBackground(color, '');
-
-            card.style.background = glossBg;
-            card.style.borderColor = color || 'rgba(0,212,255,0.3)';
-        }
-
-        const symEl = document.getElementById('dh-symbol');
-        if (symEl) {
-            symEl.style.color = stateTextColors[currentState] || '#ffffff';
-        }
-
-        const bohrEl = document.getElementById('dh-bohr');
-        if (bohrEl) {
-            bohrEl.style.color = stateTextColors[currentState] || '#ffffff';
+    let color = '#333';
+    const activeProp = (currentView === 'electrons') ? currentElecProperty : currentProperty;
+    
+    if (activeProp === 'category' || activeProp === 'wiki') {
+        color = categoryColors[normalizedCategory] || '#333';
+    } else if (activeProp === 'state') {
+        color = stateColors[currentState] || '#6b7280';
+    } else if (heatmapConfigs[activeProp]) {
+        const numValue = getPropertyValue(el, activeProp);
+        if (activeProp === 'discoveryYear' && el.discoveryYear === 'Ancient') {
+            color = '#ffffff';
+        } else if (numValue === null || numValue === undefined || isNaN(numValue)) {
+            color = heatmapUnknownColor;
+        } else {
+            color = getGradientColor(numValue, activeProp);
         }
     } else if (currentView === 'electrons') {
-        const card = document.getElementById('elec-element-card');
-        const blockColors = { s: '#ef4444', p: '#0284c7', d: '#6366f1', f: '#a855f7' };
-        const bColor = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
-        if (card) {
-            card.style.background = getGlossyBackground(bColor, 'metal');
-            card.style.borderColor = bColor;
-        }
-
-        const symEl = document.getElementById('elec-symbol');
-        if (symEl) {
-            symEl.style.color = stateTextColors[currentState] || '#ffffff';
-        }
+        const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
+        color = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
+    } else {
+        color = categoryColors[normalizedCategory] || '#333';
     }
+
+    const glossBg = (activeProp === 'category' || activeProp === 'wiki') ? 
+        getGlossyBackground(color, normalizedCategory) : 
+        getGlossyBackground(color, '');
+
+    // 1. Update Property Interface card
+    const mainCard = document.getElementById('element-detail-card');
+    if (mainCard) {
+        mainCard.style.background = glossBg;
+        mainCard.style.borderColor = color || 'rgba(0,212,255,0.3)';
+    }
+
+    // 2. Update Electrons & Orbitals card
+    const elecCard = document.getElementById('elec-element-card');
+    if (elecCard) {
+        elecCard.style.background = glossBg;
+        elecCard.style.borderColor = color || 'rgba(0,212,255,0.3)';
+    }
+
+    const stateColor = stateTextColors[currentState] || '#ffffff';
+
+    const dhSym = document.getElementById('dh-symbol');
+    if (dhSym) dhSym.style.color = stateColor;
+
+    const dhName = document.getElementById('dh-name');
+    if (dhName) {
+        dhName.innerText = el.name;
+        dhName.style.color = '#ffffff';
+    }
+
+    const elecSym = document.getElementById('elec-symbol');
+    if (elecSym) elecSym.style.color = stateColor;
+
+    const elecName = document.getElementById('elec-name');
+    if (elecName) {
+        elecName.innerText = el.name;
+        elecName.style.color = '#ffffff';
+    }
+
+    const dhBohr = document.getElementById('dh-bohr');
+    if (dhBohr) dhBohr.style.color = stateColor;
 }
 
 function renderLegend() {
@@ -85265,23 +85276,7 @@ function selectElement(z) {
         const qn = getQuantumNumbers(sortedExpanded);
         document.getElementById('val-quantum').innerText = `n=${qn.n}, l=${qn.l}, m=${qn.m}`;
         
-        const normalizedCategory = getNormalizedCategory(el.category);
-        const card = document.getElementById('elec-element-card');
-        if (card) {
-            card.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
-            card.style.borderColor = categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)';
-        }
-        
-        const symEl = document.getElementById('elec-symbol');
-        if (symEl) {
-            let currentState = 'Unknown';
-            if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
-                if (currentTemp < el.meltingPoint) currentState = 'Solid';
-                else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
-                else currentState = 'Gas';
-            }
-            symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
-        }
+        updateSelectedCardVisuals();
         
         if (window.OrbitalViewer) {
             window.OrbitalViewer.setElement(el);
@@ -86294,7 +86289,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.15.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.16.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
