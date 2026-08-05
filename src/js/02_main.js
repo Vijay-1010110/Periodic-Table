@@ -1316,10 +1316,24 @@ function updateSelectedCardVisuals() {
         elecCard.style.borderColor = color || 'rgba(0,212,255,0.3)';
     }
 
-    const stateColor = stateTextColors[currentState] || '#ffffff';
+    let symbolColor = stateTextColors[currentState] || '#ffffff';
+    let symbolShadow = '0 0 5px #000, 0 1px 3px #000';
+
+    if (activeProp === 'configuration' || activeProp === 'expanded') {
+        const isException = (el.atomicNumber in aufbauExceptions);
+        if (isException) {
+            symbolColor = '#ef4444';
+            symbolShadow = '0 0 10px rgba(239, 68, 68, 0.95), 0 0 4px #000';
+        } else if (currentView === 'electrons') {
+            symbolColor = '#ffffff';
+        }
+    }
 
     const dhSym = document.getElementById('dh-symbol');
-    if (dhSym) dhSym.style.color = stateColor;
+    if (dhSym) {
+        dhSym.style.color = symbolColor;
+        dhSym.style.textShadow = symbolShadow;
+    }
 
     const dhName = document.getElementById('dh-name');
     if (dhName) {
@@ -1328,7 +1342,10 @@ function updateSelectedCardVisuals() {
     }
 
     const elecSym = document.getElementById('elec-symbol');
-    if (elecSym) elecSym.style.color = stateColor;
+    if (elecSym) {
+        elecSym.style.color = symbolColor;
+        elecSym.style.textShadow = symbolShadow;
+    }
 
     const elecName = document.getElementById('elec-name');
     if (elecName) {
@@ -1337,7 +1354,7 @@ function updateSelectedCardVisuals() {
     }
 
     const dhBohr = document.getElementById('dh-bohr');
-    if (dhBohr) dhBohr.style.color = stateColor;
+    if (dhBohr) dhBohr.style.color = symbolColor;
 }
 
 function renderLegend() {
