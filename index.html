@@ -83697,7 +83697,7 @@ function updateQuizHeader() {
 let currentTemp = 298; // Kelvin
 let tempUnit = 'K';
 let currentProperty = 'category';
-let currentElecProperty = 'oxidation';
+let currentElecProperty = 'configuration';
 let currentView = 'main';
 const heatmapConfigs = {
     atomicMass:        { minColor: '#00ff00', maxColor: '#ff0000', scale: 'linear', min: 1, max: 294 },
@@ -84764,8 +84764,19 @@ function updateGridVisuals() {
 
         const symSpan = cell.querySelector('.cell-sym');
         if (symSpan) {
-            symSpan.style.color = stateTextColors[currentState];
-            symSpan.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)'; // Maximum contrast over all categories
+            if (!isMain && !isIsotopes && (activeProp === 'configuration' || activeProp === 'expanded')) {
+                const isException = (elData.atomicNumber in aufbauExceptions);
+                if (isException) {
+                    symSpan.style.color = '#ef4444';
+                    symSpan.style.textShadow = '0 0 8px rgba(239, 68, 68, 0.95), 0 0 4px #000';
+                } else {
+                    symSpan.style.color = '#ffffff';
+                    symSpan.style.textShadow = '0 0 4px #000, 0 1px 3px #000';
+                }
+            } else {
+                symSpan.style.color = stateTextColors[currentState];
+                symSpan.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)'; // Maximum contrast over all categories
+            }
         }
 
         if (currentView === 'electrons') {
@@ -84853,14 +84864,8 @@ function updateGridVisuals() {
         }
 
         cell.style.background = getGlossyBackground(color, normalizedCategory);
-        
-        if (!isMain && (activeProp === 'configuration' || activeProp === 'expanded') && (elData.atomicNumber in aufbauExceptions)) {
-            cell.style.borderColor = '#ef4444';
-            cell.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.95), inset 0 0 6px rgba(239, 68, 68, 0.5)';
-        } else {
-            cell.style.borderColor = color;
-            cell.style.boxShadow = '';
-        }
+        cell.style.borderColor = color;
+        cell.style.boxShadow = '';
 
         // Timeline opacity logic
         if (isMain && currentProperty === 'discoveryYear') {
@@ -85327,10 +85332,13 @@ function renderAufbauDiagram(configStr) {
         <div class="legend-box-content" style="gap: 20px;">
             <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-start; padding: 0;">
                 <div class="aufbau-legend" style="margin-bottom: 0; gap: 6px;">
-                    <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
-                    <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
-                    <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
-                    <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 4px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
+                    <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
+                    <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
+                    <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
+                    <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
+                    <div class="legend-item non-interactive" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 6px; padding: 3px 8px; margin-top: 4px; display: flex; align-items: center; gap: 5px; font-size: 0.68rem; color: #f87171; cursor: default;">
+                        <span style="color: #ef4444; font-weight: 900; font-size: 0.8rem; text-shadow: 0 0 6px rgba(239,68,68,0.8);">Sym</span> = Exception
+                    </div>
                 </div>
                 <div class="aufbau-grid">
     `;
@@ -86291,7 +86299,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.17.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.18.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86481,11 +86489,11 @@ window.OrbitalViewer = {
                         <p class="small-text help-text" style="padding: 0 10px 10px 10px;">Click a property to visualize orbital states on the table.</p>
                         
                         <div class="prop-list" id="elec-prop-list">
-                        <div class="prop-item elec-prop-item active" data-prop="oxidation">
+                        <div class="prop-item elec-prop-item" data-prop="oxidation">
                             <span class="prop-label">Oxidation States</span>
                             <span class="prop-value mono-text" id="val-oxidation">-</span>
                         </div>
-                        <div class="prop-item elec-prop-item" data-prop="configuration">
+                        <div class="prop-item elec-prop-item active" data-prop="configuration">
                             <span class="prop-label">Configuration</span>
                             <span class="prop-value mono-text" id="val-config">-</span>
                         </div>
