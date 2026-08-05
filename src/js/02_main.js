@@ -600,8 +600,20 @@ function updateTempDisplay() {
     document.getElementById('temp-display-c').innerText = `${cStr} °C`;
     document.getElementById('temp-display-f').innerText = `${fStr} °F`;
     
+    const displayContainer = document.getElementById('temp-display-container');
+    const tempInput = document.getElementById('temp-input');
     const slider = document.getElementById('temp-slider');
     const color = getTempColor(k);
+    
+    // Dynamically color all text values to match the temperature meter 1:1
+    if (displayContainer) {
+        displayContainer.style.color = color;
+        displayContainer.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
+    }
+    if (tempInput) {
+        tempInput.style.color = color;
+        tempInput.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    }
     
     // Dynamic glow for the thumb
     const glowIntensity = Math.min(1, k / 6000); // 0 to 1

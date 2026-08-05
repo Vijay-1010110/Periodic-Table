@@ -141,48 +141,29 @@ input[type="text"], select {
     max-width: 100%;
 }
 #temp-display-container {
-    color: #cbd5e1;
     display: flex;
     align-items: center;
     white-space: nowrap;
     text-align: left;
     flex-shrink: 0 !important;
-    background: rgba(10, 15, 26, 0.95);
-    border: 1px solid rgba(0, 212, 255, 0.25);
+    background: #000000; /* Solid pitch black background */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 3px 12px;
     border-radius: 8px;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.9), inset 0 0 5px rgba(255, 255, 255, 0.05);
     font-size: 0.88rem;
-}
-#temp-display-container .temp-label-prefix {
-    color: #94a3b8;
-    font-weight: 600;
-    margin-right: 4px;
-}
-#temp-display-container .unit-k-label {
-    color: #fbbf24;
-    font-weight: 700;
-    margin-left: 2px;
-}
-#temp-display-c {
-    color: #00f0ff;
-    font-weight: 600;
-}
-#temp-display-f {
-    color: #ff8800;
-    font-weight: 600;
+    transition: color 0.1s ease;
 }
 #temp-input {
     width: 62px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(251, 191, 36, 0.4);
-    color: #fbbf24;
-    font-weight: 700;
+    background: #000000; /* Solid pitch black background */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 2px 6px;
     border-radius: 6px;
     outline: none;
     text-align: center;
-    box-shadow: 0 0 8px rgba(251, 191, 36, 0.15);
+    font-weight: 700;
+    transition: color 0.1s ease, border-color 0.1s ease;
 }
 #timeline-input {
     width: 60px;
