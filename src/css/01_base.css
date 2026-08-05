@@ -198,6 +198,37 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     gap: 4px;
     min-width: 900px;
     padding-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.periodic-grid.extended-32col {
+    grid-template-columns: repeat(32, minmax(26px, 1fr)) !important;
+    min-width: 1480px !important;
+}
+.periodic-grid.extended-32col .table-controls {
+    grid-column: 3 / 27 !important;
+}
+.periodic-grid.extended-32col .in-grid-legend {
+    grid-column: 3 / 17 !important;
+    grid-row: 2 / 6 !important;
+}
+
+/* Vertical gap above f-block in standard 18-col mode */
+.periodic-grid:not(.extended-32col) .element-cell[data-z="57"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="58"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="59"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="60"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="61"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="62"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="63"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="64"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="65"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="66"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="67"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="68"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="69"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="70"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="71"] {
+    margin-top: 16px !important;
 }
 .element-cell {
     aspect-ratio: 1 / 1;

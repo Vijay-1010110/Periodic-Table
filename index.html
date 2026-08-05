@@ -316,6 +316,37 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     gap: 4px;
     min-width: 900px;
     padding-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.periodic-grid.extended-32col {
+    grid-template-columns: repeat(32, minmax(26px, 1fr)) !important;
+    min-width: 1480px !important;
+}
+.periodic-grid.extended-32col .table-controls {
+    grid-column: 3 / 27 !important;
+}
+.periodic-grid.extended-32col .in-grid-legend {
+    grid-column: 3 / 17 !important;
+    grid-row: 2 / 6 !important;
+}
+
+/* Vertical gap above f-block in standard 18-col mode */
+.periodic-grid:not(.extended-32col) .element-cell[data-z="57"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="58"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="59"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="60"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="61"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="62"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="63"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="64"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="65"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="66"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="67"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="68"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="69"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="70"],
+.periodic-grid:not(.extended-32col) .element-cell[data-z="71"] {
+    margin-top: 16px !important;
 }
 .element-cell {
     aspect-ratio: 1 / 1;
@@ -83734,8 +83765,25 @@ function clearLegendHighlighting() {
     });
 }
 
+let tableLayoutMode = '18col'; // '18col' or '32col'
+
 // Grid layout mapping
 function getGridPosition(z) {
+    if (tableLayoutMode === '32col') {
+        if (z === 1) return { col: 1, row: 1 };
+        if (z === 2) return { col: 32, row: 1 };
+        if (z >= 3 && z <= 4) return { col: z - 2, row: 2 };
+        if (z >= 5 && z <= 10) return { col: z + 22, row: 2 };
+        if (z >= 11 && z <= 12) return { col: z - 10, row: 3 };
+        if (z >= 13 && z <= 18) return { col: z + 14, row: 3 };
+        if (z >= 19 && z <= 20) return { col: z - 18, row: 4 };
+        if (z >= 21 && z <= 36) return { col: z - 4, row: 4 };
+        if (z >= 37 && z <= 38) return { col: z - 36, row: 5 };
+        if (z >= 39 && z <= 54) return { col: z - 22, row: 5 };
+        if (z >= 55 && z <= 86) return { col: z - 54, row: 6 };
+        if (z >= 87 && z <= 118) return { col: z - 86, row: 7 };
+    }
+
     if (z === 1) return { col: 1, row: 1 };
     if (z === 2) return { col: 18, row: 1 };
     if (z >= 3 && z <= 4) return { col: z - 2, row: 2 };
@@ -84254,6 +84302,80 @@ function renderGrid() {
         else cell.addEventListener('click', () => selectElement(i));
         
         grid.appendChild(cell);
+    }
+    
+    // Render Lanthanides & Actinides Placeholders in 18-column mode
+    grid.querySelectorAll('.fblock-placeholder-cell').forEach(el => el.remove());
+    if (tableLayoutMode === '18col') {
+        const isMain = (gridId === 'main-grid' || gridId === '#main-grid');
+        
+        // Lanthanide Placeholder (Row 6, Col 3)
+        const lanthPlaceholder = document.createElement('div');
+        lanthPlaceholder.className = 'element-cell fblock-placeholder-cell lanth-placeholder';
+        lanthPlaceholder.style.cssText = `
+            grid-column: 3;
+            grid-row: ${isMain ? 7 : 6};
+            border: 1.5px dashed #ffbfff !important;
+            background: linear-gradient(135deg, rgba(255, 191, 255, 0.22) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffbfff;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 12px rgba(255, 191, 255, 0.25), inset 0 0 8px rgba(255, 191, 255, 0.1);
+            user-select: none;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        `;
+        lanthPlaceholder.innerHTML = `
+            <span style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 800; opacity: 0.9;">57–71</span>
+            <span style="font-size: 1.15rem; font-family: var(--font-mono); font-weight: 800; line-height: 1; margin: 1px 0;">La–Lu</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Lanthanides</span>
+        `;
+        lanthPlaceholder.onclick = () => {
+            highlightCategory('Lanthanide');
+            const targetCell = document.querySelector(`${gridId} .element-cell[data-z="57"]`);
+            if (targetCell) targetCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+        grid.appendChild(lanthPlaceholder);
+
+        // Actinide Placeholder (Row 7, Col 3)
+        const actPlaceholder = document.createElement('div');
+        actPlaceholder.className = 'element-cell fblock-placeholder-cell act-placeholder';
+        actPlaceholder.style.cssText = `
+            grid-column: 3;
+            grid-row: ${isMain ? 8 : 7};
+            border: 1.5px dashed #ff99cc !important;
+            background: linear-gradient(135deg, rgba(255, 153, 204, 0.22) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ff99cc;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 12px rgba(255, 153, 204, 0.25), inset 0 0 8px rgba(255, 153, 204, 0.1);
+            user-select: none;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        `;
+        actPlaceholder.innerHTML = `
+            <span style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 800; opacity: 0.9;">89–103</span>
+            <span style="font-size: 1.15rem; font-family: var(--font-mono); font-weight: 800; line-height: 1; margin: 1px 0;">Ac–Lr</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Actinides</span>
+        `;
+        actPlaceholder.onclick = () => {
+            highlightCategory('Actinide');
+            const targetCell = document.querySelector(`${gridId} .element-cell[data-z="89"]`);
+            if (targetCell) targetCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+        grid.appendChild(actPlaceholder);
     }
     
     updateGridVisuals();
@@ -85254,9 +85376,41 @@ function drawLargeBohrModel(el) {
     container.innerHTML = svg;
 }
 
+function setupLayoutToggle() {
+    const btn = document.getElementById('btn-layout-toggle');
+    const grid = document.getElementById('main-grid');
+    if (!btn || !grid) return;
+
+    btn.onclick = () => {
+        tableLayoutMode = tableLayoutMode === '18col' ? '32col' : '18col';
+        
+        const icon = document.getElementById('layout-toggle-icon');
+        const text = document.getElementById('layout-toggle-text');
+        
+        if (tableLayoutMode === '32col') {
+            grid.classList.add('extended-32col');
+            if (icon) icon.textContent = '↩️';
+            if (text) text.textContent = 'Standard 18-Col View';
+            btn.style.borderColor = '#4ade80';
+            btn.style.color = '#4ade80';
+            btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.3)';
+        } else {
+            grid.classList.remove('extended-32col');
+            if (icon) icon.textContent = '↔️';
+            if (text) text.textContent = 'Extended 32-Col View';
+            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
+            btn.style.color = '#00d4ff';
+            btn.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.15)';
+        }
+        
+        buildGridElements('main-grid');
+    };
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', () => {
     setupUI();
+    setupLayoutToggle();
     renderGrid(); // Initial render for main view
     
     // Check if three-canvas-container exists and initialize
@@ -85889,6 +86043,9 @@ window.OrbitalViewer = {
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
                             <input type="text" id="search-bar" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <button id="btn-layout-toggle" class="layout-toggle-btn" title="Toggle between Standard 18-Column & Extended 32-Column Table" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 6px 14px; border-radius: 8px; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 700; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);">
+                                <span id="layout-toggle-icon">↔️</span> <span id="layout-toggle-text">Extended 32-Col View</span>
+                            </button>
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 5px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
