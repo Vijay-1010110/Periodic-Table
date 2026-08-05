@@ -85,7 +85,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 15px 25px 25px 25px;
+    padding: 10px 20px;
     border-right: 1px solid var(--surface-light);
     overflow: hidden;
     justify-content: center;
@@ -114,8 +114,8 @@ body {
     justify-content: flex-start;
     gap: 15px;
     flex-wrap: nowrap;
-    margin-top: 10px;
-    margin-bottom: 22px;
+    margin-top: 4px;
+    margin-bottom: 12px;
 }
 input[type="text"], select {
     background: var(--surface-light);
@@ -129,18 +129,11 @@ input[type="text"], select {
 
 .temp-controller {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
     gap: 15px;
     background: var(--surface-light);
-    padding: 10px 20px;
+    padding: 6px 14px;
     border-radius: 8px;
-    width: max-content;
-    max-width: 100%;
-}
-#temp-display-container { color: var(--dynamic-temp-color, var(--mono-green)); display: flex; align-items: center; white-space: nowrap; text-align: left; transition: color 0.1s; flex-shrink: 0 !important; }
 #temp-input, #timeline-input {
     width: 60px;
     background: rgba(0,0,0,0.3);

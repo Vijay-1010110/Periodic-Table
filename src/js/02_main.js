@@ -240,18 +240,18 @@ function getGridPosition(z) {
     return { col: 1, row: 1 }; // Fallback
 }
 
-// Category Colors
+// Category Colors (High Saturation & Rich Vibrant Tones)
 const categoryColors = {
-    'Alkali metal': '#ff6666',
-    'Alkaline earth metal': '#ffdead',
-    'Transition metal': '#ffc0c0',
-    'Post-transition metal': '#cccccc',
-    'Metalloid': '#cccc99',
-    'Reactive nonmetal': '#a0ffa0',
-    'Noble gas': '#c0ffff',
-    'Lanthanide': '#ffbfff',
-    'Actinide': '#ff99cc',
-    'Unknown': '#e8e8e8'
+    'Alkali metal': '#ff2a5f',
+    'Alkaline earth metal': '#ff8c00',
+    'Transition metal': '#9333ea',
+    'Post-transition metal': '#2563eb',
+    'Metalloid': '#10b981',
+    'Reactive nonmetal': '#22c55e',
+    'Noble gas': '#00d4ff',
+    'Lanthanide': '#ec4899',
+    'Actinide': '#f43f5e',
+    'Unknown': '#64748b'
 };
 
 // State Colors for Background
