@@ -1033,28 +1033,16 @@ function updateGridVisuals() {
         else if (currentState === 'Gas') gasCount++;
         else unknownCount++;
 
-        const stateColor = stateTextColors[currentState] || '#e2e8f0';
-        const numSpan = cell.querySelector('.cell-num');
         const symSpan = cell.querySelector('.cell-sym');
-        const nameSpan = cell.querySelector('.cell-name');
-        
-        if (numSpan) {
-            numSpan.style.color = stateColor;
-            numSpan.style.textShadow = '0 0 3px rgba(0,0,0,0.9)';
-        }
         if (symSpan) {
-            symSpan.style.color = stateColor;
-            symSpan.style.textShadow = '0 0 4px rgba(0,0,0,0.8)';
-        }
-        if (nameSpan) {
-            nameSpan.style.color = stateColor;
-            nameSpan.style.textShadow = '0 0 3px rgba(0,0,0,0.9)';
+            symSpan.style.color = stateTextColors[currentState];
+            symSpan.style.textShadow = '0 0 4px rgba(0,0,0,0.8)'; // Ensure legibility
         }
 
         if (currentView === 'electrons') {
             const bohrWrapper = cell.querySelector('.cell-bohr');
             if (bohrWrapper) {
-                bohrWrapper.style.color = stateColor;
+                bohrWrapper.style.color = stateTextColors[currentState];
                 bohrWrapper.style.textShadow = '0 0 4px rgba(0,0,0,0.8)';
             }
         }
@@ -1140,8 +1128,8 @@ function updateGridVisuals() {
         }
 
         cell.style.background = getGlossyBackground(color, normalizedCategory);
-        cell.style.borderColor = stateTextColors[currentState] || color;
-        cell.style.boxShadow = `inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.4), 0 0 8px ${(stateTextColors[currentState] || color).replace('rgb', 'rgba').replace(')', ', 0.35)')}`;
+        cell.style.borderColor = color;
+        cell.style.boxShadow = '';
 
         // Timeline opacity logic
         if (isMain && currentProperty === 'discoveryYear') {
