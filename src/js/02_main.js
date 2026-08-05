@@ -1171,6 +1171,73 @@ function updateGridVisuals() {
     if (isMain) {
         renderLegend();
     }
+    updateSelectedCardVisuals();
+}
+
+function updateSelectedCardVisuals() {
+    if (!selectedElement) return;
+    const el = selectedElement;
+    const normalizedCategory = getNormalizedCategory(el.category);
+    
+    let currentState = 'Unknown';
+    if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
+        if (currentTemp < el.meltingPoint) currentState = 'Solid';
+        else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
+        else currentState = 'Gas';
+    }
+    
+    if (currentView === 'main') {
+        const card = document.getElementById('element-detail-card');
+        if (card) {
+            let color = '#333';
+            if (currentProperty === 'category' || currentProperty === 'wiki') {
+                color = categoryColors[normalizedCategory] || '#333';
+            } else if (currentProperty === 'state') {
+                color = stateColors[currentState] || '#6b7280';
+            } else if (heatmapConfigs[currentProperty]) {
+                const numValue = getPropertyValue(el, currentProperty);
+                if (currentProperty === 'discoveryYear' && el.discoveryYear === 'Ancient') {
+                    color = '#ffffff';
+                } else if (numValue === null || numValue === undefined || isNaN(numValue)) {
+                    color = heatmapUnknownColor;
+                } else {
+                    color = getGradientColor(numValue, currentProperty);
+                }
+            } else {
+                color = categoryColors[normalizedCategory] || '#333';
+            }
+
+            const glossBg = (currentProperty === 'category' || currentProperty === 'wiki') ? 
+                getGlossyBackground(color, normalizedCategory) : 
+                getGlossyBackground(color, '');
+
+            card.style.background = glossBg;
+            card.style.borderColor = color || 'rgba(0,212,255,0.3)';
+        }
+
+        const symEl = document.getElementById('dh-symbol');
+        if (symEl) {
+            symEl.style.color = stateTextColors[currentState] || '#ffffff';
+        }
+
+        const bohrEl = document.getElementById('dh-bohr');
+        if (bohrEl) {
+            bohrEl.style.color = stateTextColors[currentState] || '#ffffff';
+        }
+    } else if (currentView === 'electrons') {
+        const card = document.getElementById('elec-element-card');
+        const blockColors = { s: '#ef4444', p: '#0284c7', d: '#6366f1', f: '#a855f7' };
+        const bColor = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
+        if (card) {
+            card.style.background = getGlossyBackground(bColor, 'metal');
+            card.style.borderColor = bColor;
+        }
+
+        const symEl = document.getElementById('elec-symbol');
+        if (symEl) {
+            symEl.style.color = stateTextColors[currentState] || '#ffffff';
+        }
+    }
 }
 
 function renderLegend() {
@@ -1682,31 +1749,20 @@ function updateSidebarValues() {
     }
     
     let currentState = 'Unknown';
-    if (el.meltingPoint && el.boilingPoint) {
+    if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
         if (currentTemp < el.meltingPoint) currentState = 'Solid';
         else if (currentTemp >= el.meltingPoint && currentTemp < el.boilingPoint) currentState = 'Liquid';
         else currentState = 'Gas';
     }
     document.getElementById('val-state').innerText = currentState;
 
-    // Apply styling to element detail card
-    const normalizedCategory = getNormalizedCategory(el.category);
-    const card = document.getElementById('element-detail-card');
-    if (card) {
-        card.style.background = getGlossyBackground(categoryColors[normalizedCategory], normalizedCategory);
-        card.style.borderColor = categoryColors[normalizedCategory] || 'rgba(0,212,255,0.3)';
-    }
-
-    const symEl = document.getElementById('dh-symbol');
-    if (symEl) {
-        symEl.style.color = stateTextColors[currentState] || '#e2e8f0';
-    }
-
     const bohrEl = document.getElementById('dh-bohr');
     if (bohrEl) {
         bohrEl.innerHTML = generateMiniBohrSVG(el.electronsPerShell);
-        bohrEl.style.color = stateTextColors[currentState] || '#e2e8f0';
     }
+
+    // Apply dynamic card styling matching the current table view mode
+    updateSelectedCardVisuals();
 
     const fmt = (val, dec) => (val === null || val === undefined) ? 'N/A' : Number(val).toLocaleString(undefined, {maximumFractionDigits: dec});
 
