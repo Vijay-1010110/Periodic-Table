@@ -254,20 +254,19 @@ const categoryColors = {
     'Unknown': '#64748b'              // Slate Gray
 };
 
-// State Colors for Background
+// Unified State Colors (100% Precision Matching for Legend & Element Symbols)
 const stateColors = {
-    'Solid': '#3b82f6', // Blue
-    'Liquid': '#f59e0b', // Amber
-    'Gas': '#ef4444', // Red
-    'Unknown': '#6b7280' // Gray
+    'Solid': '#ffffff',   // Crisp Bright White
+    'Liquid': '#fbbf24',  // Glowing Amber / Gold-Orange
+    'Gas': '#ff4d4d',     // Bright Neon Red
+    'Unknown': '#94a3b8'  // Cool Silver-Gray
 };
 
-// State Colors for Text
 const stateTextColors = {
-    'Solid': '#e2e8f0', // Standard White
-    'Liquid': '#00d4ff', // Cyan
-    'Gas': '#ef4444', // Red
-    'Unknown': '#94a3b8' // Gray
+    'Solid': '#ffffff',   // Crisp Bright White
+    'Liquid': '#fbbf24',  // Glowing Amber / Gold-Orange
+    'Gas': '#ff4d4d',     // Bright Neon Red
+    'Unknown': '#94a3b8'  // Cool Silver-Gray
 };
 
 // Dynamic Social Share Meta Updater (OG image, Twitter cards, document title)
@@ -1036,14 +1035,14 @@ function updateGridVisuals() {
         const symSpan = cell.querySelector('.cell-sym');
         if (symSpan) {
             symSpan.style.color = stateTextColors[currentState];
-            symSpan.style.textShadow = '0 0 4px rgba(0,0,0,0.8)'; // Ensure legibility
+            symSpan.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)'; // Maximum contrast over all categories
         }
 
         if (currentView === 'electrons') {
             const bohrWrapper = cell.querySelector('.cell-bohr');
             if (bohrWrapper) {
                 bohrWrapper.style.color = stateTextColors[currentState];
-                bohrWrapper.style.textShadow = '0 0 4px rgba(0,0,0,0.8)';
+                bohrWrapper.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)';
             }
         }
 
