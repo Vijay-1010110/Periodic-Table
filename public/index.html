@@ -81772,12 +81772,17 @@ const compoundsData =
 // 07_compounds.js
 /**
  * 07_compounds.js
- * Controller for Compounds View & 3D Molecule Renderer using Three.js
+ * Controller for Compounds View, On-the-Fly Chemical Formula Synthesizer,
+ * PubChem REST API Live Fetcher (110M+ Compounds), & 3D Molecule Renderer using Three.js
  */
 
 let selectedCompoundId = 'water';
 let compoundFilterType = 'All';
 let compoundSearchQuery = '';
+let pubChemSearchTimeout = null;
+
+// Storage for dynamically parsed or PubChem-fetched compounds
+const dynamicCompoundsList = [];
 
 // Three.js Molecular Viewer globals
 let molScene = null;
@@ -81799,8 +81804,15 @@ function setupCompoundsEvents() {
     const searchInput = document.getElementById('compound-search-bar');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            compoundSearchQuery = e.target.value.trim().toLowerCase();
+            compoundSearchQuery = e.target.value.trim();
             renderCompoundsGrid();
+            
+            if (pubChemSearchTimeout) clearTimeout(pubChemSearchTimeout);
+            if (compoundSearchQuery.length >= 2) {
+                pubChemSearchTimeout = setTimeout(() => {
+                    fetchPubChemCompound(compoundSearchQuery);
+                }, 350);
+            }
         });
     }
 
@@ -81815,6 +81827,197 @@ function setupCompoundsEvents() {
     });
 }
 
+function formatFormulaSubscript(str) {
+    if (!str) return '';
+    const subscripts = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+    return str.replace(/\d+/g, m => m.split('').map(d => subscripts[d] || d).join(''));
+}
+
+/**
+ * On-the-Fly Chemical Formula Parser & Calculator Engine
+ * Parses any valid chemical formula (e.g. K2Cr2O7, Fe3O4, CuSO4, C6H12O6, Mg(HCO3)2)
+ */
+function parseChemicalFormula(formulaStr) {
+    if (!formulaStr) return null;
+    const cleanStr = formulaStr.trim().replace(/\s+/g, '');
+    if (cleanStr.length < 2) return null;
+
+    // Expand parentheses: replace (OH)2 with O2H2 internally
+    let expanded = cleanStr;
+    const expandParen = (s) => {
+        return s.replace(/\(([^()]+)\)(\d+)/g, (_, inner, mult) => {
+            const m = parseInt(mult, 10);
+            return inner.replace(/([A-Z][a-z]?)(\d*)/g, (__, sym, cnt) => {
+                const c = (cnt ? parseInt(cnt, 10) : 1) * m;
+                return sym + c;
+            });
+        });
+    };
+
+    for (let i = 0; i < 3; i++) {
+        expanded = expandParen(expanded);
+    }
+    
+    // Parse element counts
+    const elementRegex = /([A-Z][a-z]?)(\d*)/g;
+    const counts = {};
+    let match;
+    let totalAtomCount = 0;
+    
+    const elementsList = (typeof elementsData !== 'undefined') ? elementsData : (window.elementsData || []);
+    if (!elementsList.length) return null;
+
+    while ((match = elementRegex.exec(expanded)) !== null) {
+        const sym = match[1];
+        const count = match[2] ? parseInt(match[2], 10) : 1;
+        
+        const el = elementsList.find(e => e.symbol === sym);
+        if (!el) return null; // Invalid element symbol!
+        
+        counts[sym] = (counts[sym] || 0) + count;
+        totalAtomCount += count;
+    }
+    
+    if (Object.keys(counts).length === 0) return null;
+
+    // Calculate molar mass & element composition
+    let totalMass = 0;
+    const parsedElements = [];
+    let containsMetal = false;
+    let containsNonMetal = false;
+
+    for (const [sym, count] of Object.entries(counts)) {
+        const el = elementsList.find(e => e.symbol === sym);
+        const atomicWeight = el ? (el.atomicMass || el.atomicWeight || 1.0) : 1.0;
+        const elemMass = atomicWeight * count;
+        totalMass += elemMass;
+
+        const cat = (el ? el.category || '' : '').toLowerCase();
+        if (cat.includes('metal') && !cat.includes('nonmetal') && !cat.includes('metalloid')) {
+            containsMetal = true;
+        } else {
+            containsNonMetal = true;
+        }
+
+        parsedElements.push({
+            symbol: sym,
+            name: el ? el.name : sym,
+            count: count,
+            atomicNumber: el ? el.atomicNumber : 1,
+            totalElemMass: elemMass
+        });
+    }
+
+    parsedElements.forEach(item => {
+        item.massPercent = parseFloat(((item.totalElemMass / totalMass) * 100).toFixed(1));
+    });
+
+    let bondingType = 'Covalent';
+    if (containsMetal && containsNonMetal) {
+        bondingType = 'Ionic';
+    } else if (cleanStr.includes('C') && cleanStr.includes('H')) {
+        bondingType = 'Organic';
+    }
+
+    // Generate 3D Spherical/Cluster Atom coordinates for Three.js
+    const atoms3D = [];
+    let idx = 0;
+    parsedElements.forEach(item => {
+        for (let i = 0; i < item.count; i++) {
+            const radius = 0.8 + Math.floor(idx / 5) * 0.6;
+            const angle = (idx % 5) * (Math.PI * 2 / 5);
+            const offsetZ = (i % 2 === 0 ? 1 : -1) * (0.3 + (idx % 3) * 0.2);
+            atoms3D.push({
+                elem: item.atomicNumber,
+                x: parseFloat((radius * Math.cos(angle)).toFixed(2)),
+                y: parseFloat((radius * Math.sin(angle)).toFixed(2)),
+                z: parseFloat(offsetZ.toFixed(2))
+            });
+            idx++;
+        }
+    });
+
+    const compoundId = `synth_${cleanStr.toLowerCase()}`;
+    return {
+        id: compoundId,
+        name: `${cleanStr} Compound`,
+        formula: formatFormulaSubscript(cleanStr),
+        rawFormula: cleanStr,
+        iupacName: `Synthesized Formula: ${formatFormulaSubscript(cleanStr)}`,
+        type: bondingType,
+        molarMass: totalMass.toFixed(3),
+        state: 'Solid',
+        meltingPoint: 'N/A (Calculated on-the-fly)',
+        boilingPoint: 'N/A (Calculated on-the-fly)',
+        density: 'N/A',
+        description: `Custom chemical compound synthesized on-the-fly from formula ${formatFormulaSubscript(cleanStr)}. Contains ${parsedElements.map(e => `${e.name} (${e.count})`).join(', ')} with total computed molar mass of ${totalMass.toFixed(3)} g/mol.`,
+        elements: parsedElements,
+        atoms: atoms3D,
+        isSynthesized: true
+    };
+}
+
+/**
+ * PubChem REST API Live Compound Fetcher (Accesses 110M+ Compounds)
+ */
+async function fetchPubChemCompound(query) {
+    if (!query || query.length < 2) return;
+    const cleanQuery = query.trim();
+    const lowerQuery = cleanQuery.toLowerCase();
+    
+    // Check if already in list
+    const existing = compoundsData.find(c => c.name.toLowerCase() === lowerQuery || c.formula.toLowerCase() === lowerQuery)
+        || dynamicCompoundsList.find(c => c.name.toLowerCase() === lowerQuery || c.formula.toLowerCase() === lowerQuery);
+        
+    if (existing) return;
+
+    try {
+        const url = `https://pubchem.ncbi.nlm.org/rest/pug/compound/name/${encodeURIComponent(cleanQuery)}/property/Title,IUPACName,MolecularFormula,MolecularWeight,CanonicalSMILES/JSON`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const props = data.PropertyTable && data.PropertyTable.Properties && data.PropertyTable.Properties[0];
+        if (!props) return;
+
+        const title = props.Title || cleanQuery;
+        const formula = props.MolecularFormula || cleanQuery;
+        const iupac = props.IUPACName || title;
+        const weight = props.MolecularWeight ? parseFloat(props.MolecularWeight).toFixed(3) : 'N/A';
+        const cid = props.CID;
+        
+        const parsed = parseChemicalFormula(formula);
+        const compId = `pubchem_${cid || cleanQuery.toLowerCase()}`;
+        
+        const pubChemComp = {
+            id: compId,
+            name: title,
+            formula: formatFormulaSubscript(formula),
+            rawFormula: formula,
+            iupacName: iupac,
+            type: parsed ? parsed.type : (formula.includes('C') && formula.includes('H') ? 'Organic' : 'Covalent'),
+            molarMass: weight !== 'N/A' ? weight : (parsed ? parsed.molarMass : 'N/A'),
+            state: 'Solid',
+            meltingPoint: 'See PubChem Entry',
+            boilingPoint: 'See PubChem Entry',
+            density: 'N/A',
+            description: `Official chemical record retrieved live from NCBI PubChem database (CID: ${cid || 'N/A'}). IUPAC Name: ${iupac}. Molecular Weight: ${weight} g/mol.`,
+            elements: parsed ? parsed.elements : [],
+            atoms: parsed ? parsed.atoms : [],
+            pubChemCid: cid,
+            pubChemImg: cid ? `https://pubchem.ncbi.nlm.org/rest/pug/compound/cid/${cid}/PNG?image_size=300x300` : null,
+            isPubChem: true
+        };
+
+        if (!dynamicCompoundsList.some(c => c.id === compId)) {
+            dynamicCompoundsList.unshift(pubChemComp);
+            renderCompoundsGrid();
+            selectCompound(compId);
+        }
+    } catch (err) {
+        console.warn('PubChem search live fetch silent fallback:', err);
+    }
+}
 
 function getBondTheme(type) {
     const t = (type || '').toLowerCase();
@@ -81828,13 +82031,32 @@ function getBondTheme(type) {
 
 function renderCompoundsGrid() {
     const gridContainer = document.getElementById('compounds-grid');
-    
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
+    const lowerQuery = compoundSearchQuery.toLowerCase();
 
-    // 1. Render Catalog Grid (#compounds-grid)
-    const catalogFiltered = compoundsData.filter(comp => {
+    // Check if query is a valid chemical formula to synthesize locally on-the-fly
+    if (compoundSearchQuery && compoundSearchQuery.length >= 2) {
+        const synthComp = parseChemicalFormula(compoundSearchQuery);
+        if (synthComp) {
+            if (!dynamicCompoundsList.some(c => c.id === synthComp.id)) {
+                dynamicCompoundsList.unshift(synthComp);
+            }
+        }
+    }
+
+    // Combine static catalog + dynamic compounds
+    const allCompounds = [...dynamicCompoundsList, ...compoundsData];
+
+    // Deduplicate by ID
+    const uniqueMap = new Map();
+    allCompounds.forEach(c => {
+        if (!uniqueMap.has(c.id)) uniqueMap.set(c.id, c);
+    });
+    const combinedList = Array.from(uniqueMap.values());
+
+    const catalogFiltered = combinedList.filter(comp => {
         // Filter by Type
         if (compoundFilterType !== 'All') {
             if (compoundFilterType === 'Solid' || compoundFilterType === 'Liquid' || compoundFilterType === 'Gas') {
@@ -81846,24 +82068,23 @@ function renderCompoundsGrid() {
 
         // Search Query
         if (compoundSearchQuery) {
-            const matchName = comp.name.toLowerCase().includes(compoundSearchQuery);
-            const matchFormula = comp.formula.toLowerCase().includes(compoundSearchQuery);
-            const matchIupac = comp.iupacName.toLowerCase().includes(compoundSearchQuery);
+            const matchName = comp.name.toLowerCase().includes(lowerQuery);
+            const matchFormula = comp.formula.toLowerCase().includes(lowerQuery) || (comp.rawFormula && comp.rawFormula.toLowerCase().includes(lowerQuery));
+            const matchIupac = comp.iupacName.toLowerCase().includes(lowerQuery);
             if (!matchName && !matchFormula && !matchIupac) return false;
         }
 
         return true;
     });
 
-    const catalogEmptyHtml = `
-        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: rgba(255,255,255,0.5);">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">🧪</div>
-            <div style="font-size: 1.1rem; font-family: var(--font-ui);">No compounds found matching your search</div>
-        </div>
-    `;
-
     if (catalogFiltered.length === 0) {
-        gridContainer.innerHTML = catalogEmptyHtml;
+        gridContainer.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.7); background: rgba(15, 23, 42, 0.6); border-radius: 14px; border: 1px dashed rgba(0, 212, 255, 0.3);">
+                <div style="font-size: 2.8rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,212,255,0.4));">🧪</div>
+                <div style="font-size: 1.15rem; font-family: var(--font-ui); font-weight: 700; color: #00d4ff;">Searching 110M+ PubChem Compounds...</div>
+                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 6px;">Searching live database for "${compoundSearchQuery}". If it's a valid chemical formula (e.g. K2Cr2O7), our engine will synthesize it on-the-fly!</div>
+            </div>
+        `;
     } else {
         catalogFiltered.forEach(comp => {
             const theme = getBondTheme(comp.type);
@@ -81874,10 +82095,12 @@ function renderCompoundsGrid() {
             card.style.background = theme.bg;
             card.style.borderColor = theme.border;
 
+            const badgePrefix = comp.isPubChem ? '🌐 PubChem' : (comp.isSynthesized ? '✨ Synthesized' : comp.type);
+
             card.innerHTML = `
                 <div class="compound-card-header">
                     <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
-                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${comp.type}</span>
+                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${badgePrefix}</span>
                 </div>
                 <div class="compound-card-title">${comp.name}</div>
                 <div class="compound-card-meta">
@@ -81885,7 +82108,6 @@ function renderCompoundsGrid() {
                     <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
                 </div>
             `;
-            if (comp.id === 'hydrochloricacid') console.log("Rendered card HTML for HCl:", card.innerHTML);
 
             card.addEventListener('click', () => {
                 document.querySelectorAll('.compound-card').forEach(c => c.classList.remove('active'));
@@ -81899,7 +82121,7 @@ function renderCompoundsGrid() {
 }
 
 function selectCompound(id) {
-    const comp = compoundsData.find(c => c.id === id);
+    const comp = compoundsData.find(c => c.id === id) || dynamicCompoundsList.find(c => c.id === id);
     if (!comp) return;
 
     selectedCompoundId = id;
