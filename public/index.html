@@ -82011,6 +82011,7 @@ async function fetchPubChemCompound(query) {
 
         if (!dynamicCompoundsList.some(c => c.id === compId)) {
             dynamicCompoundsList.unshift(pubChemComp);
+            if (dynamicCompoundsList.length > 15) dynamicCompoundsList.pop();
             renderCompoundsGrid();
             selectCompound(compId);
         }
