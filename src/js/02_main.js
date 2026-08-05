@@ -1840,7 +1840,7 @@ function setupLayoutToggle() {
             btn.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.15)';
         }
         
-        buildGridElements('main-grid');
+        renderGrid();
     };
 }
 
