@@ -543,20 +543,20 @@ function renderIsotopeDetails(index) {
                 hasParticle = false;
             }
 
+            const getElementByZ = (targetZ) => {
+                const list = (typeof elementsData !== 'undefined') ? elementsData : (window.elementsData || []);
+                if (!list || !list.length) return null;
+                return list.find(e => e.atomicNumber === targetZ) || list[targetZ - 1] || null;
+            };
+
             const getSym = (targetZ) => {
-                if (window.elementsData) {
-                    const el = window.elementsData.find(e => e.atomicNumber === targetZ);
-                    if (el) return el.symbol;
-                }
-                return '?';
+                const el = getElementByZ(targetZ);
+                return el ? el.symbol : '?';
             };
 
             const getName = (targetZ) => {
-                if (window.elementsData) {
-                    const el = window.elementsData.find(e => e.atomicNumber === targetZ);
-                    if (el) return el.name;
-                }
-                return 'Unknown';
+                const el = getElementByZ(targetZ);
+                return el ? el.name : 'Unknown';
             };
             
             const dSym = getSym(dZ);
@@ -887,20 +887,20 @@ function initHalfLifeSimulator(iso) {
         particleStr = '+ Fission Fragments';
     }
 
+    const getElementByZ = (targetZ) => {
+        const list = (typeof elementsData !== 'undefined') ? elementsData : (window.elementsData || []);
+        if (!list || !list.length) return null;
+        return list.find(e => e.atomicNumber === targetZ) || list[targetZ - 1] || null;
+    };
+
     const getSym = (targetZ) => {
-        if (window.elementsData) {
-            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
-            if (el) return el.symbol;
-        }
-        return '?';
+        const el = getElementByZ(targetZ);
+        return el ? el.symbol : '?';
     };
 
     const getName = (targetZ) => {
-        if (window.elementsData) {
-            const el = window.elementsData.find(e => e.atomicNumber === targetZ);
-            if (el) return el.name;
-        }
-        return 'Unknown';
+        const el = getElementByZ(targetZ);
+        return el ? el.name : 'Unknown';
     };
 
     const dSym = getSym(dZ);
