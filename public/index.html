@@ -653,17 +653,20 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     background: var(--surface-light);
     border: 1px solid rgba(0,212,255,0.3);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     box-shadow: inset 0 0 30px rgba(0,212,255,0.05);
-    margin-bottom: 10px;
-    min-height: 80px;
+    margin-bottom: 12px;
+    height: 110px;
+    min-height: 110px;
+    box-sizing: border-box;
 }
-.ec-top { display: flex; justify-content: space-between; width: 100%; color: var(--accent-amber); font-size: 0.8rem;}
-.ec-symbol { font-size: 2.1rem; font-weight: 700; color: var(--text-primary); text-shadow: 0 0 15px rgba(255,255,255,0.2); margin: 2px 0; line-height: 1;}
-.ec-name { font-size: 0.88rem; font-family: var(--font-body); padding-bottom: 2px;}
+.ec-top { display: flex; justify-content: space-between; width: 100%; color: var(--accent-amber); font-size: 0.85rem;}
+.ec-symbol { font-size: 2.3rem; font-weight: 700; color: var(--text-primary); text-shadow: 0 0 15px rgba(255,255,255,0.2); margin: 0; line-height: 1;}
+.ec-name { font-size: 0.92rem; font-family: var(--font-body); padding-bottom: 2px;}
 
 /* Property List */
 .property-list h3 { color: var(--accent-cyan); font-size: 0.95rem; margin-bottom: 2px;}
@@ -86101,7 +86104,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.2.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.2.1</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86156,15 +86159,15 @@ window.OrbitalViewer = {
                     <p class="small-text mt-2">Click any property below to color the table</p>
                 </div>
 
-                <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 80px;">
-                    <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
-                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
+                <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; height: 110px; min-height: 110px; box-sizing: border-box;">
+                    <div id="dh-bohr" style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); width: 120px; height: 120px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
+                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 2px 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
                             <span id="dh-number"></span>
                             <span id="dh-mass"></span>
                         </div>
                         <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
-                        <div class="ec-name" id="dh-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
+                        <div class="ec-name" id="dh-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 2px;"></div>
                     </div>
                 </div>
 
@@ -86268,22 +86271,22 @@ window.OrbitalViewer = {
                     <p class="small-text mt-2">Click any property below to color the table</p>
                 </div>
 
-                <div id="elec-element-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 80px;">
-                    <div id="bohr-reference" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
+                <div id="elec-element-card" class="element-card hidden" style="position: relative; overflow: hidden; height: 110px; min-height: 110px; box-sizing: border-box;">
+                    <div id="bohr-reference" style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); width: 120px; height: 120px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
                         <!-- Animated SVG Bohr model goes here -->
                     </div>
-                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
+                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 2px 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
                             <span id="elec-number"></span>
                             <span id="elec-mass"></span>
                         </div>
                         <div class="ec-symbol mono-text" id="elec-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
-                        <div class="ec-name" id="elec-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
+                        <div class="ec-name" id="elec-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 2px;"></div>
                     </div>
                 </div>
 
                 <div id="elec-details" style="display: flex; flex-direction: column; flex-grow: 1;">
-                    <div class="property-list" style="margin-top: 15px;">
+                    <div class="property-list">
                         <h3 style="padding: 10px 10px 0 10px;">Electron Configuration</h3>
                         <p class="small-text help-text" style="padding: 0 10px 10px 10px;">Click a property to visualize orbital states on the table.</p>
                         

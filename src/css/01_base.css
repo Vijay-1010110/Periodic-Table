@@ -535,17 +535,20 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     background: var(--surface-light);
     border: 1px solid rgba(0,212,255,0.3);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     box-shadow: inset 0 0 30px rgba(0,212,255,0.05);
-    margin-bottom: 10px;
-    min-height: 80px;
+    margin-bottom: 12px;
+    height: 110px;
+    min-height: 110px;
+    box-sizing: border-box;
 }
-.ec-top { display: flex; justify-content: space-between; width: 100%; color: var(--accent-amber); font-size: 0.8rem;}
-.ec-symbol { font-size: 2.1rem; font-weight: 700; color: var(--text-primary); text-shadow: 0 0 15px rgba(255,255,255,0.2); margin: 2px 0; line-height: 1;}
-.ec-name { font-size: 0.88rem; font-family: var(--font-body); padding-bottom: 2px;}
+.ec-top { display: flex; justify-content: space-between; width: 100%; color: var(--accent-amber); font-size: 0.85rem;}
+.ec-symbol { font-size: 2.3rem; font-weight: 700; color: var(--text-primary); text-shadow: 0 0 15px rgba(255,255,255,0.2); margin: 0; line-height: 1;}
+.ec-name { font-size: 0.92rem; font-family: var(--font-body); padding-bottom: 2px;}
 
 /* Property List */
 .property-list h3 { color: var(--accent-cyan); font-size: 0.95rem; margin-bottom: 2px;}
