@@ -83848,6 +83848,9 @@ function applyLegendHighlighting(key, type, groupKeys = null) {
             match = cell.dataset.state === key;
         } else if (type === 'block') {
             match = cell.dataset.block === key;
+        } else if (type === 'exception') {
+            const z = parseInt(cell.dataset.z);
+            match = (z in aufbauExceptions);
         } else if (type === 'subshell') {
             const z = parseInt(cell.dataset.z);
             const el = getElementByNumber(z);
@@ -85331,13 +85334,16 @@ function renderAufbauDiagram(configStr) {
         <div class="legend-box-title" style="color: #00d4ff; font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid rgba(0, 212, 255, 0.25); padding-bottom: 4px;">Electron Configuration</div>
         <div class="legend-box-content" style="gap: 20px;">
             <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-start; padding: 0;">
-                <div class="aufbau-legend" style="margin-bottom: 0; gap: 6px;">
-                    <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
-                    <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
-                    <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
-                    <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; margin-bottom: 2px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
-                    <div class="legend-item non-interactive" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 6px; padding: 3px 8px; margin-top: 4px; display: flex; align-items: center; gap: 5px; font-size: 0.68rem; color: #f87171; cursor: default;">
-                        <span style="color: #ef4444; font-weight: 900; font-size: 0.8rem; text-shadow: 0 0 6px rgba(239,68,68,0.8);">Sym</span> = Exception
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 0;">
+                    <div class="aufbau-legend" style="margin-bottom: 0; gap: 6px;">
+                        <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
+                        <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
+                        <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
+                        <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
+                    </div>
+                    <div class="legend-item exception-indicator-item" data-key="exception" data-type="exception" style="background: rgba(15, 23, 42, 0.9); border: 1.5px solid #ffffff; border-radius: 6px; padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; transition: all 0.2s ease; box-shadow: 0 0 8px rgba(255,255,255,0.25); width: fit-content;">
+                        <span style="color: #ef4444; font-weight: 900; font-size: 0.82rem; text-shadow: 0 0 8px rgba(239, 68, 68, 0.95);">Sym</span>
+                        <span style="color: #ffffff;">= Exception</span>
                     </div>
                 </div>
                 <div class="aufbau-grid">
@@ -86299,7 +86305,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.18.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.19.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
