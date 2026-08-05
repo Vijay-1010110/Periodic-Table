@@ -184,16 +184,26 @@ function getGridPosition(z) {
     if (tableLayoutMode === '32col') {
         if (z === 1) return { col: 1, row: 1 };
         if (z === 2) return { col: 32, row: 1 };
+        // Period 2: Li(3), Be(4) in col 1..2, B(5)..Ne(10) in col 27..32
         if (z >= 3 && z <= 4) return { col: z - 2, row: 2 };
         if (z >= 5 && z <= 10) return { col: z + 22, row: 2 };
+        // Period 3: Na(11), Mg(12) in col 1..2, Al(13)..Ar(18) in col 27..32
         if (z >= 11 && z <= 12) return { col: z - 10, row: 3 };
         if (z >= 13 && z <= 18) return { col: z + 14, row: 3 };
+        // Period 4: K(19), Ca(20) in col 1..2, Sc(21)..Zn(30) in col 17..26, Ga(31)..Kr(36) in col 27..32
         if (z >= 19 && z <= 20) return { col: z - 18, row: 4 };
         if (z >= 21 && z <= 36) return { col: z - 4, row: 4 };
+        // Period 5: Rb(37), Sr(38) in col 1..2, Y(39)..Cd(48) in col 17..26, In(49)..Xe(54) in col 27..32
         if (z >= 37 && z <= 38) return { col: z - 36, row: 5 };
         if (z >= 39 && z <= 54) return { col: z - 22, row: 5 };
-        if (z >= 55 && z <= 86) return { col: z - 54, row: 6 };
-        if (z >= 87 && z <= 118) return { col: z - 86, row: 7 };
+        // Period 6: Cs(55), Ba(56) in col 1..2, La(57)..Lu(71) in col 3..17, Hf(72)..Hg(80) in col 18..26, Tl(81)..Rn(86) in col 27..32
+        if (z >= 55 && z <= 56) return { col: z - 54, row: 6 };
+        if (z >= 57 && z <= 71) return { col: z - 54, row: 6 }; // col 3..17
+        if (z >= 72 && z <= 86) return { col: z - 54, row: 6 }; // col 18..32
+        // Period 7: Fr(87), Ra(88) in col 1..2, Ac(89)..Lr(103) in col 3..17, Rf(104)..Cn(112) in col 18..26, Nh(113)..Og(118) in col 27..32
+        if (z >= 87 && z <= 88) return { col: z - 86, row: 7 };
+        if (z >= 89 && z <= 103) return { col: z - 86, row: 7 }; // col 3..17
+        if (z >= 104 && z <= 118) return { col: z - 86, row: 7 }; // col 18..32
     }
 
     if (z === 1) return { col: 1, row: 1 };
@@ -727,26 +737,27 @@ function renderGrid() {
         lanthPlaceholder.style.cssText = `
             grid-column: 3;
             grid-row: ${isMain ? 7 : 6};
-            border: 1.5px dashed #ffbfff !important;
-            background: linear-gradient(135deg, rgba(255, 191, 255, 0.22) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+            border: 2px dashed #e879f9 !important;
+            background: rgba(168, 85, 247, 0.45) !important;
             border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #ffbfff;
+            color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: 0 0 12px rgba(255, 191, 255, 0.25), inset 0 0 8px rgba(255, 191, 255, 0.1);
+            box-shadow: inset 0 0 15px rgba(232, 121, 249, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
-            z-index: 2;
+            z-index: 5;
+            padding: 2px;
         `;
         lanthPlaceholder.innerHTML = `
-            <span style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 800; opacity: 0.9;">57–71</span>
-            <span style="font-size: 1.15rem; font-family: var(--font-mono); font-weight: 800; line-height: 1; margin: 1px 0;">La–Lu</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Lanthanides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #e879f9; color: #0f172a; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">57–71</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
         `;
         lanthPlaceholder.onclick = () => {
             highlightCategory('Lanthanide');
@@ -761,26 +772,27 @@ function renderGrid() {
         actPlaceholder.style.cssText = `
             grid-column: 3;
             grid-row: ${isMain ? 8 : 7};
-            border: 1.5px dashed #ff99cc !important;
-            background: linear-gradient(135deg, rgba(255, 153, 204, 0.22) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+            border: 2px dashed #f472b6 !important;
+            background: rgba(236, 72, 153, 0.45) !important;
             border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #ff99cc;
+            color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: 0 0 12px rgba(255, 153, 204, 0.25), inset 0 0 8px rgba(255, 153, 204, 0.1);
+            box-shadow: inset 0 0 15px rgba(244, 114, 182, 0.4), 0 0 12px rgba(236, 72, 153, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
-            z-index: 2;
+            z-index: 5;
+            padding: 2px;
         `;
         actPlaceholder.innerHTML = `
-            <span style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 800; opacity: 0.9;">89–103</span>
-            <span style="font-size: 1.15rem; font-family: var(--font-mono); font-weight: 800; line-height: 1; margin: 1px 0;">Ac–Lr</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Actinides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #f472b6; color: #0f172a; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">89–103</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #fbcfe8; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
         `;
         actPlaceholder.onclick = () => {
             highlightCategory('Actinide');
