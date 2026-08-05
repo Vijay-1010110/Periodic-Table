@@ -182,28 +182,39 @@ let tableLayoutMode = '18col'; // '18col' or '32col'
 // Grid layout mapping
 function getGridPosition(z) {
     if (tableLayoutMode === '32col') {
+        // Period 1: H (Z=1) -> col 1, row 1 | He (Z=2) -> col 32, row 1
         if (z === 1) return { col: 1, row: 1 };
         if (z === 2) return { col: 32, row: 1 };
-        // Period 2: Li(3), Be(4) in col 1..2, B(5)..Ne(10) in col 27..32
+        
+        // Period 2 (Z=3..10): Li(3), Be(4) in cols 1..2 | B(5)..Ne(10) in cols 27..32
         if (z >= 3 && z <= 4) return { col: z - 2, row: 2 };
         if (z >= 5 && z <= 10) return { col: z + 22, row: 2 };
-        // Period 3: Na(11), Mg(12) in col 1..2, Al(13)..Ar(18) in col 27..32
+        
+        // Period 3 (Z=11..18): Na(11), Mg(12) in cols 1..2 | Al(13)..Ar(18) in cols 27..32
         if (z >= 11 && z <= 12) return { col: z - 10, row: 3 };
         if (z >= 13 && z <= 18) return { col: z + 14, row: 3 };
-        // Period 4: K(19), Ca(20) in col 1..2, Sc(21)..Zn(30) in col 17..26, Ga(31)..Kr(36) in col 27..32
-        if (z >= 19 && z <= 20) return { col: z - 18, row: 4 };
-        if (z >= 21 && z <= 36) return { col: z - 4, row: 4 };
-        // Period 5: Rb(37), Sr(38) in col 1..2, Y(39)..Cd(48) in col 17..26, In(49)..Xe(54) in col 27..32
-        if (z >= 37 && z <= 38) return { col: z - 36, row: 5 };
-        if (z >= 39 && z <= 54) return { col: z - 22, row: 5 };
-        // Period 6: Cs(55), Ba(56) in col 1..2, La(57)..Lu(71) in col 3..17, Hf(72)..Hg(80) in col 18..26, Tl(81)..Rn(86) in col 27..32
-        if (z >= 55 && z <= 56) return { col: z - 54, row: 6 };
-        if (z >= 57 && z <= 71) return { col: z - 54, row: 6 }; // col 3..17
-        if (z >= 72 && z <= 86) return { col: z - 54, row: 6 }; // col 18..32
-        // Period 7: Fr(87), Ra(88) in col 1..2, Ac(89)..Lr(103) in col 3..17, Rf(104)..Cn(112) in col 18..26, Nh(113)..Og(118) in col 27..32
-        if (z >= 87 && z <= 88) return { col: z - 86, row: 7 };
-        if (z >= 89 && z <= 103) return { col: z - 86, row: 7 }; // col 3..17
-        if (z >= 104 && z <= 118) return { col: z - 86, row: 7 }; // col 18..32
+        
+        // Period 4 (Z=19..36): K(19), Ca(20) in cols 1..2 | Sc(21)..Zn(30) in cols 17..26 | Ga(31)..Kr(36) in cols 27..32
+        if (z >= 19 && z <= 20) return { col: z - 18, row: 4 }; // 19->1, 20->2
+        if (z >= 21 && z <= 30) return { col: z - 4, row: 4 };   // 21->17, 30->26
+        if (z >= 31 && z <= 36) return { col: z - 4, row: 4 };   // 31->27, 36->32
+        
+        // Period 5 (Z=37..54): Rb(37), Sr(38) in cols 1..2 | Y(39)..Cd(48) in cols 17..26 | In(49)..Xe(54) in cols 27..32
+        if (z >= 37 && z <= 38) return { col: z - 36, row: 5 }; // 37->1, 38->2
+        if (z >= 39 && z <= 48) return { col: z - 22, row: 5 };  // 39->17, 48->26
+        if (z >= 49 && z <= 54) return { col: z - 22, row: 5 };  // 49->27, 54->32
+        
+        // Period 6 (Z=55..86): Cs(55), Ba(56) in cols 1..2 | La(57)..Lu(71) in cols 3..17 | Hf(72)..Hg(80) in cols 18..26 | Tl(81)..Rn(86) in cols 27..32
+        if (z >= 55 && z <= 56) return { col: z - 54, row: 6 };  // 55->1, 56->2
+        if (z >= 57 && z <= 71) return { col: z - 54, row: 6 };  // 57->3 ... 71->17
+        if (z >= 72 && z <= 80) return { col: z - 54, row: 6 };  // 72->18 ... 80->26
+        if (z >= 81 && z <= 86) return { col: z - 54, row: 6 };  // 81->27 ... 86->32
+        
+        // Period 7 (Z=87..118): Fr(87), Ra(88) in cols 1..2 | Ac(89)..Lr(103) in cols 3..17 | Rf(104)..Cn(112) in cols 18..26 | Nh(113)..Og(118) in cols 27..32
+        if (z >= 87 && z <= 88) return { col: z - 86, row: 7 };  // 87->1, 88->2
+        if (z >= 89 && z <= 103) return { col: z - 86, row: 7 }; // 89->3 ... 103->17
+        if (z >= 104 && z <= 112) return { col: z - 86, row: 7 };// 104->18 ... 112->26
+        if (z >= 113 && z <= 118) return { col: z - 86, row: 7 };// 113->27 ... 118->32
     }
 
     if (z === 1) return { col: 1, row: 1 };

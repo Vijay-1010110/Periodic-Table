@@ -205,11 +205,11 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     min-width: 1480px !important;
 }
 .periodic-grid.extended-32col .table-controls {
-    grid-column: 3 / 27 !important;
+    grid-column: 1 / -1 !important;
 }
 .periodic-grid.extended-32col .in-grid-legend {
-    grid-column: 3 / 17 !important;
-    grid-row: 2 / 6 !important;
+    grid-column: 3 / 27 !important;
+    grid-row: 2 !important;
 }
 
 /* Vertical gap above f-block in standard 18-col mode */
