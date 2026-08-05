@@ -9,28 +9,30 @@
 
 <br>
 
-**🔗 Live Demo:** [https://vijay-1010110.github.io/Periodic-Table/](https://vijay-1010110.github.io/Periodic-Table/)  
+**🌐 Live Active Deployments:**
+- **GitHub Pages:** [https://vijay-1010110.github.io/Periodic-Table/](https://vijay-1010110.github.io/Periodic-Table/)
+- **Firebase Hosting CDN:** [https://periodica-x-app.web.app/](https://periodica-x-app.web.app/)  
 **🛠️ Developer Infrastructure & Accounts Guide:** [`DEVELOPER_DOCS.md`](DEVELOPER_DOCS.md)
 
 ---
 
 ### 🎯 Direct Target URLs (Deep Linking)
 
-PeriodicaX supports instant deep-linking via URL hash parameters. Click any direct targeted link below to launch PeriodicaX straight into a specific tab, element, compound, isotope, or property heatmap:
+PeriodicaX supports instant deep-linking via URL hash parameters across both live production environments. Click any direct targeted link below to launch PeriodicaX straight into a specific tab, element, compound, isotope, or property heatmap:
 
-| Category / View | Targeted Direct Link | Description |
-| :--- | :--- | :--- |
-| 🧪 **Property Interface** | [Open Property Interface](https://vijay-1010110.github.io/Periodic-Table/#main) | Primary 118-element periodic table view |
-| ⚛️ **Electrons & Orbitals** | [Open 3D Electron Orbitals](https://vijay-1010110.github.io/Periodic-Table/#electrons) | 3D Quantum Orbital Cloud & Aufbau diagram |
-| ☢️ **Isotopes Emulator** | [Open Isotope Decay Emulator](https://vijay-1010110.github.io/Periodic-Table/#isotopes) | 3D Nuclear Cluster & Decay Emulator |
-| 🧪 **3D Compounds** | [Open 3D Molecular Library](https://vijay-1010110.github.io/Periodic-Table/#compounds) | Interactive 3D Ball & Stick Molecular Models |
-| 💥 **Reactions Balancer** | [Open Chemical Reactions](https://vijay-1010110.github.io/Periodic-Table/#reactions) | Chemical Equation Balancer & Thermodynamics |
-| 💎 **3D Crystals** | [Open 3D Crystal Lattices](https://vijay-1010110.github.io/Periodic-Table/#crystals) | 3D Unit Cell & Crystallography Inspector |
-| ⚖️ **Element Comparison** | [Open Element Compare](https://vijay-1010110.github.io/Periodic-Table/#compare) | Side-by-Side Dual Element Property Comparator |
-| 🏆 **Chemistry Quiz** | [Open Interactive Quiz](https://vijay-1010110.github.io/Periodic-Table/#quiz) | Interactive Periodic Table Challenge |
-| 🌟 **Direct Element Links** | [Platinum (Pt)](https://vijay-1010110.github.io/Periodic-Table/#78) • [Gold (Au)](https://vijay-1010110.github.io/Periodic-Table/#Au) • [Uranium (U)](https://vijay-1010110.github.io/Periodic-Table/#U) • [Hydrogen (H)](https://vijay-1010110.github.io/Periodic-Table/#1) | Opens directly to selected element details |
-| ☢️ **Direct Isotope Link** | [Carbon-14 (Isotope Decay)](https://vijay-1010110.github.io/Periodic-Table/#isotope-carbon) | Opens directly to 3D Isotope Decay Emulator |
-| 🎨 **Direct Property Heatmaps** | [Electronegativity](https://vijay-1010110.github.io/Periodic-Table/#electronegativity) • [Atomic Radius](https://vijay-1010110.github.io/Periodic-Table/#atomicradius) • [Density](https://vijay-1010110.github.io/Periodic-Table/#density) | Opens directly with property heatmap active |
+| Category / View | GitHub Pages Live Target | Firebase Hosting Live Target | Description |
+| :--- | :--- | :--- | :--- |
+| 🧪 **Property Interface** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#main) | [Open on Firebase](https://periodica-x-app.web.app/#main) | Primary 118-element periodic table view |
+| ⚛️ **Electrons & Orbitals** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#electrons) | [Open on Firebase](https://periodica-x-app.web.app/#electrons) | 3D Quantum Orbital Cloud & Aufbau diagram |
+| ☢️ **Isotopes Emulator** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#isotopes) | [Open on Firebase](https://periodica-x-app.web.app/#isotopes) | 3D Nuclear Cluster & Decay Emulator |
+| 🧪 **3D Compounds** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#compounds) | [Open on Firebase](https://periodica-x-app.web.app/#compounds) | Interactive 3D Ball & Stick Molecular Models |
+| 💥 **Reactions Balancer** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#reactions) | [Open on Firebase](https://periodica-x-app.web.app/#reactions) | Chemical Equation Balancer & Thermodynamics |
+| 💎 **3D Crystals** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#crystals) | [Open on Firebase](https://periodica-x-app.web.app/#crystals) | 3D Unit Cell & Crystallography Inspector |
+| ⚖️ **Element Comparison** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#compare) | [Open on Firebase](https://periodica-x-app.web.app/#compare) | Side-by-Side Dual Element Property Comparator |
+| 🏆 **Chemistry Quiz** | [Open on GitHub Pages](https://vijay-1010110.github.io/Periodic-Table/#quiz) | [Open on Firebase](https://periodica-x-app.web.app/#quiz) | Interactive Periodic Table Challenge |
+| 🌟 **Direct Element Links** | [Platinum (Pt)](https://vijay-1010110.github.io/Periodic-Table/#78) • [Gold (Au)](https://vijay-1010110.github.io/Periodic-Table/#Au) | [Platinum (Pt)](https://periodica-x-app.web.app/#78) • [Gold (Au)](https://periodica-x-app.web.app/#Au) | Direct link to specific element details |
+| ☢️ **Direct Isotope Link** | [Carbon-14 (Isotope Decay)](https://vijay-1010110.github.io/Periodic-Table/#isotope-carbon) | [Carbon-14 (Isotope Decay)](https://periodica-x-app.web.app/#isotope-carbon) | Direct link to 3D Isotope Decay Emulator |
+| 🎨 **Direct Property Heatmaps** | [Electronegativity](https://vijay-1010110.github.io/Periodic-Table/#electronegativity) | [Electronegativity](https://periodica-x-app.web.app/#electronegativity) | Direct link to property heatmap |
 
 ---
 
