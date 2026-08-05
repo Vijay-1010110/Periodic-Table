@@ -211,22 +211,26 @@ function updateIsotopesView(atomicNumber) {
         return val.toFixed(dec);
     };
     
+    const catName = getNormalizedCategory(elData.category);
+    const catColor = categoryColors[catName] || '#38bdf8';
+
     currentIsotopeData.forEach((iso, index) => {
         const item = document.createElement('div');
         item.className = 'iso-list-item';
         const dColor = getDecayColor(iso.decayMode);
-        const mainColor = iso.isStable ? '#4ade80' : dColor;
-        item.dataset.mainColor = mainColor;
+        const indicatorColor = iso.isStable ? '#4ade80' : dColor;
+        item.dataset.mainColor = indicatorColor;
+        item.dataset.catColor = catColor;
         item.dataset.decayColor = dColor;
         item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
         item.style.cssText = `
-            min-width: 145px;
+            min-width: 148px;
             padding: 8px 12px;
             border-radius: 12px;
-            border: 1.5px solid ${mainColor}66;
-            background: linear-gradient(135deg, ${mainColor}18 0%, rgba(10, 16, 32, 0.85) 100%);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mainColor}10;
+            border: 1.5px solid ${indicatorColor}77;
+            background: linear-gradient(135deg, ${catColor}25 0%, ${indicatorColor}18 50%, rgba(10, 16, 32, 0.9) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -237,6 +241,8 @@ function updateIsotopesView(atomicNumber) {
             user-select: none;
             box-sizing: border-box;
             order: 1;
+            position: relative;
+            overflow: hidden;
         `;
         
         const Z = elData.atomicNumber;
@@ -245,32 +251,33 @@ function updateIsotopesView(atomicNumber) {
         const compactHalfLife = formatCompactHalfLife(iso);
 
         item.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: ${indicatorColor}; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px ${indicatorColor};"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px;">
                 <div style="display: flex; align-items: baseline; gap: 3px;">
-                    <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 700; color: ${mainColor};">${iso.massNumber}</sup>
+                    <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 800; color: ${indicatorColor}; text-shadow: 0 0 6px ${indicatorColor}66;">${iso.massNumber}</sup>
                     <span style="font-size: 1.25rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
                 </div>
-                <span style="background: ${mainColor}22; color: ${mainColor}; border: 1px solid ${mainColor}55; padding: 2px 7px; border-radius: 10px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${mainColor}33;">${decayBadge}</span>
+                <span style="background: ${indicatorColor}22; color: ${indicatorColor}; border: 1px solid ${indicatorColor}55; padding: 2px 7px; border-radius: 10px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 2px;">
-                <span style="font-size: 0.72rem; font-family: var(--font-mono); font-weight: 600; color: ${iso.isStable ? '#4ade80' : '#f1f5f9'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px; margin-top: 2px;">
+                <span style="font-size: 0.72rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 98px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
                 <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
             </div>
         `;
         
         item.onmouseenter = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = mainColor;
+                item.style.borderColor = indicatorColor;
                 item.style.transform = 'translateY(-2px)';
-                item.style.boxShadow = `0 6px 16px ${mainColor}44, inset 0 0 12px ${mainColor}20`;
+                item.style.boxShadow = `0 6px 16px ${indicatorColor}44, inset 0 0 14px ${indicatorColor}25`;
             }
         };
         item.onmouseleave = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = `${mainColor}66`;
+                item.style.borderColor = `${indicatorColor}77`;
                 item.style.transform = 'translateY(0)';
-                item.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mainColor}10`;
+                item.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15`;
             }
         };
         
@@ -278,13 +285,13 @@ function updateIsotopesView(atomicNumber) {
             document.querySelectorAll('.iso-list-item').forEach(el => {
                 el.classList.remove('selected');
                 const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.12)';
-                el.style.borderColor = `${mColor}66`;
-                el.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px ${mColor}10`;
+                el.style.borderColor = `${mColor}77`;
+                el.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${mColor}15`;
                 el.style.transform = 'translateY(0)';
             });
             item.classList.add('selected');
-            item.style.borderColor = mainColor;
-            item.style.boxShadow = `0 0 20px ${mainColor}aa, inset 0 0 14px ${mainColor}33`;
+            item.style.borderColor = indicatorColor;
+            item.style.boxShadow = `0 0 20px ${indicatorColor}aa, inset 0 0 16px ${indicatorColor}33`;
             item.style.transform = 'translateY(-2px)';
             renderIsotopeDetails(index);
         };
