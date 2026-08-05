@@ -1282,18 +1282,34 @@ function updateSelectedCardVisuals() {
         color = categoryColors[normalizedCategory] || '#333';
     } else if (activeProp === 'state') {
         color = stateColors[currentState] || '#6b7280';
+    } else if (activeProp === 'oxidation') {
+        const statesStr = el.oxidationStates || '';
+        const states = statesStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+        if (states.length > 0) {
+            const primary = states[0];
+            if (primary < 0) color = getHeatmapColor(primary, { minColor: '#ff0000', maxColor: '#ffffff', scale: 'linear', min: -4, max: 0 });
+            else if (primary > 0) color = getHeatmapColor(primary, { minColor: '#ffffff', maxColor: '#00ff00', scale: 'linear', min: 0, max: 8 });
+            else color = '#ffffff';
+        } else { color = '#333'; }
+    } else if (activeProp === 'configuration' || activeProp === 'expanded') {
+        const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
+        color = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
+    } else if (activeProp === 'energyLevel') {
+        const shells = el.electronsPerShell ? el.electronsPerShell.length : 1;
+        color = getHeatmapColor(shells, heatmapConfigs.energyLevels);
+    } else if (activeProp === 'quantum') {
+        const qn = getQuantumNumbers(el.electronConfiguration);
+        const lColors = {0: '#ff6b6b', 1: '#4ecdc4', 2: '#feca57', 3: '#a29bfe'};
+        color = lColors[qn.l] || '#333';
     } else if (heatmapConfigs[activeProp]) {
         const numValue = getPropertyValue(el, activeProp);
         if (activeProp === 'discoveryYear' && el.discoveryYear === 'Ancient') {
             color = '#ffffff';
-        } else if (numValue === null || numValue === undefined || isNaN(numValue)) {
-            color = heatmapUnknownColor;
-        } else {
+        } else if (numValue !== null && numValue !== undefined && !isNaN(numValue)) {
             color = getGradientColor(numValue, activeProp);
+        } else {
+            color = heatmapUnknownColor;
         }
-    } else if (currentView === 'electrons') {
-        const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
-        color = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
     } else {
         color = categoryColors[normalizedCategory] || '#333';
     }
