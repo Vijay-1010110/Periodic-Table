@@ -212,7 +212,31 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .periodic-grid.extended-32col .in-grid-legend {
     grid-column: 4 / 27 !important;
     grid-row: 2 !important;
-    padding-left: 5px !important;
+    padding-left: 2px !important;
+    gap: 8px !important;
+    transform: scale(0.82);
+    transform-origin: top left;
+}
+.periodic-grid.extended-32col .legend-box {
+    padding: 5px 8px !important;
+}
+.periodic-grid.extended-32col .legend-box-title {
+    font-size: 0.58rem !important;
+    margin-bottom: 3px !important;
+    padding-bottom: 2px !important;
+}
+.periodic-grid.extended-32col .legend-group-title {
+    font-size: 0.58rem !important;
+    margin-bottom: 2px !important;
+}
+.periodic-grid.extended-32col .legend-item {
+    font-size: 0.58rem !important;
+    gap: 4px !important;
+    padding: 1px 2px !important;
+}
+.periodic-grid.extended-32col .legend-color {
+    width: 8px !important;
+    height: 8px !important;
 }
 .periodic-grid.extended-32col .element-cell {
     aspect-ratio: 1 / 1.05;
