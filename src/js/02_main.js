@@ -425,6 +425,34 @@ function handleHashRouting() {
         return;
     }
 
+    // Property deep links (e.g. #electronegativity, #density, #meltingpoint)
+    const propMap = {
+        'electronegativity': 'electronegativity',
+        'atomicmass': 'atomicMass',
+        'mass': 'atomicMass',
+        'atomicradius': 'atomicRadius',
+        'radius': 'atomicRadius',
+        'density': 'density',
+        'meltingpoint': 'meltingPoint',
+        'melting': 'meltingPoint',
+        'boilingpoint': 'boilingPoint',
+        'discoveryyear': 'discoveryYear',
+        'discovery': 'discoveryYear',
+        'year': 'discoveryYear',
+        'state': 'state',
+        'category': 'category'
+    };
+
+    if (propMap[hash]) {
+        switchView('properties', false);
+        currentProperty = propMap[hash];
+        document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => p.classList.remove('active'));
+        const propEl = document.querySelector(`.prop-item[data-prop="${propMap[hash]}"]`);
+        if (propEl) propEl.classList.add('active');
+        updateGridVisuals();
+        return;
+    }
+
     // Direct element or isotope deep link (e.g. #isotope-carbon, #element-6, #gold, #fe)
     if (hash.startsWith('isotope-')) {
         const query = hash.replace('isotope-', '');
