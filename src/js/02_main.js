@@ -551,37 +551,37 @@ function setupUI() {
 }
 
 function getTempColor(k) {
-    if (k < 300) {
-        // 0K to 300K: Deep Ice Blue (2,132,199) -> Cyan (6,182,212)
-        const pct = Math.max(0, Math.min(1, k / 300));
-        const r = Math.round(2 + (6 - 2) * pct);
-        const g = Math.round(132 + (182 - 132) * pct);
-        const b = Math.round(199 + (212 - 199) * pct);
+    if (k < 1200) {
+        // 0K to 1200K: Dark Cold Slate (30,41,59) -> Glowing Red (239,68,68)
+        const pct = Math.max(0, Math.min(1, k / 1200));
+        const r = Math.round(30 + (239 - 30) * pct);
+        const g = Math.round(41 + (68 - 41) * pct);
+        const b = Math.round(59 + (68 - 59) * pct);
         return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 1200) {
-        // 300K to 1200K: Cyan -> Amber Gold (245,158,11)
-        const pct = (k - 300) / (1200 - 300);
-        const r = Math.round(6 + (245 - 6) * pct);
-        const g = Math.round(182 + (158 - 182) * pct);
-        const b = Math.round(212 + (11 - 212) * pct);
+    } else if (k < 2400) {
+        // 1200K to 2400K: Glowing Red -> Fiery Orange (249,115,22)
+        const pct = (k - 1200) / (2400 - 1200);
+        const r = Math.round(239 + (249 - 239) * pct);
+        const g = Math.round(68 + (115 - 68) * pct);
+        const b = Math.round(68 + (22 - 68) * pct);
         return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 2800) {
-        // 1200K to 2800K: Amber Gold -> Incandescent Red (239,68,68)
-        const pct = (k - 1200) / (2800 - 1200);
-        const r = Math.round(245 + (239 - 245) * pct);
-        const g = Math.round(158 + (68 - 158) * pct);
-        const b = Math.round(11 + (68 - 11) * pct);
+    } else if (k < 3600) {
+        // 2400K to 3600K: Fiery Orange -> Golden Yellow (234,179,8)
+        const pct = (k - 2400) / (3600 - 2400);
+        const r = Math.round(249 + (234 - 249) * pct);
+        const g = Math.round(115 + (179 - 115) * pct);
+        const b = Math.round(22 + (8 - 22) * pct);
         return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 4200) {
-        // 2800K to 4200K: Incandescent Red -> White-Hot (255,255,255)
-        const pct = (k - 2800) / (4200 - 2800);
-        const r = Math.round(239 + (255 - 239) * pct);
-        const g = Math.round(68 + (255 - 68) * pct);
-        const b = Math.round(68 + (255 - 68) * pct);
+    } else if (k < 4800) {
+        // 3600K to 4800K: Golden Yellow -> White-Hot (255,255,255)
+        const pct = (k - 3600) / (4800 - 3600);
+        const r = Math.round(234 + (255 - 234) * pct);
+        const g = Math.round(179 + (255 - 179) * pct);
+        const b = Math.round(8 + (255 - 8) * pct);
         return `rgb(${r}, ${g}, ${b})`;
     } else {
-        // 4200K to 6000K: White-Hot -> Electric Blue-Hot (0,240,255)
-        const pct = Math.min(1, (k - 4200) / (6000 - 4200));
+        // 4800K to 6000K: White-Hot -> Electric Blue-Hot (0,240,255)
+        const pct = Math.min(1, (k - 4800) / (6000 - 4800));
         const r = Math.round(255 + (0 - 255) * pct);
         const g = Math.round(255 + (240 - 255) * pct);
         const b = 255;
