@@ -83894,6 +83894,7 @@ function clearLegendHighlighting() {
 }
 
 let tableLayoutMode = '18col'; // '18col' or '32col'
+let savedPropertyLayoutMode = '18col';
 
 // Grid layout mapping
 function getGridPosition(z) {
@@ -84076,6 +84077,26 @@ function switchView(viewId, updateHash = true) {
     document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
     const targetView = document.getElementById('view-' + viewId);
     if (targetView) targetView.classList.add('active');
+
+    // 32-column view layout toggle is strictly restricted to Property Interface ('main' or 'properties')
+    const layoutBtn = document.getElementById('btn-layout-toggle');
+    const mainGrid = document.getElementById('main-grid');
+    
+    if (viewId === 'main' || viewId === 'properties') {
+        if (layoutBtn) layoutBtn.style.display = 'flex';
+        tableLayoutMode = savedPropertyLayoutMode || '18col';
+    } else {
+        if (layoutBtn) layoutBtn.style.display = 'none';
+        tableLayoutMode = '18col';
+    }
+
+    if (mainGrid) {
+        if (tableLayoutMode === '32col') {
+            mainGrid.classList.add('extended-32col');
+        } else {
+            mainGrid.classList.remove('extended-32col');
+        }
+    }
     
     renderGrid();
     if (selectedElement) {
@@ -85747,7 +85768,10 @@ function setupLayoutToggle() {
     if (!btn || !grid) return;
 
     btn.onclick = () => {
-        tableLayoutMode = tableLayoutMode === '18col' ? '32col' : '18col';
+        if (currentView !== 'main' && currentView !== 'properties') return;
+
+        savedPropertyLayoutMode = savedPropertyLayoutMode === '18col' ? '32col' : '18col';
+        tableLayoutMode = savedPropertyLayoutMode;
         
         if (tableLayoutMode === '32col') {
             grid.classList.add('extended-32col');
@@ -86383,7 +86407,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.25.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.26.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

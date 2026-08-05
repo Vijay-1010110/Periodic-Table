@@ -182,6 +182,7 @@ function clearLegendHighlighting() {
 }
 
 let tableLayoutMode = '18col'; // '18col' or '32col'
+let savedPropertyLayoutMode = '18col';
 
 // Grid layout mapping
 function getGridPosition(z) {
@@ -364,6 +365,26 @@ function switchView(viewId, updateHash = true) {
     document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
     const targetView = document.getElementById('view-' + viewId);
     if (targetView) targetView.classList.add('active');
+
+    // 32-column view layout toggle is strictly restricted to Property Interface ('main' or 'properties')
+    const layoutBtn = document.getElementById('btn-layout-toggle');
+    const mainGrid = document.getElementById('main-grid');
+    
+    if (viewId === 'main' || viewId === 'properties') {
+        if (layoutBtn) layoutBtn.style.display = 'flex';
+        tableLayoutMode = savedPropertyLayoutMode || '18col';
+    } else {
+        if (layoutBtn) layoutBtn.style.display = 'none';
+        tableLayoutMode = '18col';
+    }
+
+    if (mainGrid) {
+        if (tableLayoutMode === '32col') {
+            mainGrid.classList.add('extended-32col');
+        } else {
+            mainGrid.classList.remove('extended-32col');
+        }
+    }
     
     renderGrid();
     if (selectedElement) {
@@ -2035,7 +2056,10 @@ function setupLayoutToggle() {
     if (!btn || !grid) return;
 
     btn.onclick = () => {
-        tableLayoutMode = tableLayoutMode === '18col' ? '32col' : '18col';
+        if (currentView !== 'main' && currentView !== 'properties') return;
+
+        savedPropertyLayoutMode = savedPropertyLayoutMode === '18col' ? '32col' : '18col';
+        tableLayoutMode = savedPropertyLayoutMode;
         
         if (tableLayoutMode === '32col') {
             grid.classList.add('extended-32col');
