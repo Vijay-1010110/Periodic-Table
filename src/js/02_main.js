@@ -254,19 +254,19 @@ const categoryColors = {
     'Unknown': '#64748b'              // Slate Gray
 };
 
-// Unified State Colors (100% Precision Matching for Legend & Element Symbols)
+// Unified State Colors (Distinct Neon Hues 100% Matched to Legend & Symbol Text)
 const stateColors = {
-    'Solid': '#ffffff',   // Crisp Bright White
-    'Liquid': '#fbbf24',  // Glowing Amber / Gold-Orange
-    'Gas': '#ff4d4d',     // Bright Neon Red
-    'Unknown': '#94a3b8'  // Cool Silver-Gray
+    'Solid': '#ffffff',   // Crisp Pure White
+    'Liquid': '#00f0ff',  // Electric Neon Cyan (Liquid)
+    'Gas': '#ff0055',     // Vibrant Neon Pink-Red (Gas)
+    'Unknown': '#a1a1aa'  // Cool Translucent Silver (Unknown)
 };
 
 const stateTextColors = {
-    'Solid': '#ffffff',   // Crisp Bright White
-    'Liquid': '#fbbf24',  // Glowing Amber / Gold-Orange
-    'Gas': '#ff4d4d',     // Bright Neon Red
-    'Unknown': '#94a3b8'  // Cool Silver-Gray
+    'Solid': '#ffffff',   // Crisp Pure White
+    'Liquid': '#00f0ff',  // Electric Neon Cyan (Liquid)
+    'Gas': '#ff0055',     // Vibrant Neon Pink-Red (Gas)
+    'Unknown': '#a1a1aa'  // Cool Translucent Silver (Unknown)
 };
 
 // Dynamic Social Share Meta Updater (OG image, Twitter cards, document title)
