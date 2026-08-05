@@ -84674,16 +84674,28 @@ function updateGridVisuals() {
         else if (currentState === 'Gas') gasCount++;
         else unknownCount++;
 
+        const stateColor = stateTextColors[currentState] || '#e2e8f0';
+        const numSpan = cell.querySelector('.cell-num');
         const symSpan = cell.querySelector('.cell-sym');
+        const nameSpan = cell.querySelector('.cell-name');
+        
+        if (numSpan) {
+            numSpan.style.color = stateColor;
+            numSpan.style.textShadow = '0 0 3px rgba(0,0,0,0.9)';
+        }
         if (symSpan) {
-            symSpan.style.color = stateTextColors[currentState];
-            symSpan.style.textShadow = '0 0 4px rgba(0,0,0,0.8)'; // Ensure legibility
+            symSpan.style.color = stateColor;
+            symSpan.style.textShadow = '0 0 4px rgba(0,0,0,0.8)';
+        }
+        if (nameSpan) {
+            nameSpan.style.color = stateColor;
+            nameSpan.style.textShadow = '0 0 3px rgba(0,0,0,0.9)';
         }
 
         if (currentView === 'electrons') {
             const bohrWrapper = cell.querySelector('.cell-bohr');
             if (bohrWrapper) {
-                bohrWrapper.style.color = stateTextColors[currentState];
+                bohrWrapper.style.color = stateColor;
                 bohrWrapper.style.textShadow = '0 0 4px rgba(0,0,0,0.8)';
             }
         }
@@ -84769,7 +84781,8 @@ function updateGridVisuals() {
         }
 
         cell.style.background = getGlossyBackground(color, normalizedCategory);
-        cell.style.borderColor = color;
+        cell.style.borderColor = stateTextColors[currentState] || color;
+        cell.style.boxShadow = `inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.4), 0 0 8px ${(stateTextColors[currentState] || color).replace('rgb', 'rgba').replace(')', ', 0.35)')}`;
 
         // Timeline opacity logic
         if (isMain && currentProperty === 'discoveryYear') {
@@ -86096,7 +86109,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v2.7.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v2.8.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
