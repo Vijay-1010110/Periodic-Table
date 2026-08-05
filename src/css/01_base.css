@@ -85,16 +85,17 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px 20px 20px 20px;
+    padding: 15px 25px 25px 25px;
     border-right: 1px solid var(--surface-light);
     overflow: hidden;
+    justify-content: center;
 }
 
 .view-right {
     width: 400px;
     flex-shrink: 0;
     background: var(--bg-dark);
-    padding: 15px 25px;
+    padding: 20px 30px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -113,7 +114,8 @@ body {
     justify-content: flex-start;
     gap: 15px;
     flex-wrap: nowrap;
-    margin-bottom: 12px;
+    margin-top: 10px;
+    margin-bottom: 22px;
 }
 input[type="text"], select {
     background: var(--surface-light);
@@ -214,10 +216,11 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .periodic-grid.extended-32col .in-grid-legend {
     grid-column: 4 / 27 !important;
     grid-row: 2 !important;
-    padding-left: 2px !important;
+    justify-content: center !important;
+    padding-left: 0 !important;
     gap: 8px !important;
     transform: scale(0.82);
-    transform-origin: top left;
+    transform-origin: top center;
 }
 .periodic-grid.extended-32col .legend-box {
     padding: 5px 8px !important;
@@ -439,11 +442,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     grid-column: 3 / 13;
     grid-row: 2;
     display: flex;
-    justify-content: flex-start; /* Anchor to the left instead of centering */
+    justify-content: center; /* Center horizontally in available space */
     align-items: flex-start;
     gap: 15px;
     padding: 0px;
-    padding-left: 10px; /* Slight indent from Scandium column */
     pointer-events: auto;
     height: 0;
     min-height: 0;
