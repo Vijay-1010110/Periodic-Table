@@ -2112,6 +2112,7 @@ function setupLayoutToggle() {
 window.addEventListener('DOMContentLoaded', () => {
     setupUI();
     setupLayoutToggle();
+    setupMobileLeftNav();
     renderGrid(); // Initial render for main view
     
     // Check if three-canvas-container exists and initialize
@@ -2180,7 +2181,49 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMobileSidebar();
+    if (e.key === 'Escape') {
+        closeMobileSidebar();
+        const mobileLeftNav = document.getElementById('mobile-left-nav');
+        if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
+    }
 });
+
+// Mobile Left Collapsible Sidebar Interactions
+function setupMobileLeftNav() {
+    const mobileLeftNav = document.getElementById('mobile-left-nav');
+    const toggleBtn = document.getElementById('mobile-nav-toggle');
+    if (!mobileLeftNav) return;
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileLeftNav.classList.toggle('expanded');
+        });
+    }
+
+    // Mobile nav item clicks
+    document.querySelectorAll('.mobile-nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const view = item.dataset.view;
+            if (view && typeof switchView === 'function') {
+                switchView(view);
+            }
+            // Sync active state with top nav buttons
+            document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
+            item.classList.add('active');
+            
+            // Auto collapse when item clicked
+            mobileLeftNav.classList.remove('expanded');
+        });
+    });
+
+    // Auto collapse when clicking anywhere else on the page
+    document.addEventListener('click', (e) => {
+        if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
+            mobileLeftNav.classList.remove('expanded');
+        }
+    });
+}
 
 
