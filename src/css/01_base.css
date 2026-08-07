@@ -1423,67 +1423,82 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         font-size: 0.65rem !important;
     }
 
-    /* Fluid Table Layout without Transform Scale (NO OVERFLOW & NO GAPS!) */
+    /* Mobile Landscape Grid with FULL Box Details Preserved! */
     .grid-wrapper {
         width: 100% !important;
-        padding: 0 !important;
+        height: 100% !important;
+        padding: 4px !important;
         overflow-x: auto !important;
-        overflow-y: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
         flex: 1 !important;
     }
     
     .periodic-grid {
         display: grid !important;
-        grid-template-columns: repeat(18, minmax(0, 1fr)) !important;
-        grid-template-rows: repeat(10, minmax(0, 1fr)) !important;
-        grid-auto-rows: minmax(0, 1fr) !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        height: auto !important;
-        max-height: calc(100vh - 40px) !important;
-        gap: 2px !important;
+        grid-template-columns: repeat(18, minmax(42px, 1fr)) !important;
+        grid-template-rows: repeat(10, max-content) !important;
+        width: max-content !important;
+        min-width: 780px !important;
+        gap: 3px !important;
         transform: none !important;
         margin: 0 !important;
     }
 
     .element-cell {
-        min-width: 0 !important;
-        min-height: 0 !important;
+        min-width: 42px !important;
         width: 100% !important;
-        height: 100% !important;
-        max-height: 32px !important;
-        aspect-ratio: 1 !important;
-        border-radius: 3px !important;
-        padding: 1px !important;
+        height: auto !important;
+        aspect-ratio: 0.85 !important;
+        border-radius: 4px !important;
+        padding: 2px 1px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: space-between !important;
     }
 
     .cell-number { 
-        font-size: 0.35rem !important; 
+        font-size: 0.42rem !important; 
         line-height: 1 !important;
         opacity: 0.85;
     }
 
     .cell-symbol { 
-        font-size: 0.68rem !important; 
+        font-size: 0.76rem !important; 
         font-weight: 800 !important; 
         line-height: 1 !important; 
-        margin-top: 1px !important;
+        margin: 1px 0 !important;
     }
 
-    /* Hide cell-name and cell-value inside the grid cells on mobile landscape for extreme clarity and zero overflow */
-    .periodic-grid .cell-name,
+    /* Restore ALL box details (Name & Value) on mobile landscape */
+    .periodic-grid .cell-name { 
+        display: block !important;
+        font-size: 0.38rem !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 38px !important;
+        text-align: center !important;
+    }
+
     .periodic-grid .cell-value { 
-        display: none !important; 
+        display: block !important;
+        font-size: 0.36rem !important;
+        line-height: 1 !important;
+        opacity: 0.8 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 38px !important;
+        text-align: center !important;
     }
 
     .in-grid-legend {
-        transform: scale(0.55) !important;
+        transform: scale(0.60) !important;
         transform-origin: top center !important;
-        margin-top: -4px !important;
+        margin-top: 0 !important;
     }
     
     /* Smart Floating Panel for Mobile */
