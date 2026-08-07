@@ -1242,33 +1242,38 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 @media (max-width: 1200px) {
-    /* Switch to Top-Bottom UI */
-    .view-mode { flex-direction: column; }
-    .view-left { padding: 10px 20px; flex: none; border-right: none; position: relative; }
-    .view-right { 
-        padding: 15px 20px; gap: 20px; flex-wrap: nowrap; 
-        order: -1; width: 100%; flex-direction: row; 
-    }
-    
-    /* Property List Grid Layout for tablet */
-    .property-list h3 { display: none; }
-    .help-text { display: none; }
-    .property-list { 
-        background: transparent;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 2px;
+    .view-left {
+        padding: 10px 14px;
         flex: 1;
         min-width: 0;
-        border: none;
+        overflow: hidden;
+    }
+    .view-right { 
+        width: 290px;
+        height: 100% !important;
+        min-height: 0 !important;
+        max-height: 100% !important;
+        padding: 12px 14px;
+        gap: 10px;
+        flex-direction: column;
+        overflow-y: auto !important;
+        flex-shrink: 0;
+    }
+    
+    /* Property List Layout for tablet */
+    .property-list { 
+        background: rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.05);
     }
     .prop-item {
         padding: 6px 12px;
         background: rgba(0,0,0,0.3);
         border-radius: 4px;
         border: 1px solid rgba(255,255,255,0.02);
-        height: 36px; /* Fixed height to prevent table jumping */
-        overflow: hidden; /* Hide overflow if it wraps too much */
     }
     
     /* Fix element card size */
@@ -86557,7 +86562,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.36.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.37.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
