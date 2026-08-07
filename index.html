@@ -196,6 +196,8 @@ body {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     display: none;
+    overflow: hidden !important;
+    min-height: 0 !important;
 }
 .view-mode.active { display: flex; }
 
@@ -207,12 +209,14 @@ body {
     border-right: 1px solid var(--surface-light);
     overflow: hidden;
     justify-content: flex-start;
+    min-height: 0 !important;
 }
 
 .view-right {
     width: 400px;
-    height: 100%;
-    max-height: 100%;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
     flex-shrink: 0;
     background: var(--bg-dark);
     padding: 20px 24px;
@@ -1120,8 +1124,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 @media (max-width: 1440px) {
     .view-right {
         width: 310px;
-        height: 100%;
-        max-height: 100%;
+        height: 100% !important;
+        min-height: 0 !important;
+        max-height: 100% !important;
         padding: 14px 16px;
         gap: 10px;
         overflow-y: auto !important;
@@ -86539,7 +86544,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.34.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.35.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
