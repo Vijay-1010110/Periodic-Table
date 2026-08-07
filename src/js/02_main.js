@@ -853,14 +853,12 @@ function renderGrid() {
     // Render Lanthanides & Actinides Placeholders in 18-column mode
     grid.querySelectorAll('.fblock-placeholder-cell').forEach(el => el.remove());
     if (tableLayoutMode === '18col') {
-        const isMain = (gridId === 'main-grid' || gridId === '#main-grid');
-        
-        // Lanthanide Placeholder (Row 6, Col 3)
+        // Lanthanide Placeholder (Row 6, Col 3 -> Grid Row 7)
         const lanthPlaceholder = document.createElement('div');
         lanthPlaceholder.className = 'element-cell fblock-placeholder-cell lanth-placeholder';
         lanthPlaceholder.style.cssText = `
             grid-column: 3;
-            grid-row: ${isMain ? 7 : 6};
+            grid-row: 7;
             border: 2px dashed #e879f9 !important;
             background: rgba(168, 85, 247, 0.45) !important;
             border-radius: 6px;
@@ -890,12 +888,12 @@ function renderGrid() {
         };
         grid.appendChild(lanthPlaceholder);
 
-        // Actinide Placeholder (Row 7, Col 3)
+        // Actinide Placeholder (Row 7, Col 3 -> Grid Row 8)
         const actPlaceholder = document.createElement('div');
         actPlaceholder.className = 'element-cell fblock-placeholder-cell act-placeholder';
         actPlaceholder.style.cssText = `
             grid-column: 3;
-            grid-row: ${isMain ? 8 : 7};
+            grid-row: 8;
             border: 2px dashed #a855f7 !important;
             background: rgba(168, 85, 247, 0.45) !important;
             border-radius: 6px;
@@ -2139,6 +2137,11 @@ function generateMiniBohrSVG(shells) {
 
 // Smart Mobile Floating Panel Positioning & Control
 function positionMobileSidebar(cell, el) {
+    if (currentView !== 'main' && currentView !== 'electrons') {
+        closeMobileSidebar();
+        return;
+    }
+
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
