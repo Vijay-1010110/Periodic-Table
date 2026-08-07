@@ -1446,10 +1446,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .element-cell {
-        min-width: 42px !important;
+        min-width: 44px !important;
         width: 100% !important;
         height: auto !important;
-        aspect-ratio: 0.85 !important;
+        aspect-ratio: 1.05 !important; /* Reduces height slightly relative to width */
         border-radius: 4px !important;
         padding: 2px 1px !important;
         display: flex !important;
@@ -1479,7 +1479,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        max-width: 38px !important;
+        max-width: 40px !important;
         text-align: center !important;
     }
 
@@ -1491,14 +1491,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        max-width: 38px !important;
+        max-width: 40px !important;
         text-align: center !important;
     }
 
     .in-grid-legend {
-        transform: scale(0.60) !important;
+        transform: scale(0.78) !important; /* Increased legend size to fill empty space above p-block */
         transform-origin: top center !important;
-        margin-top: 0 !important;
+        margin-top: 2px !important;
     }
     
     /* Smart Floating Panel for Mobile */
@@ -1541,9 +1541,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         left: auto !important;
     }
 
-    /* Pos-Left: Floating on Left side (when clicked element is on Right) */
+    /* Pos-Left: Floating on Left side without overlapping 32px left nav bar */
     .view-right.pos-left {
-        left: 10px !important;
+        left: 40px !important;
         right: auto !important;
     }
 
