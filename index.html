@@ -163,47 +163,26 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
-    height: 52px;
-    min-height: 52px;
-    max-height: 52px;
+    padding: 10px 20px;
     background: var(--surface);
     border-bottom: 1px solid var(--surface-light);
-    box-sizing: border-box;
-    overflow: hidden;
 }
-.logo { font-size: 1.35rem; font-weight: 700; color: var(--accent-cyan); letter-spacing: 1px; flex-shrink: 0; }
-.mode-buttons { 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    overflow-x: auto; 
-    white-space: nowrap; 
-    scrollbar-width: none; 
-    -webkit-overflow-scrolling: touch;
-}
-.mode-buttons::-webkit-scrollbar { display: none; }
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-cyan); letter-spacing: 1px; }
+.mode-buttons { display: flex; gap: 10px; }
 .nav-btn {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    padding: 6px 14px;
-    height: 34px;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    padding: 8px 16px;
     cursor: pointer;
     font-family: var(--font-ui);
-    font-size: 0.88rem;
     font-weight: 500;
     border-radius: 4px;
     transition: var(--transition-fast);
 }
 .nav-btn:hover { color: var(--text-primary); background: var(--surface-light); }
 .nav-btn.active { color: var(--accent-cyan); background: rgba(0, 212, 255, 0.1); }
-.icon-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; margin-left: 8px; flex-shrink: 0; }
+.icon-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; margin-left: 10px; }
 
 /* Layout */
 .app-container {
@@ -1521,7 +1500,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         overflow: hidden !important;
     }
     
-    .periodic-table-grid {
+    .periodic-grid {
+        min-width: 0 !important;
         gap: 2px !important;
         transform: scale(0.55) !important;
         transform-origin: top center !important;
