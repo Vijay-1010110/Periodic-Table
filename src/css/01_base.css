@@ -96,10 +96,27 @@ body {
     flex-shrink: 0;
     background: var(--bg-dark);
     padding: 20px 24px;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    max-height: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.view-right::-webkit-scrollbar {
+    width: 6px;
+}
+.view-right::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+.view-right::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.35);
+    border-radius: 3px;
+}
+.view-right::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.7);
 }
 
 .full-panel { padding: 40px; width: 100%; }
@@ -984,8 +1001,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 @media (max-width: 1440px) {
     .view-right {
         width: 310px;
-        padding: 14px;
+        padding: 14px 16px;
         gap: 10px;
+        overflow-y: auto !important;
+        max-height: 100%;
     }
     
     .element-search-input {
