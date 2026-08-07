@@ -225,13 +225,13 @@ body {
 
 .view-right {
     width: 400px;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
+    height: calc(100vh - 56px) !important;
+    max-height: calc(100vh - 56px) !important;
     flex-shrink: 0;
     background: var(--bg-dark);
     padding: 20px 24px;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
     display: flex;
@@ -1136,13 +1136,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 @media (max-width: 1440px) {
     .view-right {
         width: 310px;
-        height: 100% !important;
-        min-height: 0 !important;
-        max-height: 100% !important;
+        height: calc(100vh - 56px) !important;
+        max-height: calc(100vh - 56px) !important;
         padding: 14px 16px;
         gap: 10px;
-        overflow-y: scroll !important;
-        -webkit-overflow-scrolling: touch;
+        overflow-y: auto !important;
+        overflow-x: hidden;
         flex-shrink: 0;
     }
     
@@ -1250,13 +1249,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
     .view-right { 
         width: 290px;
-        height: 100% !important;
-        min-height: 0 !important;
-        max-height: 100% !important;
+        height: calc(100vh - 56px) !important;
+        max-height: calc(100vh - 56px) !important;
         padding: 12px 14px;
         gap: 10px;
         flex-direction: column;
         overflow-y: auto !important;
+        overflow-x: hidden;
         flex-shrink: 0;
     }
     
@@ -86562,7 +86561,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.37.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.38.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
