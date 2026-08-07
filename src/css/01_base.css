@@ -542,8 +542,11 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     transform-origin: top center !important;
 }
 #elec-in-grid-legend {
-    grid-row: 2 / 5 !important; /* Start at Row 2 (Hydrogen line) to fit in the gap above transition metals */
+    grid-row: 2 !important; /* Row 2 like main grid so it takes 0 grid flow height */
     grid-column: 3 / 13 !important; /* Fit inside the gap between Group 2 and Group 13 */
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
     margin-top: 0 !important;
     padding-left: 0 !important;
     display: flex;
