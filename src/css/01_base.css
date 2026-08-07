@@ -1278,7 +1278,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     text-align: center;
     padding: 24px;
 }
-@media (max-width: 900px) and (orientation: portrait) {
+@media (max-width: 1000px) and (orientation: portrait) {
     .portrait-warning { display: flex; }
 }
 
@@ -1287,7 +1287,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     50% { transform: rotate(-90deg) scale(1.1); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px), (max-height: 520px) {
     nav.top-nav {
         padding: 4px 10px !important;
         height: 42px !important;
@@ -1384,7 +1384,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     
     .periodic-table-grid {
         gap: 2px !important;
-        transform: scale(0.62) !important;
+        transform: scale(0.55) !important;
         transform-origin: top center !important;
         margin-top: 0 !important;
     }

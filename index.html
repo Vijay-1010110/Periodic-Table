@@ -1396,7 +1396,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     text-align: center;
     padding: 24px;
 }
-@media (max-width: 900px) and (orientation: portrait) {
+@media (max-width: 1000px) and (orientation: portrait) {
     .portrait-warning { display: flex; }
 }
 
@@ -1405,7 +1405,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     50% { transform: rotate(-90deg) scale(1.1); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px), (max-height: 520px) {
     nav.top-nav {
         padding: 4px 10px !important;
         height: 42px !important;
@@ -1502,7 +1502,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     
     .periodic-table-grid {
         gap: 2px !important;
-        transform: scale(0.62) !important;
+        transform: scale(0.55) !important;
         transform-origin: top center !important;
         margin-top: 0 !important;
     }
@@ -86177,7 +86177,7 @@ function positionMobileSidebar(cell, el) {
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
-    if (window.innerWidth <= 900) {
+    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
         let isLeftHalf = false;
         if (cell) {
             const rect = cell.getBoundingClientRect();
@@ -86208,7 +86208,7 @@ function closeMobileSidebar() {
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) {
+    if (window.innerWidth > 1000 && window.innerHeight > 520) {
         document.querySelectorAll('.view-right').forEach(sb => {
             sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
         });
@@ -86812,7 +86812,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.41.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.42.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

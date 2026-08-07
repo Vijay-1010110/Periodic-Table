@@ -2141,7 +2141,7 @@ function positionMobileSidebar(cell, el) {
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
-    if (window.innerWidth <= 900) {
+    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
         let isLeftHalf = false;
         if (cell) {
             const rect = cell.getBoundingClientRect();
@@ -2172,7 +2172,7 @@ function closeMobileSidebar() {
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) {
+    if (window.innerWidth > 1000 && window.innerHeight > 520) {
         document.querySelectorAll('.view-right').forEach(sb => {
             sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
         });
