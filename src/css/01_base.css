@@ -1032,11 +1032,11 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
     .in-grid-legend {
         gap: 6px;
-        margin-top: 0px !important;
-        transform: scale(0.78);
+        margin-top: 4px !important;
+        transform: scale(0.68);
         transform-origin: top center !important;
         justify-content: center !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         z-index: 5;
     }
 
@@ -1157,10 +1157,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         grid-row: 3 / 5; /* Restrict to row 3 and 4 (Li and Na rows) */
         grid-column: 3 / 13; /* Stay within empty space */
         justify-content: center !important; /* Centered in available space */
-        align-items: center !important;
-        transform: scale(0.95); /* Slight scale down to ensure it never overflows */
+        align-items: flex-start !important;
+        transform: scale(0.75); /* Scale down to ensure it never overflows */
         transform-origin: top center !important;
-        margin-top: 5px; /* slight push down so it doesn't hug the top */
+        margin-top: 4px !important;
     }
     
     /* Shrink legend contents to fit */
