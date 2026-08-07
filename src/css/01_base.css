@@ -990,26 +990,43 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     
     .element-search-input {
         flex: 0 1 180px;
-        min-width: 120px;
+        min-width: 110px;
         height: 36px;
         font-size: 0.78rem;
-        padding: 0 10px;
+        padding: 0 8px;
     }
     
     .temp-controller {
-        flex: 1 1 200px;
-        min-width: 160px;
+        flex: 1 1 auto;
+        min-width: 200px;
         height: 36px;
-        padding: 0 8px;
-        gap: 6px;
+        padding: 0 6px;
+        gap: 4px;
     }
 
-    .temp-unit-extra {
-        display: none !important; /* Hide extra °C and °F text on small screens so slider never overlaps search */
+    #temp-slider {
+        flex: 1 1 50px;
+        min-width: 40px;
+    }
+
+    #temp-display-container {
+        font-size: 0.72rem !important;
+        padding: 2px 6px !important;
+    }
+
+    #temp-input {
+        width: 44px !important;
+        font-size: 0.72rem !important;
+        padding: 1px 2px !important;
+    }
+
+    .temp-unit-sep {
+        opacity: 0.4;
+        margin: 0 2px;
     }
 
     .table-controls {
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 6px;
     }
 
