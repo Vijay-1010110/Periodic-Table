@@ -1264,31 +1264,94 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .subshell-label { font-size: 0.7rem; }
 }
 
+/* Portrait Warning Overlay for Mobile */
+.portrait-warning {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 14, 26, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+}
+@media (max-width: 900px) and (orientation: portrait) {
+    .portrait-warning { display: flex; }
+}
+
+@keyframes rotatePulse {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(-90deg) scale(1.1); }
+}
+
 @media (max-width: 900px) {
-    .view-mode { overflow: hidden; }
-    .view-left { height: 100%; border-bottom: none; }
+    .view-mode { overflow: hidden; position: relative; }
+    .view-left { width: 100%; height: 100%; border-right: none; flex: 1; min-width: 0; }
     
+    /* Smart Floating Panel for Mobile */
     .view-right {
-        position: absolute;
-        right: -100%;
-        top: 0;
-        bottom: 0;
-        width: 320px;
-        max-width: 100%;
-        z-index: 1000;
-        transition: right 0.3s ease;
-        box-shadow: -5px 0 15px rgba(0,0,0,0.8);
-        flex-direction: column; /* revert to column for slide-in menu */
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        gap: 20px;
-        padding: 20px;
+        position: fixed !important;
+        top: 60px !important;
+        bottom: 12px !important;
+        height: calc(100vh - 72px) !important;
+        max-height: calc(100vh - 72px) !important;
+        width: 300px !important;
+        max-width: 82vw !important;
+        z-index: 2500 !important;
+        background: rgba(15, 23, 42, 0.96) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 212, 255, 0.2) !important;
+        transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s ease, right 0.3s ease !important;
+        padding: 16px 14px !important;
+        gap: 12px !important;
+
+        /* Hidden by default on mobile until element is clicked */
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: scale(0.92) !important;
     }
-    .view-right > * { flex: none; min-width: 0; }
-    .property-list { grid-template-columns: 1fr; }
-    
-    .view-right.open { right: 0; }
-    #sidebar-close-btn { display: block !important; }
+
+    /* Active Floating Panel when element is clicked */
+    .view-right.mobile-active,
+    .view-right.open {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: scale(1) !important;
+    }
+
+    /* Pos-Right: Floating on Right side (when clicked element is on Left) */
+    .view-right.pos-right {
+        right: 12px !important;
+        left: auto !important;
+    }
+
+    /* Pos-Left: Floating on Left side (when clicked element is on Right) */
+    .view-right.pos-left {
+        left: 12px !important;
+        right: auto !important;
+    }
+
+    /* Close button on floating panel */
+    .view-right .sidebar-close-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        top: 8px !important;
+        right: 8px !important;
+        left: auto !important;
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        font-size: 1.2rem;
+        z-index: 100;
+    }
     
     .in-grid-legend { gap: 2px; }
     .legend-box { padding: 4px 5px; }

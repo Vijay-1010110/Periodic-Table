@@ -1663,8 +1663,8 @@ function selectElement(z) {
     const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${z}"]`);
     if (cell) cell.classList.add('selected');
     
-    // Open sidebar on mobile when element is clicked
-    document.querySelectorAll('.view-right.sidebar').forEach(sb => sb.classList.add('open'));
+    // Open smart floating panel on mobile positioned opposite to clicked element
+    positionMobileSidebar(cell, el);
     
     if (currentView === 'main') {
         document.getElementById('empty-state').classList.add('hidden');
@@ -2135,5 +2135,52 @@ function generateMiniBohrSVG(shells) {
     svg += `</svg>`;
     return svg;
 }
+
+// Smart Mobile Floating Panel Positioning & Control
+function positionMobileSidebar(cell, el) {
+    const sidebar = document.querySelector('.view-mode.active .view-right');
+    if (!sidebar) return;
+
+    if (window.innerWidth <= 900) {
+        let isLeftHalf = false;
+        if (cell) {
+            const rect = cell.getBoundingClientRect();
+            const cellCenterX = rect.left + rect.width / 2;
+            isLeftHalf = cellCenterX < (window.innerWidth / 2);
+        } else if (el) {
+            isLeftHalf = (el.group || 1) <= 9;
+        }
+
+        if (isLeftHalf) {
+            sidebar.classList.remove('pos-left');
+            sidebar.classList.add('pos-right');
+        } else {
+            sidebar.classList.remove('pos-right');
+            sidebar.classList.add('pos-left');
+        }
+
+        sidebar.classList.add('mobile-active');
+    } else {
+        sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
+    }
+}
+
+function closeMobileSidebar() {
+    document.querySelectorAll('.view-right').forEach(sb => {
+        sb.classList.remove('mobile-active', 'open');
+    });
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+        document.querySelectorAll('.view-right').forEach(sb => {
+            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
+        });
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileSidebar();
+});
 
 

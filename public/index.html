@@ -1382,31 +1382,94 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .subshell-label { font-size: 0.7rem; }
 }
 
+/* Portrait Warning Overlay for Mobile */
+.portrait-warning {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 14, 26, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+}
+@media (max-width: 900px) and (orientation: portrait) {
+    .portrait-warning { display: flex; }
+}
+
+@keyframes rotatePulse {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(-90deg) scale(1.1); }
+}
+
 @media (max-width: 900px) {
-    .view-mode { overflow: hidden; }
-    .view-left { height: 100%; border-bottom: none; }
+    .view-mode { overflow: hidden; position: relative; }
+    .view-left { width: 100%; height: 100%; border-right: none; flex: 1; min-width: 0; }
     
+    /* Smart Floating Panel for Mobile */
     .view-right {
-        position: absolute;
-        right: -100%;
-        top: 0;
-        bottom: 0;
-        width: 320px;
-        max-width: 100%;
-        z-index: 1000;
-        transition: right 0.3s ease;
-        box-shadow: -5px 0 15px rgba(0,0,0,0.8);
-        flex-direction: column; /* revert to column for slide-in menu */
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        gap: 20px;
-        padding: 20px;
+        position: fixed !important;
+        top: 60px !important;
+        bottom: 12px !important;
+        height: calc(100vh - 72px) !important;
+        max-height: calc(100vh - 72px) !important;
+        width: 300px !important;
+        max-width: 82vw !important;
+        z-index: 2500 !important;
+        background: rgba(15, 23, 42, 0.96) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 212, 255, 0.2) !important;
+        transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s ease, right 0.3s ease !important;
+        padding: 16px 14px !important;
+        gap: 12px !important;
+
+        /* Hidden by default on mobile until element is clicked */
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: scale(0.92) !important;
     }
-    .view-right > * { flex: none; min-width: 0; }
-    .property-list { grid-template-columns: 1fr; }
-    
-    .view-right.open { right: 0; }
-    #sidebar-close-btn { display: block !important; }
+
+    /* Active Floating Panel when element is clicked */
+    .view-right.mobile-active,
+    .view-right.open {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: scale(1) !important;
+    }
+
+    /* Pos-Right: Floating on Right side (when clicked element is on Left) */
+    .view-right.pos-right {
+        right: 12px !important;
+        left: auto !important;
+    }
+
+    /* Pos-Left: Floating on Left side (when clicked element is on Right) */
+    .view-right.pos-left {
+        left: 12px !important;
+        right: auto !important;
+    }
+
+    /* Close button on floating panel */
+    .view-right .sidebar-close-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        top: 8px !important;
+        right: 8px !important;
+        left: auto !important;
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        font-size: 1.2rem;
+        z-index: 100;
+    }
     
     .in-grid-legend { gap: 2px; }
     .legend-box { padding: 4px 5px; }
@@ -85529,8 +85592,8 @@ function selectElement(z) {
     const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${z}"]`);
     if (cell) cell.classList.add('selected');
     
-    // Open sidebar on mobile when element is clicked
-    document.querySelectorAll('.view-right.sidebar').forEach(sb => sb.classList.add('open'));
+    // Open smart floating panel on mobile positioned opposite to clicked element
+    positionMobileSidebar(cell, el);
     
     if (currentView === 'main') {
         document.getElementById('empty-state').classList.add('hidden');
@@ -86001,6 +86064,53 @@ function generateMiniBohrSVG(shells) {
     svg += `</svg>`;
     return svg;
 }
+
+// Smart Mobile Floating Panel Positioning & Control
+function positionMobileSidebar(cell, el) {
+    const sidebar = document.querySelector('.view-mode.active .view-right');
+    if (!sidebar) return;
+
+    if (window.innerWidth <= 900) {
+        let isLeftHalf = false;
+        if (cell) {
+            const rect = cell.getBoundingClientRect();
+            const cellCenterX = rect.left + rect.width / 2;
+            isLeftHalf = cellCenterX < (window.innerWidth / 2);
+        } else if (el) {
+            isLeftHalf = (el.group || 1) <= 9;
+        }
+
+        if (isLeftHalf) {
+            sidebar.classList.remove('pos-left');
+            sidebar.classList.add('pos-right');
+        } else {
+            sidebar.classList.remove('pos-right');
+            sidebar.classList.add('pos-left');
+        }
+
+        sidebar.classList.add('mobile-active');
+    } else {
+        sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
+    }
+}
+
+function closeMobileSidebar() {
+    document.querySelectorAll('.view-right').forEach(sb => {
+        sb.classList.remove('mobile-active', 'open');
+    });
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+        document.querySelectorAll('.view-right').forEach(sb => {
+            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
+        });
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileSidebar();
+});
 
 
 
@@ -86583,10 +86693,19 @@ window.OrbitalViewer = {
 </script>
 </head>
 <body class="theme-dark">
+    <!-- Portrait Mode Orientation Warning for Mobile -->
+    <div id="portrait-warning" class="portrait-warning">
+        <div class="pw-content">
+            <div class="pw-icon" style="font-size: 3rem; animation: rotatePulse 2s infinite ease-in-out;">📱🔄</div>
+            <h2 style="color: #00d4ff; font-family: var(--font-ui); margin-top: 12px; font-size: 1.3rem; font-weight: 700;">Please Rotate Your Device</h2>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 8px; max-width: 260px; line-height: 1.4;">PeriodicaX requires landscape orientation on mobile screens for the optimal periodic table experience.</p>
+        </div>
+    </div>
+
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.39.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.40.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86634,7 +86753,7 @@ window.OrbitalViewer = {
 
             <!-- Right: Property Sidebar -->
             <div class="view-right sidebar" style="position: relative;">
-                <button class="sidebar-close-btn" style="display: none; position: absolute; top: 15px; left: 15px; background: transparent; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; z-index: 10;" onclick="this.parentElement.classList.remove('open')">&times;</button>
+                <button class="sidebar-close-btn" aria-label="Close panel" onclick="closeMobileSidebar()">&times;</button>
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">⚛️</div>
                     <p>Select an element to view details</p>
