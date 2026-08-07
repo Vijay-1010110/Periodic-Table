@@ -1101,28 +1101,40 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* Responsive Design */
 @media (max-width: 1440px) {
     .view-right {
-        width: 320px;
+        width: 310px;
         padding: 14px;
         gap: 10px;
     }
     
     .element-search-input {
-        width: 190px;
-        min-width: 130px;
+        flex: 0 1 180px;
+        min-width: 120px;
         height: 36px;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         padding: 0 10px;
     }
     
+    .temp-controller {
+        flex: 1 1 200px;
+        min-width: 160px;
+        height: 36px;
+        padding: 0 8px;
+        gap: 6px;
+    }
+
+    .temp-unit-extra {
+        display: none !important; /* Hide extra °C and °F text on small screens so slider never overlaps search */
+    }
+
     .table-controls {
         gap: 8px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .in-grid-legend {
         gap: 6px;
         margin-top: 0px !important;
-        transform: scale(0.80);
+        transform: scale(0.78);
         transform-origin: top center !important;
         justify-content: center !important;
         align-items: center !important;
@@ -86488,7 +86500,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.29.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.30.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -86518,7 +86530,7 @@ window.OrbitalViewer = {
                             <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
-                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 6px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
+                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K<span class="temp-unit-extra"> <span style="opacity: 0.5; margin: 0 4px;">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span style="opacity: 0.5; margin: 0 4px;">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></span></label>
                             </div>
                             <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
                                 <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
