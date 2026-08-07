@@ -644,7 +644,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .property-list h3 { color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 5px;}
 .help-text { margin-bottom: 15px; }
 
-.property-list { background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+.property-list { background: rgba(0,0,0,0.2); border-radius: 6px; overflow: visible !important; border: 1px solid rgba(255,255,255,0.05); }
 
 .prop-item {
     display: flex;
@@ -839,7 +839,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .property-list h3 { color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 5px;}
 .help-text { margin-bottom: 15px; }
 
-.property-list { background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+.property-list { background: rgba(0,0,0,0.2); border-radius: 6px; overflow: visible !important; border: 1px solid rgba(255,255,255,0.05); }
 
 .prop-item {
     display: flex;

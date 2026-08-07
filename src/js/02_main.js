@@ -520,6 +520,31 @@ function setupUI() {
     
     window.addEventListener('hashchange', handleHashRouting);
     
+    // Guaranteed wheel and touch scroll handlers for all right panels
+    document.querySelectorAll('.view-right').forEach(panel => {
+        panel.addEventListener('wheel', (e) => {
+            if (panel.scrollHeight > panel.clientHeight) {
+                panel.scrollTop += e.deltaY;
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        let touchStartY = 0;
+        panel.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        panel.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+                const touchY = e.touches[0].clientY;
+                const deltaY = touchStartY - touchY;
+                touchStartY = touchY;
+                if (panel.scrollHeight > panel.clientHeight) {
+                    panel.scrollTop += deltaY;
+                }
+            }
+        }, { passive: true });
+    });
+    
     // Property Sidebar selection
     document.querySelectorAll('.prop-item:not(.non-interactive):not(.elec-prop-item)').forEach(item => {
         item.addEventListener('click', (e) => {
