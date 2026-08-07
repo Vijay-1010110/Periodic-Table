@@ -1500,6 +1500,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         transform-origin: top center !important;
         margin-top: 2px !important;
     }
+
+    #elec-in-grid-legend {
+        transform: scale(0.52) !important; /* Compact scaling for Aufbau diagram in electrons view */
+        transform-origin: top center !important;
+        margin-top: -16px !important;
+        margin-bottom: -16px !important;
+    }
     
     /* Smart Floating Panel for Mobile */
     .view-right {
