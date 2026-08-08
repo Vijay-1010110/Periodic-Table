@@ -1557,17 +1557,18 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     
     .periodic-grid {
         display: grid !important;
-        grid-template-columns: repeat(18, minmax(42px, 1fr)) !important;
+        grid-template-columns: repeat(18, minmax(40px, 1fr)) !important;
         grid-template-rows: repeat(10, max-content) !important;
-        width: max-content !important;
+        width: 780px !important;
         min-width: 780px !important;
+        max-width: 780px !important;
         gap: 3px !important;
         transform: none !important;
         margin: 0 !important;
     }
 
     .element-cell {
-        min-width: 44px !important;
+        min-width: 0 !important;
         width: 100% !important;
         height: auto !important;
         aspect-ratio: 1.05 !important; /* Reduces height slightly relative to width */
@@ -1577,6 +1578,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         flex-direction: column !important;
         align-items: center !important;
         justify-content: space-between !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
     .cell-number { 
@@ -87041,7 +87044,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.53.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.54.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

@@ -1439,17 +1439,18 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     
     .periodic-grid {
         display: grid !important;
-        grid-template-columns: repeat(18, minmax(42px, 1fr)) !important;
+        grid-template-columns: repeat(18, minmax(40px, 1fr)) !important;
         grid-template-rows: repeat(10, max-content) !important;
-        width: max-content !important;
+        width: 780px !important;
         min-width: 780px !important;
+        max-width: 780px !important;
         gap: 3px !important;
         transform: none !important;
         margin: 0 !important;
     }
 
     .element-cell {
-        min-width: 44px !important;
+        min-width: 0 !important;
         width: 100% !important;
         height: auto !important;
         aspect-ratio: 1.05 !important; /* Reduces height slightly relative to width */
@@ -1459,6 +1460,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         flex-direction: column !important;
         align-items: center !important;
         justify-content: space-between !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
     .cell-number { 
