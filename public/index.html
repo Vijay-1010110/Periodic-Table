@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.4, maximum-scale=3.0, user-scalable=yes">
     <title>PeriodicaX - Definitive Periodic Table</title>
     
     <!-- Google tag (gtag.js) -->
@@ -1573,6 +1573,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         overflow-x: auto !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-x pan-y pinch-zoom !important;
         flex: 1 !important;
         display: flex !important;
         justify-content: flex-start !important; /* flex-start prevents negative un-scrollable overflow on left in portrait mode */
@@ -86397,6 +86398,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
+    setupPinchToZoom();
     renderGrid(); // Initial render for main view
     
     // Check if three-canvas-container exists and initialize
@@ -86534,6 +86536,49 @@ function setupMobileLeftNav() {
         if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
             mobileLeftNav.classList.remove('expanded');
         }
+    });
+}
+
+// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+function setupPinchToZoom() {
+    const wrappers = document.querySelectorAll('.grid-wrapper');
+    wrappers.forEach(wrapper => {
+        let initialDistance = 0;
+        let currentScale = 1;
+        let startScale = 1;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                initialDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                startScale = currentScale;
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialDistance > 0) {
+                const currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                const zoomFactor = currentDistance / initialDistance;
+                currentScale = Math.min(Math.max(startScale * zoomFactor, 0.4), 3.0);
+                
+                const grid = wrapper.querySelector('.periodic-grid');
+                if (grid) {
+                    grid.style.transformOrigin = 'top left';
+                    grid.style.transform = `scale(${currentScale})`;
+                }
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialDistance = 0;
+            }
+        }, { passive: true });
     });
 }
 
@@ -87163,13 +87208,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Rotate Screen</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.68.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.69.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.68.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.69.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

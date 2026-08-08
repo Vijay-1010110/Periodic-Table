@@ -2123,6 +2123,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
+    setupPinchToZoom();
     renderGrid(); // Initial render for main view
     
     // Check if three-canvas-container exists and initialize
@@ -2260,6 +2261,49 @@ function setupMobileLeftNav() {
         if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
             mobileLeftNav.classList.remove('expanded');
         }
+    });
+}
+
+// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+function setupPinchToZoom() {
+    const wrappers = document.querySelectorAll('.grid-wrapper');
+    wrappers.forEach(wrapper => {
+        let initialDistance = 0;
+        let currentScale = 1;
+        let startScale = 1;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                initialDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                startScale = currentScale;
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialDistance > 0) {
+                const currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                const zoomFactor = currentDistance / initialDistance;
+                currentScale = Math.min(Math.max(startScale * zoomFactor, 0.4), 3.0);
+                
+                const grid = wrapper.querySelector('.periodic-grid');
+                if (grid) {
+                    grid.style.transformOrigin = 'top left';
+                    grid.style.transform = `scale(${currentScale})`;
+                }
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialDistance = 0;
+            }
+        }, { passive: true });
     });
 }
 
