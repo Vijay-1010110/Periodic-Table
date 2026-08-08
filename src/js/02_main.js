@@ -2169,6 +2169,7 @@ document.addEventListener('click', autoActivateMobileLandscape, { passive: true 
 
 // Init
 window.addEventListener('DOMContentLoaded', () => {
+    setupPerfModeOnLoad();
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
@@ -2304,81 +2305,176 @@ function setupMobileLeftNav() {
     });
 }
 
-// Global Grid Zoom State & Scaling Engine
-let globalGridScale = 1.0;
-
-function setGridZoom(scale) {
-    globalGridScale = Math.min(Math.max(scale, 0.4), 3.0);
-    const grids = document.querySelectorAll('.periodic-grid');
-    grids.forEach(grid => {
-        grid.style.transformOrigin = 'top left';
-        grid.style.transform = `scale(${globalGridScale})`;
-    });
-
-    const zoomLabel = document.getElementById('mobile-zoom-level-text');
-    if (zoomLabel) {
-        zoomLabel.textContent = `${Math.round(globalGridScale * 100)}%`;
-    }
-}
-
-// Multi-Finger Pinch-to-Zoom Gesture & Button Support for Periodic Table Grid
+// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
 function setupPinchToZoom() {
     const wrappers = document.querySelectorAll('.grid-wrapper');
     wrappers.forEach(wrapper => {
-        let initialDistance = 0;
-        let startScale = 1.0;
+        let pinchStartDist = 0;
+        let pinchStartScale = 1;
+        let currentScale = 1;
+        let pinching = false;
+
+        // Cache grid reference; it may be dynamically re-rendered so re-query on touchstart
+        let grid = null;
 
         wrapper.addEventListener('touchstart', (e) => {
+            grid = wrapper.querySelector('.periodic-grid');
             if (e.touches.length === 2) {
-                initialDistance = Math.hypot(
+                pinching = true;
+                pinchStartDist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                startScale = globalGridScale;
+                pinchStartScale = currentScale;
+                e.preventDefault(); // prevent browser scroll on pinch start
+            } else {
+                pinching = false;
             }
-        }, { passive: true });
+        }, { passive: false });
 
         wrapper.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && initialDistance > 0) {
-                if (e.cancelable) e.preventDefault(); // Crucial: prevents browser from capturing and canceling pinch gesture
-                const currentDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const zoomFactor = currentDistance / initialDistance;
-                setGridZoom(startScale * zoomFactor);
-            }
+            if (!pinching || e.touches.length !== 2 || !grid) return;
+
+            e.preventDefault(); // CRITICAL: blocks native scroll so pinch works
+
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+
+            const ratio = dist / (pinchStartDist || 1);
+            currentScale = Math.min(Math.max(pinchStartScale * ratio, 0.4), 3.0);
+
+            // Compute midpoint of the two fingers in wrapper-local coords
+            const wRect = wrapper.getBoundingClientRect();
+            const midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - wRect.left;
+            const midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - wRect.top;
+
+            grid.style.transformOrigin = `${midX}px ${midY}px`;
+            grid.style.transform = `scale(${currentScale})`;
         }, { passive: false });
 
         wrapper.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
-                initialDistance = 0;
+                pinching = false;
+                pinchStartDist = 0;
             }
         }, { passive: true });
     });
+}
 
-    // Wire up Zoom Controls (+ / - / Reset)
-    const btnIn = document.getElementById('btn-zoom-in');
-    const btnOut = document.getElementById('btn-zoom-out');
-    const btnReset = document.getElementById('mobile-zoom-level-text');
+// ==========================================================================
+// DEVICE TIER DETECTION & PERFORMANCE MODE
+// ==========================================================================
 
-    if (btnIn) {
-        btnIn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            setGridZoom(globalGridScale + 0.15);
-        });
+function detectDeviceTier() {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+                     ('ontouchstart' in window && window.innerWidth <= 1024);
+    const cores = navigator.hardwareConcurrency || 0;
+    const mem   = navigator.deviceMemory || 0; // GB (not available in all browsers)
+    const gpu   = (() => {
+        try {
+            const c = document.createElement('canvas');
+            const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+            if (!gl) return 'unknown';
+            const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+            return dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'unknown';
+        } catch { return 'unknown'; }
+    })();
+
+    let tier = 'high';
+    if (isMobile) {
+        tier = 'mobile'; // mobile always optimized
+    } else if (cores > 0 && cores <= 4) {
+        tier = 'budget';
+    } else if (mem > 0 && mem <= 4) {
+        tier = 'budget';
+    } else if (cores <= 8 && (mem <= 8 || mem === 0)) {
+        tier = 'mid';
     }
-    if (btnOut) {
-        btnOut.addEventListener('click', (e) => {
-            e.stopPropagation();
-            setGridZoom(globalGridScale - 0.15);
-        });
+
+    return { tier, isMobile, cores, mem, gpu };
+}
+
+function applyPerfMode(enable, savePreference = false) {
+    if (enable) {
+        document.body.classList.add('perf-mode');
+    } else {
+        document.body.classList.remove('perf-mode');
     }
-    if (btnReset) {
-        btnReset.addEventListener('click', (e) => {
-            e.stopPropagation();
-            setGridZoom(1.0);
-        });
+
+    // Update toggle UI
+    const toggle = document.getElementById('perf-mode-toggle');
+    if (toggle) toggle.checked = enable;
+
+    // Persist preference (not for mobile — mobile is always on)
+    if (savePreference) {
+        localStorage.setItem('perfModeOverride', enable ? '1' : '0');
+    }
+}
+
+function initPerfModeUI() {
+    const { tier, isMobile, cores, mem, gpu } = detectDeviceTier();
+
+    // Badge
+    const badge = document.getElementById('perf-tier-badge');
+    if (badge) {
+        const labels = { mobile: ['MOBILE', '#00d4ff', 'rgba(0,212,255,0.15)'],
+                         budget: ['BUDGET', '#f59e0b', 'rgba(245,158,11,0.15)'],
+                         mid:    ['MID-RANGE', '#a78bfa', 'rgba(167,139,250,0.15)'],
+                         high:   ['HIGH-END', '#10b981', 'rgba(16,185,129,0.15)'] };
+        const [label, color, bg] = labels[tier] || labels.high;
+        badge.textContent = label;
+        badge.style.cssText += `color:${color}; background:${bg}; border:1px solid ${color}44;`;
+    }
+
+    // Device info panel
+    const infoEl = document.getElementById('device-info-list');
+    if (infoEl) {
+        const rows = [
+            ['Device Type', isMobile ? 'Mobile / Tablet' : 'Desktop / Laptop'],
+            ['CPU Cores', cores > 0 ? `${cores} logical cores` : 'Not available'],
+            ['RAM', mem > 0 ? `~${mem} GB` : 'Not exposed by browser'],
+            ['GPU', gpu !== 'unknown' ? gpu.substring(0, 60) : 'Not available'],
+            ['Screen', `${window.screen.width}×${window.screen.height} @ ${window.devicePixelRatio}x`],
+        ];
+        infoEl.innerHTML = rows.map(([k, v]) =>
+            `<div style="display:flex; gap:8px;"><span style="color:#64748b; min-width:90px;">${k}:</span><span style="color:#94a3b8; word-break:break-word;">${v}</span></div>`
+        ).join('');
+    }
+
+    // Mobile toggle — disable & lock to ON
+    const toggle = document.getElementById('perf-mode-toggle');
+    const note   = document.getElementById('perf-toggle-note');
+    if (isMobile) {
+        if (toggle) { toggle.checked = true; toggle.disabled = true; }
+        if (note) note.textContent = 'Mobile always runs in Optimized mode and cannot be disabled.';
+    } else {
+        if (toggle) toggle.disabled = false;
+        const stored = localStorage.getItem('perfModeOverride');
+        const isOn = stored !== null ? stored === '1' : (tier === 'budget' || tier === 'mid');
+        if (toggle) toggle.checked = isOn;
+        if (note) {
+            note.textContent = stored !== null
+                ? 'Manual override active.'
+                : `Auto-detected as ${tier.toUpperCase()} tier — Optimized mode ${isOn ? 'enabled' : 'disabled'} by default.`;
+        }
+    }
+}
+
+function setupPerfModeOnLoad() {
+    const { tier, isMobile } = detectDeviceTier();
+    if (isMobile) {
+        // Mobile: always on (CSS @media rules already handle it; add body class for uniformity)
+        applyPerfMode(true);
+        return;
+    }
+    const stored = localStorage.getItem('perfModeOverride');
+    if (stored !== null) {
+        applyPerfMode(stored === '1');
+    } else {
+        // Auto: enable for budget/mid
+        applyPerfMode(tier === 'budget' || tier === 'mid');
     }
 }
 

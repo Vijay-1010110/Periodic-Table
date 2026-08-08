@@ -2851,3 +2851,39 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   PERFORMANCE / OPTIMIZED MODE (Desktop, Laptop, Tablet)
+   Applied via JS: document.body.classList.add('perf-mode')
+   Mobile always has this applied via existing mobile @media rules.
+   ========================================================================== */
+body.perf-mode .element-cell,
+body.perf-mode .legend-box,
+body.perf-mode .aufbau-box,
+body.perf-mode .table-controls,
+body.perf-mode .view-right,
+body.perf-mode .glass-card,
+body.perf-mode .compound-card,
+body.perf-mode .reaction-card,
+body.perf-mode .crystal-card,
+body.perf-mode .mobile-left-nav,
+body.perf-mode #settings-modal > div {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+body.perf-mode .element-cell {
+    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    transition: transform 0.1s ease !important;
+}
+
+body.perf-mode * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+}
+
+/* Perf toggle knob ON state - controlled via JS */
+body.perf-mode #perf-toggle-thumb  { background: rgba(0, 212, 255, 0.25) !important; border-color: rgba(0, 212, 255, 0.5) !important; }
+body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; background: #00d4ff !important; }
+

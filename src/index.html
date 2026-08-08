@@ -160,6 +160,10 @@
                 <span class="nav-icon">📱🔄</span>
                 <span class="nav-text">Full Landscape</span>
             </button>
+            <button class="mobile-nav-item" id="btn-mobile-settings" title="Settings" style="color: #94a3b8;" onclick="document.getElementById('settings-modal').style.display='flex'; initPerfModeUI();">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+            </button>
         </div>
         <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.71.0</div>
     </aside>
@@ -181,7 +185,7 @@
         </div>
         <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
             <button class="icon-btn" id="btn-layout-toggle" aria-label="Toggle Extended 32-Col Table Layout" title="Toggle 18-Col / 32-Col Extended Table Layout" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 8px; font-size: 1.1rem; color: #00d4ff; cursor: pointer; transition: all 0.2s ease; margin-left: 0; box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);">↔️</button>
-            <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 1.1rem; color: #e2e8f0; cursor: pointer; transition: all 0.2s ease; margin-left: 0;">⚙️</button>
+            <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings" onclick="document.getElementById('settings-modal').style.display='flex'; initPerfModeUI();" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 1.1rem; color: #e2e8f0; cursor: pointer; transition: all 0.2s ease; margin-left: 0;">⚙️</button>
         </div>
     </nav>
 
@@ -195,11 +199,6 @@
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
                             <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                            <div class="zoom-controls-wrapper" style="display: flex; align-items: center; gap: 4px; background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 6px; padding: 2px 6px; margin-left: auto;">
-                                <button id="btn-zoom-out" title="Zoom Out Grid" style="background: transparent; border: none; color: #00d4ff; font-weight: bold; font-size: 0.9rem; cursor: pointer; padding: 0 6px;">−</button>
-                                <span id="mobile-zoom-level-text" title="Reset Zoom to 100%" style="font-size: 0.7rem; font-family: var(--font-mono); color: #00d4ff; font-weight: 700; min-width: 36px; text-align: center; cursor: pointer;">100%</span>
-                                <button id="btn-zoom-in" title="Zoom In Grid" style="background: transparent; border: none; color: #00d4ff; font-weight: bold; font-size: 0.9rem; cursor: pointer; padding: 0 6px;">+</button>
-                            </div>
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span class="temp-unit-sep">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span class="temp-unit-sep">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
@@ -932,6 +931,43 @@
                     <h2 style="margin: 0; font-weight: 500; font-size: 1.2rem; color: #cbd5e1; font-family: 'Inter', sans-serif;">Loading Wikipedia Content...</h2>
                 </div>
                 <iframe id="wiki-iframe" style="width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.3s ease;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SETTINGS MODAL ===================== -->
+    <div id="settings-modal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);" onclick="if(event.target===this)this.style.display='none'">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#111827; border:1px solid rgba(0,212,255,0.25); border-radius:16px; padding:28px 28px 24px; width:min(480px,92vw); max-height:85vh; overflow-y:auto; box-shadow:0 0 40px rgba(0,212,255,0.12);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+                <h2 style="font-size:1.1rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:8px;">⚙️ Settings</h2>
+                <button onclick="document.getElementById('settings-modal').style.display='none'" style="background:transparent; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer; line-height:1;">×</button>
+            </div>
+
+            <!-- Performance Mode Section -->
+            <div style="background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.15); border-radius:12px; padding:16px; margin-bottom:16px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:1rem;">⚡</span>
+                    <span style="font-weight:600; color:#e2e8f0; font-size:0.95rem;">Performance Mode</span>
+                    <span id="perf-tier-badge" style="margin-left:auto; font-size:0.68rem; font-family:'IBM Plex Mono',monospace; padding:2px 8px; border-radius:20px; font-weight:700;"></span>
+                </div>
+                <p style="font-size:0.78rem; color:#94a3b8; margin-bottom:14px; line-height:1.5;">Reduces GPU-heavy visual effects (glass blur, glow shadows) for smoother performance on budget/mid-range devices. Mobile always uses Optimized mode.</p>
+
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <span style="font-size:0.85rem; color:#e2e8f0;">Optimized Visuals</span>
+                    <label id="perf-toggle-label" style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle Optimized Mode">
+                        <input type="checkbox" id="perf-mode-toggle" style="opacity:0; width:0; height:0; position:absolute;" onchange="applyPerfMode(this.checked, true)">
+                        <span id="perf-toggle-thumb" style="position:absolute; inset:0; border-radius:26px; background:#1e2a3a; border:1px solid rgba(255,255,255,0.15); transition:background 0.25s;">
+                            <span style="position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#475569; transition:transform 0.25s, background 0.25s;" id="perf-toggle-knob"></span>
+                        </span>
+                    </label>
+                </div>
+                <p id="perf-toggle-note" style="font-size:0.72rem; color:#64748b; margin-top:8px;"></p>
+            </div>
+
+            <!-- Device Info Section -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 14px;">
+                <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Detected Device Info</p>
+                <div id="device-info-list" style="display:flex; flex-direction:column; gap:4px; font-size:0.78rem; font-family:'IBM Plex Mono',monospace; color:#94a3b8;"></div>
             </div>
         </div>
     </div>
