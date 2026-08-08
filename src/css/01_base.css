@@ -1272,27 +1272,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .subshell-label { font-size: 0.7rem; }
 }
 
-/* Portrait Warning Overlay for Mobile */
+/* Portrait Warning Overlay (Disabled - website displays directly) */
 .portrait-warning {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(10, 14, 26, 0.96);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    z-index: 99999;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-}
-@media (max-width: 1000px) and (orientation: portrait) {
-    .portrait-warning { display: flex; }
-}
-
-@keyframes rotatePulse {
-    0%, 100% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(-90deg) scale(1.1); }
+    display: none !important;
 }
 
 /* Mobile Left Collapsible Sidebar */
