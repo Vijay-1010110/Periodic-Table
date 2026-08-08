@@ -1628,31 +1628,31 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         margin-top: 2px !important;
     }
 
-    /* Compact Aufbau Box in Electrons View on Mobile Landscape so it fits 100% in available space */
+    /* Enhanced Aufbau Box in Electrons View on Mobile Landscape to fill available space */
     #elec-in-grid-legend .aufbau-box {
-        padding: 4px 8px !important;
-        gap: 3px !important;
-        transform: scale(0.72) !important;
+        padding: 6px 10px !important;
+        gap: 4px !important;
+        transform: scale(0.86) !important;
         transform-origin: top center !important;
     }
     #elec-in-grid-legend .legend-box-title {
-        font-size: 0.58rem !important;
-        margin-bottom: 2px !important;
+        font-size: 0.65rem !important;
+        margin-bottom: 3px !important;
         padding-bottom: 2px !important;
     }
     #elec-in-grid-legend .aufbau-diagram-container {
-        gap: 3px !important;
+        gap: 4px !important;
         padding: 0 !important;
     }
     #elec-in-grid-legend .aufbau-row {
-        gap: 2px !important;
+        gap: 3px !important;
     }
     #elec-in-grid-legend .aufbau-legend {
-        gap: 4px !important;
+        gap: 5px !important;
     }
     #elec-in-grid-legend .legend-item {
-        padding: 1px 5px !important;
-        font-size: 0.50rem !important;
+        padding: 1px 6px !important;
+        font-size: 0.55rem !important;
     }
     #electrons-grid .cell-value {
         font-size: 0.34rem !important;
@@ -84538,11 +84538,15 @@ function updateSocialShareMeta(viewId) {
 
 // View switching helper with hash routing
 function switchView(viewId, updateHash = true) {
-    const btn = document.querySelector(`.nav-btn[data-view="${viewId}"]`);
-    if (!btn) return;
-    
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (viewId === 'properties') viewId = 'main';
+
+    document.querySelectorAll('.nav-btn, .mobile-nav-item').forEach(b => {
+        if (b.getAttribute('data-view') === viewId) {
+            b.classList.add('active');
+        } else {
+            b.classList.remove('active');
+        }
+    });
     
     currentView = viewId;
     document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
@@ -84594,8 +84598,9 @@ function switchView(viewId, updateHash = true) {
     updateSocialShareMeta(viewId);
 
     if (updateHash) {
-        if (window.location.hash !== '#' + viewId) {
-            history.replaceState(null, null, '#' + viewId);
+        const hashVal = (viewId === 'main' ? 'properties' : viewId);
+        if (window.location.hash !== '#' + hashVal) {
+            history.replaceState(null, null, '#' + hashVal);
         }
     }
 }
@@ -84619,9 +84624,9 @@ function handleHashRouting() {
         'crystal': 'crystals',
         'compare': 'compare',
         'quiz': 'quiz',
-        'properties': 'properties',
-        'property': 'properties',
-        'main': 'properties'
+        'properties': 'main',
+        'property': 'main',
+        'main': 'main'
     };
 
     if (viewMap[hash]) {
@@ -87047,7 +87052,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.55.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.56.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

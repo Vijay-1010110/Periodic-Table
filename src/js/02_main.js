@@ -355,11 +355,15 @@ function updateSocialShareMeta(viewId) {
 
 // View switching helper with hash routing
 function switchView(viewId, updateHash = true) {
-    const btn = document.querySelector(`.nav-btn[data-view="${viewId}"]`);
-    if (!btn) return;
-    
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (viewId === 'properties') viewId = 'main';
+
+    document.querySelectorAll('.nav-btn, .mobile-nav-item').forEach(b => {
+        if (b.getAttribute('data-view') === viewId) {
+            b.classList.add('active');
+        } else {
+            b.classList.remove('active');
+        }
+    });
     
     currentView = viewId;
     document.querySelectorAll('.view-mode').forEach(v => v.classList.remove('active'));
@@ -411,8 +415,9 @@ function switchView(viewId, updateHash = true) {
     updateSocialShareMeta(viewId);
 
     if (updateHash) {
-        if (window.location.hash !== '#' + viewId) {
-            history.replaceState(null, null, '#' + viewId);
+        const hashVal = (viewId === 'main' ? 'properties' : viewId);
+        if (window.location.hash !== '#' + hashVal) {
+            history.replaceState(null, null, '#' + hashVal);
         }
     }
 }
@@ -436,9 +441,9 @@ function handleHashRouting() {
         'crystal': 'crystals',
         'compare': 'compare',
         'quiz': 'quiz',
-        'properties': 'properties',
-        'property': 'properties',
-        'main': 'properties'
+        'properties': 'main',
+        'property': 'main',
+        'main': 'main'
     };
 
     if (viewMap[hash]) {
