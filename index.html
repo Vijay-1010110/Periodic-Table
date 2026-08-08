@@ -86386,15 +86386,64 @@ function setupLayoutToggle() {
     };
 }
 
-function lockMobileLandscapeOrientation() {
-    if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
-        window.screen.orientation.lock('landscape').catch(() => {});
+async function toggleLandscapeFullscreenMode(forceEnable = false) {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!isFS || forceEnable) {
+        try {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                await docEl.requestFullscreen().catch(() => {});
+            } else if (docEl.webkitRequestFullscreen) {
+                await docEl.webkitRequestFullscreen().catch(() => {});
+            }
+        } catch (e) {}
+
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+        }
+    } else {
+        try {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                await document.webkitExitFullscreen().catch(() => {});
+            }
+        } catch (e) {}
+
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+        }
     }
 }
 
+function updateRotateBtnUI() {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const rotateBtn = document.getElementById('btn-mobile-rotate');
+    if (rotateBtn) {
+        const textSpan = rotateBtn.querySelector('.nav-text');
+        const iconSpan = rotateBtn.querySelector('.nav-icon');
+        if (textSpan) textSpan.textContent = isFS ? 'Exit Landscape' : 'Full Landscape';
+        if (iconSpan) iconSpan.textContent = isFS ? '📱↩️' : '📱🔄';
+    }
+}
+
+document.addEventListener('fullscreenchange', updateRotateBtnUI);
+document.addEventListener('webkitfullscreenchange', updateRotateBtnUI);
+
+let mobileLandscapeAutoTriggered = false;
+function autoActivateMobileLandscape() {
+    if (mobileLandscapeAutoTriggered) return;
+    if (window.innerWidth <= 1000 || 'ontouchstart' in window) {
+        mobileLandscapeAutoTriggered = true;
+        toggleLandscapeFullscreenMode(true);
+    }
+}
+
+document.addEventListener('touchstart', autoActivateMobileLandscape, { passive: true });
+document.addEventListener('click', autoActivateMobileLandscape, { passive: true });
+
 // Init
 window.addEventListener('DOMContentLoaded', () => {
-    lockMobileLandscapeOrientation();
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
@@ -86512,21 +86561,12 @@ function setupMobileLeftNav() {
         });
     });
 
-    // Dedicated Mobile Screen Rotation Button
+    // Dedicated Mobile Fullscreen Landscape Toggle Button
     const rotateBtn = document.getElementById('btn-mobile-rotate');
     if (rotateBtn) {
         rotateBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-            try {
-                if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
-                    await document.documentElement.requestFullscreen().catch(() => {});
-                }
-                if (screen.orientation && screen.orientation.lock) {
-                    await screen.orientation.lock('landscape');
-                }
-            } catch (err) {
-                console.log('Browser screen rotation:', err);
-            }
+            await toggleLandscapeFullscreenMode();
             mobileLeftNav.classList.remove('expanded');
         });
     }
@@ -87203,18 +87243,18 @@ window.OrbitalViewer = {
                 <span class="nav-icon">❓</span>
                 <span class="nav-text">Quiz</span>
             </button>
-            <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Rotate Screen to Landscape" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
+            <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
                 <span class="nav-icon">📱🔄</span>
-                <span class="nav-text">Rotate Screen</span>
+                <span class="nav-text">Full Landscape</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.69.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.70.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.69.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.70.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
