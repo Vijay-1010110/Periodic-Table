@@ -1423,7 +1423,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         -webkit-overflow-scrolling: touch !important;
         flex: 1 !important;
         display: flex !important;
-        justify-content: center !important;
+        justify-content: flex-start !important; /* flex-start prevents negative un-scrollable overflow on left in portrait mode */
         align-items: flex-start !important;
         box-sizing: border-box !important;
     }
