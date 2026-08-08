@@ -1436,50 +1436,6 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     /* Hide top nav bar on mobile landscape */
     nav.top-nav { display: none !important; }
 
-/* Force Automatic 90-Degree Landscape View in Mobile Portrait Mode */
-@media (max-width: 900px) and (orientation: portrait) {
-    html, body {
-        width: 100vw !important;
-        height: 100vh !important;
-        overflow: hidden !important;
-        position: fixed !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .app-container {
-        position: fixed !important;
-        width: 100vh !important;
-        height: 100vw !important;
-        top: 0 !important;
-        left: 100vw !important;
-        transform-origin: top left !important;
-        transform: rotate(90deg) !important;
-        overflow: hidden !important;
-        z-index: 100 !important;
-    }
-
-    .mobile-left-nav {
-        position: fixed !important;
-        height: 100vw !important;
-        top: 0 !important;
-        left: 100vw !important;
-        transform-origin: top left !important;
-        transform: rotate(90deg) !important;
-        z-index: 3500 !important;
-    }
-
-    .view-right.mobile-active, .view-right.open {
-        position: fixed !important;
-        height: 100vw !important;
-        top: 0 !important;
-        left: 100vw !important;
-        transform-origin: top left !important;
-        transform: rotate(90deg) !important;
-        z-index: 3400 !important;
-    }
-}
-
     /* Hide 32-column layout toggle option on mobile landscape */
     .scale-btn[data-layout="32col"], #layout-toggle, .layout-toggle, #extended-grid-btn {
         display: none !important;
@@ -86554,6 +86510,25 @@ function setupMobileLeftNav() {
         });
     });
 
+    // Dedicated Mobile Screen Rotation Button
+    const rotateBtn = document.getElementById('btn-mobile-rotate');
+    if (rotateBtn) {
+        rotateBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+                if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen().catch(() => {});
+                }
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (err) {
+                console.log('Browser screen rotation:', err);
+            }
+            mobileLeftNav.classList.remove('expanded');
+        });
+    }
+
     // Auto collapse when clicking anywhere else on the page
     document.addEventListener('click', (e) => {
         if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
@@ -87183,14 +87158,18 @@ window.OrbitalViewer = {
                 <span class="nav-icon">❓</span>
                 <span class="nav-text">Quiz</span>
             </button>
+            <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Rotate Screen to Landscape" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
+                <span class="nav-icon">📱🔄</span>
+                <span class="nav-text">Rotate Screen</span>
+            </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.67.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.68.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.67.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.68.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

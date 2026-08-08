@@ -2236,6 +2236,25 @@ function setupMobileLeftNav() {
         });
     });
 
+    // Dedicated Mobile Screen Rotation Button
+    const rotateBtn = document.getElementById('btn-mobile-rotate');
+    if (rotateBtn) {
+        rotateBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+                if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen().catch(() => {});
+                }
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (err) {
+                console.log('Browser screen rotation:', err);
+            }
+            mobileLeftNav.classList.remove('expanded');
+        });
+    }
+
     // Auto collapse when clicking anywhere else on the page
     document.addEventListener('click', (e) => {
         if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
