@@ -77607,6 +77607,11 @@ function initHalfLifeSimulator(iso) {
     if (daughterLabel) daughterLabel.textContent = daughterFullName;
 
     slider.value = 0;
+
+    // Disable slider entirely for stable isotopes — no decay can happen
+    slider.disabled = iso.isStable;
+    slider.style.opacity = iso.isStable ? '0.35' : '1';
+    slider.style.cursor  = iso.isStable ? 'not-allowed' : 'pointer';
     
     // Generate 100 atoms
     chamber.innerHTML = '';
@@ -77624,20 +77629,40 @@ function initHalfLifeSimulator(iso) {
     }
     
     const updateSim = () => {
+        // === STABLE ISOTOPE: nothing decays — lock everything to 100% parent ===
+        if (iso.isStable) {
+            slider.value = 0; // keep slider pinned at 0
+            textTime.textContent = '0.0 Half-lives';
+            textAtoms.textContent = '100 / 100 (100.0%)';
+            if (parentCountEl)  parentCountEl.textContent  = 100;
+            if (daughterCountEl) daughterCountEl.textContent = 0;
+
+            // All dots stay green
+            const dots = chamber.querySelectorAll('.sim-atom-dot');
+            dots.forEach(dot => {
+                dot.style.background  = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
+                dot.style.boxShadow   = '0 0 8px rgba(74, 222, 128, 0.6)';
+                dot.style.opacity     = '1';
+                dot.style.transform   = 'scale(1)';
+            });
+            return;
+        }
+
+        // === RADIOACTIVE ISOTOPE: simulate exponential decay ===
         const tVal = parseFloat(slider.value);
         const fraction = Math.pow(0.5, tVal);
         const remainingCount = Math.round(100 * fraction);
         const decayedCount = 100 - remainingCount;
         
         let timeLabel = `${tVal.toFixed(1)} Half-lives`;
-        if (!iso.isStable && iso.halfLife) {
+        if (iso.halfLife) {
             const realTime = (tVal * iso.halfLife);
             timeLabel += ` (${formatHalfLife(realTime, iso.halfLifeUnit)})`;
         }
         
         textTime.textContent = timeLabel;
         textAtoms.textContent = `${remainingCount} / 100 (${(fraction * 100).toFixed(1)}%)`;
-        if (parentCountEl) parentCountEl.textContent = remainingCount;
+        if (parentCountEl)  parentCountEl.textContent  = remainingCount;
         if (daughterCountEl) daughterCountEl.textContent = decayedCount;
         
         const activeIndices = new Set(decayOrder.slice(0, remainingCount));
@@ -77645,14 +77670,14 @@ function initHalfLifeSimulator(iso) {
         dots.forEach((dot, index) => {
             if (activeIndices.has(index)) {
                 dot.style.background = 'radial-gradient(circle at 30% 30%, #4ade80 0%, #15803d 100%)';
-                dot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
-                dot.style.opacity = '1';
-                dot.style.transform = 'scale(1)';
+                dot.style.boxShadow  = '0 0 8px rgba(74, 222, 128, 0.6)';
+                dot.style.opacity    = '1';
+                dot.style.transform  = 'scale(1)';
             } else {
                 dot.style.background = 'radial-gradient(circle at 30% 30%, #a855f7 0%, #581c87 100%)';
-                dot.style.boxShadow = '0 0 4px rgba(168, 85, 247, 0.3)';
-                dot.style.opacity = '0.35';
-                dot.style.transform = 'scale(0.85)';
+                dot.style.boxShadow  = '0 0 4px rgba(168, 85, 247, 0.3)';
+                dot.style.opacity    = '0.35';
+                dot.style.transform  = 'scale(0.85)';
             }
         });
     };
