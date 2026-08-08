@@ -50,20 +50,22 @@ window.OrbitalViewer = {
         this.slicePlane1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
         this.slicePlane2 = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
         
-        // Initial draw
-        this.drawOrbital();
+        // Initial draw + animate
         this.animate();
+        this.drawOrbital();
 
         window.addEventListener('resize', () => this.resize());
 
         if (window.ResizeObserver) {
-            const ro = new ResizeObserver(() => {
-                if (container.clientWidth > 0 && container.clientHeight > 0) {
-                    this.resize();
-                }
-            });
+            const ro = new ResizeObserver(() => this.resize());
             ro.observe(container);
         }
+
+        // Force a resize on next frame to pick up real layout dimensions
+        requestAnimationFrame(() => {
+            this.resize();
+            this.drawOrbital();
+        });
 
         // Setup UI listener for slicing toggle
         const sliceToggle = document.getElementById('slice-orbital');
@@ -71,6 +73,7 @@ window.OrbitalViewer = {
             sliceToggle.addEventListener('change', () => this.drawOrbital());
         }
     },
+
 
     resize: function() {
         const container = document.getElementById('three-canvas-container');

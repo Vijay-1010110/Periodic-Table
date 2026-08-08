@@ -707,7 +707,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 #three-canvas-container {
     width: 100%;
-    min-height: 250px;
+    height: 350px;
     background: transparent;
     border-radius: 4px;
 }
@@ -902,7 +902,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 #three-canvas-container {
     width: 100%;
-    min-height: 250px;
+    height: 350px;
     background: transparent;
     border-radius: 4px;
 }
