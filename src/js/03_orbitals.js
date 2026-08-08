@@ -56,13 +56,20 @@ window.OrbitalViewer = {
 
         window.addEventListener('resize', () => this.resize());
 
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(() => {
+                if (container.clientWidth > 0 && container.clientHeight > 0) {
+                    this.resize();
+                }
+            });
+            ro.observe(container);
+        }
+
         // Setup UI listener for slicing toggle
         const sliceToggle = document.getElementById('slice-orbital');
         if (sliceToggle) {
             sliceToggle.addEventListener('change', () => this.drawOrbital());
         }
-        this.animate();
-        this.drawOrbital();
     },
 
     resize: function() {
