@@ -1621,6 +1621,41 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         transform-origin: top center !important;
         margin-top: 2px !important;
     }
+
+    /* Compact Aufbau Box in Electrons View on Mobile Landscape so it fits 100% in available space */
+    #elec-in-grid-legend .aufbau-box {
+        padding: 4px 8px !important;
+        gap: 3px !important;
+        transform: scale(0.72) !important;
+        transform-origin: top center !important;
+    }
+    #elec-in-grid-legend .legend-box-title {
+        font-size: 0.58rem !important;
+        margin-bottom: 2px !important;
+        padding-bottom: 2px !important;
+    }
+    #elec-in-grid-legend .aufbau-diagram-container {
+        gap: 3px !important;
+        padding: 0 !important;
+    }
+    #elec-in-grid-legend .aufbau-row {
+        gap: 2px !important;
+    }
+    #elec-in-grid-legend .aufbau-legend {
+        gap: 4px !important;
+    }
+    #elec-in-grid-legend .legend-item {
+        padding: 1px 5px !important;
+        font-size: 0.50rem !important;
+    }
+    #electrons-grid .cell-value {
+        font-size: 0.34rem !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 40px !important;
+    }
     
     /* Smart Floating Panel for Mobile */
     .view-right {
@@ -87006,7 +87041,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.52.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.53.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
