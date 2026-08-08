@@ -1435,6 +1435,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
         flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
     }
     
     .periodic-grid {
@@ -1446,7 +1449,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         max-width: 780px !important;
         gap: 3px !important;
         transform: none !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
     }
 
     .element-cell {
