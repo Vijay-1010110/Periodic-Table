@@ -3,6 +3,7 @@
   "short_name": "PeriodicaX",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "landscape",
   "background_color": "#0f172a",
   "theme_color": "#00d4ff",
   "description": "3D Periodic Table, Reaction Balancer, Isotope Viewer, 3D Crystal Lattices & Interactive Chemistry Tools.",

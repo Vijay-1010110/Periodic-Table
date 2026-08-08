@@ -2111,8 +2111,15 @@ function setupLayoutToggle() {
     };
 }
 
+function lockMobileLandscapeOrientation() {
+    if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+        window.screen.orientation.lock('landscape').catch(() => {});
+    }
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', () => {
+    lockMobileLandscapeOrientation();
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
@@ -2126,6 +2133,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // Process deep-link URL hash if present
     handleHashRouting();
 });
+
+document.addEventListener('touchstart', lockMobileLandscapeOrientation, { passive: true, once: true });
+document.addEventListener('click', lockMobileLandscapeOrientation, { passive: true, once: true });
 
 function generateMiniBohrSVG(shells) {
     if (!shells || shells.length === 0) return '';
