@@ -1633,6 +1633,65 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .temp-controller { width: 100%; }
     
     .grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+
+    /* Mobile Landscape Compact Styles for Non-Table Views (Compounds, Reactions, Crystals, Compare, Quiz) */
+    .compounds-grid-container,
+    .reactions-list-container,
+    .crystals-grid-container {
+        gap: 8px !important;
+        padding-right: 2px !important;
+    }
+
+    .compounds-search,
+    .reaction-search-input,
+    .crystal-search-input {
+        height: 28px !important;
+        font-size: 0.72rem !important;
+        padding: 0 10px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .compound-filters,
+    .reaction-filters,
+    .crystal-filters {
+        gap: 5px !important;
+        margin-bottom: 8px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .compound-filter-btn,
+    .reaction-filter-btn,
+    .crystal-filter-btn {
+        padding: 3px 8px !important;
+        font-size: 0.68rem !important;
+        border-radius: 12px !important;
+    }
+
+    .compound-card,
+    .reaction-card,
+    .crystal-card {
+        padding: 8px 10px !important;
+        gap: 4px !important;
+        border-radius: 6px !important;
+    }
+
+    .compound-formula-badge {
+        font-size: 0.92rem !important;
+    }
+
+    .compound-card-title {
+        font-size: 0.78rem !important;
+    }
+
+    .compound-card-meta {
+        font-size: 0.68rem !important;
+        margin-top: 2px !important;
+    }
+
+    .compound-type-tag {
+        font-size: 0.62rem !important;
+        padding: 1px 6px !important;
+    }
 }
 
 /* Isotopes View & Modal Mobile Responsiveness */
