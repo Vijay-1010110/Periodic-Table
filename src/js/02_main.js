@@ -397,16 +397,7 @@ function switchView(viewId, updateHash = true) {
     
     if (viewId === 'electrons') {
         if (window.OrbitalViewer) {
-            // Lazy init: first time we switch to electrons view, init if not done yet.
-            if (!window.OrbitalViewer.renderer) {
-                window.OrbitalViewer.init('three-canvas-container');
-                if (selectedElement) {
-                    // Slight delay to ensure DOM has updated
-                    setTimeout(() => selectElement(selectedElement.atomicNumber), 50);
-                }
-            } else {
-                window.OrbitalViewer.resize();
-            }
+            setTimeout(() => window.OrbitalViewer.resize(), 50);
         }
     } else if (viewId === 'compounds') {
         if (typeof initCompoundsView === 'function') initCompoundsView();
@@ -2190,16 +2181,15 @@ window.addEventListener('DOMContentLoaded', () => {
     setupPinchToZoom();
     renderGrid(); // Initial render for main view
     
-    // OrbitalViewer is intentionally NOT initialised here.
-    // It lazy-inits the first time the user switches to the Electrons & Orbitals
-    // view, at which point #three-canvas-container is visible and has real dimensions.
+    // Check if three-canvas-container exists and initialize
+    if (document.getElementById('three-canvas-container')) {
+        if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
+    }
 
     // Process deep-link URL hash if present
     handleHashRouting();
 });
 
-document.addEventListener('touchstart', lockMobileLandscapeOrientation, { passive: true, once: true });
-document.addEventListener('click', lockMobileLandscapeOrientation, { passive: true, once: true });
 
 function generateMiniBohrSVG(shells) {
     if (!shells || shells.length === 0) return '';

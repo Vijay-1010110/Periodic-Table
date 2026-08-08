@@ -27,7 +27,7 @@ window.OrbitalViewer = {
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.localClippingEnabled = true; // Enable slicing
+        this.renderer.localClippingEnabled = true;
         container.appendChild(this.renderer.domElement);
 
         const light = new THREE.PointLight(0xffffff, 1.2, 100);
@@ -46,34 +46,19 @@ window.OrbitalViewer = {
             this.controls.autoRotateSpeed = 2.0;
         }
 
-        // Slicing planes for quadrant cutout (removes x>0 AND z>0)
         this.slicePlane1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0);
         this.slicePlane2 = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
         
-        // Initial draw + animate
-        this.animate();
         this.drawOrbital();
+        this.animate();
 
         window.addEventListener('resize', () => this.resize());
 
-        if (window.ResizeObserver) {
-            const ro = new ResizeObserver(() => this.resize());
-            ro.observe(container);
-        }
-
-        // Force a resize on next frame to pick up real layout dimensions
-        requestAnimationFrame(() => {
-            this.resize();
-            this.drawOrbital();
-        });
-
-        // Setup UI listener for slicing toggle
         const sliceToggle = document.getElementById('slice-orbital');
         if (sliceToggle) {
             sliceToggle.addEventListener('change', () => this.drawOrbital());
         }
     },
-
 
     resize: function() {
         const container = document.getElementById('three-canvas-container');
@@ -187,14 +172,14 @@ window.OrbitalViewer = {
         }
     },
 
-    drawOrbital: function(nParam, lParam, mlParam) {
+    drawOrbital: function(nParam, lParam, subset) {
         if (!this.scene) return;
 
         // Determine current orbital params
         // Use parameters if provided, otherwise default to stored values, or 2p as fallback
         const n = nParam !== undefined ? parseInt(nParam) : (this.currentN || 2);
         const l = lParam !== undefined ? parseInt(lParam) : (this.currentL !== undefined ? this.currentL : 1);
-        let mlStr = mlParam !== undefined ? mlParam.toString() : (this.currentMl !== undefined ? this.currentMl.toString() : 'all');
+        let mlStr = subset !== undefined ? subset.toString() : (this.currentMl !== undefined ? this.currentMl.toString() : 'all');
         
         // Save state so re-renders (like slice toggle) keep the same orbital
         this.currentN = n;
@@ -403,7 +388,7 @@ window.OrbitalViewer = {
                     if (mType == 0) Y = (3.0 * ny * ny - 1.0) / 2.0;
                     else if (mType == 1) Y = sqrt(3.0) * nx * ny;
                     else if (mType == -1) Y = sqrt(3.0) * nz * ny;
-                    else if (mType == 2) Y = sqrt(3.0) / 2.0 * (x_orb * x_orb - nz * nz);
+                    else if (mType == 2) Y = sqrt(3.0) / 2.0 * (nx * nx - nz * nz);
                     else if (mType == -2) Y = sqrt(3.0) * nx * nz;
                 } else if (lType == 3) {
                     if (mType == 0) Y = 0.5 * ny * (5.0 * ny * ny - 3.0);
@@ -411,8 +396,8 @@ window.OrbitalViewer = {
                     else if (mType == -1) Y = sqrt(6.0)/4.0 * nz * (5.0 * ny * ny - 1.0);
                     else if (mType == 2) Y = sqrt(15.0)/2.0 * ny * (nx * nx - nz * nz);
                     else if (mType == -2) Y = sqrt(15.0) * nx * ny * nz;
-                    else if (mType == 3) Y = sqrt(10.0)/4.0 * nx * (x_orb * x_orb - 3.0 * nz * nz);
-                    else if (mType == -3) Y = sqrt(10.0)/4.0 * nz * (3.0 * x_orb * x_orb - nz * nz);
+                    else if (mType == 3) Y = sqrt(10.0)/4.0 * nx * (nx * nx - 3.0 * nz * nz);
+                    else if (mType == -3) Y = sqrt(10.0)/4.0 * nz * (3.0 * nx * nx - nz * nz);
                 }
                 
                 float absY = abs(Y);
@@ -495,17 +480,19 @@ window.OrbitalViewer = {
 
         const generateShell = (lType, mlType, scaleFactor, primaryColorHex, secondaryColorHex, isAllView) => {
             const material = new THREE.MeshPhongMaterial({ 
-                vertexColors: true,
-                transparent: true, 
-                opacity: opacityVal, 
-                wireframe: false,
+                vertexColors: true, 
                 side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.85,
+                shininess: 80,
                 clippingPlanes: clippingPlanes,
                 clipIntersection: true
             });
 
             const geometry = createOrbitalGeometry(lType, mlType, maxRadius * scaleFactor, primaryColorHex, secondaryColorHex, isAllView);
-            return new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(geometry, material);
+            this.currentOrbitalGroup.add(mesh);
+            return mesh;
         };
 
         const renderSingleOrientation = (mlTarget, primaryColor, isAllView) => {
