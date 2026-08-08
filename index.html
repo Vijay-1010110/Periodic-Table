@@ -1630,13 +1630,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
     /* Enhanced Aufbau Box in Electrons View on Mobile Landscape to fill available space */
     #elec-in-grid-legend .aufbau-box {
-        padding: 6px 10px !important;
+        padding: 6px 12px !important;
         gap: 4px !important;
-        transform: scale(0.86) !important;
+        transform: scale(0.96) !important;
         transform-origin: top center !important;
     }
     #elec-in-grid-legend .legend-box-title {
-        font-size: 0.65rem !important;
+        font-size: 0.68rem !important;
         margin-bottom: 3px !important;
         padding-bottom: 2px !important;
     }
@@ -1648,11 +1648,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         gap: 3px !important;
     }
     #elec-in-grid-legend .aufbau-legend {
-        gap: 5px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px !important;
     }
-    #elec-in-grid-legend .legend-item {
-        padding: 1px 6px !important;
-        font-size: 0.55rem !important;
+    #elec-in-grid-legend .aufbau-legend .legend-item {
+        padding: 2px 6px !important;
+        font-size: 0.52rem !important;
+        font-weight: 700 !important;
     }
     #electrons-grid .cell-value {
         font-size: 0.34rem !important;
@@ -1734,8 +1737,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .legend-item { font-size: 0.45rem; gap: 2px; }
     .legend-color { width: 6px; height: 6px; }
     
-    /* Hide Aufbau legend on mobile to fit the diagram in the gap */
-    .aufbau-legend { display: none; }
+    /* Preserve s, p, d, f block indicators in Aufbau legend */
+    .aufbau-legend { display: flex !important; gap: 4px; }
     .aufbau-row { gap: 4px; }
     .orbital-box { width: 14px; height: 18px; font-size: 0.6rem; }
     .subshell-label { width: 14px; font-size: 0.65rem; }
@@ -87052,7 +87055,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.56.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.57.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
