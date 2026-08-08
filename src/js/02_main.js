@@ -2304,13 +2304,29 @@ function setupMobileLeftNav() {
     });
 }
 
-// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+// Global Grid Zoom State & Scaling Engine
+let globalGridScale = 1.0;
+
+function setGridZoom(scale) {
+    globalGridScale = Math.min(Math.max(scale, 0.4), 3.0);
+    const grids = document.querySelectorAll('.periodic-grid');
+    grids.forEach(grid => {
+        grid.style.transformOrigin = 'top left';
+        grid.style.transform = `scale(${globalGridScale})`;
+    });
+
+    const zoomLabel = document.getElementById('mobile-zoom-level-text');
+    if (zoomLabel) {
+        zoomLabel.textContent = `${Math.round(globalGridScale * 100)}%`;
+    }
+}
+
+// Multi-Finger Pinch-to-Zoom Gesture & Button Support for Periodic Table Grid
 function setupPinchToZoom() {
     const wrappers = document.querySelectorAll('.grid-wrapper');
     wrappers.forEach(wrapper => {
         let initialDistance = 0;
-        let currentScale = 1;
-        let startScale = 1;
+        let startScale = 1.0;
 
         wrapper.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
@@ -2318,26 +2334,21 @@ function setupPinchToZoom() {
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                startScale = currentScale;
+                startScale = globalGridScale;
             }
         }, { passive: true });
 
         wrapper.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && initialDistance > 0) {
+                if (e.cancelable) e.preventDefault(); // Crucial: prevents browser from capturing and canceling pinch gesture
                 const currentDistance = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
                 const zoomFactor = currentDistance / initialDistance;
-                currentScale = Math.min(Math.max(startScale * zoomFactor, 0.4), 3.0);
-                
-                const grid = wrapper.querySelector('.periodic-grid');
-                if (grid) {
-                    grid.style.transformOrigin = 'top left';
-                    grid.style.transform = `scale(${currentScale})`;
-                }
+                setGridZoom(startScale * zoomFactor);
             }
-        }, { passive: true });
+        }, { passive: false });
 
         wrapper.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
@@ -2345,6 +2356,30 @@ function setupPinchToZoom() {
             }
         }, { passive: true });
     });
+
+    // Wire up Zoom Controls (+ / - / Reset)
+    const btnIn = document.getElementById('btn-zoom-in');
+    const btnOut = document.getElementById('btn-zoom-out');
+    const btnReset = document.getElementById('mobile-zoom-level-text');
+
+    if (btnIn) {
+        btnIn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(globalGridScale + 0.15);
+        });
+    }
+    if (btnOut) {
+        btnOut.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(globalGridScale - 0.15);
+        });
+    }
+    if (btnReset) {
+        btnReset.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(1.0);
+        });
+    }
 }
 
 

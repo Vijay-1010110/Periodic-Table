@@ -86579,13 +86579,29 @@ function setupMobileLeftNav() {
     });
 }
 
-// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+// Global Grid Zoom State & Scaling Engine
+let globalGridScale = 1.0;
+
+function setGridZoom(scale) {
+    globalGridScale = Math.min(Math.max(scale, 0.4), 3.0);
+    const grids = document.querySelectorAll('.periodic-grid');
+    grids.forEach(grid => {
+        grid.style.transformOrigin = 'top left';
+        grid.style.transform = `scale(${globalGridScale})`;
+    });
+
+    const zoomLabel = document.getElementById('mobile-zoom-level-text');
+    if (zoomLabel) {
+        zoomLabel.textContent = `${Math.round(globalGridScale * 100)}%`;
+    }
+}
+
+// Multi-Finger Pinch-to-Zoom Gesture & Button Support for Periodic Table Grid
 function setupPinchToZoom() {
     const wrappers = document.querySelectorAll('.grid-wrapper');
     wrappers.forEach(wrapper => {
         let initialDistance = 0;
-        let currentScale = 1;
-        let startScale = 1;
+        let startScale = 1.0;
 
         wrapper.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
@@ -86593,26 +86609,21 @@ function setupPinchToZoom() {
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                startScale = currentScale;
+                startScale = globalGridScale;
             }
         }, { passive: true });
 
         wrapper.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && initialDistance > 0) {
+                if (e.cancelable) e.preventDefault(); // Crucial: prevents browser from capturing and canceling pinch gesture
                 const currentDistance = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
                 const zoomFactor = currentDistance / initialDistance;
-                currentScale = Math.min(Math.max(startScale * zoomFactor, 0.4), 3.0);
-                
-                const grid = wrapper.querySelector('.periodic-grid');
-                if (grid) {
-                    grid.style.transformOrigin = 'top left';
-                    grid.style.transform = `scale(${currentScale})`;
-                }
+                setGridZoom(startScale * zoomFactor);
             }
-        }, { passive: true });
+        }, { passive: false });
 
         wrapper.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
@@ -86620,6 +86631,30 @@ function setupPinchToZoom() {
             }
         }, { passive: true });
     });
+
+    // Wire up Zoom Controls (+ / - / Reset)
+    const btnIn = document.getElementById('btn-zoom-in');
+    const btnOut = document.getElementById('btn-zoom-out');
+    const btnReset = document.getElementById('mobile-zoom-level-text');
+
+    if (btnIn) {
+        btnIn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(globalGridScale + 0.15);
+        });
+    }
+    if (btnOut) {
+        btnOut.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(globalGridScale - 0.15);
+        });
+    }
+    if (btnReset) {
+        btnReset.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setGridZoom(1.0);
+        });
+    }
 }
 
 
@@ -87248,13 +87283,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Full Landscape</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.70.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.71.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.70.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.71.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -87282,6 +87317,11 @@ window.OrbitalViewer = {
                     <div class="periodic-grid" id="main-grid">
                         <div class="table-controls">
                             <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <div class="zoom-controls-wrapper" style="display: flex; align-items: center; gap: 4px; background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 6px; padding: 2px 6px; margin-left: auto;">
+                                <button id="btn-zoom-out" title="Zoom Out Grid" style="background: transparent; border: none; color: #00d4ff; font-weight: bold; font-size: 0.9rem; cursor: pointer; padding: 0 6px;">−</button>
+                                <span id="mobile-zoom-level-text" title="Reset Zoom to 100%" style="font-size: 0.7rem; font-family: var(--font-mono); color: #00d4ff; font-weight: 700; min-width: 36px; text-align: center; cursor: pointer;">100%</span>
+                                <button id="btn-zoom-in" title="Zoom In Grid" style="background: transparent; border: none; color: #00d4ff; font-weight: bold; font-size: 0.9rem; cursor: pointer; padding: 0 6px;">+</button>
+                            </div>
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
                                 <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span class="temp-unit-sep">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span class="temp-unit-sep">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
