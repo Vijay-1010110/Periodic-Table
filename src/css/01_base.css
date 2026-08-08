@@ -1392,7 +1392,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         display: flex !important;
         flex-direction: column !important;
         align-items: stretch !important;
-        overflow-y: auto !important;
+        overflow: hidden !important;
     }
 
     /* Table Controls & Search Bar on Mobile Landscape */
@@ -1417,7 +1417,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .grid-wrapper {
         width: 100% !important;
         height: 100% !important;
-        padding: 4px !important;
+        padding: 4px 4px 80px 4px !important; /* 80px bottom padding ensures f-block rows scroll 100% into view */
         overflow-x: auto !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
@@ -1425,6 +1425,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         display: flex !important;
         justify-content: center !important;
         align-items: flex-start !important;
+        box-sizing: border-box !important;
     }
     
     .periodic-grid {
@@ -1436,7 +1437,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         max-width: 780px !important;
         gap: 3px !important;
         transform: none !important;
-        margin: 0 auto !important;
+        margin: 0 auto 40px auto !important;
     }
 
     .element-cell {
@@ -1626,7 +1627,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     #temp-slider, #timeline-slider { width: 100%; }
     .temp-controller { width: 100%; }
     
-    .grid-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+    .grid-wrapper { overflow-x: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 80px !important; }
 
     /* Mobile Landscape Compact Styles for Non-Table Views (Compounds, Reactions, Crystals, Compare, Quiz) */
     .compounds-grid-container,
