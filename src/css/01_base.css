@@ -136,6 +136,11 @@ body {
     background: rgba(0, 212, 255, 0.7);
 }
 
+/* Sidebar close button is strictly for mobile floating panels - hidden on desktop/large screens */
+.sidebar-close-btn {
+    display: none !important;
+}
+
 .full-panel { padding: 40px; width: 100%; }
 
 /* Table Controls */
@@ -1594,20 +1599,27 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         right: auto !important;
     }
 
-    /* Close button on floating panel */
-    .view-right .sidebar-close-btn {
+    /* Close button on floating panel on mobile */
+    .view-right.mobile-active .sidebar-close-btn,
+    .view-right.open .sidebar-close-btn,
+    .view-right.pos-right .sidebar-close-btn,
+    .view-right.pos-left .sidebar-close-btn {
         display: flex !important;
         align-items: center;
         justify-content: center;
+        position: absolute;
         top: 6px !important;
         right: 6px !important;
         left: auto !important;
         width: 26px;
         height: 26px;
         background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
+        color: #ffffff;
         font-size: 1.1rem;
         z-index: 100;
+        cursor: pointer;
     }
     
     .in-grid-legend { gap: 2px; }

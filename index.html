@@ -254,6 +254,11 @@ body {
     background: rgba(0, 212, 255, 0.7);
 }
 
+/* Sidebar close button is strictly for mobile floating panels - hidden on desktop/large screens */
+.sidebar-close-btn {
+    display: none !important;
+}
+
 .full-panel { padding: 40px; width: 100%; }
 
 /* Table Controls */
@@ -1712,20 +1717,27 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         right: auto !important;
     }
 
-    /* Close button on floating panel */
-    .view-right .sidebar-close-btn {
+    /* Close button on floating panel on mobile */
+    .view-right.mobile-active .sidebar-close-btn,
+    .view-right.open .sidebar-close-btn,
+    .view-right.pos-right .sidebar-close-btn,
+    .view-right.pos-left .sidebar-close-btn {
         display: flex !important;
         align-items: center;
         justify-content: center;
+        position: absolute;
         top: 6px !important;
         right: 6px !important;
         left: auto !important;
         width: 26px;
         height: 26px;
         background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 50%;
+        color: #ffffff;
         font-size: 1.1rem;
         z-index: 100;
+        cursor: pointer;
     }
     
     .in-grid-legend { gap: 2px; }
@@ -87114,7 +87126,7 @@ window.OrbitalViewer = {
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.58.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.59.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
