@@ -1732,7 +1732,17 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 }
 
-/* Isotopes View & Modal Mobile Responsiveness */
+/* Isotopes View & Modal Complete Mobile Redesign */
+.mobile-drag-handle {
+    display: none;
+    width: 40px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+    margin: 8px auto 4px auto;
+    flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
     #view-isotopes .view-right {
         display: none !important;
@@ -1743,70 +1753,114 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         padding: 10px !important;
     }
 
+    #isotope-modal-overlay {
+        padding: 0 !important;
+    }
+
     #isotope-modal {
-        flex-direction: column !important;
-        width: 95% !important;
-        height: 92% !important;
-        max-height: 92vh !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 10px !important;
-    }
-
-    #modal-left-pane {
-        flex: none !important;
         width: 100% !important;
-        max-height: 260px !important;
-        border-right: none !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 
-    #modal-isotope-list {
-        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
-        gap: 6px !important;
-        padding: 10px !important;
+    .mobile-drag-handle {
+        display: block;
     }
 
-    #modal-decay-legend {
-        gap: 4px !important;
-        font-size: 0.7rem !important;
+    .iso-modal-hero-header {
+        padding: 12px 14px !important;
+        padding-right: 56px !important;
+        gap: 10px !important;
     }
 
     #close-modal-btn {
-        top: 10px !important;
-        right: 10px !important;
-        padding: 4px 10px !important;
-        font-size: 0.8rem !important;
+        top: 12px !important;
+        right: 12px !important;
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        font-size: 1.1rem !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
     }
 
-    #decay-infographic-container {
-        padding: 10px !important;
-        min-height: 220px !important;
+    .iso-tab-nav-bar {
+        padding: 8px 10px 0 10px !important;
+        gap: 4px !important;
+    }
+
+    .iso-tab-btn {
+        flex: 1 !important;
+        padding: 10px 4px !important;
+        font-size: 0.76rem !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        border-radius: 8px 8px 0 0 !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #modal-isotope-list {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        padding: 6px 10px 10px 10px !important;
+        gap: 8px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #modal-isotope-list > div {
+        scroll-snap-align: center !important;
+        flex-shrink: 0 !important;
+        min-width: 68px !important;
+        min-height: 44px !important;
+    }
+
+    #iso-tab-physics > div:last-child {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    #iso-tab-simulator {
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+
+    #sim-reaction-banner {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
     }
 }
 
 @media (max-width: 600px) {
-    #isotope-modal {
-        width: 98% !important;
-        height: 95% !important;
+    #modal-el-card {
+        gap: 10px !important;
     }
 
-    #modal-left-pane {
-        max-height: 220px !important;
-    }
-
-    #modal-isotope-list {
-        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)) !important;
+    #modal-decay-legend {
         gap: 4px !important;
+        font-size: 0.68rem !important;
     }
 
-    #modal-el-card, #modal-iso-card {
-        height: 65px !important;
-        padding: 0 10px !important;
+    #decay-infographic-container {
+        padding: 6px !important;
+        min-height: 200px !important;
     }
-    
-    #modal-left-pane > div:first-child {
-        padding: 10px !important;
+
+    #sim-dots-container {
+        grid-template-columns: repeat(10, 1fr) !important;
+        gap: 3px !important;
     }
 }
 

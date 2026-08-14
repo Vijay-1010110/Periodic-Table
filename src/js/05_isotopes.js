@@ -349,6 +349,7 @@ function updateIsotopesView(atomicNumber) {
     }
     
     overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
     setTimeout(() => {
         overlay.style.opacity = '1';
         if (modal) modal.style.transform = 'scale(1)';
@@ -1028,6 +1029,7 @@ function closeIsotopeModal() {
     
     if (overlay) overlay.style.opacity = '0';
     if (modal) modal.style.transform = 'scale(0)';
+    document.body.style.overflow = '';
     
     setTimeout(() => {
         if (overlay) overlay.classList.add('hidden');
