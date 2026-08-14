@@ -1,4 +1,4 @@
-const CACHE_NAME = 'periodicaX-v3.71.6';
+const CACHE_NAME = 'periodicaX-v3.72.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

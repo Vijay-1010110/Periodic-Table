@@ -130,6 +130,7 @@
     
     
     
+    
 
     <style>
 
@@ -846,6 +847,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     height: 350px;
     background: transparent;
     border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+#three-canvas-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    outline: none;
 }
 #bohr-reference {
     width: 100%;
@@ -3026,6 +3035,62 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; bac
 
 </style>
 <script>
+
+// 13_platform.js
+/**
+ * PlatformManager - Detects the runtime environment for PeriodicaX
+ * Used for feature flags and platform-specific behaviors (Web vs Native App)
+ */
+
+window.Platform = (function() {
+    // Check if Capacitor is available and running natively
+    const isCapacitorNative = typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform();
+    
+    // Check PWA Standalone Mode
+    const isPWA = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+
+    // Detect OS
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const isAndroid = /android/i.test(userAgent);
+
+    const platform = {
+        isNative: isCapacitorNative,
+        isWeb: !isCapacitorNative,
+        isPWA: isPWA,
+        isIOS: isIOS,
+        isAndroid: isAndroid,
+        os: isIOS ? 'ios' : (isAndroid ? 'android' : 'web'),
+
+        init: function() {
+            // Apply CSS classes to the body for purely CSS-driven feature toggles
+            const body = document.body;
+            if (!body) return;
+
+            if (this.isNative) {
+                body.classList.add('is-native');
+            } else {
+                body.classList.add('is-web');
+            }
+
+            if (this.isPWA) {
+                body.classList.add('is-pwa');
+            }
+
+            if (this.isIOS) body.classList.add('is-ios');
+            if (this.isAndroid) body.classList.add('is-android');
+        }
+    };
+
+    // Run initialization on DOM load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => platform.init());
+    } else {
+        platform.init();
+    }
+
+    return platform;
+})();
 
 // 01_data.js
 const elementsData = [
@@ -84751,7 +84816,17 @@ function switchView(viewId, updateHash = true) {
     
     if (viewId === 'electrons') {
         if (window.OrbitalViewer) {
-            setTimeout(() => window.OrbitalViewer.resize(), 50);
+            if (!window.OrbitalViewer.renderer) {
+                window.OrbitalViewer.init('three-canvas-container');
+            }
+            setTimeout(() => {
+                window.OrbitalViewer.resize();
+                if (selectedElement) {
+                    selectElement(selectedElement.atomicNumber);
+                } else {
+                    selectElement(6); // Default to Carbon (Z=6) if no element selected
+                }
+            }, 50);
         }
     } else if (viewId === 'compounds') {
         if (typeof initCompoundsView === 'function') initCompoundsView();
@@ -86535,10 +86610,8 @@ window.addEventListener('DOMContentLoaded', () => {
     setupPinchToZoom();
     renderGrid(); // Initial render for main view
     
-    // Check if three-canvas-container exists and initialize
-    if (document.getElementById('three-canvas-container')) {
-        if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
-    }
+    // OrbitalViewer is lazily initialized when switching to the Electrons view
+    // so that #three-canvas-container has valid, non-zero DOM dimensions.
 
     // Process deep-link URL hash if present
     handleHashRouting();
@@ -86870,10 +86943,16 @@ window.OrbitalViewer = {
         this.renderer.localClippingEnabled = true;
         container.appendChild(this.renderer.domElement);
 
-        const light = new THREE.PointLight(0xffffff, 1.2, 100);
-        light.position.set(10, 10, 10);
-        this.scene.add(light);
-        this.scene.add(new THREE.AmbientLight(0x606060));
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+        this.scene.add(ambientLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight1.position.set(5, 10, 7);
+        this.scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0x00d4ff, 0.5);
+        dirLight2.position.set(-5, -5, -5);
+        this.scene.add(dirLight2);
         
         const axesHelper = new THREE.AxesHelper(3);
         this.scene.add(axesHelper);
@@ -87319,15 +87398,18 @@ window.OrbitalViewer = {
         };
 
         const generateShell = (lType, mlType, scaleFactor, primaryColorHex, secondaryColorHex, isAllView) => {
-            const material = new THREE.MeshPhongMaterial({ 
+            const matOpts = { 
                 vertexColors: true, 
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.85,
-                shininess: 80,
-                clippingPlanes: clippingPlanes,
-                clipIntersection: true
-            });
+                shininess: 80
+            };
+            if (doSlice && clippingPlanes && clippingPlanes.length > 0) {
+                matOpts.clippingPlanes = clippingPlanes;
+                matOpts.clipIntersection = true;
+            }
+            const material = new THREE.MeshPhongMaterial(matOpts);
 
             const geometry = createOrbitalGeometry(lType, mlType, maxRadius * scaleFactor, primaryColorHex, secondaryColorHex, isAllView);
             const mesh = new THREE.Mesh(geometry, material);
@@ -87391,10 +87473,11 @@ window.OrbitalViewer = {
     },
 
     animate: function() {
-        this.animationId = requestAnimationFrame(this.animate.bind(this));
+        if (!this.boundAnimate) this.boundAnimate = this.animate.bind(this);
+        this.animationId = requestAnimationFrame(this.boundAnimate);
         
         if (this.controls) this.controls.update();
-        if (this.renderer) this.renderer.render(this.scene, this.camera);
+        if (this.renderer && this.scene && this.camera) this.renderer.render(this.scene, this.camera);
     }
 };
 
@@ -87462,13 +87545,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.71.6</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.72.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.71.6</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.72.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>

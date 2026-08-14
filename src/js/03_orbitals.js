@@ -30,10 +30,16 @@ window.OrbitalViewer = {
         this.renderer.localClippingEnabled = true;
         container.appendChild(this.renderer.domElement);
 
-        const light = new THREE.PointLight(0xffffff, 1.2, 100);
-        light.position.set(10, 10, 10);
-        this.scene.add(light);
-        this.scene.add(new THREE.AmbientLight(0x606060));
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+        this.scene.add(ambientLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight1.position.set(5, 10, 7);
+        this.scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0x00d4ff, 0.5);
+        dirLight2.position.set(-5, -5, -5);
+        this.scene.add(dirLight2);
         
         const axesHelper = new THREE.AxesHelper(3);
         this.scene.add(axesHelper);
@@ -479,15 +485,18 @@ window.OrbitalViewer = {
         };
 
         const generateShell = (lType, mlType, scaleFactor, primaryColorHex, secondaryColorHex, isAllView) => {
-            const material = new THREE.MeshPhongMaterial({ 
+            const matOpts = { 
                 vertexColors: true, 
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.85,
-                shininess: 80,
-                clippingPlanes: clippingPlanes,
-                clipIntersection: true
-            });
+                shininess: 80
+            };
+            if (doSlice && clippingPlanes && clippingPlanes.length > 0) {
+                matOpts.clippingPlanes = clippingPlanes;
+                matOpts.clipIntersection = true;
+            }
+            const material = new THREE.MeshPhongMaterial(matOpts);
 
             const geometry = createOrbitalGeometry(lType, mlType, maxRadius * scaleFactor, primaryColorHex, secondaryColorHex, isAllView);
             const mesh = new THREE.Mesh(geometry, material);
@@ -551,9 +560,10 @@ window.OrbitalViewer = {
     },
 
     animate: function() {
-        this.animationId = requestAnimationFrame(this.animate.bind(this));
+        if (!this.boundAnimate) this.boundAnimate = this.animate.bind(this);
+        this.animationId = requestAnimationFrame(this.boundAnimate);
         
         if (this.controls) this.controls.update();
-        if (this.renderer) this.renderer.render(this.scene, this.camera);
+        if (this.renderer && this.scene && this.camera) this.renderer.render(this.scene, this.camera);
     }
 };

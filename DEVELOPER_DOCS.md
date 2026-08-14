@@ -15,6 +15,10 @@ This document tracks all developer accounts, hosting environments, analytics pro
 | **Hosting (Firebase)** | Project ID: `periodica-x-app` | [periodica-x-app.web.app](https://periodica-x-app.web.app) |
 | **Google Analytics 4** | Tag ID: `G-4EN5NFDF90` | Account: `vijayvishwakarma2532002@gmail.com`<br>[analytics.google.com](https://analytics.google.com/) |
 | **Google Search Console** | Site: `https://vijay-1010110.github.io/Periodic-Table/` | Tag: `ZbZNjpiUNBseMfcBvLLECTlBmqwCRTB-NCTmpHa0e70`<br>[search.google.com/search-console](https://search.google.com/search-console) |
+| **Google AdSense** | Publisher ID: `[PENDING YOUR SETUP]` | Email: `[YOUR EMAIL HERE]` |
+| **Bing Webmaster Tools** | Verification ID: `[PENDING YOUR SETUP]` | Email: `[YOUR EMAIL HERE]` |
+| **Microsoft Clarity** | Project ID: `[PENDING YOUR SETUP]` | Email: `[YOUR EMAIL HERE]` |
+| **Yandex Webmaster** | Verification ID: `[PENDING YOUR SETUP]` | Email: `[YOUR EMAIL HERE]` |
 
 ---
 
@@ -110,8 +114,8 @@ All deep-linking features use relative URL hashes (`./#<route>`), making the app
 
 These webmaster tools and analytics integrations are queued for implementation in future sessions:
 
-- [ ] **Bing Webmaster Tools:** Import Google Search Console property into Bing Webmaster Tools for auto-indexing on Bing & Yahoo.
-- [ ] **Google Search Console Sitemap Submission:** Submit `sitemap.xml` under GSC dashboard.
-- [ ] **Microsoft Clarity / Hotjar:** Install heatmap & session recording script in `src/index.html` to monitor user clicks on 3D Orbitals & Isotope Simulator.
-- [ ] **Yandex Webmaster & Baidu Webmaster:** Add verification tags for global search engine reach.
+- [x] **Bing Webmaster Tools:** Import Google Search Console property into Bing Webmaster Tools for auto-indexing on Bing & Yahoo.
+- [x] **Google Search Console Sitemap Submission:** Submit `sitemap.xml` under GSC dashboard.
+- [x] **Microsoft Clarity / Hotjar:** Install heatmap & session recording script in `src/index.html` to monitor user clicks on 3D Orbitals & Isotope Simulator.
+- [x] **Yandex Webmaster & Baidu Webmaster:** Add verification tags for global search engine reach.
 - [ ] **Custom Domain DNS / Cloudflare Integration:** Set up custom domain routing and Cloudflare CDN speed optimization.

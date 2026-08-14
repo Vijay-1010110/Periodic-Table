@@ -76,6 +76,7 @@ def build():
             css_content += f"\n/* {os.path.basename(cf)} */\n" + f.read()
     
     js_files = [
+        'src/js/13_platform.js',
         'src/js/01_data.js',
         'src/js/04_isotopes_data.js',
         'src/js/05_isotopes.js',
@@ -120,6 +121,7 @@ def build():
     print("Generated sitemap.xml and robots.txt in public/")
 
     import shutil
+    import subprocess
     if os.path.exists('manifest.json'):
         shutil.copy('manifest.json', 'public/manifest.json')
     if os.path.exists('sw.js'):
@@ -130,6 +132,13 @@ def build():
     if os.path.exists('assets'):
         shutil.copytree('assets', 'public/assets', dirs_exist_ok=True)
     print("Copied manifest.json, sw.js, ads.txt, and assets/ to public/")
+
+    print("Running Capacitor Sync...")
+    try:
+        subprocess.run('npx cap copy', shell=True, check=True)
+        print("Capacitor sync successful!")
+    except Exception as e:
+        print(f"Capacitor sync failed: {e}")
 
 if __name__ == '__main__':
     build()

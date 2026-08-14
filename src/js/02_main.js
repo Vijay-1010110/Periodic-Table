@@ -397,7 +397,17 @@ function switchView(viewId, updateHash = true) {
     
     if (viewId === 'electrons') {
         if (window.OrbitalViewer) {
-            setTimeout(() => window.OrbitalViewer.resize(), 50);
+            if (!window.OrbitalViewer.renderer) {
+                window.OrbitalViewer.init('three-canvas-container');
+            }
+            setTimeout(() => {
+                window.OrbitalViewer.resize();
+                if (selectedElement) {
+                    selectElement(selectedElement.atomicNumber);
+                } else {
+                    selectElement(6); // Default to Carbon (Z=6) if no element selected
+                }
+            }, 50);
         }
     } else if (viewId === 'compounds') {
         if (typeof initCompoundsView === 'function') initCompoundsView();
@@ -2181,10 +2191,8 @@ window.addEventListener('DOMContentLoaded', () => {
     setupPinchToZoom();
     renderGrid(); // Initial render for main view
     
-    // Check if three-canvas-container exists and initialize
-    if (document.getElementById('three-canvas-container')) {
-        if (window.OrbitalViewer) window.OrbitalViewer.init('three-canvas-container');
-    }
+    // OrbitalViewer is lazily initialized when switching to the Electrons view
+    // so that #three-canvas-container has valid, non-zero DOM dimensions.
 
     // Process deep-link URL hash if present
     handleHashRouting();
