@@ -2074,6 +2074,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         position: fixed !important;
         top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
         box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        background: #060c18 !important;
     }
 
     .mobile-drag-handle {
@@ -2084,26 +2087,29 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         padding: 10px 12px;
         padding-right: 54px;
         gap: 8px;
+        background: linear-gradient(180deg, rgba(12, 22, 45, 0.95) 0%, rgba(6, 12, 24, 0.9) 100%);
     }
 
     #close-modal-btn {
         top: 10px;
         right: 12px;
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
         padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
         font-size: 1.1rem;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        z-index: 50;
     }
 
     .iso-modal-ribbon-wrap {
         padding: 6px 10px;
         gap: 4px;
+        background: rgba(4, 8, 18, 0.95);
     }
 
     .iso-modal-isotope-list {
@@ -2115,28 +2121,40 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     .iso-modal-isotope-list > div {
         scroll-snap-align: center;
         min-width: 64px;
-        min-height: 40px;
+        min-height: 42px;
     }
 
     .iso-tab-nav-bar {
         padding: 6px 8px 0 8px;
-        gap: 4px;
+        gap: 6px;
         position: sticky;
         top: 0;
         z-index: 30;
         background: rgba(4, 9, 20, 0.98);
+        display: flex;
     }
 
     .iso-tab-btn {
         flex: 1;
-        padding: 8px 2px;
-        font-size: 0.76rem;
+        padding: 10px 4px;
+        font-size: 0.8rem;
+        font-weight: 700;
         text-align: center;
-        min-height: 40px;
+        min-height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px 8px 0 0;
+        border-radius: 10px 10px 0 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-bottom: none;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .iso-tab-btn.active {
+        background: rgba(0, 212, 255, 0.2);
+        border-color: rgba(0, 212, 255, 0.5);
+        color: #00d4ff;
     }
 
     .iso-tab-content {
@@ -2156,60 +2174,76 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 }
 
-/* Mobile Landscape Mode (Height <= 550px) */
+/* Dedicated Mobile Landscape Navigation Rail Mode (Height <= 550px) */
 @media (max-height: 550px) and (max-width: 960px) {
+    .isotope-modal-dialog {
+        display: grid !important;
+        grid-template-columns: 110px 1fr !important;
+        grid-template-rows: auto 1fr !important;
+        grid-template-areas:
+            "nav-rail header"
+            "nav-rail content" !important;
+    }
+
     .mobile-drag-handle {
-        display: none;
+        display: none !important;
     }
 
     .iso-modal-hero-header {
-        padding: 4px 10px;
-        padding-right: 48px;
-        gap: 4px;
+        grid-area: header !important;
+        padding: 6px 12px !important;
+        padding-right: 48px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
-    #modal-el-card {
-        min-height: 36px;
-    }
-
-    .iso-modal-ribbon-wrap {
-        padding: 4px 8px;
-    }
-
-    .iso-modal-ribbon-wrap > div:first-child {
-        display: none; /* Hide Ribbon Title in Mobile Landscape to save vertical space */
-    }
-
-    .iso-modal-isotope-list {
-        padding: 2px 0 4px 0;
-    }
-
+    /* Left Vertical Navigation Rail */
     .iso-tab-nav-bar {
-        padding: 4px 6px 0 6px;
+        grid-area: nav-rail !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 8px 6px !important;
+        gap: 8px !important;
+        background: rgba(3, 7, 16, 0.98) !important;
+        border-right: 1px solid rgba(0, 212, 255, 0.25) !important;
+        border-bottom: none !important;
+        height: 100% !important;
+        overflow-y: auto !important;
     }
 
     .iso-tab-btn {
-        min-height: 32px;
-        padding: 4px 2px;
-        font-size: 0.72rem;
+        flex-direction: column !important;
+        padding: 8px 4px !important;
+        min-height: 48px !important;
+        font-size: 0.72rem !important;
+        border-radius: 8px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .iso-modal-ribbon-wrap {
+        display: none !important; /* Move/hide spectrum ribbon in vertical rail mode to save area */
+    }
+
+    .iso-modal-tab-container {
+        grid-area: content !important;
+        overflow: hidden !important;
     }
 
     .iso-tab-content {
-        padding: 8px;
-        gap: 8px;
+        padding: 10px !important;
+        gap: 8px !important;
     }
 
     .iso-physics-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
     }
 
     #decay-infographic-container {
-        min-height: 150px !important;
+        min-height: 140px !important;
     }
 
     #modal-iso-card {
-        height: 44px !important;
+        height: 42px !important;
         padding: 0 10px !important;
     }
 }
@@ -87828,13 +87862,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.75.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.76.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.75.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.76.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
