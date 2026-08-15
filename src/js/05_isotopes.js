@@ -248,18 +248,19 @@ function updateIsotopesView(atomicNumber) {
         const compactHalfLife = formatCompactHalfLife(iso);
 
         item.innerHTML = `
-            <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: ${indicatorColor}; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px ${indicatorColor};"></div>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px;">
-                <div style="display: flex; align-items: baseline; gap: 3px;">
-                    <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 800; color: ${indicatorColor}; text-shadow: 0 0 6px ${indicatorColor}66;">${iso.massNumber}</sup>
-                    <span style="font-size: 1.2rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
+            <div class="iso-card-gloss-top"></div>
+            <div class="iso-card-indicator-bar" style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: ${indicatorColor}; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px ${indicatorColor};"></div>
+            <div class="iso-card-top-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px;">
+                <div class="iso-card-sym-group" style="display: flex; align-items: baseline; gap: 3px;">
+                    <sup class="iso-card-mass" style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 800; color: ${indicatorColor}; text-shadow: 0 0 6px ${indicatorColor}66;">${iso.massNumber}</sup>
+                    <span class="iso-card-symbol" style="font-size: 1.2rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
                 </div>
-                <span style="background: ${indicatorColor}22; color: ${indicatorColor}; border: 1px solid ${indicatorColor}55; padding: 2px 6px; border-radius: 10px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
+                <span class="iso-card-decay-badge" style="background: ${indicatorColor}22; color: ${indicatorColor}; border: 1px solid ${indicatorColor}55; padding: 2px 6px; border-radius: 10px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
             </div>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px; margin-top: 2px;">
-                <span style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
-                <span style="font-size: 0.62rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
+            <div class="iso-card-bottom-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px; margin-top: 2px;">
+                <span class="iso-card-halflife" style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
+                <span class="iso-card-neutrons" style="font-size: 0.62rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
             </div>
         `;
         
