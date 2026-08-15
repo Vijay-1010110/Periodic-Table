@@ -494,13 +494,13 @@ function renderIsotopeDetails(index) {
     // Render Detailed Scientific Infographic
     const infoContainer = document.getElementById('decay-infographic-container');
     if (infoContainer && elData) {
-        if (iso.isStable) {
+        if (iso.isStable || (!iso.decayMode && !iso.halfLife)) {
             infoContainer.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px;">
-                    <div style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #166534 100%); box-shadow: 0 0 30px rgba(74, 222, 128, 0.4), inset 0 0 20px rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; border: 2px solid #86efac;">
-                        <span style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: bold; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${elData.symbol}</span>
+                <div class="iso-decay-stage" style="flex-direction: column; justify-content: center; gap: 20px;">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #166534 100%); box-shadow: 0 0 35px rgba(74, 222, 128, 0.4), inset 0 0 20px rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; border: 2px solid #86efac;">
+                        <span style="font-size: 2.6rem; font-family: var(--font-mono); font-weight: bold; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${elData.symbol}</span>
                     </div>
-                    <div style="font-size: 1.5rem; font-family: var(--font-ui); font-weight: bold; color: #4ade80; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(74,222,128,0.5);">Stable Isotope (Valley of Stability)</div>
+                    <div style="font-size: 1.4rem; font-family: var(--font-ui); font-weight: bold; color: #4ade80; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(74,222,128,0.5); text-align: center;">Stable Isotope (Valley of Stability)</div>
                 </div>
             `;
         } else {
@@ -607,10 +607,10 @@ function renderIsotopeDetails(index) {
 
                     <!-- Parent Nucleus -->
                     <div class="iso-decay-parent">
-                        <div style="color: #38bdf8; font-weight: bold; text-align: center; line-height: 1.1; font-size: 0.88rem;">Parent Nucleus<br><span style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">(${elData.name}-${A})</span></div>
-                        <div class="parent-svg-wrap" style="width: 90px; height: 90px; margin: 6px 0;">${parentSvg}</div>
-                        <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.9rem; font-family: var(--font-mono);">
-                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
+                        <div style="color: #38bdf8; font-weight: bold; text-align: center; line-height: 1.2; font-size: 0.95rem;">Parent Nucleus<br><span style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">(${elData.name}-${A})</span></div>
+                        <div class="parent-svg-wrap" style="width: 100px; height: 100px; margin: 8px 0;">${parentSvg}</div>
+                        <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 2.2rem; font-family: var(--font-mono);">
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.95rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                 <span>${A}</span>
                                 <span>${Z}</span>
                             </div>
@@ -623,10 +623,10 @@ function renderIsotopeDetails(index) {
                 html += `
                     <!-- Center Arrow -->
                     <div class="iso-decay-arrow-wrap">
-                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.75); border: 1px solid #facc15; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; line-height: 1.1; box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);">Nuclear<br>Fission</div>
-                        <svg width="100%" height="100%" viewBox="0 0 100 160" style="position: absolute; inset: 0;" preserveAspectRatio="none">
-                            <path d="M 10,80 L 85,35" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
-                            <path d="M 10,80 L 85,125" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
+                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.8); border: 1px solid #facc15; border-radius: 8px; padding: 6px 12px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px rgba(250, 204, 21, 0.35);">Nuclear<br>Fission</div>
+                        <svg width="100" height="180" viewBox="0 0 100 180" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,90 L 90,40" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
+                            <path d="M 0,90 L 90,140" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
                             <defs>
                                 <marker id="arrow-fiss" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                     <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
@@ -638,32 +638,32 @@ function renderIsotopeDetails(index) {
                     <!-- Right Side (Fragments) -->
                     <div class="iso-decay-products">
                         <!-- Fragment 1 -->
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${genNuc(pA)}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 56px; height: 56px; flex-shrink: 0;">${genNuc(pA)}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${getSym(pZ)}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Fragment 1 (${pNameFragment}-${pA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.78rem;">Fragment 1 (${pNameFragment}-${pA})</div>
                             </div>
                         </div>
 
                         <!-- Fragment 2 -->
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 56px; height: 56px; flex-shrink: 0;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Fragment 2 (${dName}-${dA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.78rem;">Fragment 2 (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
@@ -672,10 +672,10 @@ function renderIsotopeDetails(index) {
                 html += `
                     <!-- Center Arrow -->
                     <div class="iso-decay-arrow-wrap">
-                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: ${dColor}; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.75); border: 1px solid ${dColor}; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; line-height: 1.1; box-shadow: 0 0 12px ${dColor}44;">${dMode || 'Decay'}<br>Event</div>
-                        <svg width="100%" height="100%" viewBox="0 0 100 160" style="position: absolute; inset: 0;" preserveAspectRatio="none">
-                            <path d="M 10,80 L 85,35" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
-                            <path d="M 10,80 L 85,125" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
+                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: ${dColor}; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.8); border: 1px solid ${dColor}; border-radius: 8px; padding: 6px 12px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px ${dColor}44;">${dMode || 'Decay'}<br>Event</div>
+                        <svg width="100" height="180" viewBox="0 0 100 180" style="position: absolute; top: 0; left: 0;">
+                            <path d="M 0,90 L 90,40" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
+                            <path d="M 0,90 L 90,140" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
                             <defs>
                                 <marker id="arrow-prod" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                     <path d="M 0 0 L 10 5 L 0 10 z" fill="${dColor}" />
@@ -688,34 +688,34 @@ function renderIsotopeDetails(index) {
                     <div class="iso-decay-products">
                         
                         <!-- Emitted Particle (Top) -->
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; flex-shrink: 0;">${particleSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 44px; height: 44px; flex-shrink: 0;">${particleSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
                                     ${pA ? `
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     ` : ''}
                                     <span style="line-height: 1;">${pSym}</span>
                                 </div>
-                                <div style="color: #facc15; font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Emitted ${pName} (${pFullName})</div>
+                                <div style="color: #facc15; font-weight: 600; line-height: 1.1; font-size: 0.78rem;">Emitted ${pName} (${pFullName})</div>
                             </div>
                         </div>
 
                         <!-- Daughter Nucleus (Bottom) -->
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 56px; height: 56px; flex-shrink: 0;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Daughter Nucleus (${dName}-${dA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.78rem;">Daughter Nucleus (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
