@@ -2010,9 +2010,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .iso-tab-btn.active {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: rgba(0, 212, 255, 0.4);
-    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15) !important;
+    border-color: rgba(0, 212, 255, 0.4) !important;
+    color: #00d4ff !important;
     font-weight: 700;
 }
 
@@ -2042,7 +2042,94 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 /* ==========================================================================
-   MOBILE & TABLET RESPONSIVE OVERRIDES (PORTRAIT & LANDSCAPE)
+   DECAY INFOGRAPHIC RESPONSIVE DESIGN SYSTEM
+   ========================================================================== */
+.iso-decay-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    position: relative;
+    font-family: var(--font-ui);
+    background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(3, 7, 16, 0.95) 100%);
+    border-radius: 14px;
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    color: #fff;
+    overflow: hidden;
+    box-shadow: inset 0 0 35px rgba(0,0,0,0.85);
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.iso-decay-banner-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(2, 132, 199, 0.3) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #00d4ff;
+    padding: 6px 20px 6px 14px;
+    font-weight: bold;
+    font-size: 0.88rem;
+    border-bottom-right-radius: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 10;
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.iso-decay-legend-key {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 10;
+}
+
+.iso-decay-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 140px;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+.iso-decay-arrow-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 90px;
+    height: 160px;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+.iso-decay-products {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    height: 100%;
+    width: 200px;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   MOBILE PORTRAIT RESPONSIVE OVERRIDES (max-width: 900px)
    ========================================================================== */
 
 @media (max-width: 900px) {
@@ -2084,153 +2171,376 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-modal-hero-header {
-        padding: 10px 12px;
-        padding-right: 54px;
-        gap: 8px;
-        background: linear-gradient(180deg, rgba(12, 22, 45, 0.95) 0%, rgba(6, 12, 24, 0.9) 100%);
+        padding: 8px 10px !important;
+        padding-right: 50px !important;
+        gap: 6px !important;
+        background: linear-gradient(180deg, rgba(12, 22, 45, 0.98) 0%, rgba(6, 12, 24, 0.95) 100%) !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
 
     #close-modal-btn {
-        top: 10px;
-        right: 12px;
-        width: 38px;
-        height: 38px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 1.1rem;
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        z-index: 50;
+        top: 8px !important;
+        right: 8px !important;
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        font-size: 1.1rem !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+        z-index: 60 !important;
+    }
+
+    #modal-el-card {
+        padding: 4px 8px !important;
+        min-height: 44px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    #iso-search-input {
+        width: 100% !important;
+        max-width: 140px !important;
+    }
+
+    #modal-decay-legend {
+        display: flex !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        padding: 2px 0 !important;
+        scrollbar-width: none !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #modal-decay-legend::-webkit-scrollbar {
+        display: none;
     }
 
     .iso-modal-ribbon-wrap {
-        padding: 6px 10px;
-        gap: 4px;
-        background: rgba(4, 8, 18, 0.95);
+        padding: 4px 8px !important;
+        gap: 2px !important;
+        background: rgba(4, 8, 18, 0.98) !important;
     }
 
     .iso-modal-isotope-list {
-        padding: 4px 0 6px 0;
-        gap: 6px;
-        scroll-snap-type: x mandatory;
+        padding: 2px 0 4px 0 !important;
+        gap: 6px !important;
+        scroll-snap-type: x mandatory !important;
     }
 
-    .iso-modal-isotope-list > div {
-        scroll-snap-align: center;
-        min-width: 64px;
-        min-height: 42px;
+    .iso-list-item {
+        scroll-snap-align: center !important;
+        min-width: 115px !important;
+        padding: 4px 8px !important;
+        border-radius: 8px !important;
     }
 
     .iso-tab-nav-bar {
-        padding: 6px 8px 0 8px;
-        gap: 6px;
-        position: sticky;
-        top: 0;
-        z-index: 30;
-        background: rgba(4, 9, 20, 0.98);
-        display: flex;
+        padding: 4px 8px 0 8px !important;
+        gap: 4px !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 30 !important;
+        background: rgba(4, 9, 20, 0.98) !important;
+        display: flex !important;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
     }
 
     .iso-tab-btn {
-        flex: 1;
-        padding: 10px 4px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-align: center;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px 10px 0 0;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-bottom: none;
-        color: rgba(255, 255, 255, 0.7);
+        flex: 1 !important;
+        padding: 8px 4px !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        min-height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px 8px 0 0 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-bottom: none !important;
+        color: rgba(255, 255, 255, 0.7) !important;
     }
 
     .iso-tab-btn.active {
-        background: rgba(0, 212, 255, 0.2);
-        border-color: rgba(0, 212, 255, 0.5);
-        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.22) !important;
+        border-color: rgba(0, 212, 255, 0.55) !important;
+        color: #00d4ff !important;
     }
 
     .iso-tab-content {
-        padding: 12px 10px;
-        gap: 12px;
+        padding: 10px 8px !important;
+        gap: 10px !important;
+    }
+
+    #modal-iso-card {
+        height: auto !important;
+        min-height: 48px !important;
+        padding: 6px 10px !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    /* Mobile Portrait Decay Infographic Column Flow */
+    .iso-decay-stage {
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 38px 10px 14px 10px !important;
+        min-height: 320px !important;
+        overflow-y: auto !important;
+    }
+
+    .iso-decay-parent {
+        width: 100% !important;
+        margin-top: 0 !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 16px !important;
+    }
+
+    .iso-decay-parent .parent-svg-wrap {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .iso-decay-arrow-wrap {
+        width: 100% !important;
+        height: 38px !important;
+        margin-top: 0 !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+    }
+
+    .iso-decay-arrow-wrap svg {
+        display: none !important;
+    }
+
+    .iso-decay-arrow-wrap .decay-badge-center {
+        position: static !important;
+        transform: none !important;
+        padding: 4px 14px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .iso-decay-products {
+        width: 100% !important;
+        height: auto !important;
+        margin-top: 0 !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .iso-decay-legend-key {
+        position: static !important;
+        margin-top: 6px !important;
+        display: flex !important;
+        gap: 12px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 4px 12px !important;
+        border-radius: 20px !important;
+        font-size: 0.7rem !important;
     }
 
     .iso-physics-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    .prop-item {
+        padding: 8px 10px !important;
+    }
+
+    .prop-label {
+        font-size: 0.65rem !important;
+    }
+
+    .prop-value {
+        font-size: 0.88rem !important;
     }
 
     .sim-atom-chamber {
-        grid-template-columns: repeat(10, 1fr);
-        gap: 4px;
-        padding: 10px;
+        grid-template-columns: repeat(10, 1fr) !important;
+        gap: 4px !important;
+        padding: 8px !important;
+        max-width: 320px !important;
+        margin: 0 auto !important;
     }
 }
 
-/* Dedicated Mobile Landscape Navigation Rail Mode (Height <= 550px) */
+/* ==========================================================================
+   DEDICATED MOBILE LANDSCAPE 2-COLUMN SPLIT VIEW (Height <= 550px)
+   ========================================================================== */
 @media (max-height: 550px) and (max-width: 960px) {
+    .isotope-modal-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        padding: 0 !important;
+        z-index: 99999 !important;
+    }
+
     .isotope-modal-dialog {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        max-width: 100vw !important;
+        max-height: 100dvh !important;
+        min-height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        background: #060c18 !important;
         display: grid !important;
-        grid-template-columns: 110px 1fr !important;
-        grid-template-rows: auto 1fr !important;
-        grid-template-areas:
-            "nav-rail header"
-            "nav-rail content" !important;
+        grid-template-columns: 240px 1fr !important;
+        grid-template-rows: 100% !important;
+        grid-template-areas: "leftpane rightpane" !important;
+        overflow: hidden !important;
     }
 
     .mobile-drag-handle {
         display: none !important;
     }
 
+    /* Left Column Container (Header + Ribbon Isotope List) */
     .iso-modal-hero-header {
-        grid-area: header !important;
-        padding: 6px 12px !important;
-        padding-right: 48px !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-
-    /* Left Vertical Navigation Rail */
-    .iso-tab-nav-bar {
-        grid-area: nav-rail !important;
+        grid-area: leftpane !important;
         display: flex !important;
         flex-direction: column !important;
-        padding: 8px 6px !important;
-        gap: 8px !important;
-        background: rgba(3, 7, 16, 0.98) !important;
+        align-items: stretch !important;
+        padding: 8px !important;
+        gap: 6px !important;
         border-right: 1px solid rgba(0, 212, 255, 0.25) !important;
         border-bottom: none !important;
+        background: rgba(4, 9, 20, 0.98) !important;
         height: 100% !important;
-        overflow-y: auto !important;
-    }
-
-    .iso-tab-btn {
-        flex-direction: column !important;
-        padding: 8px 4px !important;
-        min-height: 48px !important;
-        font-size: 0.72rem !important;
-        border-radius: 8px !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        overflow: hidden !important;
+        padding-right: 8px !important;
     }
 
     .iso-modal-ribbon-wrap {
-        display: none !important; /* Move/hide spectrum ribbon in vertical rail mode to save area */
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important;
+        overflow: hidden !important;
+        padding: 4px 0 0 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
     }
 
+    .iso-ribbon-header {
+        display: none !important;
+    }
+
+    .iso-modal-isotope-list {
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        flex: 1 !important;
+        height: 100% !important;
+        padding: 2px !important;
+        gap: 4px !important;
+        scroll-snap-type: none !important;
+    }
+
+    .iso-list-item {
+        min-width: unset !important;
+        width: 100% !important;
+        padding: 4px 8px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Right Column: Tab navigation & Content Workspace */
     .iso-modal-tab-container {
-        grid-area: content !important;
+        grid-area: rightpane !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
         overflow: hidden !important;
+        position: relative !important;
+    }
+
+    .iso-tab-nav-bar {
+        padding: 6px 12px 0 12px !important;
+        padding-right: 50px !important;
+        gap: 6px !important;
+        background: rgba(3, 7, 16, 0.95) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        flex-shrink: 0 !important;
+    }
+
+    .iso-tab-btn {
+        padding: 6px 12px !important;
+        min-height: 36px !important;
+        font-size: 0.76rem !important;
+        border-radius: 8px 8px 0 0 !important;
+    }
+
+    #close-modal-btn {
+        top: 6px !important;
+        right: 8px !important;
+        width: 34px !important;
+        height: 34px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        font-size: 1rem !important;
+        z-index: 60 !important;
     }
 
     .iso-tab-content {
-        padding: 10px !important;
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 8px 12px !important;
         gap: 8px !important;
+    }
+
+    #modal-iso-card {
+        height: 42px !important;
+        min-height: 42px !important;
+        padding: 0 10px !important;
+    }
+
+    .iso-decay-stage {
+        padding: 10px !important;
+        min-height: 170px !important;
+        gap: 10px !important;
+    }
+
+    .iso-decay-parent {
+        width: 100px !important;
+        margin-top: 0 !important;
+    }
+
+    .iso-decay-parent .parent-svg-wrap {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .iso-decay-arrow-wrap {
+        width: 70px !important;
+        height: 120px !important;
+        margin-top: 0 !important;
+    }
+
+    .iso-decay-products {
+        width: 150px !important;
+        gap: 8px !important;
+        margin-top: 0 !important;
     }
 
     .iso-physics-grid {
@@ -2238,13 +2548,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         gap: 6px !important;
     }
 
-    #decay-infographic-container {
-        min-height: 140px !important;
-    }
-
-    #modal-iso-card {
-        height: 42px !important;
-        padding: 0 10px !important;
+    .sim-atom-chamber {
+        grid-template-columns: repeat(20, 1fr) !important;
+        gap: 3px !important;
+        padding: 6px !important;
     }
 }
 
@@ -2254,11 +2561,6 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
     .tab-text-short {
         display: inline;
-    }
-
-    .iso-physics-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
     }
 }
 
@@ -77157,7 +77459,8 @@ function updateIsotopesView(atomicNumber) {
             
             legendModes.forEach(mode => {
                 const p = document.createElement('div');
-                p.style.cssText = `position: relative; overflow: hidden; padding: 4px 10px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 500; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none;`;
+                p.className = 'iso-legend-chip';
+                p.style.cssText = `position: relative; overflow: hidden; padding: 4px 10px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 500; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none; flex-shrink: 0; white-space: nowrap; font-size: 0.75rem;`;
                 p.innerHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%); pointer-events: none; border-radius: 6px 6px 0 0;"></div><span style="position:relative; z-index:1;">${mode.name}</span>`;
                 
                 const applyFilter = (mode) => {
@@ -77287,9 +77590,6 @@ function updateIsotopesView(atomicNumber) {
         item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
         item.style.cssText = `
-            min-width: 148px;
-            padding: 8px 12px;
-            border-radius: 12px;
             border: 1.5px solid ${indicatorColor}77;
             background: linear-gradient(135deg, ${catColor}25 0%, ${indicatorColor}18 50%, rgba(10, 16, 32, 0.9) 100%);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15;
@@ -77297,9 +77597,8 @@ function updateIsotopesView(atomicNumber) {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 6px;
+            gap: 4px;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            flex-shrink: 0;
             user-select: none;
             box-sizing: border-box;
             order: 1;
@@ -77317,14 +77616,14 @@ function updateIsotopesView(atomicNumber) {
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px;">
                 <div style="display: flex; align-items: baseline; gap: 3px;">
                     <sup style="font-size: 0.8rem; font-family: var(--font-mono); font-weight: 800; color: ${indicatorColor}; text-shadow: 0 0 6px ${indicatorColor}66;">${iso.massNumber}</sup>
-                    <span style="font-size: 1.25rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
+                    <span style="font-size: 1.2rem; font-family: var(--font-mono); font-weight: 800; color: #fff; line-height: 1;">${elData.symbol}</span>
                 </div>
-                <span style="background: ${indicatorColor}22; color: ${indicatorColor}; border: 1px solid ${indicatorColor}55; padding: 2px 7px; border-radius: 10px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
+                <span style="background: ${indicatorColor}22; color: ${indicatorColor}; border: 1px solid ${indicatorColor}55; padding: 2px 6px; border-radius: 10px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; font-family: var(--font-ui); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 4px; margin-top: 2px;">
-                <span style="font-size: 0.72rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 98px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
-                <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
+                <span style="font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
+                <span style="font-size: 0.62rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600;">N=${N}</span>
             </div>
         `;
         
@@ -77355,6 +77654,7 @@ function updateIsotopesView(atomicNumber) {
             item.style.borderColor = indicatorColor;
             item.style.boxShadow = `0 0 20px ${indicatorColor}aa, inset 0 0 16px ${indicatorColor}33`;
             item.style.transform = 'translateY(-2px)';
+            item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             renderIsotopeDetails(index);
         };
         
@@ -77652,28 +77952,29 @@ function renderIsotopeDetails(index) {
 
             const parentSvg = genNuc(A);
             const daughterSvg = genNuc(dA);
+            const dColor = getDecayColor(dMode);
             
             let html = `
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; height: 100%; position: relative; font-family: var(--font-ui); background: rgba(5, 12, 25, 0.9); border-radius: 12px; color: #fff; overflow: hidden; border: 1px solid rgba(0, 212, 255, 0.15);">
+                <div class="iso-decay-stage">
                     
                     <!-- Header Title -->
-                    <div style="position: absolute; top: 0; left: 0; background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(2, 132, 199, 0.3) 100%); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 6px 22px 6px 16px; font-weight: bold; font-size: 0.95rem; border-bottom-right-radius: 20px; text-transform: uppercase; letter-spacing: 1px;">
+                    <div class="iso-decay-banner-title">
                         ${dMode} DECAY OF ${elData.name.toUpperCase()}-${A}
                     </div>
 
                     <!-- Legend Key -->
-                    <div style="position: absolute; top: 12px; right: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 8px 12px; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
-                        <div style="font-weight: bold; text-align: center; margin-bottom: 4px; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-transform: uppercase;">Key</div>
-                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: #38bdf8;"><div style="width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #1d4ed8 100%); box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);"></div> Proton (p⁺)</div>
-                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 0.78rem; font-weight: 600; color: #f472b6;"><div style="width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #be185d 100%); box-shadow: 0 0 8px rgba(244, 114, 182, 0.6);"></div> Neutron (n⁰)</div>
+                    <div class="iso-decay-legend-key">
+                        <div style="font-weight: bold; text-align: center; margin-bottom: 2px; color: rgba(255,255,255,0.6); font-size: 0.68rem; text-transform: uppercase;">Key</div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 600; color: #38bdf8;"><div style="width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #1d4ed8 100%); box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);"></div> Proton (p⁺)</div>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 0.72rem; font-weight: 600; color: #f472b6;"><div style="width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #f472b6 0%, #be185d 100%); box-shadow: 0 0 6px rgba(244, 114, 182, 0.6);"></div> Neutron (n⁰)</div>
                     </div>
 
                     <!-- Parent Nucleus -->
-                    <div style="display: flex; flex-direction: column; align-items: center; width: 140px; margin-top: 25px;">
-                        <div style="color: #38bdf8; font-weight: bold; text-align: center; line-height: 1.1; font-size: 0.95rem;">Parent Nucleus<br><span style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">(${elData.name}-${A})</span></div>
-                        <div style="width: 110px; height: 110px; margin: 8px 0;">${parentSvg}</div>
-                        <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 2.2rem; font-family: var(--font-mono);">
-                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.95rem; line-height: 1; margin-right: 5px; color: #00d4ff;">
+                    <div class="iso-decay-parent">
+                        <div style="color: #38bdf8; font-weight: bold; text-align: center; line-height: 1.1; font-size: 0.88rem;">Parent Nucleus<br><span style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">(${elData.name}-${A})</span></div>
+                        <div class="parent-svg-wrap" style="width: 90px; height: 90px; margin: 6px 0;">${parentSvg}</div>
+                        <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.9rem; font-family: var(--font-mono);">
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
                                 <span>${A}</span>
                                 <span>${Z}</span>
                             </div>
@@ -77685,13 +77986,13 @@ function renderIsotopeDetails(index) {
             if (isSpontaneousFission || !hasParticle) {
                 html += `
                     <!-- Center Arrow -->
-                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px; height: 180px; margin-top: 25px;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.7); border: 1px solid #facc15; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);">Nuclear<br>Fission</div>
-                        <svg width="100" height="180" style="position: absolute; top: 0; left: 0;">
-                            <path d="M 0,90 L 90,40" stroke="#facc15" stroke-width="3" marker-end="url(#arrow)" />
-                            <path d="M 0,90 L 90,140" stroke="#facc15" stroke-width="3" marker-end="url(#arrow)" />
+                    <div class="iso-decay-arrow-wrap">
+                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.75); border: 1px solid #facc15; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; line-height: 1.1; box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);">Nuclear<br>Fission</div>
+                        <svg width="100%" height="100%" viewBox="0 0 100 160" style="position: absolute; inset: 0;" preserveAspectRatio="none">
+                            <path d="M 10,80 L 85,35" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
+                            <path d="M 10,80 L 85,125" stroke="#facc15" stroke-width="3" marker-end="url(#arrow-fiss)" />
                             <defs>
-                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <marker id="arrow-fiss" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                     <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
                                 </marker>
                             </defs>
@@ -77699,34 +78000,34 @@ function renderIsotopeDetails(index) {
                     </div>
 
                     <!-- Right Side (Fragments) -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 15px; height: 100%; width: 200px; margin-top: 25px;">
+                    <div class="iso-decay-products">
                         <!-- Fragment 1 -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 60px; height: 60px;">${genNuc(pA)}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${genNuc(pA)}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${getSym(pZ)}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Fragment 1 (${pNameFragment}-${pA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Fragment 1 (${pNameFragment}-${pA})</div>
                             </div>
                         </div>
 
                         <!-- Fragment 2 -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 60px; height: 60px;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Fragment 2 (${dName}-${dA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Fragment 2 (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
@@ -77734,51 +78035,51 @@ function renderIsotopeDetails(index) {
             } else {
                 html += `
                     <!-- Center Arrow -->
-                    <div style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px; height: 180px; margin-top: 25px;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #4ade80; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.7); border: 1px solid #4ade80; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; line-height: 1.1; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);">Decay<br>Event</div>
-                        <svg width="100" height="180" style="position: absolute; top: 0; left: 0;">
-                            <path d="M 0,90 L 90,40" stroke="#4ade80" stroke-width="3" marker-end="url(#arrow)" />
-                            <path d="M 0,90 L 90,140" stroke="#4ade80" stroke-width="3" marker-end="url(#arrow)" />
+                    <div class="iso-decay-arrow-wrap">
+                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: ${dColor}; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.75); border: 1px solid ${dColor}; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; line-height: 1.1; box-shadow: 0 0 12px ${dColor}44;">${dMode || 'Decay'}<br>Event</div>
+                        <svg width="100%" height="100%" viewBox="0 0 100 160" style="position: absolute; inset: 0;" preserveAspectRatio="none">
+                            <path d="M 10,80 L 85,35" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
+                            <path d="M 10,80 L 85,125" stroke="${dColor}" stroke-width="3" marker-end="url(#arrow-prod)" />
                             <defs>
-                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#4ade80" />
+                                <marker id="arrow-prod" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="${dColor}" />
                                 </marker>
                             </defs>
                         </svg>
                     </div>
 
                     <!-- Right Side (Products) -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 15px; height: 100%; width: 200px; margin-top: 25px;">
+                    <div class="iso-decay-products">
                         
                         <!-- Emitted Particle (Top) -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 44px; height: 44px;">${particleSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; flex-shrink: 0;">${particleSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
                                     ${pA ? `
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
                                         <span>${pA}</span>
                                         <span>${pZ}</span>
                                     </div>
                                     ` : ''}
                                     <span style="line-height: 1;">${pSym}</span>
                                 </div>
-                                <div style="color: #facc15; font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Emitted ${pName} (${pFullName})</div>
+                                <div style="color: #facc15; font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Emitted ${pName} (${pFullName})</div>
                             </div>
                         </div>
 
                         <!-- Daughter Nucleus (Bottom) -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 60px; height: 60px;">${daughterSvg}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 50px; height: 50px; flex-shrink: 0;">${daughterSvg}</div>
                             <div style="display: flex; flex-direction: column;">
-                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.8rem; font-family: var(--font-mono);">
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.85rem; line-height: 1; margin-right: 4px; color: #00d4ff;">
+                                <div style="display: flex; align-items: center; font-weight: bold; color: #fff; font-size: 1.5rem; font-family: var(--font-mono);">
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.78rem; line-height: 1; margin-right: 3px; color: #00d4ff;">
                                         <span>${dA}</span>
                                         <span>${dZ}</span>
                                     </div>
                                     <span style="line-height: 1;">${dSym}</span>
                                 </div>
-                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.8rem;">Daughter Nucleus (${dName}-${dA})</div>
+                                <div style="color: rgba(255,255,255,0.7); font-weight: 600; line-height: 1.1; font-size: 0.72rem;">Daughter Nucleus (${dName}-${dA})</div>
                             </div>
                         </div>
                     </div>
@@ -78122,16 +78423,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup Inspector Tab Switching
     document.querySelectorAll('.iso-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.iso-tab-btn').forEach(b => {
-                b.classList.remove('active');
-                b.style.background = 'rgba(255, 255, 255, 0.04)';
-                b.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                b.style.color = 'rgba(255,255,255,0.7)';
-            });
+            document.querySelectorAll('.iso-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            btn.style.background = 'rgba(0, 212, 255, 0.15)';
-            btn.style.borderColor = 'rgba(0, 212, 255, 0.4)';
-            btn.style.color = '#00d4ff';
 
             const targetTab = btn.dataset.tab;
             document.querySelectorAll('.iso-tab-content').forEach(content => {
@@ -87862,13 +88155,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.76.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.77.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.76.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.77.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
