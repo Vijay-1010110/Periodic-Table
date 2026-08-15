@@ -184,13 +184,13 @@
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.79.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.80.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.79.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.80.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -466,15 +466,15 @@
 
                     <!-- 1. TOP HERO HEADER & ELEMENT BANNER -->
                     <div class="iso-modal-hero-header">
-                        <div id="modal-el-card" style="display: flex; align-items: center; gap: 16px; min-height: 60px;"></div>
+                        <div id="modal-el-card"></div>
                         
                         <!-- Element Stability Summary & Filters -->
-                        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                            <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
-                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 99m, stable)..." style="background: transparent; border: none; color: #fff; font-size: 0.8rem; font-family: var(--font-ui); outline: none; width: 150px;" />
-                                <div id="modal-isotope-count" style="font-size: 0.8rem; color: #00d4ff; font-weight: 700; white-space: nowrap;"></div>
+                        <div class="iso-modal-header-tools">
+                            <div class="iso-search-pill">
+                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 99m, stable)..." />
+                                <div id="modal-isotope-count"></div>
                             </div>
-                            <div id="modal-decay-legend" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.75rem; color: #fff; align-items: center;"></div>
+                            <div id="modal-decay-legend"></div>
                         </div>
                     </div>
 
