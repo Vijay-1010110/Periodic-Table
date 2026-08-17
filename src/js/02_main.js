@@ -28,6 +28,168 @@ let lockedLegendType = null;
 let lockedLegendGroup = null;
 let currentTimelineYear = 2025;
 let currentSearchQuery = '';
+
+// High-performance Grid Cell Cache & RAF Throttler for 60fps/120fps dynamic controls
+let gridCellCache = null;
+let tempRafId = null;
+let pendingTemp = currentTemp;
+let timelineRafId = null;
+let pendingTimelineYear = currentTimelineYear;
+let _elTempInput = null;
+let _elTempDisplayC = null;
+let _elTempDisplayF = null;
+let _elTempDisplayContainer = null;
+let _elTempSlider = null;
+let _elTimelineInput = null;
+let _elTimelineDisplayContainer = null;
+let _elTimelineSlider = null;
+
+function invalidateGridCellCache() {
+    gridCellCache = null;
+}
+
+function getGridCellCache() {
+    const isMain = currentView === 'main';
+    const isIsotopes = currentView === 'isotopes';
+    const gridId = isMain ? '#main-grid' : (isIsotopes ? '#isotopes-grid' : '#electrons-grid');
+
+    if (gridCellCache && gridCellCache.gridId === gridId && gridCellCache.items && gridCellCache.items.length === 118) {
+        return gridCellCache.items;
+    }
+
+    const cells = document.querySelectorAll(`${gridId} .element-cell`);
+    if (!cells || cells.length === 0) return [];
+
+    const items = [];
+    cells.forEach(cell => {
+        const z = parseInt(cell.dataset.z);
+        const elData = getElementByNumber(z);
+        if (!elData) return;
+
+        items.push({
+            cell: cell,
+            symSpan: cell.querySelector('.cell-sym'),
+            bohrSpan: cell.querySelector('.cell-bohr'),
+            valSpan: cell.querySelector('.cell-value'),
+            z: z,
+            elData: elData,
+            mp: (elData.meltingPoint !== null && elData.meltingPoint !== undefined) ? elData.meltingPoint : null,
+            bp: (elData.boilingPoint !== null && elData.boilingPoint !== undefined) ? elData.boilingPoint : null,
+            discYear: elData.discoveryYear === 'Ancient' ? -99999 : parseInt(elData.discoveryYear),
+            lastState: cell.dataset.state || 'Unknown',
+            normalizedCategory: getNormalizedCategory(elData.category)
+        });
+    });
+
+    gridCellCache = { gridId, items };
+    return items;
+}
+
+function updateLegendStateCounts(solid, liquid, gas, unknown) {
+    const counts = { Solid: solid, Liquid: liquid, Gas: gas, Unknown: unknown };
+    const legendItems = document.querySelectorAll('#in-grid-legend .legend-item[data-type="state"]');
+    legendItems.forEach(item => {
+        const key = item.dataset.key;
+        if (key && counts[key] !== undefined) {
+            const span = item.querySelector('span');
+            if (span) {
+                span.textContent = `${key} (${counts[key]})`;
+            }
+        }
+    });
+}
+
+function applyOptimizedTemperatureUpdate(k) {
+    const isMain = currentView === 'main';
+    const isIsotopes = currentView === 'isotopes';
+    const items = getGridCellCache();
+    if (!items || items.length === 0) return;
+
+    let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
+    const isStateProp = isMain && currentProperty === 'state';
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        let currentState = 'Unknown';
+        if (item.mp !== null && item.bp !== null) {
+            if (k < item.mp) currentState = 'Solid';
+            else if (k < item.bp) currentState = 'Liquid';
+            else currentState = 'Gas';
+        }
+
+        if (currentState === 'Solid') solidCount++;
+        else if (currentState === 'Liquid') liquidCount++;
+        else if (currentState === 'Gas') gasCount++;
+        else unknownCount++;
+
+        // Only touch DOM if state transitioned
+        if (currentState !== item.lastState) {
+            item.lastState = currentState;
+            item.cell.dataset.state = currentState;
+
+            if (item.symSpan) {
+                item.symSpan.style.color = stateTextColors[currentState];
+            }
+            if (item.bohrSpan) {
+                item.bohrSpan.style.color = stateTextColors[currentState];
+            }
+
+            if (isStateProp) {
+                const color = stateColors[currentState] || '#6b7280';
+                item.cell.style.background = getGlossyBackground(color, '');
+                item.cell.style.borderColor = color;
+                if (item.valSpan) {
+                    item.valSpan.textContent = currentState;
+                }
+            }
+        }
+    }
+
+    window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
+
+    // Update state numbers in in-grid legend in-place
+    updateLegendStateCounts(solidCount, liquidCount, gasCount, unknownCount);
+
+    // Update selected element in sidebar
+    if (selectedElement) {
+        let selState = 'Unknown';
+        if (selectedElement.meltingPoint != null && selectedElement.boilingPoint != null) {
+            if (k < selectedElement.meltingPoint) selState = 'Solid';
+            else if (k < selectedElement.boilingPoint) selState = 'Liquid';
+            else selState = 'Gas';
+        }
+        const stateEl = document.getElementById('val-state');
+        if (stateEl) stateEl.textContent = selState;
+        if (isStateProp) {
+            updateSelectedCardVisuals();
+        }
+    }
+}
+
+function applyOptimizedTimelineUpdate(year) {
+    const isMain = currentView === 'main';
+    if (!isMain || currentProperty !== 'discoveryYear') return;
+
+    const items = getGridCellCache();
+    if (!items || items.length === 0) return;
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.elData.discoveryYear === 'Ancient') {
+            item.cell.style.opacity = '1';
+            item.cell.style.filter = 'none';
+        } else {
+            const dYear = item.discYear;
+            if (!isNaN(dYear) && dYear > year) {
+                item.cell.style.opacity = '0.2';
+                item.cell.style.filter = 'grayscale(1)';
+            } else {
+                item.cell.style.opacity = '1';
+                item.cell.style.filter = 'none';
+            }
+        }
+    }
+}
 const aufbauExceptions = {
     24: ['4s', '3d'],    // Cr
     29: ['4s', '3d'],    // Cu
@@ -617,31 +779,46 @@ function setupUI() {
         if (parsed < 0) parsed = 0;
         if (parsed > 6000) parsed = 6000;
         currentTemp = parsed;
+        pendingTemp = parsed;
         
-        // Sync the other control
-        tempSlider.value = currentTemp;
-        tempInput.value = Math.round(currentTemp);
+        // Sync the other control synchronously for zero UI latency
+        if (tempSlider && document.activeElement !== tempSlider && tempSlider.value != currentTemp) {
+            tempSlider.value = currentTemp;
+        }
+        if (tempInput && document.activeElement !== tempInput && tempInput.value != Math.round(currentTemp)) {
+            tempInput.value = Math.round(currentTemp);
+        }
         
         updateTempDisplay();
-        if (currentProperty === 'category' || currentProperty === 'state') updateGridVisuals();
-        updateSidebarValues();
+        
+        if (!tempRafId) {
+            tempRafId = requestAnimationFrame(() => {
+                tempRafId = null;
+                applyOptimizedTemperatureUpdate(pendingTemp);
+            });
+        }
     };
 
-    tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value));
-    tempInput.addEventListener('input', (e) => handleTempChange(e.target.value));
+    if (tempSlider) tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
+    if (tempInput) tempInput.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
 
     function handleTimelineChange(val) {
         currentTimelineYear = parseInt(val);
+        pendingTimelineYear = currentTimelineYear;
         updateTimelineDisplay();
-        if (currentProperty === 'discoveryYear') updateGridVisuals();
+        
+        if (!timelineRafId) {
+            timelineRafId = requestAnimationFrame(() => {
+                timelineRafId = null;
+                applyOptimizedTimelineUpdate(pendingTimelineYear);
+            });
+        }
     }
 
     const timelineSlider = document.getElementById('timeline-slider');
     const timelineInput = document.getElementById('timeline-input');
-    if (timelineSlider && timelineInput) {
-        timelineSlider.addEventListener('input', (e) => handleTimelineChange(e.target.value));
-        timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value));
-    }
+    if (timelineSlider) timelineSlider.addEventListener('input', (e) => handleTimelineChange(e.target.value), { passive: true });
+    if (timelineInput) timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value), { passive: true });
     
     // Orbital Controls (Slice view only)
     const sliceToggle = document.getElementById('slice-orbital');
@@ -698,54 +875,57 @@ function getTempColor(k) {
 function updateTempDisplay() {
     const k = currentTemp;
     const c = k - 273.15;
-    const f = c * 9/5 + 32;
-    const cStr = String(Math.round(c)).padStart(5, '\u00A0');
-    const fStr = String(Math.round(f)).padStart(5, '\u00A0');
+    const f = c * 1.8 + 32;
     
-    document.getElementById('temp-input').value = Math.round(k);
-    document.getElementById('temp-display-c').innerText = `${cStr} °C`;
-    document.getElementById('temp-display-f').innerText = `${fStr} °F`;
+    if (!_elTempInput) _elTempInput = document.getElementById('temp-input');
+    if (!_elTempDisplayC) _elTempDisplayC = document.getElementById('temp-display-c');
+    if (!_elTempDisplayF) _elTempDisplayF = document.getElementById('temp-display-f');
+    if (!_elTempDisplayContainer) _elTempDisplayContainer = document.getElementById('temp-display-container');
+    if (!_elTempSlider) _elTempSlider = document.getElementById('temp-slider');
+
+    if (_elTempInput && document.activeElement !== _elTempInput) _elTempInput.value = Math.round(k);
+    if (_elTempDisplayC) _elTempDisplayC.textContent = `${Math.round(c)} °C`;
+    if (_elTempDisplayF) _elTempDisplayF.textContent = `${Math.round(f)} °F`;
     
-    const displayContainer = document.getElementById('temp-display-container');
-    const tempInput = document.getElementById('temp-input');
-    const slider = document.getElementById('temp-slider');
     const color = getTempColor(k);
     
     // Dynamically color all text values to match the temperature meter 1:1
-    if (displayContainer) {
-        displayContainer.style.color = color;
-        displayContainer.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
+    if (_elTempDisplayContainer) {
+        _elTempDisplayContainer.style.color = color;
+        _elTempDisplayContainer.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
     }
-    if (tempInput) {
-        tempInput.style.color = color;
-        tempInput.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    if (_elTempInput) {
+        _elTempInput.style.color = color;
+        _elTempInput.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
     }
     
     // Dynamic glow for the thumb
-    const glowIntensity = Math.min(1, k / 6000); // 0 to 1
-    let glowShadow = 'none';
-    let thumbBg = 'transparent';
-    if (glowIntensity > 0.05) {
-        const glowRadius1 = Math.round(glowIntensity * 15);
-        const glowRadius2 = Math.round(glowIntensity * 30);
-        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
-        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
-        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+    if (_elTempSlider) {
+        const glowIntensity = Math.min(1, k / 6000); // 0 to 1
+        let glowShadow = 'none';
+        let thumbBg = 'transparent';
+        if (glowIntensity > 0.05) {
+            const glowRadius1 = Math.round(glowIntensity * 15);
+            const glowRadius2 = Math.round(glowIntensity * 30);
+            const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+            glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+            thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+        }
+        
+        _elTempSlider.style.setProperty('--temp-thumb-glow', glowShadow);
+        _elTempSlider.style.setProperty('--dynamic-temp-bg', thumbBg);
     }
-    
-    slider.style.setProperty('--temp-thumb-glow', glowShadow);
-    slider.style.setProperty('--dynamic-temp-bg', thumbBg);
 }
 
 function updateTimelineDisplay() {
     const y = currentTimelineYear;
-    const inputEl = document.getElementById('timeline-input');
-    if (inputEl && document.activeElement !== inputEl) {
-        inputEl.value = y;
+    if (!_elTimelineInput) _elTimelineInput = document.getElementById('timeline-input');
+    if (_elTimelineInput && document.activeElement !== _elTimelineInput) {
+        _elTimelineInput.value = y;
     }
     
-    const displayContainer = document.getElementById('timeline-display-container');
-    if (!displayContainer) return;
+    if (!_elTimelineDisplayContainer) _elTimelineDisplayContainer = document.getElementById('timeline-display-container');
+    if (!_elTimelineDisplayContainer) return;
     
     const minYear = 1650;
     const maxYear = 2025;
@@ -756,11 +936,11 @@ function updateTimelineDisplay() {
     const b = Math.round(255 + (204 - 255) * pct);
     const color = `rgb(${r}, ${g}, ${b})`;
     
-    displayContainer.style.color = color;
-    displayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
+    _elTimelineDisplayContainer.style.color = color;
+    _elTimelineDisplayContainer.style.textShadow = `0 0 8px ${color.replace('rgb', 'rgba').replace(')', ', 0.5)')}`;
     
-    const slider = document.getElementById('timeline-slider');
-    if (!slider) return;
+    if (!_elTimelineSlider) _elTimelineSlider = document.getElementById('timeline-slider');
+    if (!_elTimelineSlider) return;
     
     const glowIntensity = 0.5 + 0.5 * pct;
     const glowRadius1 = Math.round(glowIntensity * 15);
@@ -769,14 +949,13 @@ function updateTimelineDisplay() {
     const glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
     const thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
     
-    slider.style.setProperty('--time-thumb-glow', glowShadow);
-    slider.style.setProperty('--dynamic-time-bg', thumbBg);
+    _elTimelineSlider.style.setProperty('--timeline-thumb-glow', glowShadow);
+    _elTimelineSlider.style.setProperty('--dynamic-timeline-bg', thumbBg);
 }
-
-
 
 // Render Grid Structure based on Mode
 function renderGrid() {
+    invalidateGridCellCache();
     const gridId = currentView === 'electrons' ? 'electrons-grid' : 
                    currentView === 'isotopes' ? 'isotopes-grid' : 'main-grid';
     const grid = document.getElementById(gridId);
@@ -1111,6 +1290,7 @@ function getGlossyBackground(colorStr, category = '') {
 }
 
 function updateGridVisuals() {
+    invalidateGridCellCache();
     const isMain = currentView === 'main';
     const isIsotopes = currentView === 'isotopes';
     const gridId = isMain ? '#main-grid' : 
