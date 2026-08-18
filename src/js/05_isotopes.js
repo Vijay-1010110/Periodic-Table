@@ -512,12 +512,93 @@ function renderIsotopeDetails(index) {
     const infoContainer = document.getElementById('decay-infographic-container');
     if (infoContainer && elData) {
         if (iso.isStable || (!iso.decayMode && !iso.halfLife)) {
+            const Z = elData.atomicNumber;
+            const A = iso.massNumber;
+            const N = A - Z;
+            const ratioNZ = (N / Math.max(1, Z)).toFixed(2);
+            const magicNumbers = [2, 8, 20, 28, 50, 82, 126];
+            const isMagicZ = magicNumbers.includes(Z);
+            const isMagicN = magicNumbers.includes(N);
+            const isDoublyMagic = isMagicZ && isMagicN;
+            
+            let magicBadge = '';
+            if (isDoublyMagic) {
+                magicBadge = `<span style="background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);">✨ Doubly Magic Nucleus (Z=${Z}, N=${N})</span>`;
+            } else if (isMagicZ || isMagicN) {
+                magicBadge = `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">⭐ Magic Shell (${isMagicZ ? 'Z=' + Z : 'N=' + N})</span>`;
+            } else {
+                magicBadge = `<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">🟢 Optimal N/Z Ratio (${ratioNZ})</span>`;
+            }
+
+            const abundStr = iso.abundance !== null && iso.abundance !== undefined ? `${iso.abundance.toFixed(2)}%` : 'Observationally Stable';
+            const bindingStr = iso.bindingEnergy !== null && iso.bindingEnergy !== undefined ? `${(iso.bindingEnergy / A).toFixed(2)} MeV/A` : 'High (Valley Base)';
+
             infoContainer.innerHTML = `
-                <div class="iso-decay-stage" style="flex-direction: column; justify-content: center; gap: 20px;">
-                    <div style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #4ade80 0%, #166534 100%); box-shadow: 0 0 35px rgba(74, 222, 128, 0.4), inset 0 0 20px rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; border: 2px solid #86efac;">
-                        <span style="font-size: 2.6rem; font-family: var(--font-mono); font-weight: bold; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${elData.symbol}</span>
+                <div class="iso-decay-stage" style="flex-direction: column; justify-content: space-between; padding: 24px 20px; box-sizing: border-box;">
+                    
+                    <!-- Header Banner -->
+                    <div class="iso-decay-banner-title" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 101, 52, 0.35) 100%); border-color: rgba(74, 222, 128, 0.5); color: #4ade80;">
+                        VALLEY OF NUCLEAR STABILITY &bull; ${elData.name.toUpperCase()}-${A}
                     </div>
-                    <div style="font-size: 1.4rem; font-family: var(--font-ui); font-weight: bold; color: #4ade80; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(74,222,128,0.5); text-align: center;">Stable Isotope (Valley of Stability)</div>
+
+                    <!-- Top Stability Indicator -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; z-index: 2;">
+                        ${magicBadge}
+                        <span style="background: rgba(0, 0, 0, 0.5); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-family: var(--font-mono);">Half-life: ∞ (Stable)</span>
+                    </div>
+
+                    <!-- Center 3-Column Visualizer -->
+                    <div style="display: flex; align-items: center; justify-content: space-around; width: 100%; gap: 20px; z-index: 2; margin: 10px 0;">
+                        
+                        <!-- Left Stats Card -->
+                        <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(74, 222, 128, 0.25); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
+                            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Nucleon Composition</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                                <span style="color: #38bdf8;">Protons (Z):</span>
+                                <strong style="color: #fff;">${Z}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                                <span style="color: #f472b6;">Neutrons (N):</span>
+                                <strong style="color: #fff;">${N}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
+                                <span style="color: #a78bfa;">Total Mass (A):</span>
+                                <strong style="color: #00d4ff;">${A}</strong>
+                            </div>
+                        </div>
+
+                        <!-- Center Glowing Nucleus Stage -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                            <div style="width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4ade80 0%, #15803d 60%, #052e16 100%); box-shadow: 0 0 50px rgba(74, 222, 128, 0.5), inset 0 0 25px rgba(255,255,255,0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid #86efac; position: relative;">
+                                <span style="font-size: 2.8rem; font-family: var(--font-mono); font-weight: 800; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</span>
+                                <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #dcfce7; font-weight: 700; margin-top: 2px;">A = ${A}</span>
+                            </div>
+                            <div style="font-size: 0.95rem; font-family: var(--font-ui); font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 12px rgba(74,222,128,0.6);">Zero Radioactivity</div>
+                        </div>
+
+                        <!-- Right Stats Card -->
+                        <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(74, 222, 128, 0.25); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
+                            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Stability Parameters</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                                <span style="color: rgba(255,255,255,0.7);">Abundance:</span>
+                                <strong style="color: #4ade80;">${abundStr}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                                <span style="color: rgba(255,255,255,0.7);">Binding (B/A):</span>
+                                <strong style="color: #facc15;">${bindingStr}</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
+                                <span style="color: rgba(255,255,255,0.7);">Nuclear Force:</span>
+                                <strong style="color: #38bdf8;">Equilibrium</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Summary Banner -->
+                    <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px 16px; font-size: 0.75rem; color: rgba(255,255,255,0.7); text-align: center; z-index: 2;">
+                        The strong nuclear force completely balances electrostatic proton repulsion. No spontaneous decay will ever occur.
+                    </div>
                 </div>
             `;
         } else {
