@@ -184,13 +184,13 @@
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.84.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.85.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.84.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.85.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -464,9 +464,10 @@
                     <!-- Close Button -->
                     <button id="close-modal-btn" aria-label="Close modal">✕</button>
 
-                    <!-- 1. TOP HERO HEADER & ELEMENT BANNER -->
+                    <!-- 1. TOP HERO HEADER (Element Card on Left, Active Isotope Banner on Right) -->
                     <div class="iso-modal-hero-header">
                         <div id="modal-el-card"></div>
+                        <div id="modal-iso-card" class="iso-active-hero-banner"></div>
                     </div>
 
                     <!-- 2. MASS & STABILITY SPECTRUM TIMELINE RIBBON -->
@@ -474,7 +475,7 @@
                         <!-- Top Left Sidebar Controls: Search & Decay Filter Chips -->
                         <div class="iso-sidebar-controls">
                             <div class="iso-search-pill">
-                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 52, stable)..." />
+                                <input type="text" id="iso-search-input" placeholder="Search isotope (e.g. 52, stable)..." />
                                 <div id="modal-isotope-count"></div>
                             </div>
                             <div id="modal-decay-legend"></div>
@@ -491,9 +492,6 @@
                     <!-- 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB -->
                     <div class="iso-modal-tab-container">
                         
-                        <!-- Persistent Selected Isotope Hero Card (Visible Across ALL Tabs) -->
-                        <div id="modal-iso-card" class="iso-active-hero-banner"></div>
-
                         <!-- Sleek Modern Pill Tab Navigation -->
                         <div class="iso-tab-nav-bar">
                             <button class="iso-tab-btn active" data-tab="decay">

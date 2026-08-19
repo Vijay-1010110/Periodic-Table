@@ -388,20 +388,20 @@ function renderIsotopeDetails(index) {
         const statusHtml = iso.isStable ? '<span style="color: #4ade80;">Stable Isotope</span>' : `<span style="color: ${dColor};">${iso.decayMode || 'Unstable'} Decay</span>`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.7);">
                     <span>${iso.massNumber}</span>
                     <span>${Z}</span>
                 </div>
-                <div style="font-size: 2rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; margin-left: 4px;">
-                    <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
-                    <span style="font-size: 0.78rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
+                <div style="font-size: 1.6rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; margin-left: 2px; line-height: 1.1;">
+                    <span style="font-size: 1.05rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
+                    <span style="font-size: 0.72rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
-                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; line-height: 1.1;">
+                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
+                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
             </div>
         `;
     }
@@ -416,22 +416,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
-                        <span style="position: absolute; top: 2px; left: 4px; font-size: 0.55rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
-                        <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                        <span style="position: absolute; top: 1px; left: 3px; font-size: 0.5rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
+                        <span style="font-size: 1.3rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 2px;">
-                        <span style="font-size: 1.2rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
-                            <span style="font-size: 0.72rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                    <div style="display: flex; flex-direction: column; gap: 1px; line-height: 1.1;">
+                        <span style="font-size: 1.05rem; font-weight: 700; font-family: var(--font-ui); color: #fff;">${elData.name}</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 0.62rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
+                            <span style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-family: var(--font-mono); font-size: 0.72rem;">
-                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: var(--font-mono); font-size: 0.65rem;">
+                    <span style="background: rgba(0,0,0,0.35); padding: 1px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 1px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -503,71 +503,71 @@ function renderIsotopeDetails(index) {
             
             let magicBadge = '';
             if (isDoublyMagic) {
-                magicBadge = `<span style="background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);">✨ Doubly Magic Nucleus (Z=${Z}, N=${N})</span>`;
+                magicBadge = `<span style="background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);">✨ Doubly Magic Nucleus (Z=${Z}, N=${N})</span>`;
             } else if (isMagicZ || isMagicN) {
-                magicBadge = `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">⭐ Magic Shell (${isMagicZ ? 'Z=' + Z : 'N=' + N})</span>`;
+                magicBadge = `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">⭐ Magic Shell (${isMagicZ ? 'Z=' + Z : 'N=' + N})</span>`;
             } else {
-                magicBadge = `<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">🟢 Optimal N/Z Ratio (${ratioNZ})</span>`;
+                magicBadge = `<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">🟢 Optimal N/Z Ratio (${ratioNZ})</span>`;
             }
 
             const abundStr = abundPct !== null ? `${abundPct.toFixed(2)}%` : 'Observationally Stable';
             const bindingStr = iso.bindingEnergy !== null && iso.bindingEnergy !== undefined ? `${(iso.bindingEnergy / A).toFixed(2)} MeV/A` : 'High (Valley Base)';
 
             infoContainer.innerHTML = `
-                <div class="iso-decay-stage" style="flex-direction: column; justify-content: space-between; padding: 24px 20px; box-sizing: border-box;">
+                <div class="iso-decay-stage" style="flex-direction: column; justify-content: space-between; padding: 16px 14px; box-sizing: border-box; width: 100%; height: 100%;">
                     
                     <!-- Header Banner -->
-                    <div class="iso-decay-banner-title" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 101, 52, 0.35) 100%); border-color: rgba(74, 222, 128, 0.5); color: #4ade80;">
+                    <div class="iso-decay-banner-title" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 101, 52, 0.35) 100%); border-color: rgba(74, 222, 128, 0.5); color: #4ade80; margin: 0 auto; max-width: 90%;">
                         VALLEY OF NUCLEAR STABILITY &bull; ${elData.name.toUpperCase()}-${A}
                     </div>
 
                     <!-- Top Stability Indicator -->
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; z-index: 2;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; z-index: 2; flex-wrap: wrap;">
                         ${magicBadge}
-                        <span style="background: rgba(0, 0, 0, 0.5); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-family: var(--font-mono);">Half-life: ∞ (Stable)</span>
+                        <span style="background: rgba(0, 0, 0, 0.5); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-family: var(--font-mono);">Half-life: ∞ (Stable)</span>
                     </div>
 
-                    <!-- Center 3-Column Visualizer -->
-                    <div style="display: flex; align-items: center; justify-content: space-around; width: 100%; gap: 20px; z-index: 2; margin: 10px 0;">
+                    <!-- Center 3-Column Visualizer (Responsive flex with auto-scaling) -->
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%; max-width: 860px; margin: 8px auto; gap: clamp(10px, 2.5vw, 24px); z-index: 2; box-sizing: border-box;">
                         
                         <!-- Left Stats Card -->
-                        <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(74, 222, 128, 0.25); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
-                            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Nucleon Composition</div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                        <div style="background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; max-width: 220px; min-width: 150px; box-sizing: border-box;">
+                            <div style="font-size: 0.68rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Nucleon Composition</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem;">
                                 <span style="color: #38bdf8;">Protons (Z):</span>
                                 <strong style="color: #fff;">${Z}</strong>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem;">
                                 <span style="color: #f472b6;">Neutrons (N):</span>
                                 <strong style="color: #fff;">${N}</strong>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 3px;">
                                 <span style="color: #a78bfa;">Total Mass (A):</span>
                                 <strong style="color: #00d4ff;">${A}</strong>
                             </div>
                         </div>
 
                         <!-- Center Glowing Nucleus Stage -->
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                            <div style="width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4ade80 0%, #15803d 60%, #052e16 100%); box-shadow: 0 0 50px rgba(74, 222, 128, 0.5), inset 0 0 25px rgba(255,255,255,0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid #86efac; position: relative;">
-                                <span style="font-size: 2.8rem; font-family: var(--font-mono); font-weight: 800; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</span>
-                                <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #dcfce7; font-weight: 700; margin-top: 2px;">A = ${A}</span>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <div style="width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4ade80 0%, #15803d 60%, #052e16 100%); box-shadow: 0 0 45px rgba(74, 222, 128, 0.45), inset 0 0 20px rgba(255,255,255,0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2.5px solid #86efac; position: relative;">
+                                <span style="font-size: 2.4rem; font-family: var(--font-mono); font-weight: 800; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</span>
+                                <span style="font-size: 0.78rem; font-family: var(--font-mono); color: #dcfce7; font-weight: 700; margin-top: 2px;">A = ${A}</span>
                             </div>
-                            <div style="font-size: 0.95rem; font-family: var(--font-ui); font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 12px rgba(74,222,128,0.6);">Zero Radioactivity</div>
+                            <div style="font-size: 0.85rem; font-family: var(--font-ui); font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1.2px; text-shadow: 0 0 12px rgba(74,222,128,0.6);">Zero Radioactivity</div>
                         </div>
 
                         <!-- Right Stats Card -->
-                        <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(74, 222, 128, 0.25); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
-                            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Stability Parameters</div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                        <div style="background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; max-width: 220px; min-width: 150px; box-sizing: border-box;">
+                            <div style="font-size: 0.68rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Stability Parameters</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem;">
                                 <span style="color: rgba(255,255,255,0.7);">Abundance:</span>
                                 <strong style="color: #4ade80;">${abundStr}</strong>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem;">
                                 <span style="color: rgba(255,255,255,0.7);">Binding (B/A):</span>
                                 <strong style="color: #facc15;">${bindingStr}</strong>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 3px;">
                                 <span style="color: rgba(255,255,255,0.7);">Nuclear Force:</span>
                                 <strong style="color: #38bdf8;">Equilibrium</strong>
                             </div>
@@ -576,7 +576,7 @@ function renderIsotopeDetails(index) {
                     </div>
 
                     <!-- Bottom Summary Banner -->
-                    <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px 16px; font-size: 0.75rem; color: rgba(255,255,255,0.7); text-align: center; z-index: 2;">
+                    <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px 14px; font-size: 0.72rem; color: rgba(255,255,255,0.7); text-align: center; z-index: 2; margin: 0 auto; max-width: 90%;">
                         The strong nuclear force completely balances electrostatic proton repulsion. No spontaneous decay will ever occur.
                     </div>
                 </div>
