@@ -1766,7 +1766,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     max-height: 920px;
     min-height: 600px;
     display: grid;
-    grid-template-rows: 90px 1fr;
+    grid-template-rows: 110px 1fr;
     grid-template-columns: 360px 1fr;
     grid-template-areas: 
         "topbar topbar"
@@ -1789,14 +1789,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 #close-modal-btn {
     position: static;
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.85);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1825,7 +1825,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     align-items: center;
     flex-shrink: 0;
     overflow: hidden;
-    height: 90px;
+    height: 110px;
     box-sizing: border-box;
 }
 
@@ -1836,7 +1836,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     height: 100%;
     border-right: 2px solid rgba(0, 212, 255, 0.35);
     box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);
-    padding: 8px 12px;
+    padding: 9px 12px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -1847,22 +1847,23 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 #modal-el-card {
     width: 100%;
-    height: 72px;
-    border-radius: 12px;
+    height: 92px;
+    min-height: 92px;
+    max-height: 92px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 14px;
+    padding: 0 16px;
     box-sizing: border-box;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.45);
-    min-height: 72px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.5);
 }
 
 .iso-topbar-right {
     flex: 1;
     min-width: 0;
     height: 100%;
-    padding: 8px 18px;
+    padding: 9px 20px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -1874,16 +1875,16 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     flex: 1;
     min-width: 0;
     width: 100%;
-    height: 72px;
-    min-height: 72px;
-    max-height: 72px;
+    height: 92px;
+    min-height: 92px;
+    max-height: 92px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
-    padding: 0 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
+    padding: 0 24px;
     box-sizing: border-box;
     overflow: hidden;
     color: #fff;
@@ -2027,13 +2028,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .iso-element-cell {
     aspect-ratio: 1 / 1;
     width: 100%;
-    min-height: 84px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     cursor: pointer;
     position: relative;
@@ -2041,7 +2041,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     backdrop-filter: blur(8px);
     overflow: hidden;
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -2px 5px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
-    padding: 5px 5px 5px 5px;
+    padding: 2px 2px;
     user-select: none;
     box-sizing: border-box;
 }
@@ -2049,14 +2049,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .iso-element-cell::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; height: 42%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
-    border-radius: 8px 8px 0 0;
+    border-radius: 6px 6px 0 0;
 }
 
 .iso-element-cell:hover {
-    transform: scale(1.08) translateY(-2px);
+    transform: scale(1.1) translateY(-2px);
     z-index: 10;
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), inset 0 -2px 5px rgba(0, 0, 0, 0.2), 0 8px 18px rgba(0, 212, 255, 0.5);
     border-color: var(--accent-cyan);
@@ -2068,6 +2068,77 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 22px var(--accent-cyan), inset 0 0 12px rgba(0, 212, 255, 0.3) !important;
     border-color: var(--accent-cyan) !important;
     outline: 2px solid var(--accent-cyan);
+}
+
+.iso-element-cell .cell-num {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6);
+    line-height: 1;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-decay-tag {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.46rem;
+    font-weight: 800;
+    padding: 1px 3px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.7);
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    z-index: 2;
+}
+
+.iso-element-cell .cell-sym {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.6);
+    line-height: 1;
+    margin-top: 3px;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-name {
+    font-size: 0.52rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 96%;
+    text-align: center;
+    color: #fff;
+    margin-top: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.6);
+    line-height: 1;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-value {
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 96%;
+    text-align: center;
+    color: #fff;
+    margin-top: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.6);
+    line-height: 1;
+    z-index: 2;
 }
 
 /* 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB (Grid Area: workspace) */
