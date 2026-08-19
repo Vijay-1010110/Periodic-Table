@@ -318,13 +318,31 @@ function updateIsotopesView(atomicNumber) {
     renderIsotopeDetails(0);
     
     // Handle Modal Animation
-    const modalOverlay = document.getElementById('isotope-modal-overlay');
-    if (modalOverlay) {
-        modalOverlay.style.display = 'flex';
-        modalOverlay.classList.remove('active');
-        void modalOverlay.offsetWidth; // force reflow
-        modalOverlay.classList.add('active');
+    const overlay = document.getElementById('isotope-modal-overlay');
+    const modal = document.getElementById('isotope-modal');
+    const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${atomicNumber}"]`) || document.querySelector(`.element-cell[data-z="${atomicNumber}"]`);
+    
+    if (cell && modal) {
+        const rect = cell.getBoundingClientRect();
+        const cellCenterX = rect.left + rect.width / 2;
+        const cellCenterY = rect.top + rect.height / 2;
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        const originX = (cellCenterX / winW) * 100;
+        const originY = (cellCenterY / winH) * 100;
+        modal.style.transformOrigin = `${originX}% ${originY}%`;
+    } else if (modal) {
+        modal.style.transformOrigin = 'center center';
+    }
+    
+    if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            if (modal) modal.style.transform = 'scale(1)';
+        }, 10);
     }
 }
 
@@ -1087,13 +1105,17 @@ function closeIsotopeModal() {
     const modal = document.getElementById('isotope-modal');
     
     if (overlay) overlay.style.opacity = '0';
-    if (modal) modal.style.transform = 'scale(0)';
+    if (modal) modal.style.transform = 'scale(0.9)';
     document.body.style.overflow = '';
     
     setTimeout(() => {
-        if (overlay) overlay.classList.add('hidden');
-    }, 400);
+        if (overlay) {
+            overlay.classList.add('hidden');
+            overlay.style.display = 'none';
+        }
+    }, 300);
 }
+window.closeIsotopeModal = closeIsotopeModal;
 
 // Setup close button, tab switching, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
