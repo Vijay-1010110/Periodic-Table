@@ -2129,14 +2129,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 .iso-modal-isotope-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: max-content;
     align-content: start;
     align-items: start;
-    gap: 6px;
+    gap: 4px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 2px 3px 14px 2px;
+    padding: 2px 2px 14px 2px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
@@ -2177,11 +2177,12 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     align-items: center;
     cursor: pointer;
     position: relative;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: all var(--transition-fast);
     backdrop-filter: blur(8px);
     overflow: hidden;
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -2px 5px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
-    padding: 3px 2px 2px 2px;
+    container-type: inline-size;
+    padding: 2px 1px;
     user-select: none;
     box-sizing: border-box;
 }
@@ -2196,39 +2197,37 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .iso-element-cell:hover {
-    transform: scale(1.08) translateY(-2px);
+    transform: scale(1.12) translateY(-2px);
     z-index: 10;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), inset 0 -2px 5px rgba(0, 0, 0, 0.2), 0 8px 18px rgba(0, 212, 255, 0.5);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), inset 0 -2px 5px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 212, 255, 0.4);
     border-color: var(--accent-cyan);
 }
 
 .iso-element-cell.selected {
-    transform: scale(1.04);
-    z-index: 8;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 22px var(--accent-cyan), inset 0 0 12px rgba(0, 212, 255, 0.3) !important;
     border-color: var(--accent-cyan) !important;
-    outline: 2px solid var(--accent-cyan);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 25px var(--accent-cyan) !important;
+    z-index: 5;
+    transform: scale(1.05);
 }
 
 .iso-element-cell .cell-num {
     position: absolute;
-    top: 3px;
-    left: 4px;
+    top: 2px;
+    left: 3px;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: clamp(0.42rem, 13cqw, 0.65rem);
     color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.6);
     line-height: 1;
     z-index: 2;
 }
 
 .iso-element-cell .cell-decay-tag {
     position: absolute;
-    top: 3px;
-    right: 4px;
+    top: 2px;
+    right: 3px;
     font-family: var(--font-mono);
-    font-size: 0.44rem;
+    font-size: clamp(0.34rem, 10cqw, 0.46rem);
     font-weight: 800;
     padding: 1px 3px;
     border-radius: 3px;
@@ -2240,45 +2239,41 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 .iso-element-cell .cell-sym {
     font-family: var(--font-mono);
-    font-size: 1.35rem;
-    font-weight: 700;
+    font-size: clamp(0.85rem, 34cqw, 1.25rem);
+    font-weight: 600;
     color: #fff;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 4px rgba(0, 0, 0, 0.6);
     line-height: 1;
-    margin-top: 4px;
-    margin-bottom: 0;
+    margin-top: 3px;
     z-index: 2;
 }
 
 .iso-element-cell .cell-name {
-    font-size: 0.52rem;
-    font-family: var(--font-ui);
-    font-weight: 600;
+    font-size: clamp(0.38rem, 11cqw, 0.55rem);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 96%;
+    width: 98%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.92);
-    margin: 0;
+    color: #fff;
+    margin-top: 1px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.6);
-    line-height: 1.1;
+    line-height: 1;
     z-index: 2;
 }
 
 .iso-element-cell .cell-value {
     font-family: var(--font-mono);
-    font-size: 0.52rem;
-    font-weight: 700;
+    font-size: clamp(0.38rem, 11cqw, 0.55rem);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 96%;
+    width: 98%;
     text-align: center;
-    color: #ffffff;
-    margin: 0;
+    color: #fff;
+    margin-top: 1px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.6);
-    line-height: 1.1;
+    line-height: 1;
     z-index: 2;
 }
 
@@ -89186,13 +89181,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.90.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.91.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.90.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.91.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
