@@ -121,7 +121,7 @@ function updateIsotopesView(atomicNumber) {
                     }
                     if (divO) divO.style.display = 'block';
 
-                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                    document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                         if (el.dataset.decayColor !== mode.color) {
                             el.style.order = '3';
                             el.style.opacity = '0.2';
@@ -138,7 +138,7 @@ function updateIsotopesView(atomicNumber) {
                     if (divM) divM.style.display = 'none';
                     if (divO) divO.style.display = 'none';
 
-                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                    document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                         el.style.order = '1';
                         el.style.opacity = '1';
                     });
@@ -228,7 +228,7 @@ function updateIsotopesView(atomicNumber) {
 
     currentIsotopeData.forEach((iso, index) => {
         const item = document.createElement('div');
-        item.className = 'iso-list-item';
+        item.className = 'element-cell iso-element-cell';
         const dColor = getDecayColor(iso.decayMode);
         const indicatorColor = iso.isStable ? '#4ade80' : dColor;
         item.dataset.mainColor = indicatorColor;
@@ -236,77 +236,54 @@ function updateIsotopesView(atomicNumber) {
         item.dataset.decayColor = dColor;
         item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
-        item.style.cssText = `
-            border: 1.5px solid ${indicatorColor}77;
-            background: linear-gradient(135deg, ${catColor}25 0%, ${indicatorColor}18 50%, rgba(10, 16, 32, 0.9) 100%);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 4px;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
-            box-sizing: border-box;
-            order: 1;
-            position: relative;
-            overflow: hidden;
-        `;
+        // Exact same glossy background as periodic table elements
+        item.style.background = getGlossyBackground(indicatorColor, catName);
+        item.style.borderColor = indicatorColor;
         
         const Z = elData.atomicNumber;
-        const N = iso.massNumber - Z;
         const decayBadge = getDecayCompactTag(iso.decayMode, iso.isStable);
         const compactHalfLife = formatCompactHalfLife(iso);
+        const stateColor = typeof stateTextColors !== 'undefined' ? (stateTextColors[elData.phase] || stateTextColors['Unknown']) : '#ffffff';
 
         item.innerHTML = `
-            <div class="iso-card-gloss-top"></div>
-            <div class="iso-card-indicator-bar" style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: ${indicatorColor}; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px ${indicatorColor};"></div>
-            
-            <!-- Top Row: Mass Number Left, Decay Badge Right -->
-            <div class="iso-card-top-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
-                <span class="iso-card-mass" style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${iso.massNumber}</span>
-                <span class="iso-card-decay-badge" style="background: ${indicatorColor}28; color: ${indicatorColor}; border: 1px solid ${indicatorColor}66; padding: 1px 5px; border-radius: 6px; font-size: 0.58rem; font-weight: 800; font-family: var(--font-mono); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
-            </div>
-            
-            <!-- Center Symbol -->
-            <div class="iso-card-center" style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 1px 0; z-index: 1;">
-                <span class="iso-card-symbol" style="font-size: 1.35rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">${elData.symbol}</span>
-            </div>
-            
-            <!-- Bottom Row: Half-life or Status -->
-            <div class="iso-card-bottom-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
-                <span class="iso-card-halflife" style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,0.9);" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
-                <span class="iso-card-neutrons" style="font-size: 0.6rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600; display: none;">N=${N}</span>
-            </div>
+            <span class="cell-num">${iso.massNumber}</span>
+            <span class="cell-decay-tag" style="border: 1px solid ${indicatorColor}88; color: ${indicatorColor};">${decayBadge}</span>
+            <span class="cell-sym" style="color: ${stateColor};">${elData.symbol}</span>
+            <span class="cell-name">${elData.name}-${iso.massNumber}</span>
+            <span class="cell-value" style="color: ${indicatorColor};">${compactHalfLife}</span>
         `;
         
         item.onmouseenter = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = indicatorColor;
-                item.style.transform = 'translateY(-2px)';
-                item.style.boxShadow = `0 6px 16px ${indicatorColor}44, inset 0 0 14px ${indicatorColor}25`;
+                item.style.borderColor = '#00d4ff';
+                item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.6), 0 8px 18px rgba(0, 212, 255, 0.4), inset 0 0 10px ${indicatorColor}33`;
+                item.style.transform = 'scale(1.08) translateY(-2px)';
+                item.style.zIndex = '10';
             }
         };
         item.onmouseleave = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = `${indicatorColor}77`;
-                item.style.transform = 'translateY(0)';
-                item.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15`;
+                item.style.borderColor = indicatorColor;
+                item.style.boxShadow = '';
+                item.style.transform = 'none';
+                item.style.zIndex = '1';
             }
         };
         
         item.onclick = () => {
-            document.querySelectorAll('.iso-list-item').forEach(el => {
+            document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 el.classList.remove('selected');
-                const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.12)';
-                el.style.borderColor = `${mColor}77`;
-                el.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${mColor}15`;
-                el.style.transform = 'translateY(0)';
+                const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.2)';
+                el.style.borderColor = mColor;
+                el.style.boxShadow = '';
+                el.style.transform = 'none';
+                el.style.zIndex = '1';
             });
             item.classList.add('selected');
-            item.style.borderColor = indicatorColor;
-            item.style.boxShadow = `0 0 20px ${indicatorColor}aa, inset 0 0 16px ${indicatorColor}33`;
-            item.style.transform = 'translateY(-2px)';
+            item.style.borderColor = '#00d4ff';
+            item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+            item.style.transform = 'scale(1.04)';
+            item.style.zIndex = '8';
             item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             renderIsotopeDetails(index);
         };
@@ -320,7 +297,7 @@ function updateIsotopesView(atomicNumber) {
         searchInput.value = '';
         searchInput.oninput = () => {
             const query = searchInput.value.trim().toLowerCase();
-            document.querySelectorAll('.iso-list-item').forEach(el => {
+            document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 if (!query || el.dataset.searchKey.includes(query)) {
                     el.style.display = 'flex';
                 } else {
@@ -331,13 +308,12 @@ function updateIsotopesView(atomicNumber) {
     }
     
     // Default select first
-    const firstItem = listContainer.querySelector('.iso-list-item');
+    const firstItem = listContainer.querySelector('.iso-element-cell, .iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
-        const mColor = firstItem.dataset.mainColor || '#00d4ff';
-        firstItem.style.borderColor = mColor;
-        firstItem.style.boxShadow = `0 0 20px ${mColor}aa, inset 0 0 14px ${mColor}33`;
-        firstItem.style.transform = 'translateY(-2px)';
+        firstItem.style.borderColor = '#00d4ff';
+        firstItem.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+        firstItem.style.transform = 'scale(1.04)';
     }
     renderIsotopeDetails(0);
     

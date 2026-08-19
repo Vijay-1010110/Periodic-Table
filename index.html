@@ -2052,17 +2052,18 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .iso-modal-isotope-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 2px 4px 14px 2px;
+    padding: 4px 6px 14px 4px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 212, 255, 0.4) rgba(0, 0, 0, 0.3);
     flex: 1;
+    align-content: start;
 }
 
 .iso-modal-isotope-list::-webkit-scrollbar {
@@ -2084,22 +2085,124 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     box-shadow: 0 0 8px #00d4ff;
 }
 
-.iso-list-item {
+/* Authentic Isotope Element Cell (100% Matched to Periodic Table Element Cells) */
+.iso-element-cell {
+    aspect-ratio: 1 / 1;
     width: 100%;
-    min-width: 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
+    min-height: 84px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 4px;
-    flex-shrink: 0;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -2px 5px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+    padding: 2px 2px;
     user-select: none;
     box-sizing: border-box;
-    order: 1;
-    position: relative;
+}
+
+.iso-element-cell::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    border-radius: 6px 6px 0 0;
+}
+
+.iso-element-cell:hover {
+    transform: scale(1.08) translateY(-2px);
+    z-index: 10;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), inset 0 -2px 5px rgba(0, 0, 0, 0.2), 0 8px 18px rgba(0, 212, 255, 0.5);
+    border-color: var(--accent-cyan);
+}
+
+.iso-element-cell.selected {
+    transform: scale(1.04);
+    z-index: 8;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 22px var(--accent-cyan), inset 0 0 12px rgba(0, 212, 255, 0.3) !important;
+    border-color: var(--accent-cyan) !important;
+    outline: 2px solid var(--accent-cyan);
+}
+
+/* Internal elements inside .iso-element-cell */
+.iso-element-cell .cell-num {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.7);
+    line-height: 1;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-decay-tag {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.65);
+    line-height: 1.1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    z-index: 2;
+}
+
+.iso-element-cell .cell-sym {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 5px rgba(0, 0, 0, 0.7);
+    line-height: 1;
+    margin-top: 8px;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-name {
+    font-size: 0.55rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
+    width: 96%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    line-height: 1;
+    z-index: 2;
+}
+
+.iso-element-cell .cell-value {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 96%;
+    text-align: center;
+    color: #fff;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    line-height: 1;
+    z-index: 2;
 }
 
 /* 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB (Grid Area: workspace) */
@@ -2386,16 +2489,24 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-modal-isotope-list {
-        padding: 2px 0 4px 0 !important;
+        display: flex !important;
+        flex-direction: row !important;
         gap: 6px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        padding: 4px 2px 6px 2px !important;
         scroll-snap-type: x mandatory !important;
     }
 
-    .iso-list-item {
+    .iso-element-cell, .iso-list-item {
         scroll-snap-align: center !important;
-        min-width: 110px !important;
-        padding: 4px 8px !important;
-        border-radius: 8px !important;
+        min-width: 78px !important;
+        max-width: 78px !important;
+        height: 78px !important;
+        min-height: 78px !important;
+        padding: 2px !important;
+        border-radius: 6px !important;
+        flex-shrink: 0 !important;
     }
 
     .iso-tab-nav-bar {
@@ -77996,7 +78107,7 @@ function updateIsotopesView(atomicNumber) {
                     }
                     if (divO) divO.style.display = 'block';
 
-                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                    document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                         if (el.dataset.decayColor !== mode.color) {
                             el.style.order = '3';
                             el.style.opacity = '0.2';
@@ -78013,7 +78124,7 @@ function updateIsotopesView(atomicNumber) {
                     if (divM) divM.style.display = 'none';
                     if (divO) divO.style.display = 'none';
 
-                    document.querySelectorAll('.iso-list-item').forEach(el => {
+                    document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                         el.style.order = '1';
                         el.style.opacity = '1';
                     });
@@ -78103,7 +78214,7 @@ function updateIsotopesView(atomicNumber) {
 
     currentIsotopeData.forEach((iso, index) => {
         const item = document.createElement('div');
-        item.className = 'iso-list-item';
+        item.className = 'element-cell iso-element-cell';
         const dColor = getDecayColor(iso.decayMode);
         const indicatorColor = iso.isStable ? '#4ade80' : dColor;
         item.dataset.mainColor = indicatorColor;
@@ -78111,77 +78222,54 @@ function updateIsotopesView(atomicNumber) {
         item.dataset.decayColor = dColor;
         item.dataset.searchKey = `${iso.massNumber} ${elData.symbol}-${iso.massNumber} ${iso.isStable ? 'stable' : ''} ${iso.decayMode || ''}`.toLowerCase();
         
-        item.style.cssText = `
-            border: 1.5px solid ${indicatorColor}77;
-            background: linear-gradient(135deg, ${catColor}25 0%, ${indicatorColor}18 50%, rgba(10, 16, 32, 0.9) 100%);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 4px;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
-            box-sizing: border-box;
-            order: 1;
-            position: relative;
-            overflow: hidden;
-        `;
+        // Exact same glossy background as periodic table elements
+        item.style.background = getGlossyBackground(indicatorColor, catName);
+        item.style.borderColor = indicatorColor;
         
         const Z = elData.atomicNumber;
-        const N = iso.massNumber - Z;
         const decayBadge = getDecayCompactTag(iso.decayMode, iso.isStable);
         const compactHalfLife = formatCompactHalfLife(iso);
+        const stateColor = typeof stateTextColors !== 'undefined' ? (stateTextColors[elData.phase] || stateTextColors['Unknown']) : '#ffffff';
 
         item.innerHTML = `
-            <div class="iso-card-gloss-top"></div>
-            <div class="iso-card-indicator-bar" style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: ${indicatorColor}; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px ${indicatorColor};"></div>
-            
-            <!-- Top Row: Mass Number Left, Decay Badge Right -->
-            <div class="iso-card-top-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
-                <span class="iso-card-mass" style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${iso.massNumber}</span>
-                <span class="iso-card-decay-badge" style="background: ${indicatorColor}28; color: ${indicatorColor}; border: 1px solid ${indicatorColor}66; padding: 1px 5px; border-radius: 6px; font-size: 0.58rem; font-weight: 800; font-family: var(--font-mono); white-space: nowrap; box-shadow: 0 0 6px ${indicatorColor}33;">${decayBadge}</span>
-            </div>
-            
-            <!-- Center Symbol -->
-            <div class="iso-card-center" style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 1px 0; z-index: 1;">
-                <span class="iso-card-symbol" style="font-size: 1.35rem; font-family: var(--font-mono); font-weight: 700; color: #fff; line-height: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">${elData.symbol}</span>
-            </div>
-            
-            <!-- Bottom Row: Half-life or Status -->
-            <div class="iso-card-bottom-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; z-index: 1;">
-                <span class="iso-card-halflife" style="font-size: 0.65rem; font-family: var(--font-mono); font-weight: 600; color: ${indicatorColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,0.9);" title="${iso.halfLife ? iso.halfLife + ' ' + iso.halfLifeUnit : 'Stable'}">${compactHalfLife}</span>
-                <span class="iso-card-neutrons" style="font-size: 0.6rem; font-family: var(--font-mono); color: rgba(255,255,255,0.45); font-weight: 600; display: none;">N=${N}</span>
-            </div>
+            <span class="cell-num">${iso.massNumber}</span>
+            <span class="cell-decay-tag" style="border: 1px solid ${indicatorColor}88; color: ${indicatorColor};">${decayBadge}</span>
+            <span class="cell-sym" style="color: ${stateColor};">${elData.symbol}</span>
+            <span class="cell-name">${elData.name}-${iso.massNumber}</span>
+            <span class="cell-value" style="color: ${indicatorColor};">${compactHalfLife}</span>
         `;
         
         item.onmouseenter = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = indicatorColor;
-                item.style.transform = 'translateY(-2px)';
-                item.style.boxShadow = `0 6px 16px ${indicatorColor}44, inset 0 0 14px ${indicatorColor}25`;
+                item.style.borderColor = '#00d4ff';
+                item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.6), 0 8px 18px rgba(0, 212, 255, 0.4), inset 0 0 10px ${indicatorColor}33`;
+                item.style.transform = 'scale(1.08) translateY(-2px)';
+                item.style.zIndex = '10';
             }
         };
         item.onmouseleave = () => {
             if (!item.classList.contains('selected')) {
-                item.style.borderColor = `${indicatorColor}77`;
-                item.style.transform = 'translateY(0)';
-                item.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${indicatorColor}15`;
+                item.style.borderColor = indicatorColor;
+                item.style.boxShadow = '';
+                item.style.transform = 'none';
+                item.style.zIndex = '1';
             }
         };
         
         item.onclick = () => {
-            document.querySelectorAll('.iso-list-item').forEach(el => {
+            document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 el.classList.remove('selected');
-                const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.12)';
-                el.style.borderColor = `${mColor}77`;
-                el.style.boxShadow = `0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 12px ${mColor}15`;
-                el.style.transform = 'translateY(0)';
+                const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.2)';
+                el.style.borderColor = mColor;
+                el.style.boxShadow = '';
+                el.style.transform = 'none';
+                el.style.zIndex = '1';
             });
             item.classList.add('selected');
-            item.style.borderColor = indicatorColor;
-            item.style.boxShadow = `0 0 20px ${indicatorColor}aa, inset 0 0 16px ${indicatorColor}33`;
-            item.style.transform = 'translateY(-2px)';
+            item.style.borderColor = '#00d4ff';
+            item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+            item.style.transform = 'scale(1.04)';
+            item.style.zIndex = '8';
             item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             renderIsotopeDetails(index);
         };
@@ -78195,7 +78283,7 @@ function updateIsotopesView(atomicNumber) {
         searchInput.value = '';
         searchInput.oninput = () => {
             const query = searchInput.value.trim().toLowerCase();
-            document.querySelectorAll('.iso-list-item').forEach(el => {
+            document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 if (!query || el.dataset.searchKey.includes(query)) {
                     el.style.display = 'flex';
                 } else {
@@ -78206,13 +78294,12 @@ function updateIsotopesView(atomicNumber) {
     }
     
     // Default select first
-    const firstItem = listContainer.querySelector('.iso-list-item');
+    const firstItem = listContainer.querySelector('.iso-element-cell, .iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
-        const mColor = firstItem.dataset.mainColor || '#00d4ff';
-        firstItem.style.borderColor = mColor;
-        firstItem.style.boxShadow = `0 0 20px ${mColor}aa, inset 0 0 14px ${mColor}33`;
-        firstItem.style.transform = 'translateY(-2px)';
+        firstItem.style.borderColor = '#00d4ff';
+        firstItem.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+        firstItem.style.transform = 'scale(1.04)';
     }
     renderIsotopeDetails(0);
     
@@ -88944,13 +89031,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.82.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.83.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.82.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.83.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
