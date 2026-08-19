@@ -250,7 +250,7 @@ function updateIsotopesView(atomicNumber) {
             <span class="cell-decay-tag" style="border: 1px solid ${indicatorColor}88; color: ${indicatorColor};">${decayBadge}</span>
             <span class="cell-sym" style="color: ${stateColor};">${elData.symbol}</span>
             <span class="cell-name">${elData.name}-${iso.massNumber}</span>
-            <span class="cell-value" style="color: ${indicatorColor};">${compactHalfLife}</span>
+            <span class="cell-value" style="color: #ffffff; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 1px 4px;">${compactHalfLife}</span>
         `;
         
         item.onmouseenter = () => {
@@ -318,33 +318,14 @@ function updateIsotopesView(atomicNumber) {
     renderIsotopeDetails(0);
     
     // Handle Modal Animation
-    const overlay = document.getElementById('isotope-modal-overlay');
-    const modal = document.getElementById('isotope-modal');
-    const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${atomicNumber}"]`);
-    
-    if (cell && modal) {
-        const rect = cell.getBoundingClientRect();
-        // Calculate center of cell relative to window
-        const cellCenterX = rect.left + rect.width / 2;
-        const cellCenterY = rect.top + rect.height / 2;
-        
-        // Modal is centered in overlay, so its natural top/left is:
-        const winW = window.innerWidth;
-        const winH = window.innerHeight;
-        
-        // Calculate transform origin as percentage of modal
-        const originX = (cellCenterX / winW) * 100;
-        const originY = (cellCenterY / winH) * 100;
-        
-        modal.style.transformOrigin = `${originX}% ${originY}%`;
+    const modalOverlay = document.getElementById('isotope-modal-overlay');
+    if (modalOverlay) {
+        modalOverlay.style.display = 'flex';
+        modalOverlay.classList.remove('active');
+        void modalOverlay.offsetWidth; // force reflow
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
-    
-    overlay.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => {
-        overlay.style.opacity = '1';
-        if (modal) modal.style.transform = 'scale(1)';
-    }, 10);
 }
 
 /**
@@ -357,16 +338,17 @@ function formatHalfLife(val, unit) {
     if (val > 1e6) {
         return val.toExponential(2) + ' ' + unit;
     }
-    // Limit decimals for small numbers
     const numStr = val % 1 === 0 ? val.toString() : val.toFixed(4).replace(/\.?0+$/, '');
     return numStr + ' ' + unit;
 }
 
+/**
+ * Render comprehensive details for selected isotope
+ */
 function renderIsotopeDetails(index) {
     if (!currentIsotopeData || !currentIsotopeData[index]) return;
-    const iso = currentIsotopeData[index];
     
-    // Set Element info in left pane header (only needs doing once but fine here)
+    const iso = currentIsotopeData[index];
     const elData = elementsData[currentAtomicNumber - 1];
     
     const isoCard = document.getElementById('modal-iso-card');
@@ -388,20 +370,20 @@ function renderIsotopeDetails(index) {
         const statusHtml = iso.isStable ? '<span style="color: #4ade80;">Stable Isotope</span>' : `<span style="color: ${dColor};">${iso.decayMode || 'Unstable'} Decay</span>`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.7);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.72rem; color: rgba(255,255,255,0.7);">
                     <span>${iso.massNumber}</span>
                     <span>${Z}</span>
                 </div>
-                <div style="font-size: 1.6rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; margin-left: 2px; line-height: 1.1;">
-                    <span style="font-size: 1.05rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
-                    <span style="font-size: 0.72rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
+                <div style="font-size: 1.85rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; margin-left: 2px; line-height: 1.15;">
+                    <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
+                    <span style="font-size: 0.76rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; line-height: 1.1;">
-                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
-                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; line-height: 1.15;">
+                <div style="font-size: 0.76rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
+                <div style="font-size: 0.76rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
             </div>
         `;
     }
@@ -416,22 +398,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 40px; height: 40px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
-                        <span style="position: absolute; top: 1px; left: 3px; font-size: 0.5rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
-                        <span style="font-size: 1.3rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0;">
+                        <span style="position: absolute; top: 1px; left: 3px; font-size: 0.55rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
+                        <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 1px; line-height: 1.1;">
-                        <span style="font-size: 1.05rem; font-weight: 700; font-family: var(--font-ui); color: #fff;">${elData.name}</span>
+                    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.15;">
+                        <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-ui); color: #fff;">${elData.name}</span>
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="font-size: 0.62rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
-                            <span style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                            <span style="font-size: 0.65rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
+                            <span style="font-size: 0.68rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: var(--font-mono); font-size: 0.65rem;">
-                    <span style="background: rgba(0,0,0,0.35); padding: 1px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.35); padding: 1px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-family: var(--font-mono); font-size: 0.68rem; flex-shrink: 0;">
+                    <span style="background: rgba(0,0,0,0.4); padding: 2px 7px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.4); padding: 2px 7px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.85);">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
