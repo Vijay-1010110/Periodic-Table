@@ -94,12 +94,12 @@ function updateIsotopesView(atomicNumber) {
         if (legendContainer && legendContainer.children.length === 0) {
             const legendModes = [
                 { name: 'Stable', shortName: 'Stable', color: '#4ade80' },
-                { name: 'Alpha (α)', shortName: 'α Alpha', color: '#facc15' },
-                { name: 'Beta- (β-)', shortName: 'β⁻ Beta-', color: '#38bdf8' },
-                { name: 'Beta+ / EC', shortName: 'β⁺/EC', color: '#c084fc' },
-                { name: 'Spontaneous Fission', shortName: 'SF Fission', color: '#f87171' },
-                { name: 'Proton Emission', shortName: 'p Proton', color: '#fb923c' },
-                { name: 'Neutron Emission', shortName: 'n Neutron', color: '#2dd4bf' }
+                { name: 'α Alpha', shortName: 'α', color: '#facc15' },
+                { name: 'β⁻ Beta-', shortName: 'β⁻', color: '#38bdf8' },
+                { name: 'β⁺ / EC', shortName: 'β⁺', color: '#c084fc' },
+                { name: 'SF Fission', shortName: 'SF', color: '#f87171' },
+                { name: 'p Proton', shortName: 'p', color: '#fb923c' },
+                { name: 'n Neutron', shortName: 'n', color: '#2dd4bf' }
             ];
             
             window.activeIsotopeFilter = null;
@@ -107,7 +107,7 @@ function updateIsotopesView(atomicNumber) {
             legendModes.forEach(mode => {
                 const p = document.createElement('div');
                 p.className = 'iso-legend-chip';
-                p.style.cssText = `position: relative; overflow: hidden; padding: 4px 10px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none; flex-shrink: 0; white-space: nowrap; font-size: 0.72rem;`;
+                p.style.cssText = `position: relative; overflow: hidden; padding: 3px 8px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none; flex-shrink: 0; white-space: nowrap; font-size: 0.68rem;`;
                 p.innerHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%); pointer-events: none; border-radius: 6px 6px 0 0;"></div><span class="chip-text-full" style="position:relative; z-index:1;">${mode.name}</span><span class="chip-text-short" style="position:relative; z-index:1; display:none;">${mode.shortName}</span>`;
                 
                 const applyFilter = (mode) => {
@@ -388,20 +388,20 @@ function renderIsotopeDetails(index) {
         const statusHtml = iso.isStable ? '<span style="color: #4ade80;">Stable Isotope</span>' : `<span style="color: ${dColor};">${iso.decayMode || 'Unstable'} Decay</span>`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1;">
-                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${iso.massNumber}</span>
-                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${Z}</span>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7);">
+                    <span>${iso.massNumber}</span>
+                    <span>${Z}</span>
                 </div>
-                <div style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: 600; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; margin-left: 10px;">
-                    <span style="font-size: 1.4rem; font-weight: 600; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${isoName}</span>
-                    <span style="font-size: 0.9rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: bold;">${statusHtml}</span>
+                <div style="font-size: 2rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; margin-left: 4px;">
+                    <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
+                    <span style="font-size: 0.78rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Mass: <span style="color:#fff">${massStr} u</span></div>
-                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Neutrons: <span style="color:#fff">${N}</span></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
+                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
             </div>
         `;
     }
@@ -417,12 +417,12 @@ function renderIsotopeDetails(index) {
             elCard.style.border = `1px solid ${catColor}`;
             elCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                    <div style="width: 44px; height: 44px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
                         <span style="position: absolute; top: 2px; left: 4px; font-size: 0.55rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
-                        <span style="font-size: 1.5rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                        <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 2px;">
-                        <span style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
+                        <span style="font-size: 1.2rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
                             <span style="font-size: 0.72rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
@@ -430,8 +430,8 @@ function renderIsotopeDetails(index) {
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-family: var(--font-mono); font-size: 0.72rem;">
-                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -460,6 +460,10 @@ function renderIsotopeDetails(index) {
         return val.toFixed(dec);
     };
     
+    // Abundance percentage helper (raw abundance is parts per 10,000, i.e. 10,000 = 100%)
+    const rawAbund = iso.abundance;
+    const abundPct = rawAbund !== null && rawAbund !== undefined ? (rawAbund > 100 ? rawAbund / 100 : rawAbund) : null;
+
     // Write-up link
     if (elData && elData.name) {
         document.getElementById('m-iso-wiki').innerHTML = `<button onclick="window.openWikiModal('${elData.name}', ${iso.massNumber})" style="background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #60a5fa; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-family: var(--font-ui); font-size: 0.85rem; transition: all 0.2s;">Read Wikipedia ↗</button>`;
@@ -470,7 +474,7 @@ function renderIsotopeDetails(index) {
     document.getElementById('m-iso-mass').innerHTML = (iso.mass ? format(iso.mass, 6) : iso.massNumber) + ' <span style="font-size: 0.8em; color: #888;">u</span>';
     document.getElementById('m-iso-excess').innerHTML = iso.massExcess !== null ? format(iso.massExcess, 3) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
     document.getElementById('m-iso-binding').innerHTML = iso.bindingEnergy !== null ? format(iso.bindingEnergy, 3) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
-    document.getElementById('m-iso-abundance').innerHTML = iso.abundance !== null ? format(iso.abundance, 4) + ' <span style="font-size: 0.8em; color: #888;">%</span>' : '-';
+    document.getElementById('m-iso-abundance').innerHTML = abundPct !== null ? format(abundPct, 4) + ' <span style="font-size: 0.8em; color: #888;">%</span>' : '-';
     
     let hlText = '-';
     if (iso.isStable) {
@@ -506,7 +510,7 @@ function renderIsotopeDetails(index) {
                 magicBadge = `<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">🟢 Optimal N/Z Ratio (${ratioNZ})</span>`;
             }
 
-            const abundStr = iso.abundance !== null && iso.abundance !== undefined ? `${iso.abundance.toFixed(2)}%` : 'Observationally Stable';
+            const abundStr = abundPct !== null ? `${abundPct.toFixed(2)}%` : 'Observationally Stable';
             const bindingStr = iso.bindingEnergy !== null && iso.bindingEnergy !== undefined ? `${(iso.bindingEnergy / A).toFixed(2)} MeV/A` : 'High (Valley Base)';
 
             infoContainer.innerHTML = `

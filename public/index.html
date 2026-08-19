@@ -1903,8 +1903,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     border-radius: 20px;
     border: 1px solid rgba(0, 212, 255, 0.35);
     display: grid;
-    grid-template-rows: 64px 1fr;
-    grid-template-columns: 340px 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-columns: 360px 1fr;
     grid-template-areas: 
         "topbar topbar"
         "sidebar workspace";
@@ -1952,7 +1952,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* 1. TOP HERO HEADER (Grid Area: topbar) */
 .iso-modal-hero-header {
     grid-area: topbar;
-    padding: 8px 20px;
+    padding: 8px 24px;
     padding-right: 110px;
     border-bottom: 1px solid rgba(0, 212, 255, 0.22);
     background: linear-gradient(180deg, rgba(12, 22, 45, 0.96) 0%, rgba(8, 14, 28, 0.9) 100%);
@@ -1968,79 +1968,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     display: flex;
     align-items: center;
     gap: 14px;
-    min-height: 48px;
-}
-
-.iso-modal-header-tools {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    flex: 1;
-    justify-content: flex-end;
-}
-
-.iso-search-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 212, 255, 0.25);
-}
-
-#iso-search-input {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 0.82rem;
-    font-family: var(--font-ui);
-    outline: none;
-    width: 150px;
-}
-
-#modal-isotope-count {
-    font-size: 0.8rem;
-    color: #00d4ff;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-#modal-decay-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    font-size: 0.75rem;
-    color: #fff;
-    align-items: center;
-}
-
-.iso-legend-chip .chip-text-full {
-    display: inline;
-}
-.iso-legend-chip .chip-text-short {
-    display: none;
-}
-
-@media (max-width: 900px), (max-height: 550px) {
-    .iso-legend-chip {
-        padding: 2px 6px !important;
-        font-size: 0.62rem !important;
-        border-radius: 6px !important;
-    }
-    .iso-legend-chip .chip-text-full {
-        display: none !important;
-    }
-    .iso-legend-chip .chip-text-short {
-        display: inline !important;
-    }
+    min-height: 44px;
 }
 
 /* 2. MASS & STABILITY SPECTRUM TIMELINE RAIL (Grid Area: sidebar) */
 .iso-modal-ribbon-wrap {
     grid-area: sidebar;
-    background: rgba(5, 10, 22, 0.95);
+    background: rgba(5, 10, 22, 0.96);
     border-right: 1px solid rgba(0, 212, 255, 0.2);
     border-bottom: none;
     padding: 12px 10px;
@@ -2051,13 +1985,94 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     min-height: 0;
 }
 
+.iso-sidebar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.iso-search-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#iso-search-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 0.8rem;
+    font-family: var(--font-ui);
+    outline: none;
+    flex: 1;
+    min-width: 0;
+}
+
+#modal-isotope-count {
+    font-size: 0.72rem;
+    color: #00d4ff;
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgba(0, 212, 255, 0.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+#modal-decay-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.72rem;
+    color: #fff;
+    align-items: center;
+}
+
+.iso-legend-chip {
+    padding: 3px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.iso-legend-chip .chip-text-full {
+    display: inline;
+}
+.iso-legend-chip .chip-text-short {
+    display: none;
+}
+
+.iso-ribbon-header-title {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    padding: 2px 2px 0 2px;
+    flex-shrink: 0;
+}
+
 .iso-modal-isotope-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 7px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 4px 6px 14px 4px;
+    padding: 2px 4px 14px 2px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
@@ -2089,7 +2104,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 .iso-element-cell {
     aspect-ratio: 1 / 1;
     width: 100%;
-    min-height: 84px;
+    min-height: 82px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
@@ -2215,30 +2230,60 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     min-height: 0;
 }
 
+/* Persistent Selected Isotope Hero Card */
+.iso-active-hero-banner {
+    min-height: 56px;
+    max-height: 58px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    padding: 0 18px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: #fff;
+    flex-shrink: 0;
+    margin: 10px 16px 4px 16px;
+    width: calc(100% - 32px);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+}
+
+/* Sleek Modern Pill Tab Navigation Bar */
 .iso-tab-nav-bar {
     display: flex;
-    gap: 6px;
-    padding: 10px 20px 0 20px;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-    background: rgba(0, 0, 0, 0.35);
+    gap: 8px;
+    padding: 8px 16px;
     flex-shrink: 0;
+    background: transparent;
 }
 
 .iso-tab-btn {
-    padding: 10px 18px;
+    flex: 1;
+    padding: 8px 14px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.72);
     font-family: var(--font-ui);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+}
+
+.iso-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-1px);
 }
 
 .iso-tab-btn .tab-text-full {
@@ -2250,20 +2295,54 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 }
 
 .iso-tab-btn.active {
-    background: rgba(0, 212, 255, 0.18) !important;
-    border-color: rgba(0, 212, 255, 0.5) !important;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.22) 0%, rgba(168, 85, 247, 0.16) 100%) !important;
+    border: 1px solid #00d4ff !important;
     color: #00d4ff !important;
     font-weight: 700;
-    box-shadow: 0 -2px 10px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.3), inset 0 0 10px rgba(0, 212, 255, 0.15) !important;
+    transform: translateY(-1px);
 }
 
 .iso-tab-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px 20px;
+    padding: 0 16px 16px 16px;
     overflow-y: auto;
-    gap: 14px;
+    gap: 12px;
+    min-height: 0;
+}
+
+.iso-decay-infographic-box {
+    flex: 1;
+    width: 100%;
+    min-height: 260px;
+    background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(3, 7, 16, 0.95) 100%);
+    border-radius: 14px;
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.85);
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.iso-physics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.iso-physics-header h4 {
+    margin: 0;
+    color: #00d4ff;
+    font-size: 1rem;
+    font-family: var(--font-ui);
 }
 
 .iso-physics-grid {
@@ -78080,12 +78159,12 @@ function updateIsotopesView(atomicNumber) {
         if (legendContainer && legendContainer.children.length === 0) {
             const legendModes = [
                 { name: 'Stable', shortName: 'Stable', color: '#4ade80' },
-                { name: 'Alpha (α)', shortName: 'α Alpha', color: '#facc15' },
-                { name: 'Beta- (β-)', shortName: 'β⁻ Beta-', color: '#38bdf8' },
-                { name: 'Beta+ / EC', shortName: 'β⁺/EC', color: '#c084fc' },
-                { name: 'Spontaneous Fission', shortName: 'SF Fission', color: '#f87171' },
-                { name: 'Proton Emission', shortName: 'p Proton', color: '#fb923c' },
-                { name: 'Neutron Emission', shortName: 'n Neutron', color: '#2dd4bf' }
+                { name: 'α Alpha', shortName: 'α', color: '#facc15' },
+                { name: 'β⁻ Beta-', shortName: 'β⁻', color: '#38bdf8' },
+                { name: 'β⁺ / EC', shortName: 'β⁺', color: '#c084fc' },
+                { name: 'SF Fission', shortName: 'SF', color: '#f87171' },
+                { name: 'p Proton', shortName: 'p', color: '#fb923c' },
+                { name: 'n Neutron', shortName: 'n', color: '#2dd4bf' }
             ];
             
             window.activeIsotopeFilter = null;
@@ -78093,7 +78172,7 @@ function updateIsotopesView(atomicNumber) {
             legendModes.forEach(mode => {
                 const p = document.createElement('div');
                 p.className = 'iso-legend-chip';
-                p.style.cssText = `position: relative; overflow: hidden; padding: 4px 10px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none; flex-shrink: 0; white-space: nowrap; font-size: 0.72rem;`;
+                p.style.cssText = `position: relative; overflow: hidden; padding: 3px 8px; border-radius: 6px; border: 1px solid ${mode.color}; background: ${getGlossyBackground(mode.color, 'metal')}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: var(--font-ui); cursor: pointer; transition: all 0.2s; user-select: none; flex-shrink: 0; white-space: nowrap; font-size: 0.68rem;`;
                 p.innerHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%); pointer-events: none; border-radius: 6px 6px 0 0;"></div><span class="chip-text-full" style="position:relative; z-index:1;">${mode.name}</span><span class="chip-text-short" style="position:relative; z-index:1; display:none;">${mode.shortName}</span>`;
                 
                 const applyFilter = (mode) => {
@@ -78374,20 +78453,20 @@ function renderIsotopeDetails(index) {
         const statusHtml = iso.isStable ? '<span style="color: #4ade80;">Stable Isotope</span>' : `<span style="color: ${dColor};">${iso.decayMode || 'Unstable'} Decay</span>`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1;">
-                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${iso.massNumber}</span>
-                    <span style="font-size: 0.85rem; font-family: var(--font-mono); color: #ddd; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${Z}</span>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1; font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7);">
+                    <span>${iso.massNumber}</span>
+                    <span>${Z}</span>
                 </div>
-                <div style="font-size: 2.5rem; font-family: var(--font-mono); font-weight: 600; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; margin-left: 10px;">
-                    <span style="font-size: 1.4rem; font-weight: 600; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${isoName}</span>
-                    <span style="font-size: 0.9rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: bold;">${statusHtml}</span>
+                <div style="font-size: 2rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; margin-left: 4px;">
+                    <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); color: #fff;">${isoName}</span>
+                    <span style="font-size: 0.78rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 600;">${statusHtml}</span>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Mass: <span style="color:#fff">${massStr} u</span></div>
-                <div style="font-size: 0.85rem; color: #ccc; font-family: var(--font-mono); text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Neutrons: <span style="color:#fff">${N}</span></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Mass: <strong style="color:#fff;">${massStr} u</strong></div>
+                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.7); font-family: var(--font-mono);">Neutrons: <strong style="color:#fff;">${N}</strong></div>
             </div>
         `;
     }
@@ -78403,12 +78482,12 @@ function renderIsotopeDetails(index) {
             elCard.style.border = `1px solid ${catColor}`;
             elCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 48px; height: 48px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                    <div style="width: 44px; height: 44px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
                         <span style="position: absolute; top: 2px; left: 4px; font-size: 0.55rem; font-family: var(--font-mono); color: rgba(255,255,255,0.7);">${elData.atomicNumber}</span>
-                        <span style="font-size: 1.5rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                        <span style="font-size: 1.4rem; font-family: var(--font-mono); font-weight: 700; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 2px;">
-                        <span style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
+                        <span style="font-size: 1.2rem; font-weight: 700; font-family: var(--font-ui); color: #fff; line-height: 1.1;">${elData.name}</span>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 600; font-family: var(--font-ui); text-transform: uppercase;">${catName}</span>
                             <span style="font-size: 0.72rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
@@ -78416,8 +78495,8 @@ function renderIsotopeDetails(index) {
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-family: var(--font-mono); font-size: 0.72rem;">
-                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: #00d4ff;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -78446,6 +78525,10 @@ function renderIsotopeDetails(index) {
         return val.toFixed(dec);
     };
     
+    // Abundance percentage helper (raw abundance is parts per 10,000, i.e. 10,000 = 100%)
+    const rawAbund = iso.abundance;
+    const abundPct = rawAbund !== null && rawAbund !== undefined ? (rawAbund > 100 ? rawAbund / 100 : rawAbund) : null;
+
     // Write-up link
     if (elData && elData.name) {
         document.getElementById('m-iso-wiki').innerHTML = `<button onclick="window.openWikiModal('${elData.name}', ${iso.massNumber})" style="background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #60a5fa; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-family: var(--font-ui); font-size: 0.85rem; transition: all 0.2s;">Read Wikipedia ↗</button>`;
@@ -78456,7 +78539,7 @@ function renderIsotopeDetails(index) {
     document.getElementById('m-iso-mass').innerHTML = (iso.mass ? format(iso.mass, 6) : iso.massNumber) + ' <span style="font-size: 0.8em; color: #888;">u</span>';
     document.getElementById('m-iso-excess').innerHTML = iso.massExcess !== null ? format(iso.massExcess, 3) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
     document.getElementById('m-iso-binding').innerHTML = iso.bindingEnergy !== null ? format(iso.bindingEnergy, 3) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
-    document.getElementById('m-iso-abundance').innerHTML = iso.abundance !== null ? format(iso.abundance, 4) + ' <span style="font-size: 0.8em; color: #888;">%</span>' : '-';
+    document.getElementById('m-iso-abundance').innerHTML = abundPct !== null ? format(abundPct, 4) + ' <span style="font-size: 0.8em; color: #888;">%</span>' : '-';
     
     let hlText = '-';
     if (iso.isStable) {
@@ -78492,7 +78575,7 @@ function renderIsotopeDetails(index) {
                 magicBadge = `<span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;">🟢 Optimal N/Z Ratio (${ratioNZ})</span>`;
             }
 
-            const abundStr = iso.abundance !== null && iso.abundance !== undefined ? `${iso.abundance.toFixed(2)}%` : 'Observationally Stable';
+            const abundStr = abundPct !== null ? `${abundPct.toFixed(2)}%` : 'Observationally Stable';
             const bindingStr = iso.bindingEnergy !== null && iso.bindingEnergy !== undefined ? `${(iso.bindingEnergy / A).toFixed(2)} MeV/A` : 'High (Valley Base)';
 
             infoContainer.innerHTML = `
@@ -89031,13 +89114,13 @@ window.OrbitalViewer = {
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.83.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.84.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.83.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.84.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -89314,32 +89397,34 @@ window.OrbitalViewer = {
                     <!-- 1. TOP HERO HEADER & ELEMENT BANNER -->
                     <div class="iso-modal-hero-header">
                         <div id="modal-el-card"></div>
-                        
-                        <!-- Element Stability Summary & Filters -->
-                        <div class="iso-modal-header-tools">
-                            <div class="iso-search-pill">
-                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 99m, stable)..." />
-                                <div id="modal-isotope-count"></div>
-                            </div>
-                            <div id="modal-decay-legend"></div>
-                        </div>
                     </div>
 
                     <!-- 2. MASS & STABILITY SPECTRUM TIMELINE RIBBON -->
                     <div class="iso-modal-ribbon-wrap">
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-ui);">
-                            <span>Isotope Mass Spectrum Timeline (A = Z + N)</span>
-                            <span style="color: #00d4ff;">🟢 Stable &bull; 🔵 Beta- &bull; 🟣 Beta+/EC &bull; 🟡 Alpha &bull; 🔴 Fission</span>
+                        <!-- Top Left Sidebar Controls: Search & Decay Filter Chips -->
+                        <div class="iso-sidebar-controls">
+                            <div class="iso-search-pill">
+                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 52, stable)..." />
+                                <div id="modal-isotope-count"></div>
+                            </div>
+                            <div id="modal-decay-legend"></div>
+                        </div>
+
+                        <div class="iso-ribbon-header-title">
+                            <span>Mass Spectrum Timeline (A = Z + N)</span>
                         </div>
                         <div id="modal-isotope-list" class="iso-modal-isotope-list">
-                            <!-- Populated dynamically as horizontal pills -->
+                            <!-- Populated dynamically as authentic element cells -->
                         </div>
                     </div>
 
                     <!-- 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB -->
                     <div class="iso-modal-tab-container">
                         
-                        <!-- Tab Header Navigation -->
+                        <!-- Persistent Selected Isotope Hero Card (Visible Across ALL Tabs) -->
+                        <div id="modal-iso-card" class="iso-active-hero-banner"></div>
+
+                        <!-- Sleek Modern Pill Tab Navigation -->
                         <div class="iso-tab-nav-bar">
                             <button class="iso-tab-btn active" data-tab="decay">
                                 <span class="tab-icon">☢️</span>
@@ -89349,20 +89434,18 @@ window.OrbitalViewer = {
                             <button class="iso-tab-btn" data-tab="physics">
                                 <span class="tab-icon">📊</span>
                                 <span class="tab-text-full">Physical & Nuclear Properties</span>
-                                <span class="tab-text-short">Props</span>
+                                <span class="tab-text-short">Properties</span>
                             </button>
                             <button class="iso-tab-btn" data-tab="simulator">
                                 <span class="tab-icon">⏳</span>
                                 <span class="tab-text-full">Half-Life Decay Simulator</span>
-                                <span class="tab-text-short">Sim</span>
+                                <span class="tab-text-short">Simulator</span>
                             </button>
                         </div>
 
                         <!-- Tab Content 1: Decay Visualizer -->
                         <div id="iso-tab-decay" class="iso-tab-content">
-                            <div id="modal-iso-card" style="width: 100%; min-height: 60px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff; flex-shrink: 0;"></div>
-                            
-                            <div id="decay-infographic-container" style="flex: 1; width: 100%; min-height: 260px; background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(3, 7, 16, 0.95) 100%); border-radius: 14px; border: 1px solid rgba(0, 212, 255, 0.25); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 35px rgba(0,0,0,0.85); padding: 10px; box-sizing: border-box;">
+                            <div id="decay-infographic-container" class="iso-decay-infographic-box">
                             </div>
                         </div>
 

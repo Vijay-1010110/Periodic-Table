@@ -184,13 +184,13 @@
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.83.0</div>
+        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.84.0</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 8px;">
             <span>PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.83.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.84.0</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
@@ -467,32 +467,34 @@
                     <!-- 1. TOP HERO HEADER & ELEMENT BANNER -->
                     <div class="iso-modal-hero-header">
                         <div id="modal-el-card"></div>
-                        
-                        <!-- Element Stability Summary & Filters -->
-                        <div class="iso-modal-header-tools">
-                            <div class="iso-search-pill">
-                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 99m, stable)..." />
-                                <div id="modal-isotope-count"></div>
-                            </div>
-                            <div id="modal-decay-legend"></div>
-                        </div>
                     </div>
 
                     <!-- 2. MASS & STABILITY SPECTRUM TIMELINE RIBBON -->
                     <div class="iso-modal-ribbon-wrap">
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-ui);">
-                            <span>Isotope Mass Spectrum Timeline (A = Z + N)</span>
-                            <span style="color: #00d4ff;">🟢 Stable &bull; 🔵 Beta- &bull; 🟣 Beta+/EC &bull; 🟡 Alpha &bull; 🔴 Fission</span>
+                        <!-- Top Left Sidebar Controls: Search & Decay Filter Chips -->
+                        <div class="iso-sidebar-controls">
+                            <div class="iso-search-pill">
+                                <input type="text" id="iso-search-input" placeholder="Search (e.g. 52, stable)..." />
+                                <div id="modal-isotope-count"></div>
+                            </div>
+                            <div id="modal-decay-legend"></div>
+                        </div>
+
+                        <div class="iso-ribbon-header-title">
+                            <span>Mass Spectrum Timeline (A = Z + N)</span>
                         </div>
                         <div id="modal-isotope-list" class="iso-modal-isotope-list">
-                            <!-- Populated dynamically as horizontal pills -->
+                            <!-- Populated dynamically as authentic element cells -->
                         </div>
                     </div>
 
                     <!-- 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB -->
                     <div class="iso-modal-tab-container">
                         
-                        <!-- Tab Header Navigation -->
+                        <!-- Persistent Selected Isotope Hero Card (Visible Across ALL Tabs) -->
+                        <div id="modal-iso-card" class="iso-active-hero-banner"></div>
+
+                        <!-- Sleek Modern Pill Tab Navigation -->
                         <div class="iso-tab-nav-bar">
                             <button class="iso-tab-btn active" data-tab="decay">
                                 <span class="tab-icon">☢️</span>
@@ -502,20 +504,18 @@
                             <button class="iso-tab-btn" data-tab="physics">
                                 <span class="tab-icon">📊</span>
                                 <span class="tab-text-full">Physical & Nuclear Properties</span>
-                                <span class="tab-text-short">Props</span>
+                                <span class="tab-text-short">Properties</span>
                             </button>
                             <button class="iso-tab-btn" data-tab="simulator">
                                 <span class="tab-icon">⏳</span>
                                 <span class="tab-text-full">Half-Life Decay Simulator</span>
-                                <span class="tab-text-short">Sim</span>
+                                <span class="tab-text-short">Simulator</span>
                             </button>
                         </div>
 
                         <!-- Tab Content 1: Decay Visualizer -->
                         <div id="iso-tab-decay" class="iso-tab-content">
-                            <div id="modal-iso-card" style="width: 100%; min-height: 60px; position: relative; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 0 20px; box-sizing: border-box; overflow: hidden; color: #fff; flex-shrink: 0;"></div>
-                            
-                            <div id="decay-infographic-container" style="flex: 1; width: 100%; min-height: 260px; background: radial-gradient(circle, rgba(15, 35, 60, 0.7) 0%, rgba(3, 7, 16, 0.95) 100%); border-radius: 14px; border: 1px solid rgba(0, 212, 255, 0.25); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 35px rgba(0,0,0,0.85); padding: 10px; box-sizing: border-box;">
+                            <div id="decay-infographic-container" class="iso-decay-infographic-box">
                             </div>
                         </div>
 
