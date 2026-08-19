@@ -122,16 +122,25 @@ def build():
 
     import shutil
     import subprocess
-    if os.path.exists('manifest.json'):
-        shutil.copy('manifest.json', 'public/manifest.json')
-    if os.path.exists('sw.js'):
-        shutil.copy('sw.js', 'public/sw.js')
-    if os.path.exists('src/ads.txt'):
-        shutil.copy('src/ads.txt', 'public/ads.txt')
-        shutil.copy('src/ads.txt', 'ads.txt')
+    
+    files_to_copy = [
+        'manifest.json', 'sw.js', 'src/ads.txt', 
+        'favicon.ico', 'favicon.svg', 'favicon-16x16.png', 
+        'favicon-32x32.png', 'apple-touch-icon.png', 
+        'icon-192.png', 'icon-512.png'
+    ]
+    
+    for file in files_to_copy:
+        if os.path.exists(file):
+            dest_name = os.path.basename(file)
+            shutil.copy(file, f'public/{dest_name}')
+            if dest_name == 'ads.txt':
+                shutil.copy(file, 'ads.txt')
+
     if os.path.exists('assets'):
         shutil.copytree('assets', 'public/assets', dirs_exist_ok=True)
-    print("Copied manifest.json, sw.js, ads.txt, and assets/ to public/")
+    
+    print("Copied manifest, service worker, icons, ads.txt, and assets/ to public/")
 
     print("Running Capacitor Sync...")
     try:
