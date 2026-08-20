@@ -78622,6 +78622,17 @@ function renderIsotopeDetails(index) {
     document.getElementById('m-iso-width').innerHTML = iso.decayWidth !== null ? formatExp(iso.decayWidth, 4) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
     document.getElementById('m-iso-activity').innerHTML = iso.specificActivity !== null ? formatExp(iso.specificActivity, 2) + ' <span style="font-size: 0.8em; color: #888;">Bq/g</span>' : '-';
     document.getElementById('m-iso-magnetic').innerHTML = iso.magneticMoment !== null ? format(iso.magneticMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">μN</span>' : '-';
+    document.getElementById('m-iso-quadrupole').innerHTML = iso.quadrupoleMoment !== null ? format(iso.quadrupoleMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">eb</span>' : '-';
+    
+    let spinParity = '-';
+    if (iso.spin !== null && iso.spin !== '') {
+        spinParity = iso.spin;
+        if (iso.parity !== null && iso.parity !== '') spinParity += ' ' + iso.parity;
+    } else if (iso.parity !== null && iso.parity !== '') {
+        spinParity = iso.parity;
+    }
+    document.getElementById('m-iso-spin').textContent = spinParity;
+
     // Render Detailed Scientific Infographic
     const infoContainer = document.getElementById('decay-infographic-container');
     if (infoContainer && elData) {
