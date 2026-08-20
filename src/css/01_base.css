@@ -3097,7 +3097,6 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-stage {
-        flex-direction: column !important;
         gap: 12px !important;
         padding: 24px 6px 12px 6px !important;
         min-height: 140px !important;
