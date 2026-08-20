@@ -595,7 +595,7 @@ function renderIsotopeDetails(index) {
                     </div>
 
                     <!-- Center 3-Column Visualizer (Responsive flex with auto-scaling) -->
-                    <div style="display: flex; align-items: center; justify-content: center; width: 100%; max-width: 860px; margin: 8px auto; gap: clamp(10px, 2.5vw, 24px); z-index: 2; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 860px; margin: 8px auto; gap: clamp(10px, 2.5vw, 24px); z-index: 2; box-sizing: border-box;">
                         
                         <!-- Left Stats Card -->
                         <div style="background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(74, 222, 128, 0.35); border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; max-width: 230px; min-width: 160px; box-sizing: border-box;">

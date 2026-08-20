@@ -355,6 +355,7 @@ input[type="text"], select {
 #temp-display-container {
     display: flex;
     align-items: center;
+    gap: 6px;
     white-space: nowrap;
     text-align: left;
     flex-shrink: 0 !important;
@@ -376,6 +377,10 @@ input[type="text"], select {
     text-align: center;
     font-weight: 700;
     transition: color 0.1s ease, border-color 0.1s ease;
+}
+.temp-unit-sep {
+    opacity: 0.4;
+    user-select: none;
 }
 #timeline-input {
     width: 60px;
@@ -89301,7 +89306,7 @@ window.OrbitalViewer = {
                             <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
                             <div class="temp-controller" id="temp-controller-wrapper">
                                 <input type="range" id="temp-slider" min="0" max="6000" value="298">
-                                <label id="temp-display-container">Temp: <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"> K <span class="temp-unit-sep">|</span> <span id="temp-display-c" class="mono-text">25 °C</span> <span class="temp-unit-sep">|</span> <span id="temp-display-f" class="mono-text">77 °F</span></label>
+                                <label id="temp-display-container"><span>Temp:</span><input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"><span>K</span><span class="temp-unit-sep">|</span><span id="temp-display-c" class="mono-text">25 °C</span><span class="temp-unit-sep">|</span><span id="temp-display-f" class="mono-text">77 °F</span></label>
                             </div>
                             <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
                                 <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">

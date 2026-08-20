@@ -2685,7 +2685,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         box-shadow: none !important;
         background: #060c18 !important;
         display: grid !important;
-        grid-template-rows: 44px 1fr !important;
+        grid-template-rows: auto 1fr !important;
         grid-template-columns: 40% 60% !important;
         grid-template-areas: 
             "topbar topbar"
@@ -2704,23 +2704,33 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 2px 8px !important;
+        padding: 4px 8px !important;
         padding-right: 48px !important;
         gap: 8px !important;
         background: linear-gradient(180deg, rgba(12, 22, 45, 0.98) 0%, rgba(6, 12, 24, 0.95) 100%) !important;
         border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-        height: 44px !important;
-        max-height: 44px !important;
+        height: auto !important;
+        max-height: none !important;
         overflow: hidden !important;
         flex-wrap: nowrap !important;
     }
 
     #modal-el-card {
+        height: auto !important;
+        max-height: none !important;
         min-height: unset !important;
-        padding: 2px 4px !important;
-        gap: 6px !important;
+        padding: 4px 8px !important;
+        gap: 8px !important;
         border-radius: 8px !important;
         flex-shrink: 0 !important;
+    }
+
+    .iso-active-hero-banner {
+        height: auto !important;
+        max-height: none !important;
+        min-height: unset !important;
+        padding: 4px 8px !important;
+        border-radius: 8px !important;
     }
 
     #modal-el-card > div:first-child {
@@ -3072,13 +3082,14 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-stage {
-        flex-direction: row !important;
-        gap: 6px !important;
-        padding: 4px 6px !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 24px 6px 12px 6px !important;
         min-height: 140px !important;
         height: 100% !important;
-        justify-content: space-around !important;
+        justify-content: flex-start !important;
         align-items: center !important;
+        overflow-y: auto !important;
     }
 
     .iso-decay-banner-title {
