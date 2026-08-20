@@ -78619,8 +78619,51 @@ function renderIsotopeDetails(index) {
     document.getElementById('m-iso-halflife').innerHTML = hlText;
     document.getElementById('m-iso-decay').textContent = iso.decayMode || '-';
     
-    document.getElementById('m-iso-width').innerHTML = iso.decayWidth !== null ? formatExp(iso.decayWidth, 4) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
-    document.getElementById('m-iso-activity').innerHTML = iso.specificActivity !== null ? formatExp(iso.specificActivity, 2) + ' <span style="font-size: 0.8em; color: #888;">Bq/g</span>' : '-';
+    // Calculate fallback values for Decay Width and Specific Activity mathematically
+    let calcWidth = iso.decayWidth;
+    let calcActivity = iso.specificActivity;
+    
+    if (!isStable && iso.halfLife !== null && (calcWidth === null || calcActivity === null)) {
+        let t_sec = null;
+        const val = iso.halfLife;
+        const unit = (iso.halfLifeUnit || '').toLowerCase();
+        
+        let mult = 1;
+        if (unit.includes('ysec')) mult = 1e-24;
+        else if (unit.includes('zsec')) mult = 1e-21;
+        else if (unit.includes('asec')) mult = 1e-18;
+        else if (unit.includes('fsec')) mult = 1e-15;
+        else if (unit.includes('psec')) mult = 1e-12;
+        else if (unit.includes('nsec')) mult = 1e-9;
+        else if (unit.includes('usec') || unit.includes('μs')) mult = 1e-6;
+        else if (unit.includes('msec')) mult = 1e-3;
+        else if (unit === 'sec' || unit === 's') mult = 1;
+        else if (unit.includes('min')) mult = 60;
+        else if (unit.includes('hour') || unit === 'h') mult = 3600;
+        else if (unit.includes('day') || unit === 'd') mult = 86400;
+        else if (unit === 'year' || unit === 'y' || unit === 'yr' || unit === 'years') mult = 31557600;
+        else if (unit.includes('kyear') || unit.includes('kyr')) mult = 31557600 * 1e3;
+        else if (unit.includes('myear') || unit.includes('myr')) mult = 31557600 * 1e6;
+        else if (unit.includes('gyear') || unit.includes('gyr')) mult = 31557600 * 1e9;
+        else if (unit.includes('tyear')) mult = 31557600 * 1e12;
+        else if (unit.includes('pyear')) mult = 31557600 * 1e15;
+        else if (unit.includes('eyear')) mult = 31557600 * 1e18;
+        else if (unit.includes('zyear')) mult = 31557600 * 1e21;
+        else if (unit.includes('yyear')) mult = 31557600 * 1e24;
+        
+        t_sec = val * mult;
+        
+        if (t_sec > 0) {
+            if (calcWidth === null) calcWidth = 4.56229e-22 / t_sec;
+            if (calcActivity === null) {
+                const M = iso.mass || iso.massNumber;
+                calcActivity = 4.174e23 / (t_sec * M);
+            }
+        }
+    }
+    
+    document.getElementById('m-iso-width').innerHTML = calcWidth !== null ? formatExp(calcWidth, 4) + ' <span style="font-size: 0.8em; color: #888;">MeV</span>' : '-';
+    document.getElementById('m-iso-activity').innerHTML = calcActivity !== null ? formatExp(calcActivity, 2) + ' <span style="font-size: 0.8em; color: #888;">Bq/g</span>' : '-';
     document.getElementById('m-iso-magnetic').innerHTML = iso.magneticMoment !== null ? format(iso.magneticMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">μN</span>' : '-';
     document.getElementById('m-iso-quadrupole').innerHTML = iso.quadrupoleMoment !== null ? format(iso.quadrupoleMoment, 4) + ' <span style="font-size: 0.8em; color: #888;">eb</span>' : '-';
     
