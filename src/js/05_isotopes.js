@@ -814,10 +814,14 @@ function renderIsotopeDetails(index) {
                     </div>
                 `;
             } else {
+                let badgeLabel = dMode || 'Decay';
+                if (badgeLabel.includes(',')) {
+                    badgeLabel = badgeLabel.split(',')[0].trim();
+                }
                 html += `
                     <!-- Center Arrow -->
                     <div class="iso-decay-arrow-wrap">
-                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: ${dColor}; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.85); border: 1px solid ${dColor}; border-radius: 8px; padding: 4px 8px; font-size: 0.72rem; line-height: 1.1; box-shadow: 0 0 12px ${dColor}44; white-space: nowrap;">${dMode || 'Decay'}<br>Event</div>
+                        <div class="decay-badge-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: ${dColor}; font-weight: bold; text-align: center; z-index: 2; background: rgba(0,0,0,0.85); border: 1px solid ${dColor}; border-radius: 8px; padding: 3px 6px; font-size: 0.68rem; line-height: 1.15; box-shadow: 0 0 12px ${dColor}44; max-width: 100px; word-break: break-word; white-space: normal;">${badgeLabel}<br>Event</div>
                         <svg width="100%" height="100%" viewBox="0 0 80 150" style="position: absolute; inset: 0;" preserveAspectRatio="none">
                             <path d="M 5,75 C 35,75 45,25 75,25" stroke="${dColor}" stroke-width="2.5" fill="none" marker-end="url(#arrow-prod)" />
                             <path d="M 5,75 C 35,75 45,125 75,125" stroke="${dColor}" stroke-width="2.5" fill="none" marker-end="url(#arrow-prod)" />

@@ -2708,33 +2708,65 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 4px 8px !important;
-        padding-right: 48px !important;
-        gap: 8px !important;
+        padding: 3px 6px !important;
+        gap: 6px !important;
         background: linear-gradient(180deg, rgba(12, 22, 45, 0.98) 0%, rgba(6, 12, 24, 0.95) 100%) !important;
         border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
         height: auto !important;
+        min-height: 42px !important;
         max-height: none !important;
         overflow: hidden !important;
         flex-wrap: nowrap !important;
+        box-sizing: border-box !important;
     }
 
-    #modal-el-card {
-        height: auto !important;
-        max-height: none !important;
-        min-height: unset !important;
-        padding: 4px 8px !important;
-        gap: 8px !important;
-        border-radius: 8px !important;
+    .iso-topbar-left {
+        width: 40% !important;
+        min-width: 0 !important;
+        max-width: 40% !important;
+        height: 100% !important;
+        padding: 0 !important;
+        border-right: 1px solid rgba(0, 212, 255, 0.25) !important;
+        box-shadow: none !important;
+        display: flex !important;
+        align-items: center !important;
         flex-shrink: 0 !important;
     }
 
-    .iso-active-hero-banner {
+    .iso-topbar-right {
+        width: 60% !important;
+        min-width: 0 !important;
+        max-width: 60% !important;
+        height: 100% !important;
+        padding: 0 0 0 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex: 1 !important;
+    }
+
+    #modal-el-card {
+        width: 100% !important;
         height: auto !important;
         max-height: none !important;
-        min-height: unset !important;
-        padding: 2px 6px !important;
+        min-height: 38px !important;
+        padding: 2px 8px !important;
+        gap: 6px !important;
         border-radius: 8px !important;
+        flex-shrink: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .iso-active-hero-banner,
+    #modal-iso-card {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 38px !important;
+        padding: 2px 8px !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+        flex: 1 !important;
     }
 
     .iso-active-hero-banner > div:first-child { gap: 6px !important; }
@@ -2837,8 +2869,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     #close-modal-btn {
-        top: 6px !important;
-        right: 6px !important;
+        position: static !important;
         width: 32px !important;
         height: 32px !important;
         padding: 0 !important;
@@ -2850,6 +2881,8 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         background: rgba(255, 255, 255, 0.18) !important;
         border: 1px solid rgba(255, 255, 255, 0.35) !important;
         z-index: 70 !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
     }
 
     /* 2. LEFT SECTION (40% width): All available isotopes in element-table style boxes */
@@ -3055,60 +3088,44 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         flex: 1 !important;
         height: 100% !important;
         overflow-y: auto !important;
-        padding: 6px 8px !important;
+        padding: 4px 6px !important;
         gap: 6px !important;
-    }
-
-    #modal-iso-card {
-        height: 36px !important;
-        min-height: 36px !important;
-        padding: 2px 8px !important;
-        border-radius: 8px !important;
-        gap: 6px !important;
-    }
-
-    #modal-iso-card > div:first-child {
-        gap: 8px !important;
-    }
-
-    #modal-iso-card > div:first-child > div:nth-child(2) {
-        font-size: 1.25rem !important;
-    }
-
-    #modal-iso-card > div:first-child > div:nth-child(3) > span:first-child {
-        font-size: 0.82rem !important;
-    }
-
-    #modal-iso-card > div:first-child > div:nth-child(3) > span:last-child {
-        font-size: 0.62rem !important;
-    }
-
-    #modal-iso-card > div:last-child > div {
-        font-size: 0.62rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-sizing: border-box !important;
     }
 
     /* Decay Infographic inside Right Workspace */
     #decay-infographic-container {
-        min-height: 150px !important;
-        max-height: 220px !important;
-        padding: 4px !important;
-        border-radius: 10px !important;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 180px !important;
+        max-height: none !important;
+        padding: 6px 10px !important;
+        border-radius: 12px !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     .iso-decay-stage {
-        gap: 12px !important;
-        padding: 24px 6px 12px 6px !important;
+        gap: 16px !important;
+        padding: 24px 6px 8px 6px !important;
         min-height: 140px !important;
+        width: 100% !important;
         height: 100% !important;
         justify-content: center !important;
         align-items: center !important;
         overflow-y: auto !important;
+        box-sizing: border-box !important;
     }
 
     .iso-decay-banner-title {
-        font-size: 0.62rem !important;
-        padding: 2px 8px !important;
+        font-size: 0.65rem !important;
+        padding: 3px 10px !important;
         border-bottom-right-radius: 10px !important;
     }
 
@@ -3117,7 +3134,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-parent {
-        width: 75px !important;
+        width: 85px !important;
         margin-top: 0 !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -3127,12 +3144,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-parent .parent-title {
-        font-size: 0.65rem !important;
+        font-size: 0.68rem !important;
+        white-space: nowrap !important;
     }
 
     .iso-decay-parent .parent-svg-wrap {
-        width: 42px !important;
-        height: 42px !important;
+        width: 46px !important;
+        height: 46px !important;
         margin: 2px 0 !important;
     }
 
@@ -3141,7 +3159,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-arrow-wrap {
-        width: 60px !important;
+        width: 90px !important;
         height: 140px !important;
         margin-top: 0 !important;
         flex-direction: column !important;
@@ -3160,12 +3178,17 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
         padding: 2px 6px !important;
-        font-size: 0.6rem !important;
-        white-space: nowrap !important;
+        font-size: 0.58rem !important;
+        max-width: 90px !important;
+        white-space: normal !important;
+        text-align: center !important;
+        line-height: 1.15 !important;
+        word-break: break-word !important;
+        z-index: 5 !important;
     }
 
     .iso-decay-products {
-        width: 140px !important;
+        width: 150px !important;
         height: 140px !important;
         margin-top: 0 !important;
         display: flex !important;
@@ -3175,10 +3198,10 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     }
 
     .iso-decay-product-item {
-        height: 48px !important;
+        height: 50px !important;
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 8px !important;
     }
 
     /* Properties Tab */
