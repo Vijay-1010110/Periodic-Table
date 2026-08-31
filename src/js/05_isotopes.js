@@ -398,23 +398,23 @@ function renderIsotopeDetails(index) {
         const halfLifeBadge = isStable ? 'Half-life: ∞' : `t½: ${compactHalfLife}`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono);">
-                    <span style="font-size: 1.35rem; font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
-                    <span style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
+            <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 18px); min-width: 0;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono); flex-shrink: 0;">
+                    <span style="font-size: clamp(1rem, 2.5vw, 1.35rem); font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
+                    <span style="font-size: clamp(0.85rem, 2vw, 1.1rem); font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
                 </div>
-                <div style="font-size: 3.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; justify-content: center; gap: 5px; line-height: 1.15;">
-                    <span style="font-size: 1.55rem; font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px;">${isoName}</span>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.85rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 3px 12px; border-radius: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px;">${statusHtml}</span>
-                        <span style="font-size: 0.82rem; font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 3px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">${halfLifeBadge}</span>
+                <div style="font-size: clamp(1.8rem, 5vw, 3.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1; flex-shrink: 0;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 3px; line-height: 1.15; min-width: 0;">
+                    <span style="font-size: clamp(1.05rem, 3vw, 1.55rem); font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${isoName}</span>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span style="font-size: clamp(0.7rem, 1.8vw, 0.85rem); font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 2px 8px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px; white-space: nowrap;">${statusHtml}</span>
+                        <span style="font-size: clamp(0.68rem, 1.8vw, 0.82rem); font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">${halfLifeBadge}</span>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; line-height: 1.25; font-family: var(--font-mono);">
-                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Mass: <strong style="color:#fff; font-size: 1.05rem; font-weight: 800;">${massStr} u</strong></div>
-                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Neutrons: <strong style="color:#00d4ff; font-size: 1.05rem; font-weight: 800;">${N}</strong></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; line-height: 1.25; font-family: var(--font-mono); flex-shrink: 0;">
+                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Mass: <strong style="color:#fff; font-weight: 800;">${massStr} u</strong></div>
+                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Neutrons: <strong style="color:#00d4ff; font-weight: 800;">${N}</strong></div>
             </div>
         `;
     }
@@ -429,22 +429,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1.5px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 64px; height: 64px; background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
-                        <span style="position: absolute; top: 3px; left: 5px; font-size: 0.68rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
-                        <span style="font-size: 2.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 14px); min-width: 0;">
+                    <div style="width: clamp(46px, 10vw, 64px); height: clamp(46px, 10vw, 64px); background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
+                        <span style="position: absolute; top: 2px; left: 4px; font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
+                        <span style="font-size: clamp(1.4rem, 4vw, 2.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.15;">
-                        <span style="font-size: 1.45rem; font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px;">${elData.name}</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 0.72rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 6px; border-radius: 6px;">${catName}</span>
-                            <span style="font-size: 0.78rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 2px; line-height: 1.15; min-width: 0;">
+                        <span style="font-size: clamp(1rem, 2.8vw, 1.45rem); font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${elData.name}</span>
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 5px; border-radius: 4px; white-space: nowrap;">${catName}</span>
+                            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono); white-space: nowrap;">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px; font-family: var(--font-mono); font-size: 0.78rem; flex-shrink: 0;">
-                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700;">Avg N = ${defaultN}</span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; font-family: var(--font-mono); font-size: 0.75rem; flex-shrink: 0;">
+                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700; white-space: nowrap;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -1167,7 +1167,75 @@ function initHalfLifeSimulator(iso) {
         });
     };
     
-    slider.oninput = updateSim;
+    slider.oninput = () => {
+        stopSimPlayback();
+        updateSim();
+    };
+
+    // Playback Controls
+    let simPlayInterval = null;
+    const playBtn = document.getElementById('sim-play-btn');
+    const resetBtn = document.getElementById('sim-reset-btn');
+    const jumpBtns = document.querySelectorAll('.sim-jump-btn');
+
+    function stopSimPlayback() {
+        if (simPlayInterval) {
+            clearInterval(simPlayInterval);
+            simPlayInterval = null;
+        }
+        if (playBtn) {
+            playBtn.innerHTML = '▶ Play Decay';
+            playBtn.style.background = 'rgba(0, 212, 255, 0.18)';
+            playBtn.style.color = '#00d4ff';
+        }
+    }
+
+    if (playBtn) {
+        playBtn.onclick = () => {
+            if (iso.isStable) return;
+            if (simPlayInterval) {
+                stopSimPlayback();
+            } else {
+                if (parseFloat(slider.value) >= parseFloat(slider.max)) {
+                    slider.value = 0;
+                    updateSim();
+                }
+                playBtn.innerHTML = '⏸ Pause';
+                playBtn.style.background = 'rgba(250, 204, 21, 0.2)';
+                playBtn.style.color = '#facc15';
+                
+                simPlayInterval = setInterval(() => {
+                    let cur = parseFloat(slider.value);
+                    if (cur >= parseFloat(slider.max)) {
+                        stopSimPlayback();
+                    } else {
+                        slider.value = Math.min(parseFloat(slider.max), cur + 0.1);
+                        updateSim();
+                    }
+                }, 100);
+            }
+        };
+    }
+
+    if (resetBtn) {
+        resetBtn.onclick = () => {
+            stopSimPlayback();
+            slider.value = 0;
+            updateSim();
+        };
+    }
+
+    jumpBtns.forEach(btn => {
+        btn.onclick = () => {
+            stopSimPlayback();
+            const step = parseFloat(btn.dataset.step);
+            if (!isNaN(step)) {
+                slider.value = step;
+                updateSim();
+            }
+        };
+    });
+
     updateSim();
 }
 
@@ -1188,7 +1256,7 @@ function closeIsotopeModal() {
 }
 window.closeIsotopeModal = closeIsotopeModal;
 
-// Setup close button, tab switching, and keyboard/backdrop shortcuts
+// Setup close button, tab switching, mobile gestures, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
@@ -1210,17 +1278,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Setup Inspector Tab Switching
-    document.querySelectorAll('.iso-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.iso-tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    const tabBtns = Array.from(document.querySelectorAll('.iso-tab-btn'));
+    const tabContents = ['decay', 'physics', 'simulator'];
 
-            const targetTab = btn.dataset.tab;
-            document.querySelectorAll('.iso-tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            const activeContent = document.getElementById(`iso-tab-${targetTab}`);
-            if (activeContent) activeContent.style.display = 'flex';
+    function switchIsoTab(targetTab) {
+        tabBtns.forEach(b => {
+            if (b.dataset.tab === targetTab) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+        document.querySelectorAll('.iso-tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        const activeContent = document.getElementById(`iso-tab-${targetTab}`);
+        if (activeContent) activeContent.style.display = 'flex';
+    }
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchIsoTab(btn.dataset.tab);
         });
     });
+
+    // Touch Gestures (Swipe Left / Right to change tabs, Swipe Down to close modal)
+    const modal = document.getElementById('isotope-modal');
+    if (modal) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+
+        modal.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }
+        }, { passive: true });
+
+        modal.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1) {
+                const deltaX = e.changedTouches[0].clientX - touchStartX;
+                const deltaY = e.changedTouches[0].clientY - touchStartY;
+                const timeDiff = Date.now() - touchStartTime;
+
+                // Swipe Down on top header area to dismiss
+                if (touchStartY < 120 && deltaY > 70 && Math.abs(deltaX) < 50 && timeDiff < 400) {
+                    closeIsotopeModal();
+                    return;
+                }
+
+                // Horizontal Swipe on tab container (min 60px horizontal, max 40px vertical)
+                if (Math.abs(deltaX) > 60 && Math.abs(deltaY) < 45 && timeDiff < 400) {
+                    const activeBtn = document.querySelector('.iso-tab-btn.active');
+                    const curTab = activeBtn ? activeBtn.dataset.tab : 'decay';
+                    const curIndex = tabContents.indexOf(curTab);
+                    if (deltaX < 0 && curIndex < tabContents.length - 1) {
+                        // Swipe Left -> Next Tab
+                        switchIsoTab(tabContents[curIndex + 1]);
+                    } else if (deltaX > 0 && curIndex > 0) {
+                        // Swipe Right -> Prev Tab
+                        switchIsoTab(tabContents[curIndex - 1]);
+                    }
+                }
+            }
+        }, { passive: true });
+    }
+
+    // Android / Browser Back Button Navigation Support
+    window.addEventListener('popstate', () => {
+        const overlay = document.getElementById('isotope-modal-overlay');
+        if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
+            closeIsotopeModal();
+        }
+    });
+
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.addListener('backButton', () => {
+            const overlay = document.getElementById('isotope-modal-overlay');
+            if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
+                closeIsotopeModal();
+            }
+        });
+    }
 });

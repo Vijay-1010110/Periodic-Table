@@ -26,35 +26,32 @@ This is a highly interactive, visually stunning Periodic Table web application b
 * **Filter Sorting Engine**: Instead of destroying and recreating DOM elements when filtering isotopes by decay mode, we implemented a lightning-fast approach using the CSS `order` property. Hovering or clicking a decay mode legend dynamically changes the `order` of matching isotopes to `1` (pushing them to the top), and fades non-matching isotopes to `order: 3`, with dynamically visible section dividers injected at `order: 0` and `order: 2`.
 
 ## What We Built Recently
-- **SEO & Tracking:** Integrated comprehensive SEO meta tags, OpenGraph data, JSON-LD schema, and verification tags for Google Search Console, Bing Webmaster, and Yandex.
-- **Analytics & Monetization:** Injected boilerplate scripts for Google Analytics 4, Microsoft Clarity, and Google AdSense, generating `ads.txt` dynamically through the build pipeline.
-- **Native Mobile Integration (Capacitor):** Converted the project into a Monorepo hybrid app using Capacitor. Installed `@capacitor/core` and configured `build.py` to auto-sync the `public/` web directory to native Android and iOS folders using `npx cap copy`.
-- **Platform Manager (Feature Flags):** Created `13_platform.js` to automatically detect the runtime environment (Web Browser vs. Native App vs. Installed PWA) and inject CSS classes (`is-web`, `is-native`, `is-android`, `is-ios`) into the `<body>` for CSS-driven feature flagging.
-- Fixed isotope modal headers using wide banner cards.
-- Embedded Wikipedia iframe modal successfully bypassing `X-Frame-Options`.
-- Created a beautiful, fully customized SVG-based Decay Infographic that visualizes the parent nucleus, decay event, daughter nucleus, and emitted particles.
-- **Improved Decay Infographic:** Fixed 2D "sausage" visual artifacts by implementing a true 3D randomized spherical volume with Z-depth sorting for protons and neutrons.
-- Added explicit full names to the graphical products (e.g., Parent Nucleus (Nickel-49), Emitted Positron, Daughter Nucleus (Cobalt-49)).
-- **Aufbau Diagram Layout Redesign:** Reshaped the electron configuration diagram from a tight 4-row Madelung-style table grouped by subshell.
-- **Responsive Layout Fixes:** Resolved overlapping issues on `< 1400px` screens by physically moving the electron legend to the very top row (`grid-row: 1`) to perfectly align with the Hydrogen line and fully clear the transition metals. Implemented specific size constraints for orbital boxes to ensure it always fits in the available vertical space.
+- **Isotopes Tab Parity with Property Tab:**
+  - **Sizing & Functional Parity:** Unified `#isotopes-grid` with `#main-grid` sizing, gap, cell structure, Lanthanides/Actinides placeholders, and responsive behavior.
+  - **Color Scheme Parity:** Integrated standard element series category colors with glossy metallic radial gradients, phase/state text colors, and exact atomic mass values.
+  - **In-Grid Legend & Interactive Highlighting:** Connected `#iso-in-grid-legend` with the dynamic Element Series (Metals, Metalloids, Non-Metals) and State of Matter counters, enabling hover and lock highlighting across all 118 elements in the Isotopes tab.
+  - **Switch View (18-Col / 32-Col) Support:** Enabled the `#btn-layout-toggle` ("↔️" / "↩️") button in the top navigation to seamlessly toggle between 18-column standard and 32-column extended layouts for the Isotopes tab.
+  - **Synchronized Temperature Controller:** Added interactive temperature slider and live temperature conversions (°C / °F / K) in the Isotopes tab controls, perfectly synced with the main grid.
+  - **Isotope Modal Mobile Gestures & UX:**
+    - Fluid typography (`clamp()`) for the parent element and active isotope hero cards.
+    - Touch swipe gestures: swipe left/right to change inspector tabs (*Nuclear Decay*, *Properties*, *Simulator*), swipe down to dismiss modal.
+    - Added "▶ Play Decay", "↺ Reset", and Quick Jump buttons in the Half-Life Decay Simulator for hands-free decay chamber playback on mobile touchscreens.
+    - Integrated browser popstate and Capacitor native Android hardware back-button listener to close the isotope modal without exiting the app.
 
 ## What's Working
-- Main periodic table rendering and element modal UI.
-- Isotope modal is working flawlessly with the new visual decay diagram generator.
-- Clicking "Read Wikipedia ↗" successfully loads the isotope's Wikipedia page inside a popup modal.
-- The decay infographic generates perfect 3D nuclear clusters dynamically.
-- The Electron Configuration Aufbau diagram responds flawlessly to different screen widths without overlapping grid elements.
-- SEO, AdSense, and Analytics tags successfully compile into the `<head>` of `index.html`.
-- Capacitor syncs flawlessly with the Python build pipeline.
+- Main periodic table rendering, property heatmaps, and element modal UI (100% untouched and intact).
+- Electron & Aufbau orbital visualization tab (100% untouched and intact).
+- Isotopes tab grid with full sizing, color scheme, 18-col/32-col layout toggle, temperature controller, and in-grid legend highlighting.
+- Isotope modal with responsive hero banners, 3D decay visualizer, property matrix, and animated half-life decay simulator.
+- Capacitor syncs with the Python build pipeline.
 
 ## What's In Progress
-- Native App Generation: The underlying architecture for Capacitor is set up, but `npx cap add android` and `npx cap add ios` still need to be executed to generate the native project folders.
-- Account Setup: The user needs to supply their personal Publisher IDs and Tracking IDs for AdSense and Microsoft Clarity (currently using placeholders).
+- Native App Generation: Run `npx cap add android` and `npx cap add ios` when ready to generate native Android Studio / Xcode project folders.
+- Account Setup: Publisher IDs and Tracking IDs for AdSense and Microsoft Clarity.
 
 ## Next Steps
-- Run `npx cap add android` and `npx cap add ios` to generate the mobile shells.
-- Publish the mobile applications to Google Play Store and Apple App Store.
-- Collect custom domains / Webmaster Tools IDs to complete SEO linking.
+- Run `npx cap add android` to generate the native Android project.
+- Test and verify mobile layout on Android device/emulator.
 
 ## AI Agent Instructions
 * **Tool Usage**: Strictly avoid general bash commands for file reading/writing (no `cat`, `grep`, or `sed` in bash). Prioritize specialized native tools (`view_file`, `replace_file_content`, `grep_search`).

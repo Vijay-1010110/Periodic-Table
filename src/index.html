@@ -472,6 +472,14 @@
                     <div class="periodic-grid" id="isotopes-grid">
                         <div class="table-controls">
                             <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <div class="temp-controller" id="iso-temp-controller-wrapper">
+                                <input type="range" id="iso-temp-slider" min="0" max="6000" value="298">
+                                <label id="iso-temp-display-container"><span>Temp:</span><input type="number" id="iso-temp-input" class="mono-text" min="0" max="6000" value="298"><span>K</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-c" class="mono-text">25 °C</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-f" class="mono-text">77 °F</span></label>
+                            </div>
+                        </div>
+
+                        <div id="iso-in-grid-legend" class="in-grid-legend">
+                            <!-- Dynamic in-grid legend injected by JS -->
                         </div>
                     </div>
                 </div>
@@ -646,6 +654,19 @@
                                         <span>t = 3 T½ (12.5%)</span>
                                         <span>t = 5 T½ (3.1%)</span>
                                         <span>t = 7 T½ (0.8%)</span>
+                                    </div>
+                                    <div class="sim-playback-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <button id="sim-play-btn" class="sim-ctrl-btn" style="background: rgba(0, 212, 255, 0.18); border: 1px solid #00d4ff; color: #00d4ff; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">▶ Play Decay</button>
+                                            <button id="sim-reset-btn" class="sim-ctrl-btn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;">↺ Reset</button>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.72rem;">
+                                            <span style="color: rgba(255,255,255,0.5);">Jump:</span>
+                                            <button class="sim-jump-btn" data-step="1" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">1 T½</button>
+                                            <button class="sim-jump-btn" data-step="2" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">2 T½</button>
+                                            <button class="sim-jump-btn" data-step="3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">3 T½</button>
+                                            <button class="sim-jump-btn" data-step="5" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">5 T½</button>
+                                        </div>
                                     </div>
                                 </div>
 

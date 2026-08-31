@@ -613,6 +613,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 /* Highlight Logic */
 #main-grid.highlighting-active .element-cell:not(.highlighted),
+#isotopes-grid.highlighting-active .element-cell:not(.highlighted),
 #electrons-grid.highlighting-active .element-cell:not(.highlighted) {
     background: rgba(255,255,255,0.02) !important;
     border-color: rgba(255,255,255,0.05) !important;
@@ -621,11 +622,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     pointer-events: none;
 }
 #main-grid.highlighting-active .element-cell:not(.highlighted) *,
+#isotopes-grid.highlighting-active .element-cell:not(.highlighted) *,
 #electrons-grid.highlighting-active .element-cell:not(.highlighted) * {
     color: rgba(255,255,255,0.3) !important;
     text-shadow: none !important;
 }
 #main-grid.highlighting-active .element-cell.highlighted,
+#isotopes-grid.highlighting-active .element-cell.highlighted,
 #electrons-grid.highlighting-active .element-cell.highlighted {
     opacity: 1;
     filter: grayscale(0%);

@@ -756,6 +756,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 
 /* Highlight Logic */
 #main-grid.highlighting-active .element-cell:not(.highlighted),
+#isotopes-grid.highlighting-active .element-cell:not(.highlighted),
 #electrons-grid.highlighting-active .element-cell:not(.highlighted) {
     background: rgba(255,255,255,0.02) !important;
     border-color: rgba(255,255,255,0.05) !important;
@@ -764,11 +765,13 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     pointer-events: none;
 }
 #main-grid.highlighting-active .element-cell:not(.highlighted) *,
+#isotopes-grid.highlighting-active .element-cell:not(.highlighted) *,
 #electrons-grid.highlighting-active .element-cell:not(.highlighted) * {
     color: rgba(255,255,255,0.3) !important;
     text-shadow: none !important;
 }
 #main-grid.highlighting-active .element-cell.highlighted,
+#isotopes-grid.highlighting-active .element-cell.highlighted,
 #electrons-grid.highlighting-active .element-cell.highlighted {
     opacity: 1;
     filter: grayscale(0%);
@@ -78570,23 +78573,23 @@ function renderIsotopeDetails(index) {
         const halfLifeBadge = isStable ? 'Half-life: ∞' : `t½: ${compactHalfLife}`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 18px;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono);">
-                    <span style="font-size: 1.35rem; font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
-                    <span style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
+            <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 18px); min-width: 0;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono); flex-shrink: 0;">
+                    <span style="font-size: clamp(1rem, 2.5vw, 1.35rem); font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
+                    <span style="font-size: clamp(0.85rem, 2vw, 1.1rem); font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
                 </div>
-                <div style="font-size: 3.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; justify-content: center; gap: 5px; line-height: 1.15;">
-                    <span style="font-size: 1.55rem; font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px;">${isoName}</span>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 0.85rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 3px 12px; border-radius: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px;">${statusHtml}</span>
-                        <span style="font-size: 0.82rem; font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 3px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">${halfLifeBadge}</span>
+                <div style="font-size: clamp(1.8rem, 5vw, 3.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1; flex-shrink: 0;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 3px; line-height: 1.15; min-width: 0;">
+                    <span style="font-size: clamp(1.05rem, 3vw, 1.55rem); font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${isoName}</span>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span style="font-size: clamp(0.7rem, 1.8vw, 0.85rem); font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 2px 8px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px; white-space: nowrap;">${statusHtml}</span>
+                        <span style="font-size: clamp(0.68rem, 1.8vw, 0.82rem); font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">${halfLifeBadge}</span>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; line-height: 1.25; font-family: var(--font-mono);">
-                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Mass: <strong style="color:#fff; font-size: 1.05rem; font-weight: 800;">${massStr} u</strong></div>
-                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Neutrons: <strong style="color:#00d4ff; font-size: 1.05rem; font-weight: 800;">${N}</strong></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; line-height: 1.25; font-family: var(--font-mono); flex-shrink: 0;">
+                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Mass: <strong style="color:#fff; font-weight: 800;">${massStr} u</strong></div>
+                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Neutrons: <strong style="color:#00d4ff; font-weight: 800;">${N}</strong></div>
             </div>
         `;
     }
@@ -78601,22 +78604,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1.5px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 64px; height: 64px; background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
-                        <span style="position: absolute; top: 3px; left: 5px; font-size: 0.68rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
-                        <span style="font-size: 2.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 14px); min-width: 0;">
+                    <div style="width: clamp(46px, 10vw, 64px); height: clamp(46px, 10vw, 64px); background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
+                        <span style="position: absolute; top: 2px; left: 4px; font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
+                        <span style="font-size: clamp(1.4rem, 4vw, 2.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.15;">
-                        <span style="font-size: 1.45rem; font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px;">${elData.name}</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 0.72rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 6px; border-radius: 6px;">${catName}</span>
-                            <span style="font-size: 0.78rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 2px; line-height: 1.15; min-width: 0;">
+                        <span style="font-size: clamp(1rem, 2.8vw, 1.45rem); font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${elData.name}</span>
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 5px; border-radius: 4px; white-space: nowrap;">${catName}</span>
+                            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono); white-space: nowrap;">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px; font-family: var(--font-mono); font-size: 0.78rem; flex-shrink: 0;">
-                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700;">Avg N = ${defaultN}</span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; font-family: var(--font-mono); font-size: 0.75rem; flex-shrink: 0;">
+                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700; white-space: nowrap;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -79339,7 +79342,75 @@ function initHalfLifeSimulator(iso) {
         });
     };
     
-    slider.oninput = updateSim;
+    slider.oninput = () => {
+        stopSimPlayback();
+        updateSim();
+    };
+
+    // Playback Controls
+    let simPlayInterval = null;
+    const playBtn = document.getElementById('sim-play-btn');
+    const resetBtn = document.getElementById('sim-reset-btn');
+    const jumpBtns = document.querySelectorAll('.sim-jump-btn');
+
+    function stopSimPlayback() {
+        if (simPlayInterval) {
+            clearInterval(simPlayInterval);
+            simPlayInterval = null;
+        }
+        if (playBtn) {
+            playBtn.innerHTML = '▶ Play Decay';
+            playBtn.style.background = 'rgba(0, 212, 255, 0.18)';
+            playBtn.style.color = '#00d4ff';
+        }
+    }
+
+    if (playBtn) {
+        playBtn.onclick = () => {
+            if (iso.isStable) return;
+            if (simPlayInterval) {
+                stopSimPlayback();
+            } else {
+                if (parseFloat(slider.value) >= parseFloat(slider.max)) {
+                    slider.value = 0;
+                    updateSim();
+                }
+                playBtn.innerHTML = '⏸ Pause';
+                playBtn.style.background = 'rgba(250, 204, 21, 0.2)';
+                playBtn.style.color = '#facc15';
+                
+                simPlayInterval = setInterval(() => {
+                    let cur = parseFloat(slider.value);
+                    if (cur >= parseFloat(slider.max)) {
+                        stopSimPlayback();
+                    } else {
+                        slider.value = Math.min(parseFloat(slider.max), cur + 0.1);
+                        updateSim();
+                    }
+                }, 100);
+            }
+        };
+    }
+
+    if (resetBtn) {
+        resetBtn.onclick = () => {
+            stopSimPlayback();
+            slider.value = 0;
+            updateSim();
+        };
+    }
+
+    jumpBtns.forEach(btn => {
+        btn.onclick = () => {
+            stopSimPlayback();
+            const step = parseFloat(btn.dataset.step);
+            if (!isNaN(step)) {
+                slider.value = step;
+                updateSim();
+            }
+        };
+    });
+
     updateSim();
 }
 
@@ -79360,7 +79431,7 @@ function closeIsotopeModal() {
 }
 window.closeIsotopeModal = closeIsotopeModal;
 
-// Setup close button, tab switching, and keyboard/backdrop shortcuts
+// Setup close button, tab switching, mobile gestures, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
@@ -79382,19 +79453,87 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Setup Inspector Tab Switching
-    document.querySelectorAll('.iso-tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.iso-tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    const tabBtns = Array.from(document.querySelectorAll('.iso-tab-btn'));
+    const tabContents = ['decay', 'physics', 'simulator'];
 
-            const targetTab = btn.dataset.tab;
-            document.querySelectorAll('.iso-tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            const activeContent = document.getElementById(`iso-tab-${targetTab}`);
-            if (activeContent) activeContent.style.display = 'flex';
+    function switchIsoTab(targetTab) {
+        tabBtns.forEach(b => {
+            if (b.dataset.tab === targetTab) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+        document.querySelectorAll('.iso-tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        const activeContent = document.getElementById(`iso-tab-${targetTab}`);
+        if (activeContent) activeContent.style.display = 'flex';
+    }
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchIsoTab(btn.dataset.tab);
         });
     });
+
+    // Touch Gestures (Swipe Left / Right to change tabs, Swipe Down to close modal)
+    const modal = document.getElementById('isotope-modal');
+    if (modal) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+
+        modal.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }
+        }, { passive: true });
+
+        modal.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1) {
+                const deltaX = e.changedTouches[0].clientX - touchStartX;
+                const deltaY = e.changedTouches[0].clientY - touchStartY;
+                const timeDiff = Date.now() - touchStartTime;
+
+                // Swipe Down on top header area to dismiss
+                if (touchStartY < 120 && deltaY > 70 && Math.abs(deltaX) < 50 && timeDiff < 400) {
+                    closeIsotopeModal();
+                    return;
+                }
+
+                // Horizontal Swipe on tab container (min 60px horizontal, max 40px vertical)
+                if (Math.abs(deltaX) > 60 && Math.abs(deltaY) < 45 && timeDiff < 400) {
+                    const activeBtn = document.querySelector('.iso-tab-btn.active');
+                    const curTab = activeBtn ? activeBtn.dataset.tab : 'decay';
+                    const curIndex = tabContents.indexOf(curTab);
+                    if (deltaX < 0 && curIndex < tabContents.length - 1) {
+                        // Swipe Left -> Next Tab
+                        switchIsoTab(tabContents[curIndex + 1]);
+                    } else if (deltaX > 0 && curIndex > 0) {
+                        // Swipe Right -> Prev Tab
+                        switchIsoTab(tabContents[curIndex - 1]);
+                    }
+                }
+            }
+        }, { passive: true });
+    }
+
+    // Android / Browser Back Button Navigation Support
+    window.addEventListener('popstate', () => {
+        const overlay = document.getElementById('isotope-modal-overlay');
+        if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
+            closeIsotopeModal();
+        }
+    });
+
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.addListener('backButton', () => {
+            const overlay = document.getElementById('isotope-modal-overlay');
+            if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
+                closeIsotopeModal();
+            }
+        });
+    }
 });
 
 // 06_compounds_data.js
@@ -86077,7 +86216,7 @@ function getGridCellCache() {
 
 function updateLegendStateCounts(solid, liquid, gas, unknown) {
     const counts = { Solid: solid, Liquid: liquid, Gas: gas, Unknown: unknown };
-    const legendItems = document.querySelectorAll('#in-grid-legend .legend-item[data-type="state"]');
+    const legendItems = document.querySelectorAll('.in-grid-legend .legend-item[data-type="state"]');
     legendItems.forEach(item => {
         const key = item.dataset.key;
         if (key && counts[key] !== undefined) {
@@ -86284,7 +86423,7 @@ function getQuantumNumbers(configString) {
 }
 
 function applyLegendHighlighting(key, type, groupKeys = null) {
-    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
     const grid = document.querySelector(gridId);
     if (!grid) return;
 
@@ -86324,7 +86463,7 @@ function clearLegendHighlighting() {
         applyLegendHighlighting(lockedLegendKey, lockedLegendType, lockedLegendGroup ? categoryGroups[lockedLegendGroup] : null);
         return;
     }
-    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
     const grid = document.querySelector(gridId);
     if (!grid) return;
     grid.classList.remove('highlighting-active');
@@ -86522,25 +86661,44 @@ function switchView(viewId, updateHash = true) {
     const targetView = document.getElementById('view-' + viewId);
     if (targetView) targetView.classList.add('active');
 
-    // 32-column view layout toggle is strictly restricted to Property Interface ('main' or 'properties')
+    // 32-column view layout toggle is available for Property Interface ('main', 'properties') and Isotopes ('isotopes')
     const layoutBtn = document.getElementById('btn-layout-toggle');
     const mainGrid = document.getElementById('main-grid');
+    const isoGrid = document.getElementById('isotopes-grid');
     
-    if (viewId === 'main' || viewId === 'properties') {
-        if (layoutBtn) layoutBtn.style.display = 'flex';
+    if (viewId === 'main' || viewId === 'properties' || viewId === 'isotopes') {
+        if (layoutBtn) {
+            layoutBtn.style.display = 'flex';
+            if (savedPropertyLayoutMode === '32col') {
+                layoutBtn.textContent = '↩️';
+                layoutBtn.title = 'Switch to Standard 18-Col View';
+                layoutBtn.style.background = 'rgba(74, 222, 128, 0.2)';
+                layoutBtn.style.borderColor = '#4ade80';
+                layoutBtn.style.color = '#4ade80';
+                layoutBtn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
+            } else {
+                layoutBtn.textContent = '↔️';
+                layoutBtn.title = 'Switch to Extended 32-Col View';
+                layoutBtn.style.background = 'rgba(0, 212, 255, 0.1)';
+                layoutBtn.style.borderColor = 'rgba(0, 212, 255, 0.35)';
+                layoutBtn.style.color = '#00d4ff';
+                layoutBtn.style.boxShadow = '0 0 8px rgba(0, 212, 255, 0.15)';
+            }
+        }
         tableLayoutMode = savedPropertyLayoutMode || '18col';
     } else {
         if (layoutBtn) layoutBtn.style.display = 'none';
         tableLayoutMode = '18col';
     }
 
-    if (mainGrid) {
+    [mainGrid, isoGrid].forEach(g => {
+        if (!g) return;
         if (tableLayoutMode === '32col') {
-            mainGrid.classList.add('extended-32col');
+            g.classList.add('extended-32col');
         } else {
-            mainGrid.classList.remove('extended-32col');
+            g.classList.remove('extended-32col');
         }
-    }
+    });
     
     renderGrid();
     if (selectedElement) {
@@ -86759,9 +86917,9 @@ function setupUI() {
         });
     });
 
-    // Temp slider & input
-    const tempSlider = document.getElementById('temp-slider');
-    const tempInput = document.getElementById('temp-input');
+    // Temp slider & input (Main & Isotopes)
+    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
+    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
     
     const handleTempChange = (val) => {
         let parsed = parseFloat(val);
@@ -86771,13 +86929,13 @@ function setupUI() {
         currentTemp = parsed;
         pendingTemp = parsed;
         
-        // Sync the other control synchronously for zero UI latency
-        if (tempSlider && document.activeElement !== tempSlider && tempSlider.value != currentTemp) {
-            tempSlider.value = currentTemp;
-        }
-        if (tempInput && document.activeElement !== tempInput && tempInput.value != Math.round(currentTemp)) {
-            tempInput.value = Math.round(currentTemp);
-        }
+        // Sync all temp sliders and inputs synchronously
+        tempSliders.forEach(s => {
+            if (document.activeElement !== s && s.value != currentTemp) s.value = currentTemp;
+        });
+        tempInputs.forEach(inp => {
+            if (document.activeElement !== inp && inp.value != Math.round(currentTemp)) inp.value = Math.round(currentTemp);
+        });
         
         updateTempDisplay();
         
@@ -86789,8 +86947,8 @@ function setupUI() {
         }
     };
 
-    if (tempSlider) tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
-    if (tempInput) tempInput.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
+    tempSliders.forEach(s => s.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
+    tempInputs.forEach(inp => inp.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
 
     function handleTimelineChange(val) {
         currentTimelineYear = parseInt(val);
@@ -86867,44 +87025,42 @@ function updateTempDisplay() {
     const c = k - 273.15;
     const f = c * 1.8 + 32;
     
-    if (!_elTempInput) _elTempInput = document.getElementById('temp-input');
-    if (!_elTempDisplayC) _elTempDisplayC = document.getElementById('temp-display-c');
-    if (!_elTempDisplayF) _elTempDisplayF = document.getElementById('temp-display-f');
-    if (!_elTempDisplayContainer) _elTempDisplayContainer = document.getElementById('temp-display-container');
-    if (!_elTempSlider) _elTempSlider = document.getElementById('temp-slider');
+    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
+    const tempDisplaysC = document.querySelectorAll('#temp-display-c, #iso-temp-display-c');
+    const tempDisplaysF = document.querySelectorAll('#temp-display-f, #iso-temp-display-f');
+    const tempDisplayContainers = document.querySelectorAll('#temp-display-container, #iso-temp-display-container');
+    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
 
-    if (_elTempInput && document.activeElement !== _elTempInput) _elTempInput.value = Math.round(k);
-    if (_elTempDisplayC) _elTempDisplayC.textContent = `${Math.round(c)} °C`;
-    if (_elTempDisplayF) _elTempDisplayF.textContent = `${Math.round(f)} °F`;
+    tempInputs.forEach(inp => { if (document.activeElement !== inp) inp.value = Math.round(k); });
+    tempDisplaysC.forEach(el => el.textContent = `${Math.round(c)} °C`);
+    tempDisplaysF.forEach(el => el.textContent = `${Math.round(f)} °F`);
     
     const color = getTempColor(k);
     
-    // Dynamically color all text values to match the temperature meter 1:1
-    if (_elTempDisplayContainer) {
-        _elTempDisplayContainer.style.color = color;
-        _elTempDisplayContainer.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
-    }
-    if (_elTempInput) {
-        _elTempInput.style.color = color;
-        _elTempInput.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    tempDisplayContainers.forEach(el => {
+        el.style.color = color;
+        el.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
+    });
+    tempInputs.forEach(inp => {
+        inp.style.color = color;
+        inp.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    });
+    
+    const glowIntensity = Math.min(1, k / 6000);
+    let glowShadow = 'none';
+    let thumbBg = 'transparent';
+    if (glowIntensity > 0.05) {
+        const glowRadius1 = Math.round(glowIntensity * 15);
+        const glowRadius2 = Math.round(glowIntensity * 30);
+        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
     }
     
-    // Dynamic glow for the thumb
-    if (_elTempSlider) {
-        const glowIntensity = Math.min(1, k / 6000); // 0 to 1
-        let glowShadow = 'none';
-        let thumbBg = 'transparent';
-        if (glowIntensity > 0.05) {
-            const glowRadius1 = Math.round(glowIntensity * 15);
-            const glowRadius2 = Math.round(glowIntensity * 30);
-            const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
-            glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
-            thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
-        }
-        
-        _elTempSlider.style.setProperty('--temp-thumb-glow', glowShadow);
-        _elTempSlider.style.setProperty('--dynamic-temp-bg', thumbBg);
-    }
+    tempSliders.forEach(s => {
+        s.style.setProperty('--temp-thumb-glow', glowShadow);
+        s.style.setProperty('--dynamic-temp-bg', thumbBg);
+    });
 }
 
 function updateTimelineDisplay() {
@@ -86977,29 +87133,8 @@ function renderGrid() {
         const legendDiv = document.createElement('div');
         legendDiv.id = 'iso-in-grid-legend';
         legendDiv.className = 'in-grid-legend';
-        
-        // Static Decay Mode Legend
-        const decayModes = [
-            { name: 'Stable', color: '#4ade80' },
-            { name: 'Alpha Decay', color: '#facc15' },
-            { name: 'Beta- Decay', color: '#38bdf8' },
-            { name: 'Positron Emission / EC', color: '#c084fc' },
-            { name: 'Spontaneous Fission', color: '#f87171' },
-            { name: 'Proton Emission', color: '#fb923c' },
-            { name: 'Neutron Emission', color: '#2dd4bf' }
-        ];
-        
-        let html = '<div class="legend-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">';
-        decayModes.forEach(mode => {
-            html += `<div class="legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #fff; cursor: default;">
-                <div style="width: 12px; height: 12px; background: ${mode.color}; border: 1px solid rgba(255,255,255,0.2);"></div>
-                ${mode.name}
-            </div>`;
-        });
-        html += '</div>';
-        
-        legendDiv.innerHTML = html;
         grid.appendChild(legendDiv);
+        renderLegend();
     }
     
     for (let i = 1; i <= 118; i++) {
@@ -87364,9 +87499,7 @@ function updateGridVisuals() {
         if (isMain || isIsotopes) {
             if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
                 color = categoryColors[normalizedCategory] || '#333';
-                if (isIsotopes) {
-                    valText = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z].length.toString() : '0';
-                } else if (currentProperty === 'wiki') {
+                if (currentProperty === 'wiki') {
                     valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
                 } else {
                     valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
@@ -87636,8 +87769,8 @@ function updateSelectedCardVisuals() {
 }
 
 function renderLegend() {
-    const legendContainer = document.getElementById('in-grid-legend');
-    if (!legendContainer) return;
+    const legendContainers = [document.getElementById('in-grid-legend'), document.getElementById('iso-in-grid-legend')].filter(Boolean);
+    if (legendContainers.length === 0) return;
 
     const pConf = heatmapConfigs[currentProperty];
     if (pConf) {
@@ -87645,12 +87778,12 @@ function renderLegend() {
         const midRowHtml = pConf.midColor ? `
                             <div class="hm-row" style="margin-top: 10px;">
                                 <span>Zero (0°C)</span>
-                                <input type="color" id="hm-mid" value="${pConf.midColor}">
+                                <input type="color" class="hm-mid-input" value="${pConf.midColor}">
                             </div>` : '';
         const maxMargin = pConf.midColor ? '10px' : '20px';
         const gradString = pConf.midColor ? `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.midColor}, ${pConf.maxColor})` : `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.maxColor})`;
 
-        legendContainer.innerHTML = `
+        const hmHtml = `
             <div class="legend-box heatmap-controller">
                 <div class="heatmap-section">
                     <div class="legend-box-title">Color</div>
@@ -87658,15 +87791,15 @@ function renderLegend() {
                         <div class="hm-controls">
                             <div class="hm-row">
                                 <span>Minimum</span>
-                                <input type="color" id="hm-min" value="${pConf.minColor}">
+                                <input type="color" class="hm-min-input" value="${pConf.minColor}">
                             </div>${midRowHtml}
                             <div class="hm-row" style="margin-top: ${maxMargin};">
                                 <span>Maximum</span>
-                                <input type="color" id="hm-max" value="${pConf.maxColor}">
+                                <input type="color" class="hm-max-input" value="${pConf.maxColor}">
                             </div>
                             <div class="hm-row hm-unknown">
                                 <span style="color: #888">Unknown</span>
-                                <input type="color" id="hm-unk" value="${heatmapUnknownColor}">
+                                <input type="color" class="hm-unk-input" value="${heatmapUnknownColor}">
                             </div>
                         </div>
                         <div class="hm-bars">
@@ -87678,7 +87811,7 @@ function renderLegend() {
                 <div class="heatmap-section">
                     <div class="legend-box-title">Scale</div>
                     <div class="heatmap-scale">
-                        <button class="scale-btn ${!isLog ? 'active' : ''}" id="hm-linear">
+                        <button class="scale-btn hm-linear-btn ${!isLog ? 'active' : ''}">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -87686,7 +87819,7 @@ function renderLegend() {
                             </svg>
                             Linear
                         </button>
-                        <button class="scale-btn ${isLog ? 'active' : ''}" id="hm-log">
+                        <button class="scale-btn hm-log-btn ${isLog ? 'active' : ''}">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -87706,18 +87839,21 @@ function renderLegend() {
             </div>
         `;
 
-        document.getElementById('hm-min').addEventListener('input', (e) => { heatmapConfigs[currentProperty].minColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-max').addEventListener('input', (e) => { heatmapConfigs[currentProperty].maxColor = e.target.value; updateGridVisuals(); });
-        const hmMid = document.getElementById('hm-mid');
-        if (hmMid) hmMid.addEventListener('input', (e) => { heatmapConfigs[currentProperty].midColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-unk').addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-linear').addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'linear'; updateGridVisuals(); });
-        document.getElementById('hm-log').addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'log'; updateGridVisuals(); });
+        legendContainers.forEach(container => {
+            container.innerHTML = hmHtml;
+        });
+
+        document.querySelectorAll('.hm-min-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].minColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-max-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].maxColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-mid-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].midColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-unk-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-linear-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'linear'; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-log-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'log'; updateGridVisuals(); }));
         return;
     }
     
     if (currentProperty !== 'category' && currentProperty !== 'state') {
-        legendContainer.innerHTML = '';
+        legendContainers.forEach(container => container.innerHTML = '');
         return;
     }
     
@@ -87777,10 +87913,12 @@ function renderLegend() {
     }
     html += `</div></div>`;
     
-    legendContainer.innerHTML = html;
+    legendContainers.forEach(container => {
+        container.innerHTML = html;
+    });
     
     // Interactions for individual items
-    document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
+    document.querySelectorAll('.in-grid-legend .legend-item').forEach(item => {
         // Restore box-shadow if this item is currently locked
         if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
             item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
@@ -87805,7 +87943,7 @@ function renderLegend() {
                 lockedLegendKey = key;
                 lockedLegendType = type;
                 lockedLegendGroup = null;
-                document.querySelectorAll('#in-grid-legend .legend-item, #in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
+                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
             }
             clearLegendHighlighting();
@@ -87813,7 +87951,7 @@ function renderLegend() {
     });
 
     // Interactions for super categories
-    document.querySelectorAll('#in-grid-legend .interactive-super').forEach(item => {
+    document.querySelectorAll('.in-grid-legend .interactive-super').forEach(item => {
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const groupName = e.currentTarget.dataset.group;
@@ -87831,7 +87969,7 @@ function renderLegend() {
                 lockedLegendKey = null;
                 lockedLegendType = null;
                 lockedLegendGroup = groupName;
-                document.querySelectorAll('#in-grid-legend .legend-item, #in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
+                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
             }
             clearLegendHighlighting();
@@ -88265,17 +88403,27 @@ function drawLargeBohrModel(el) {
 
 function setupLayoutToggle() {
     const btn = document.getElementById('btn-layout-toggle');
-    const grid = document.getElementById('main-grid');
-    if (!btn || !grid) return;
+    if (!btn) return;
 
     btn.onclick = () => {
-        if (currentView !== 'main' && currentView !== 'properties') return;
+        if (currentView !== 'main' && currentView !== 'properties' && currentView !== 'isotopes') return;
 
         savedPropertyLayoutMode = savedPropertyLayoutMode === '18col' ? '32col' : '18col';
         tableLayoutMode = savedPropertyLayoutMode;
         
+        const mainGrid = document.getElementById('main-grid');
+        const isoGrid = document.getElementById('isotopes-grid');
+        
+        [mainGrid, isoGrid].forEach(g => {
+            if (!g) return;
+            if (tableLayoutMode === '32col') {
+                g.classList.add('extended-32col');
+            } else {
+                g.classList.remove('extended-32col');
+            }
+        });
+
         if (tableLayoutMode === '32col') {
-            grid.classList.add('extended-32col');
             btn.textContent = '↩️';
             btn.title = 'Switch to Standard 18-Col View';
             btn.style.background = 'rgba(74, 222, 128, 0.2)';
@@ -88283,7 +88431,6 @@ function setupLayoutToggle() {
             btn.style.color = '#4ade80';
             btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
         } else {
-            grid.classList.remove('extended-32col');
             btn.textContent = '↔️';
             btn.title = 'Switch to Extended 32-Col View';
             btn.style.background = 'rgba(0, 212, 255, 0.1)';
@@ -89578,6 +89725,14 @@ window.OrbitalViewer = {
                     <div class="periodic-grid" id="isotopes-grid">
                         <div class="table-controls">
                             <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                            <div class="temp-controller" id="iso-temp-controller-wrapper">
+                                <input type="range" id="iso-temp-slider" min="0" max="6000" value="298">
+                                <label id="iso-temp-display-container"><span>Temp:</span><input type="number" id="iso-temp-input" class="mono-text" min="0" max="6000" value="298"><span>K</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-c" class="mono-text">25 °C</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-f" class="mono-text">77 °F</span></label>
+                            </div>
+                        </div>
+
+                        <div id="iso-in-grid-legend" class="in-grid-legend">
+                            <!-- Dynamic in-grid legend injected by JS -->
                         </div>
                     </div>
                 </div>
@@ -89752,6 +89907,19 @@ window.OrbitalViewer = {
                                         <span>t = 3 T½ (12.5%)</span>
                                         <span>t = 5 T½ (3.1%)</span>
                                         <span>t = 7 T½ (0.8%)</span>
+                                    </div>
+                                    <div class="sim-playback-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <button id="sim-play-btn" class="sim-ctrl-btn" style="background: rgba(0, 212, 255, 0.18); border: 1px solid #00d4ff; color: #00d4ff; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">▶ Play Decay</button>
+                                            <button id="sim-reset-btn" class="sim-ctrl-btn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;">↺ Reset</button>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.72rem;">
+                                            <span style="color: rgba(255,255,255,0.5);">Jump:</span>
+                                            <button class="sim-jump-btn" data-step="1" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">1 T½</button>
+                                            <button class="sim-jump-btn" data-step="2" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">2 T½</button>
+                                            <button class="sim-jump-btn" data-step="3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">3 T½</button>
+                                            <button class="sim-jump-btn" data-step="5" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">5 T½</button>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -87,7 +87,7 @@ function getGridCellCache() {
 
 function updateLegendStateCounts(solid, liquid, gas, unknown) {
     const counts = { Solid: solid, Liquid: liquid, Gas: gas, Unknown: unknown };
-    const legendItems = document.querySelectorAll('#in-grid-legend .legend-item[data-type="state"]');
+    const legendItems = document.querySelectorAll('.in-grid-legend .legend-item[data-type="state"]');
     legendItems.forEach(item => {
         const key = item.dataset.key;
         if (key && counts[key] !== undefined) {
@@ -294,7 +294,7 @@ function getQuantumNumbers(configString) {
 }
 
 function applyLegendHighlighting(key, type, groupKeys = null) {
-    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
     const grid = document.querySelector(gridId);
     if (!grid) return;
 
@@ -334,7 +334,7 @@ function clearLegendHighlighting() {
         applyLegendHighlighting(lockedLegendKey, lockedLegendType, lockedLegendGroup ? categoryGroups[lockedLegendGroup] : null);
         return;
     }
-    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
     const grid = document.querySelector(gridId);
     if (!grid) return;
     grid.classList.remove('highlighting-active');
@@ -532,25 +532,44 @@ function switchView(viewId, updateHash = true) {
     const targetView = document.getElementById('view-' + viewId);
     if (targetView) targetView.classList.add('active');
 
-    // 32-column view layout toggle is strictly restricted to Property Interface ('main' or 'properties')
+    // 32-column view layout toggle is available for Property Interface ('main', 'properties') and Isotopes ('isotopes')
     const layoutBtn = document.getElementById('btn-layout-toggle');
     const mainGrid = document.getElementById('main-grid');
+    const isoGrid = document.getElementById('isotopes-grid');
     
-    if (viewId === 'main' || viewId === 'properties') {
-        if (layoutBtn) layoutBtn.style.display = 'flex';
+    if (viewId === 'main' || viewId === 'properties' || viewId === 'isotopes') {
+        if (layoutBtn) {
+            layoutBtn.style.display = 'flex';
+            if (savedPropertyLayoutMode === '32col') {
+                layoutBtn.textContent = '↩️';
+                layoutBtn.title = 'Switch to Standard 18-Col View';
+                layoutBtn.style.background = 'rgba(74, 222, 128, 0.2)';
+                layoutBtn.style.borderColor = '#4ade80';
+                layoutBtn.style.color = '#4ade80';
+                layoutBtn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
+            } else {
+                layoutBtn.textContent = '↔️';
+                layoutBtn.title = 'Switch to Extended 32-Col View';
+                layoutBtn.style.background = 'rgba(0, 212, 255, 0.1)';
+                layoutBtn.style.borderColor = 'rgba(0, 212, 255, 0.35)';
+                layoutBtn.style.color = '#00d4ff';
+                layoutBtn.style.boxShadow = '0 0 8px rgba(0, 212, 255, 0.15)';
+            }
+        }
         tableLayoutMode = savedPropertyLayoutMode || '18col';
     } else {
         if (layoutBtn) layoutBtn.style.display = 'none';
         tableLayoutMode = '18col';
     }
 
-    if (mainGrid) {
+    [mainGrid, isoGrid].forEach(g => {
+        if (!g) return;
         if (tableLayoutMode === '32col') {
-            mainGrid.classList.add('extended-32col');
+            g.classList.add('extended-32col');
         } else {
-            mainGrid.classList.remove('extended-32col');
+            g.classList.remove('extended-32col');
         }
-    }
+    });
     
     renderGrid();
     if (selectedElement) {
@@ -769,9 +788,9 @@ function setupUI() {
         });
     });
 
-    // Temp slider & input
-    const tempSlider = document.getElementById('temp-slider');
-    const tempInput = document.getElementById('temp-input');
+    // Temp slider & input (Main & Isotopes)
+    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
+    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
     
     const handleTempChange = (val) => {
         let parsed = parseFloat(val);
@@ -781,13 +800,13 @@ function setupUI() {
         currentTemp = parsed;
         pendingTemp = parsed;
         
-        // Sync the other control synchronously for zero UI latency
-        if (tempSlider && document.activeElement !== tempSlider && tempSlider.value != currentTemp) {
-            tempSlider.value = currentTemp;
-        }
-        if (tempInput && document.activeElement !== tempInput && tempInput.value != Math.round(currentTemp)) {
-            tempInput.value = Math.round(currentTemp);
-        }
+        // Sync all temp sliders and inputs synchronously
+        tempSliders.forEach(s => {
+            if (document.activeElement !== s && s.value != currentTemp) s.value = currentTemp;
+        });
+        tempInputs.forEach(inp => {
+            if (document.activeElement !== inp && inp.value != Math.round(currentTemp)) inp.value = Math.round(currentTemp);
+        });
         
         updateTempDisplay();
         
@@ -799,8 +818,8 @@ function setupUI() {
         }
     };
 
-    if (tempSlider) tempSlider.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
-    if (tempInput) tempInput.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true });
+    tempSliders.forEach(s => s.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
+    tempInputs.forEach(inp => inp.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
 
     function handleTimelineChange(val) {
         currentTimelineYear = parseInt(val);
@@ -877,44 +896,42 @@ function updateTempDisplay() {
     const c = k - 273.15;
     const f = c * 1.8 + 32;
     
-    if (!_elTempInput) _elTempInput = document.getElementById('temp-input');
-    if (!_elTempDisplayC) _elTempDisplayC = document.getElementById('temp-display-c');
-    if (!_elTempDisplayF) _elTempDisplayF = document.getElementById('temp-display-f');
-    if (!_elTempDisplayContainer) _elTempDisplayContainer = document.getElementById('temp-display-container');
-    if (!_elTempSlider) _elTempSlider = document.getElementById('temp-slider');
+    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
+    const tempDisplaysC = document.querySelectorAll('#temp-display-c, #iso-temp-display-c');
+    const tempDisplaysF = document.querySelectorAll('#temp-display-f, #iso-temp-display-f');
+    const tempDisplayContainers = document.querySelectorAll('#temp-display-container, #iso-temp-display-container');
+    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
 
-    if (_elTempInput && document.activeElement !== _elTempInput) _elTempInput.value = Math.round(k);
-    if (_elTempDisplayC) _elTempDisplayC.textContent = `${Math.round(c)} °C`;
-    if (_elTempDisplayF) _elTempDisplayF.textContent = `${Math.round(f)} °F`;
+    tempInputs.forEach(inp => { if (document.activeElement !== inp) inp.value = Math.round(k); });
+    tempDisplaysC.forEach(el => el.textContent = `${Math.round(c)} °C`);
+    tempDisplaysF.forEach(el => el.textContent = `${Math.round(f)} °F`);
     
     const color = getTempColor(k);
     
-    // Dynamically color all text values to match the temperature meter 1:1
-    if (_elTempDisplayContainer) {
-        _elTempDisplayContainer.style.color = color;
-        _elTempDisplayContainer.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
-    }
-    if (_elTempInput) {
-        _elTempInput.style.color = color;
-        _elTempInput.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    tempDisplayContainers.forEach(el => {
+        el.style.color = color;
+        el.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
+    });
+    tempInputs.forEach(inp => {
+        inp.style.color = color;
+        inp.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
+    });
+    
+    const glowIntensity = Math.min(1, k / 6000);
+    let glowShadow = 'none';
+    let thumbBg = 'transparent';
+    if (glowIntensity > 0.05) {
+        const glowRadius1 = Math.round(glowIntensity * 15);
+        const glowRadius2 = Math.round(glowIntensity * 30);
+        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
+        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
+        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
     }
     
-    // Dynamic glow for the thumb
-    if (_elTempSlider) {
-        const glowIntensity = Math.min(1, k / 6000); // 0 to 1
-        let glowShadow = 'none';
-        let thumbBg = 'transparent';
-        if (glowIntensity > 0.05) {
-            const glowRadius1 = Math.round(glowIntensity * 15);
-            const glowRadius2 = Math.round(glowIntensity * 30);
-            const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
-            glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
-            thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
-        }
-        
-        _elTempSlider.style.setProperty('--temp-thumb-glow', glowShadow);
-        _elTempSlider.style.setProperty('--dynamic-temp-bg', thumbBg);
-    }
+    tempSliders.forEach(s => {
+        s.style.setProperty('--temp-thumb-glow', glowShadow);
+        s.style.setProperty('--dynamic-temp-bg', thumbBg);
+    });
 }
 
 function updateTimelineDisplay() {
@@ -987,29 +1004,8 @@ function renderGrid() {
         const legendDiv = document.createElement('div');
         legendDiv.id = 'iso-in-grid-legend';
         legendDiv.className = 'in-grid-legend';
-        
-        // Static Decay Mode Legend
-        const decayModes = [
-            { name: 'Stable', color: '#4ade80' },
-            { name: 'Alpha Decay', color: '#facc15' },
-            { name: 'Beta- Decay', color: '#38bdf8' },
-            { name: 'Positron Emission / EC', color: '#c084fc' },
-            { name: 'Spontaneous Fission', color: '#f87171' },
-            { name: 'Proton Emission', color: '#fb923c' },
-            { name: 'Neutron Emission', color: '#2dd4bf' }
-        ];
-        
-        let html = '<div class="legend-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">';
-        decayModes.forEach(mode => {
-            html += `<div class="legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #fff; cursor: default;">
-                <div style="width: 12px; height: 12px; background: ${mode.color}; border: 1px solid rgba(255,255,255,0.2);"></div>
-                ${mode.name}
-            </div>`;
-        });
-        html += '</div>';
-        
-        legendDiv.innerHTML = html;
         grid.appendChild(legendDiv);
+        renderLegend();
     }
     
     for (let i = 1; i <= 118; i++) {
@@ -1374,9 +1370,7 @@ function updateGridVisuals() {
         if (isMain || isIsotopes) {
             if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
                 color = categoryColors[normalizedCategory] || '#333';
-                if (isIsotopes) {
-                    valText = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z].length.toString() : '0';
-                } else if (currentProperty === 'wiki') {
+                if (currentProperty === 'wiki') {
                     valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
                 } else {
                     valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
@@ -1646,8 +1640,8 @@ function updateSelectedCardVisuals() {
 }
 
 function renderLegend() {
-    const legendContainer = document.getElementById('in-grid-legend');
-    if (!legendContainer) return;
+    const legendContainers = [document.getElementById('in-grid-legend'), document.getElementById('iso-in-grid-legend')].filter(Boolean);
+    if (legendContainers.length === 0) return;
 
     const pConf = heatmapConfigs[currentProperty];
     if (pConf) {
@@ -1655,12 +1649,12 @@ function renderLegend() {
         const midRowHtml = pConf.midColor ? `
                             <div class="hm-row" style="margin-top: 10px;">
                                 <span>Zero (0°C)</span>
-                                <input type="color" id="hm-mid" value="${pConf.midColor}">
+                                <input type="color" class="hm-mid-input" value="${pConf.midColor}">
                             </div>` : '';
         const maxMargin = pConf.midColor ? '10px' : '20px';
         const gradString = pConf.midColor ? `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.midColor}, ${pConf.maxColor})` : `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.maxColor})`;
 
-        legendContainer.innerHTML = `
+        const hmHtml = `
             <div class="legend-box heatmap-controller">
                 <div class="heatmap-section">
                     <div class="legend-box-title">Color</div>
@@ -1668,15 +1662,15 @@ function renderLegend() {
                         <div class="hm-controls">
                             <div class="hm-row">
                                 <span>Minimum</span>
-                                <input type="color" id="hm-min" value="${pConf.minColor}">
+                                <input type="color" class="hm-min-input" value="${pConf.minColor}">
                             </div>${midRowHtml}
                             <div class="hm-row" style="margin-top: ${maxMargin};">
                                 <span>Maximum</span>
-                                <input type="color" id="hm-max" value="${pConf.maxColor}">
+                                <input type="color" class="hm-max-input" value="${pConf.maxColor}">
                             </div>
                             <div class="hm-row hm-unknown">
                                 <span style="color: #888">Unknown</span>
-                                <input type="color" id="hm-unk" value="${heatmapUnknownColor}">
+                                <input type="color" class="hm-unk-input" value="${heatmapUnknownColor}">
                             </div>
                         </div>
                         <div class="hm-bars">
@@ -1688,7 +1682,7 @@ function renderLegend() {
                 <div class="heatmap-section">
                     <div class="legend-box-title">Scale</div>
                     <div class="heatmap-scale">
-                        <button class="scale-btn ${!isLog ? 'active' : ''}" id="hm-linear">
+                        <button class="scale-btn hm-linear-btn ${!isLog ? 'active' : ''}">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -1696,7 +1690,7 @@ function renderLegend() {
                             </svg>
                             Linear
                         </button>
-                        <button class="scale-btn ${isLog ? 'active' : ''}" id="hm-log">
+                        <button class="scale-btn hm-log-btn ${isLog ? 'active' : ''}">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -1716,18 +1710,21 @@ function renderLegend() {
             </div>
         `;
 
-        document.getElementById('hm-min').addEventListener('input', (e) => { heatmapConfigs[currentProperty].minColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-max').addEventListener('input', (e) => { heatmapConfigs[currentProperty].maxColor = e.target.value; updateGridVisuals(); });
-        const hmMid = document.getElementById('hm-mid');
-        if (hmMid) hmMid.addEventListener('input', (e) => { heatmapConfigs[currentProperty].midColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-unk').addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); });
-        document.getElementById('hm-linear').addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'linear'; updateGridVisuals(); });
-        document.getElementById('hm-log').addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'log'; updateGridVisuals(); });
+        legendContainers.forEach(container => {
+            container.innerHTML = hmHtml;
+        });
+
+        document.querySelectorAll('.hm-min-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].minColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-max-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].maxColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-mid-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].midColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-unk-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-linear-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'linear'; updateGridVisuals(); }));
+        document.querySelectorAll('.hm-log-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'log'; updateGridVisuals(); }));
         return;
     }
     
     if (currentProperty !== 'category' && currentProperty !== 'state') {
-        legendContainer.innerHTML = '';
+        legendContainers.forEach(container => container.innerHTML = '');
         return;
     }
     
@@ -1787,10 +1784,12 @@ function renderLegend() {
     }
     html += `</div></div>`;
     
-    legendContainer.innerHTML = html;
+    legendContainers.forEach(container => {
+        container.innerHTML = html;
+    });
     
     // Interactions for individual items
-    document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
+    document.querySelectorAll('.in-grid-legend .legend-item').forEach(item => {
         // Restore box-shadow if this item is currently locked
         if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
             item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
@@ -1815,7 +1814,7 @@ function renderLegend() {
                 lockedLegendKey = key;
                 lockedLegendType = type;
                 lockedLegendGroup = null;
-                document.querySelectorAll('#in-grid-legend .legend-item, #in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
+                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
             }
             clearLegendHighlighting();
@@ -1823,7 +1822,7 @@ function renderLegend() {
     });
 
     // Interactions for super categories
-    document.querySelectorAll('#in-grid-legend .interactive-super').forEach(item => {
+    document.querySelectorAll('.in-grid-legend .interactive-super').forEach(item => {
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const groupName = e.currentTarget.dataset.group;
@@ -1841,7 +1840,7 @@ function renderLegend() {
                 lockedLegendKey = null;
                 lockedLegendType = null;
                 lockedLegendGroup = groupName;
-                document.querySelectorAll('#in-grid-legend .legend-item, #in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
+                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
                 e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
             }
             clearLegendHighlighting();
@@ -2275,17 +2274,27 @@ function drawLargeBohrModel(el) {
 
 function setupLayoutToggle() {
     const btn = document.getElementById('btn-layout-toggle');
-    const grid = document.getElementById('main-grid');
-    if (!btn || !grid) return;
+    if (!btn) return;
 
     btn.onclick = () => {
-        if (currentView !== 'main' && currentView !== 'properties') return;
+        if (currentView !== 'main' && currentView !== 'properties' && currentView !== 'isotopes') return;
 
         savedPropertyLayoutMode = savedPropertyLayoutMode === '18col' ? '32col' : '18col';
         tableLayoutMode = savedPropertyLayoutMode;
         
+        const mainGrid = document.getElementById('main-grid');
+        const isoGrid = document.getElementById('isotopes-grid');
+        
+        [mainGrid, isoGrid].forEach(g => {
+            if (!g) return;
+            if (tableLayoutMode === '32col') {
+                g.classList.add('extended-32col');
+            } else {
+                g.classList.remove('extended-32col');
+            }
+        });
+
         if (tableLayoutMode === '32col') {
-            grid.classList.add('extended-32col');
             btn.textContent = '↩️';
             btn.title = 'Switch to Standard 18-Col View';
             btn.style.background = 'rgba(74, 222, 128, 0.2)';
@@ -2293,7 +2302,6 @@ function setupLayoutToggle() {
             btn.style.color = '#4ade80';
             btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
         } else {
-            grid.classList.remove('extended-32col');
             btn.textContent = '↔️';
             btn.title = 'Switch to Extended 32-Col View';
             btn.style.background = 'rgba(0, 212, 255, 0.1)';
