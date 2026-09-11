@@ -2314,62 +2314,6 @@ function setupLayoutToggle() {
     };
 }
 
-async function toggleLandscapeFullscreenMode(forceEnable = false) {
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
-    if (!isFS || forceEnable) {
-        try {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                await docEl.requestFullscreen().catch(() => {});
-            } else if (docEl.webkitRequestFullscreen) {
-                await docEl.webkitRequestFullscreen().catch(() => {});
-            }
-        } catch (e) {}
-
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-        }
-    } else {
-        try {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen().catch(() => {});
-            } else if (document.webkitExitFullscreen) {
-                await document.webkitExitFullscreen().catch(() => {});
-            }
-        } catch (e) {}
-
-        if (screen.orientation && screen.orientation.unlock) {
-            screen.orientation.unlock();
-        }
-    }
-}
-
-function updateRotateBtnUI() {
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
-    const rotateBtn = document.getElementById('btn-mobile-rotate');
-    if (rotateBtn) {
-        const textSpan = rotateBtn.querySelector('.nav-text');
-        const iconSpan = rotateBtn.querySelector('.nav-icon');
-        if (textSpan) textSpan.textContent = isFS ? 'Exit Landscape' : 'Full Landscape';
-        if (iconSpan) iconSpan.textContent = isFS ? '📱↩️' : '📱🔄';
-    }
-}
-
-document.addEventListener('fullscreenchange', updateRotateBtnUI);
-document.addEventListener('webkitfullscreenchange', updateRotateBtnUI);
-
-let mobileLandscapeAutoTriggered = false;
-function autoActivateMobileLandscape() {
-    if (mobileLandscapeAutoTriggered) return;
-    if (window.innerWidth <= 1000 || 'ontouchstart' in window) {
-        mobileLandscapeAutoTriggered = true;
-        toggleLandscapeFullscreenMode(true);
-    }
-}
-
-document.addEventListener('touchstart', autoActivateMobileLandscape, { passive: true });
-document.addEventListener('click', autoActivateMobileLandscape, { passive: true });
-
 // Init
 window.addEventListener('DOMContentLoaded', () => {
     setupPerfModeOnLoad();
@@ -2410,7 +2354,7 @@ function positionMobileSidebar(cell, el) {
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
-    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
+    if (window.innerWidth <= 900) {
         let isLeftHalf = false;
         if (cell) {
             const rect = cell.getBoundingClientRect();
@@ -2441,7 +2385,7 @@ function closeMobileSidebar() {
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 1000 && window.innerHeight > 520) {
+    if (window.innerWidth > 900) {
         document.querySelectorAll('.view-right').forEach(sb => {
             sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
         });
@@ -2485,16 +2429,6 @@ function setupMobileLeftNav() {
             mobileLeftNav.classList.remove('expanded');
         });
     });
-
-    // Dedicated Mobile Fullscreen Landscape Toggle Button
-    const rotateBtn = document.getElementById('btn-mobile-rotate');
-    if (rotateBtn) {
-        rotateBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await toggleLandscapeFullscreenMode();
-            mobileLeftNav.classList.remove('expanded');
-        });
-    }
 
     // Auto collapse when clicking anywhere else on the page
     document.addEventListener('click', (e) => {

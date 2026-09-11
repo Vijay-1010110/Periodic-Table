@@ -1343,20 +1343,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
-    // Android / Browser Back Button Navigation Support
+    // Browser Back Button Navigation Support
     window.addEventListener('popstate', () => {
         const overlay = document.getElementById('isotope-modal-overlay');
         if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
             closeIsotopeModal();
         }
     });
-
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-        window.Capacitor.Plugins.App.addListener('backButton', () => {
-            const overlay = document.getElementById('isotope-modal-overlay');
-            if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
-                closeIsotopeModal();
-            }
-        });
-    }
 });

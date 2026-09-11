@@ -1439,7 +1439,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* Mobile Left Collapsible Sidebar */
 .mobile-left-nav { display: none; }
 
-@media (max-width: 1000px), (max-height: 520px) {
+@media (max-width: 900px) and (pointer: coarse) {
     /* ==========================================================================
        BUDGET MOBILE HARDWARE & HIGH-PERFORMANCE GPU COMPOSITING (60 FPS)
        ========================================================================== */
@@ -1899,7 +1899,9 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     background: rgba(3, 7, 18, 0.92);
     opacity: 0;
     transition: opacity 0.3s ease;
-    overflow: hidden;
+    overflow-y: auto;
+    padding: 16px;
+    box-sizing: border-box;
 }
 
 .isotope-modal-overlay.hidden {
@@ -1915,7 +1917,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
     max-width: 1440px;
     height: 88vh;
     max-height: 920px;
-    min-height: 600px;
+    min-height: min(600px, 92vh);
     display: grid;
     grid-template-rows: auto 1fr;
     grid-template-columns: 360px 1fr;
@@ -2804,7 +2806,7 @@ input[type="range"] { width: 150px; flex-shrink: 0; accent-color: var(--accent-a
 /* ==========================================================================
    MOBILE LANDSCAPE 40/60 DUAL-SECTION SPLIT VIEW (Height <= 550px)
    ========================================================================== */
-@media (max-height: 550px) {
+@media (max-height: 550px) and (max-width: 900px) and (pointer: coarse) {
     #view-isotopes .view-right {
         display: none !important;
     }
@@ -4466,14 +4468,11 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; bac
 
 // 13_platform.js
 /**
- * PlatformManager - Detects the runtime environment for PeriodicaX
- * Used for feature flags and platform-specific behaviors (Web vs Native App)
+ * PlatformManager - Detects the runtime environment for PeriodicaX Web
+ * Standalone Web Version (with optional PWA standalone detection)
  */
 
 window.Platform = (function() {
-    // Check if Capacitor is available and running natively
-    const isCapacitorNative = typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform();
-    
     // Check PWA Standalone Mode
     const isPWA = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
 
@@ -4483,34 +4482,25 @@ window.Platform = (function() {
     const isAndroid = /android/i.test(userAgent);
 
     const platform = {
-        isNative: isCapacitorNative,
-        isWeb: !isCapacitorNative,
+        isNative: false,
+        isWeb: true,
         isPWA: isPWA,
         isIOS: isIOS,
         isAndroid: isAndroid,
         os: isIOS ? 'ios' : (isAndroid ? 'android' : 'web'),
 
         init: function() {
-            // Apply CSS classes to the body for purely CSS-driven feature toggles
             const body = document.body;
             if (!body) return;
 
-            if (this.isNative) {
-                body.classList.add('is-native');
-            } else {
-                body.classList.add('is-web');
-            }
+            body.classList.add('is-web');
 
             if (this.isPWA) {
                 body.classList.add('is-pwa');
             }
-
-            if (this.isIOS) body.classList.add('is-ios');
-            if (this.isAndroid) body.classList.add('is-android');
         }
     };
 
-    // Run initialization on DOM load
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => platform.init());
     } else {
@@ -79518,22 +79508,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
-    // Android / Browser Back Button Navigation Support
+    // Browser Back Button Navigation Support
     window.addEventListener('popstate', () => {
         const overlay = document.getElementById('isotope-modal-overlay');
         if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
             closeIsotopeModal();
         }
     });
-
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-        window.Capacitor.Plugins.App.addListener('backButton', () => {
-            const overlay = document.getElementById('isotope-modal-overlay');
-            if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
-                closeIsotopeModal();
-            }
-        });
-    }
 });
 
 // 06_compounds_data.js
@@ -88443,62 +88424,6 @@ function setupLayoutToggle() {
     };
 }
 
-async function toggleLandscapeFullscreenMode(forceEnable = false) {
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
-    if (!isFS || forceEnable) {
-        try {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                await docEl.requestFullscreen().catch(() => {});
-            } else if (docEl.webkitRequestFullscreen) {
-                await docEl.webkitRequestFullscreen().catch(() => {});
-            }
-        } catch (e) {}
-
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-        }
-    } else {
-        try {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen().catch(() => {});
-            } else if (document.webkitExitFullscreen) {
-                await document.webkitExitFullscreen().catch(() => {});
-            }
-        } catch (e) {}
-
-        if (screen.orientation && screen.orientation.unlock) {
-            screen.orientation.unlock();
-        }
-    }
-}
-
-function updateRotateBtnUI() {
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
-    const rotateBtn = document.getElementById('btn-mobile-rotate');
-    if (rotateBtn) {
-        const textSpan = rotateBtn.querySelector('.nav-text');
-        const iconSpan = rotateBtn.querySelector('.nav-icon');
-        if (textSpan) textSpan.textContent = isFS ? 'Exit Landscape' : 'Full Landscape';
-        if (iconSpan) iconSpan.textContent = isFS ? '📱↩️' : '📱🔄';
-    }
-}
-
-document.addEventListener('fullscreenchange', updateRotateBtnUI);
-document.addEventListener('webkitfullscreenchange', updateRotateBtnUI);
-
-let mobileLandscapeAutoTriggered = false;
-function autoActivateMobileLandscape() {
-    if (mobileLandscapeAutoTriggered) return;
-    if (window.innerWidth <= 1000 || 'ontouchstart' in window) {
-        mobileLandscapeAutoTriggered = true;
-        toggleLandscapeFullscreenMode(true);
-    }
-}
-
-document.addEventListener('touchstart', autoActivateMobileLandscape, { passive: true });
-document.addEventListener('click', autoActivateMobileLandscape, { passive: true });
-
 // Init
 window.addEventListener('DOMContentLoaded', () => {
     setupPerfModeOnLoad();
@@ -88539,7 +88464,7 @@ function positionMobileSidebar(cell, el) {
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
-    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
+    if (window.innerWidth <= 900) {
         let isLeftHalf = false;
         if (cell) {
             const rect = cell.getBoundingClientRect();
@@ -88570,7 +88495,7 @@ function closeMobileSidebar() {
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 1000 && window.innerHeight > 520) {
+    if (window.innerWidth > 900) {
         document.querySelectorAll('.view-right').forEach(sb => {
             sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
         });
@@ -88614,16 +88539,6 @@ function setupMobileLeftNav() {
             mobileLeftNav.classList.remove('expanded');
         });
     });
-
-    // Dedicated Mobile Fullscreen Landscape Toggle Button
-    const rotateBtn = document.getElementById('btn-mobile-rotate');
-    if (rotateBtn) {
-        rotateBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await toggleLandscapeFullscreenMode();
-            mobileLeftNav.classList.remove('expanded');
-        });
-    }
 
     // Auto collapse when clicking anywhere else on the page
     document.addEventListener('click', (e) => {
@@ -89433,10 +89348,6 @@ window.OrbitalViewer = {
             <button class="mobile-nav-item" data-view="quiz" title="Quiz">
                 <span class="nav-icon">❓</span>
                 <span class="nav-text">Quiz</span>
-            </button>
-            <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
-                <span class="nav-icon">📱🔄</span>
-                <span class="nav-text">Full Landscape</span>
             </button>
             <button class="mobile-nav-item" id="btn-mobile-settings" title="Settings" style="color: #94a3b8;" onclick="document.getElementById('settings-modal').style.display='flex'; initPerfModeUI();">
                 <span class="nav-icon">⚙️</span>

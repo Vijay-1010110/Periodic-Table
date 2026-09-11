@@ -141,13 +141,7 @@ def build():
         shutil.copytree('assets', 'public/assets', dirs_exist_ok=True)
     
     print("Copied manifest, service worker, icons, ads.txt, and assets/ to public/")
-
-    print("Running Capacitor Sync...")
-    try:
-        subprocess.run('npx cap copy', shell=True, check=True)
-        print("Capacitor sync successful!")
-    except Exception as e:
-        print(f"Capacitor sync failed: {e}")
+    print("Web build completed successfully!")
 
 if __name__ == '__main__':
     build()
