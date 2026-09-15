@@ -283,6 +283,31 @@
                     </div>
                 </div>
 
+                <!-- Chemical Duality Card (shows dynamically for boundary elements like At, Ts, Te, Se, Po) -->
+                <div id="element-duality-card" class="duality-card hidden">
+                    <div class="duality-header">
+                        <div class="duality-title">
+                            <span>⚖️</span>
+                            <span>Chemical Duality</span>
+                        </div>
+                        <span id="duality-badge" class="duality-badge">Nonmetal ⇄ Metalloid</span>
+                    </div>
+                    <p id="duality-summary" class="duality-summary"></p>
+                    <div class="duality-grid">
+                        <div class="duality-col nonmetal">
+                            <div class="duality-col-heading">🧪 Nonmetal Traits</div>
+                            <ul id="duality-nonmetal-list"></ul>
+                        </div>
+                        <div class="duality-col metalloid">
+                            <div class="duality-col-heading">⚡ Metalloid Traits</div>
+                            <ul id="duality-metalloid-list"></ul>
+                        </div>
+                    </div>
+                    <div class="duality-mechanism-box">
+                        <strong>Scientific Origin: </strong><span id="duality-mechanism"></span>
+                    </div>
+                </div>
+
                 <div class="property-list">
                     <h3>Properties Map</h3>
                     <p class="small-text help-text">Click a property to visualize it on the table.</p>

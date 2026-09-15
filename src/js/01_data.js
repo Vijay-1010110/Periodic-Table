@@ -2862,8 +2862,8 @@ const elementsData = [
         "phase": "Solid",
         "facts": [
             "Selenium is a chemical element with symbol Se and atomic number 34.",
-            "It is a nonmetal with properties that are intermediate between those of its periodic table column-adjacent chalcogen elements sulfur and tellurium.",
-            "It rarely occurs in its elemental state in nature, or as pure ore compounds."
+            "Chemical Duality (Nonmetal ⇄ Metalloid Semiconductor): While classically a reactive nonmetal in chemical reactions, its crystalline grey allotrope is a metallic-lustered semiconductor with remarkable photoconductivity, its electrical conductivity jumping a thousandfold when exposed to light.",
+            "It is a chalcogen with properties intermediate between sulfur and tellurium, rarely occurring in pure native form."
         ]
     },
     {
@@ -4309,9 +4309,9 @@ const elementsData = [
         "appearance": null,
         "phase": "Solid",
         "facts": [
-            "Tellurium is a chemical element with symbol Te and atomic number 52.",
-            "It is a brittle, mildly toxic, rare, silver-white metalloid.",
-            "Tellurium is chemically related to selenium and sulfur."
+            "Tellurium is a chemical element with symbol Te and atomic number 52, located at the chalcogen metalloid-nonmetal boundary.",
+            "Chemical Duality (Metalloid ⇄ Nonmetal): Tellurium exhibits marked duality; chemically it resembles nonmetals sulfur and selenium (forming tellurides Te2- and tellurates), yet physically it forms a silvery-white metallic crystal lattice with p-type semiconductivity.",
+            "Tellurium is chemically related to selenium and sulfur, and is one of the rarest elements in Earth's crust."
         ]
     },
     {
@@ -6761,8 +6761,8 @@ const elementsData = [
         "phase": "Solid",
         "facts": [
             "Polonium is a chemical element with symbol Po and atomic number 84, discovered in 1898 by Marie Curie and Pierre Curie.",
-            "A rare and highly radioactive element with no stable isotopes, polonium is chemically similar to bismuth and tellurium, and it occurs in uranium ores.",
-            "Applications of polonium are few."
+            "Chemical Duality (Post-Transition Metal ⇄ Metalloid/Chalcogen): Polonium crystallizes in a simple cubic metallic lattice (alpha-Po) with metallic electrical conductivity, yet forms volatile nonmetal-like chalcogen compounds including polonium hydride (H2Po) and volatile halides.",
+            "A rare and highly radioactive element with no stable isotopes, polonium is chemically similar to bismuth and tellurium, and occurs in uranium ores."
         ]
     },
     {
@@ -6834,10 +6834,10 @@ const elementsData = [
         "appearance": "unknown, probably metallic",
         "phase": "Solid",
         "facts": [
-            "Astatine is a very rare radioactive chemical element with the chemical symbol At and atomic number 85.",
-            "It occurs on Earth as the decay product of various heavier elements.",
-            "All its isotopes are short-lived; the most stable is astatine-210, with a half-life of 8.",
-            "1 hours."
+            "Astatine is a very rare radioactive chemical element with the chemical symbol At and atomic number 85, situated at the boundary of reactive nonmetals and metalloids.",
+            "Chemical Duality (Halogen Nonmetal ⇄ Metalloid): Astatine exhibits profound dual character. Nominally a Group 17 halogen (forming astatide At- and interhalogens like AtI, AtBr, AtCl), relativistic effects and high polarizability impart distinct metalloid and metallic properties: it readily forms stable cations (At+), precipitates with sulfides like heavy metals, displays metallic surface luster, and has low electronegativity (2.2).",
+            "It occurs on Earth as the decay product of various heavier elements, with less than one gram present in Earth's crust at any given time.",
+            "All its isotopes are short-lived; the most stable is astatine-210, with a half-life of 8.1 hours."
         ]
     },
     {
@@ -9158,11 +9158,11 @@ const elementsData = [
     },
     {
         "atomicNumber": 117,
-        "oxidationStates": "",
+        "oxidationStates": "-1, 1, 3, 5",
         "symbol": "Ts",
         "name": "Tennessine",
         "atomicMass": 294,
-        "category": "Unknown, probably metalloid",
+        "category": "Reactive nonmetal",
         "block": "p",
         "period": 7,
         "group": 17,
@@ -9224,7 +9224,8 @@ const elementsData = [
         "appearance": null,
         "phase": "Solid",
         "facts": [
-            "Tennessine is a superheavy artificial chemical element with an atomic number of 117 and a symbol of Ts.",
+            "Tennessine is a superheavy chemical element with atomic number 117 and symbol Ts, classified in Group 17 as the heaviest halogen / reactive nonmetal.",
+            "Chemical Duality (Reactive Nonmetal ⇄ Post-Transition Metalloid): Although nominally a halogen, extreme relativistic spin-orbit splitting separates its 7p subshell into stabilized 7p1/2 and destabilized 7p3/2 spinors. This suppresses classic halogen -1 anion behavior and induces strong metalloid/metallic character, favoring positive oxidation states (+1, +3) and metallic bonding in bulk condensed phases.",
             "Also known as eka-astatine or element 117, it is the second-heaviest known element and penultimate element of the 7th period of the periodic table.",
             "As of 2016, fifteen tennessine atoms have been observed: six when it was first synthesized in 2010, seven in 2012, and two in 2014."
         ]

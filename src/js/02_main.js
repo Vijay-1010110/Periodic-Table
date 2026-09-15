@@ -1056,7 +1056,7 @@ function renderGrid() {
             grid-row: 7;
             border: 2px dashed #e879f9 !important;
             background: rgba(168, 85, 247, 0.45) !important;
-            border-radius: 6px;
+            border-radius: 0px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1072,7 +1072,7 @@ function renderGrid() {
             padding: 2px;
         `;
         lanthPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #e879f9; color: #0f172a; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #e879f9; color: #0f172a; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">57–71</span>
             <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
         `;
@@ -1091,7 +1091,7 @@ function renderGrid() {
             grid-row: 8;
             border: 2px dashed #a855f7 !important;
             background: rgba(168, 85, 247, 0.45) !important;
-            border-radius: 6px;
+            border-radius: 0px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1158,10 +1158,11 @@ function getPropertyValue(el, propName) {
 function getNormalizedCategory(cat) {
     if (!cat) return 'Unknown';
     const lowerCat = cat.toLowerCase();
-    if (lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal') return 'Reactive nonmetal';
+    if (lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal' || lowerCat === 'halogen') return 'Reactive nonmetal';
     if (lowerCat.includes('unknown')) {
         if (lowerCat.includes('transition metal')) return 'Transition metal';
         if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
+        if (lowerCat.includes('reactive nonmetal') || lowerCat.includes('nonmetal') || lowerCat.includes('halogen')) return 'Reactive nonmetal';
         if (lowerCat.includes('metalloid')) return 'Metalloid';
         if (lowerCat.includes('noble gas')) return 'Noble gas';
         if (lowerCat.includes('alkali metal')) return 'Alkali metal';
@@ -1874,6 +1875,8 @@ function selectElement(z) {
         
         updateSidebarValues();
     } else if (currentView === 'electrons') {
+        const dCard = document.getElementById('element-duality-card');
+        if (dCard) dCard.classList.add('hidden');
         document.getElementById('elec-empty-state').classList.add('hidden');
         document.getElementById('elec-element-card').classList.remove('hidden');
         document.getElementById('elec-details').classList.remove('hidden');
@@ -1903,6 +1906,8 @@ function selectElement(z) {
         renderAufbauDiagram(el.electronConfiguration);
         drawLargeBohrModel(el);
     } else if (currentView === 'isotopes') {
+        const dCard = document.getElementById('element-duality-card');
+        if (dCard) dCard.classList.add('hidden');
         if (typeof updateIsotopesView === 'function') {
             updateIsotopesView(z);
         }
@@ -2116,11 +2121,131 @@ function renderAufbauDiagram(configStr) {
     }
 }
 
+// Chemical Duality Knowledge Base (Boundary Elements Exhibiting Dual Nonmetal ⇄ Metalloid/Metal Characteristics)
+const chemicalDualityData = {
+    85: {
+        title: "Chemical Duality: Halogen Nonmetal ⇄ Metalloid",
+        badge: "Halogen Nonmetal ⇄ Metalloid",
+        summary: "Astatine is the quintessential periodic boundary element. Nominally grouped as a halogen in Group 17, relativistic spin-orbit coupling and high polarizability impart pronounced metalloid and metallic behavior.",
+        nonmetalTraits: [
+            "Forms astatide anion (At⁻) in -1 oxidation state with electropositive metals",
+            "Forms volatile diatomic interhalogens (AtI, AtBr, AtCl)",
+            "Undergoes nucleophilic aromatic halogen exchange reactions",
+            "Concentrates selectively in thyroid tissue via halogen metabolic pathways"
+        ],
+        metalloidTraits: [
+            "Readily forms stable cations in solution (At⁺, [At(H₂O)₂]⁺) unlike lighter halogens",
+            "Precipitates with H₂S from acid solution identically to heavy transition metals",
+            "Displays metallic luster and low Pauling electronegativity (2.2)",
+            "Exhibits narrow bandgap with semimetallic condensed conductivity"
+        ],
+        mechanism: "Relativistic expansion and spin-orbit splitting of the 6p valence subshell weaken halogen electron affinity and stabilize positive (+1, +3) oxidation states."
+    },
+    117: {
+        title: "Chemical Duality: Reactive Nonmetal ⇄ Superheavy Metalloid",
+        badge: "Reactive Nonmetal ⇄ Post-Transition Metalloid",
+        summary: "Tennessine is a Period 7 superheavy eka-astatine. Due to extreme relativistic spin-orbit splitting, its 7p subshell is split into 7p₁/₂ and 7p₃/₂, suppressing typical halogen halide formation and favoring metallic/metalloid bonding.",
+        nonmetalTraits: [
+            "Formally classified in Group 17 with 7s² 7p⁵ valence configuration",
+            "Theoretical ability to form volatile halides and formal Ts⁻ anions",
+            "Shares volatility patterns with lighter halogens in gas chromatography"
+        ],
+        metalloidTraits: [
+            "Strong thermodynamic preference for +1 and +3 oxidation states over -1",
+            "Extreme stabilization of closed 7p₁/₂ subshell produces an inert-pair-like effect",
+            "Predicted metallic luster, high density (~7.2 g/cm³), and metallic conductivity",
+            "Low electron affinity (~1.7 eV) makes it the least electronegative Group 17 member"
+        ],
+        mechanism: "Relativistic spin-orbit splitting breaks the 7p subshell into a strongly contracted, inert 7p₁/₂ spinor and an easily ionized 7p₃/₂ spinor."
+    },
+    52: {
+        title: "Chemical Duality: Metalloid ⇄ Chalcogen Nonmetal",
+        badge: "Metalloid ⇄ Chalcogen Nonmetal",
+        summary: "Tellurium bridges the nonmetal chalcogens (oxygen, sulfur) with heavy metals, forming covalent nonmetal oxyacids while possessing a brittle metallic crystalline structure.",
+        nonmetalTraits: [
+            "Forms tellurides (Te²⁻) with alkali and alkaline-earth elements",
+            "Forms covalent tellurite (TeO₃²⁻) and tellurate oxyanions analogous to sulfur",
+            "Forms volatile covalent organotellurium compounds (e.g., dimethyl telluride)"
+        ],
+        metalloidTraits: [
+            "Silvery-white metallic appearance with brittle hexagonal crystalline lattice",
+            "p-type elemental semiconductor whose electrical conductivity increases in light",
+            "Amphoteric dioxide (TeO₂) that dissolves in both strong acids and strong bases"
+        ],
+        mechanism: "Moderate electronegativity (2.1) and polarizable 5p electrons place tellurium directly on the diagonal metalloid boundary."
+    },
+    34: {
+        title: "Chemical Duality: Reactive Nonmetal ⇄ Metalloid Semiconductor",
+        badge: "Reactive Nonmetal ⇄ Metalloid Semiconductor",
+        summary: "Selenium is traditionally a nonmetal, but its thermodynamically stable crystalline grey allotrope behaves physically as an anisotropic metalloid semiconductor.",
+        nonmetalTraits: [
+            "Forms molecular covalent compounds and oxoacids (H₂Se, SeO₂, H₂SeO₄)",
+            "Insulating red allotrope composed of crown-shaped Se₈ rings identical to sulfur",
+            "Essential biological nonmetal trace micronutrient (incorporated as selenocysteine)"
+        ],
+        metalloidTraits: [
+            "Grey 'metallic' selenium consists of helical polymeric chains with delocalized electrons",
+            "Exhibits high photoconductivity (electrical conductivity increases 1000× under illumination)",
+            "Acts as a semiconductor rectifier in selenium diodes and photovoltaic cells"
+        ],
+        mechanism: "Trigonal helical chain packing enables intermolecular electron hopping, bridging molecular insulator and conducting metalloid states."
+    },
+    84: {
+        title: "Chemical Duality: Post-Transition Metal ⇄ Metalloid / Chalcogen",
+        badge: "Post-Transition Metal ⇄ Metalloid / Chalcogen",
+        summary: "Polonium displays simple cubic metallic crystal geometry and electrical conduction, yet retains volatile nonmetal-like chalcogen chemistry.",
+        nonmetalTraits: [
+            "Forms polonide anions (Po²⁻) and volatile polonium hydride (H₂Po)",
+            "Forms volatile covalent halides (PoF₆) and organopolonium complexes",
+            "Chemical behavior in trace tracer solutions closely mirrors tellurium"
+        ],
+        metalloidTraits: [
+            "Crystallizes in the rare simple cubic metallic lattice (α-Po) with metallic conductivity",
+            "Forms basic polonium(IV) hydroxide and predominantly behaves as Po²⁺/Po⁴⁺ cations",
+            "Displays high thermal and electrical conductivity characteristic of true metals"
+        ],
+        mechanism: "Increased nuclear charge and metallic valence de-localization in Period 6 yield metallic conduction alongside chalcogen covalent bonding."
+    }
+};
+
 function updateSidebarValues() {
     if (!selectedElement) return;
     const el = selectedElement;
     
-    document.getElementById('val-category').innerText = el.category;
+    // Chemical Duality handling
+    const dualityCard = document.getElementById('element-duality-card');
+    const dualityData = chemicalDualityData[el.atomicNumber];
+    if (dualityCard) {
+        if (dualityData) {
+            dualityCard.classList.remove('hidden');
+            const badgeEl = document.getElementById('duality-badge');
+            if (badgeEl) badgeEl.innerText = dualityData.badge;
+            
+            const summaryEl = document.getElementById('duality-summary');
+            if (summaryEl) summaryEl.innerText = dualityData.summary;
+            
+            const nonmetalList = document.getElementById('duality-nonmetal-list');
+            if (nonmetalList) {
+                nonmetalList.innerHTML = dualityData.nonmetalTraits.map(t => `<li>${t}</li>`).join('');
+            }
+            
+            const metalloidList = document.getElementById('duality-metalloid-list');
+            if (metalloidList) {
+                metalloidList.innerHTML = dualityData.metalloidTraits.map(t => `<li>${t}</li>`).join('');
+            }
+            
+            const mechEl = document.getElementById('duality-mechanism');
+            if (mechEl) mechEl.innerText = dualityData.mechanism;
+            
+            document.getElementById('val-category').innerHTML = `${el.category} <span style="display: inline-block; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #facc15; padding: 1px 6px; border-radius: 3px; margin-left: 5px; font-weight: 700; vertical-align: middle;">⇄ Dual Nature</span>`;
+        } else {
+            dualityCard.classList.add('hidden');
+            document.getElementById('val-category').innerText = el.category;
+        }
+    } else {
+        document.getElementById('val-category').innerText = el.category;
+    }
+    
     document.getElementById('val-atomicMass').innerText = el.atomicMass;
     document.getElementById('val-energyLevels').innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
     document.getElementById('val-electronegativity').innerText = el.electronegativity || '-';
