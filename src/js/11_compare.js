@@ -204,15 +204,20 @@ function renderRadarChart(list) {
 }
 
 function getCategoryColor(cat) {
-    if (!cat) return '#94a3b8';
-    if (cat.includes('alkali')) return '#f87171';
-    if (cat.includes('alkaline')) return '#fb923c';
-    if (cat.includes('transition')) return '#facc15';
-    if (cat.includes('lanthanide')) return '#a3e635';
-    if (cat.includes('actinide')) return '#34d399';
-    if (cat.includes('metalloid')) return '#2dd4bf';
-    if (cat.includes('nonmetal')) return '#38bdf8';
-    if (cat.includes('halogen')) return '#818cf8';
-    if (cat.includes('noble')) return '#c084fc';
-    return '#94a3b8';
+    if (!cat) return '#475569';
+    if (typeof getNormalizedCategory === 'function' && typeof categoryColors !== 'undefined') {
+        const norm = getNormalizedCategory(cat);
+        if (categoryColors[norm]) return categoryColors[norm];
+    }
+    const lower = cat.toLowerCase();
+    if (lower.includes('alkali') && !lower.includes('earth')) return '#e11d48';
+    if (lower.includes('alkaline')) return '#ea580c';
+    if (lower.includes('transition')) return '#2563eb';
+    if (lower.includes('post-transition')) return '#0d9488';
+    if (lower.includes('lanthanide')) return '#0284c7';
+    if (lower.includes('actinide')) return '#c026d3';
+    if (lower.includes('metalloid')) return '#d97706';
+    if (lower.includes('nonmetal') || lower.includes('halogen')) return '#059669';
+    if (lower.includes('noble')) return '#7c3aed';
+    return '#475569';
 }

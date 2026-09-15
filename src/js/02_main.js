@@ -407,18 +407,18 @@ function getGridPosition(z) {
     return { col: 1, row: 1 }; // Fallback
 }
 
-// Category Colors (Full Spectrum High Contrast & Distinct Hues)
+// Category Colors (Modern Scientific Palette - Ptable / RSC Standards)
 const categoryColors = {
-    'Alkali metal': '#f43f5e',        // Vivid Ruby Red / Coral
-    'Alkaline earth metal': '#f97316', // Warm Vivid Sunset Orange
-    'Transition metal': '#4f46e5',     // Vibrant Electric Royal Blue / Indigo
-    'Post-transition metal': '#0284c7',// Bright Azure / Cerulean Blue
-    'Metalloid': '#f59e0b',            // Radiant Amber Gold
-    'Reactive nonmetal': '#10b981',    // Vibrant Emerald / Lime Green
-    'Noble gas': '#06b6d4',            // Electric Neon Cyan
-    'Lanthanide': '#ec4899',           // Hot Fuchsia Pink / Magenta
-    'Actinide': '#a855f7',             // Vivid Deep Violet Purple
-    'Unknown': '#64748b'              // Sleek Silver Slate
+    'Alkali metal': '#e11d48',        // Vivid Ruby Red / Crimson (Group 1)
+    'Alkaline earth metal': '#ea580c', // Warm Tangerine / Sunset Orange (Group 2)
+    'Transition metal': '#2563eb',     // Vibrant Royal Cobalt Blue (Groups 3-12)
+    'Post-transition metal': '#0d9488',// Cool Jade Teal / Seafoam (Groups 13-16 metals)
+    'Metalloid': '#d97706',            // Radiant Amber Gold (The diagonal staircase)
+    'Reactive nonmetal': '#059669',    // Vibrant Deep Emerald Green (C, N, O, P, S, halogens)
+    'Noble gas': '#7c3aed',            // Imperial Royal Purple / Violet (Group 18)
+    'Lanthanide': '#0284c7',           // Electric Cerulean / Cyan Blue (4f series)
+    'Actinide': '#c026d3',             // Vivid Deep Fuchsia / Orchid Magenta (5f series)
+    'Unknown': '#475569'              // Refined Modern Slate Gray
 };
 
 // Unified State Colors (Distinct Neon Hues 100% Matched to Legend & Symbol Text)
@@ -1054,8 +1054,8 @@ function renderGrid() {
         lanthPlaceholder.style.cssText = `
             grid-column: 3;
             grid-row: 7;
-            border: 2px dashed #e879f9 !important;
-            background: rgba(168, 85, 247, 0.45) !important;
+            border: 2px dashed #0284c7 !important;
+            background: rgba(2, 132, 199, 0.4) !important;
             border-radius: 0px;
             display: flex;
             flex-direction: column;
@@ -1064,7 +1064,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 0 0 15px rgba(232, 121, 249, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
+            box-shadow: inset 0 0 15px rgba(2, 132, 199, 0.4), 0 0 12px rgba(2, 132, 199, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1072,9 +1072,9 @@ function renderGrid() {
             padding: 2px;
         `;
         lanthPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #e879f9; color: #0f172a; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #0284c7; color: #ffffff; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">57–71</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #bae6fd; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
         `;
         lanthPlaceholder.onclick = () => {
             highlightCategory('Lanthanide');
@@ -1089,8 +1089,8 @@ function renderGrid() {
         actPlaceholder.style.cssText = `
             grid-column: 3;
             grid-row: 8;
-            border: 2px dashed #a855f7 !important;
-            background: rgba(168, 85, 247, 0.45) !important;
+            border: 2px dashed #c026d3 !important;
+            background: rgba(192, 38, 211, 0.4) !important;
             border-radius: 0px;
             display: flex;
             flex-direction: column;
@@ -1099,7 +1099,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
+            box-shadow: inset 0 0 15px rgba(192, 38, 211, 0.4), 0 0 12px rgba(192, 38, 211, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1107,9 +1107,9 @@ function renderGrid() {
             padding: 2px;
         `;
         actPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #a855f7; color: #ffffff; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #c026d3; color: #ffffff; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">89–103</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #e9d5ff; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
         `;
         actPlaceholder.onclick = () => {
             highlightCategory('Actinide');
@@ -1235,19 +1235,17 @@ function getGradientColor(value, propName) {
 }
 
 function getGlossyBackground(colorStr, category = '') {
-    if (!colorStr) return 'rgba(255,255,255,0.05)';
+    if (!colorStr) return 'rgba(255,255,255,0.08)';
     
-    const cat = category.toLowerCase();
-    const isMetal = cat.includes('metal') || cat.includes('lanthanide') || cat.includes('actinide');
-    const isGas = cat.includes('gas') || cat.includes('diatomic') || cat.includes('reactive nonmetal'); 
-
-    let baseHsl = '';
     let baseRgb = '';
 
     if (colorStr.startsWith('hsl')) {
-        baseHsl = colorStr.replace('hsl(', '').replace(')', '');
+        const match = colorStr.match(/hsla?\(([^)]+)\)/);
+        if (match) {
+            return `linear-gradient(170deg, hsla(${match[1]}, 0.94) 0%, hsla(${match[1]}, 0.85) 100%)`;
+        }
     } else if (colorStr.startsWith('rgb')) {
-        const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
         if (match) {
             baseRgb = `${match[1]},${match[2]},${match[3]}`;
         }
@@ -1260,30 +1258,10 @@ function getGlossyBackground(colorStr, category = '') {
         baseRgb = `${r},${g},${b}`;
     }
 
-    if (isMetal) {
-        // Metallic: Rich diagonal luster with luminous saturation across the whole tile (no black center hole)
-        if (baseHsl) {
-            return `linear-gradient(135deg, hsla(${baseHsl}, 0.72) 0%, hsla(${baseHsl}, 0.44) 48%, hsla(${baseHsl}, 0.58) 100%)`;
-        } else {
-            return `linear-gradient(135deg, rgba(${baseRgb}, 0.72) 0%, rgba(${baseRgb}, 0.44) 48%, rgba(${baseRgb}, 0.58) 100%)`;
-        }
-    } 
-    else if (isGas) {
-        // Gaseous: Neon glowing core with vibrant saturated edges
-        if (baseHsl) {
-            return `radial-gradient(circle at 50% 35%, hsla(${baseHsl}, 0.80) 0%, hsla(${baseHsl}, 0.52) 65%, hsla(${baseHsl}, 0.42) 100%)`;
-        } else {
-            return `radial-gradient(circle at 50% 35%, rgba(${baseRgb}, 0.80) 0%, rgba(${baseRgb}, 0.52) 65%, rgba(${baseRgb}, 0.42) 100%)`;
-        }
-    } 
-    else {
-        // Metalloid / Non-metal: Rich, luminous vertical saturation
-        if (baseHsl) {
-            return `linear-gradient(180deg, hsla(${baseHsl}, 0.70) 0%, hsla(${baseHsl}, 0.48) 55%, hsla(${baseHsl}, 0.40) 100%)`;
-        } else {
-            return `linear-gradient(180deg, rgba(${baseRgb}, 0.70) 0%, rgba(${baseRgb}, 0.48) 55%, rgba(${baseRgb}, 0.40) 100%)`;
-        }
-    }
+    if (!baseRgb) return colorStr;
+
+    // Solid / Clean Luminous: 94% on top to 84% on bottom - eliminates murky black center wash
+    return `linear-gradient(170deg, rgba(${baseRgb}, 0.94) 0%, rgba(${baseRgb}, 0.84) 100%)`;
 }
 
 function updateGridVisuals() {
