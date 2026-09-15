@@ -260,37 +260,16 @@ function updateIsotopesView(atomicNumber) {
             <span class="cell-value" style="color: #ffffff;">${compactHalfLife}</span>
         `;
         
-        item.onmouseenter = () => {
-            if (!item.classList.contains('selected')) {
-                item.style.borderColor = '#00d4ff';
-                item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.6), 0 8px 18px rgba(0, 212, 255, 0.4), inset 0 0 10px ${indicatorColor}33`;
-                item.style.transform = 'scale(1.08) translateY(-2px)';
-                item.style.zIndex = '10';
-            }
-        };
-        item.onmouseleave = () => {
-            if (!item.classList.contains('selected')) {
-                item.style.borderColor = indicatorColor;
-                item.style.boxShadow = '';
-                item.style.transform = 'none';
-                item.style.zIndex = '1';
-            }
-        };
-        
         item.onclick = () => {
             document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 el.classList.remove('selected');
                 const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.2)';
                 el.style.borderColor = mColor;
                 el.style.boxShadow = '';
-                el.style.transform = 'none';
-                el.style.zIndex = '1';
+                el.style.transform = '';
+                el.style.zIndex = '';
             });
             item.classList.add('selected');
-            item.style.borderColor = '#00d4ff';
-            item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
-            item.style.transform = 'scale(1.04)';
-            item.style.zIndex = '8';
             item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             renderIsotopeDetails(index);
         };
@@ -318,9 +297,6 @@ function updateIsotopesView(atomicNumber) {
     const firstItem = listContainer.querySelector('.iso-element-cell, .iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
-        firstItem.style.borderColor = '#00d4ff';
-        firstItem.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
-        firstItem.style.transform = 'scale(1.04)';
     }
     renderIsotopeDetails(0);
     

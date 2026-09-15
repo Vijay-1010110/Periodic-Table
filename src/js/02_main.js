@@ -1055,8 +1055,8 @@ function renderGrid() {
             grid-column: 3;
             grid-row: 7;
             border: 2px dashed #0284c7 !important;
-            background: rgba(2, 132, 199, 0.4) !important;
-            border-radius: 0px;
+            background: linear-gradient(145deg, rgba(56, 189, 248, 0.5) 0%, rgba(2, 132, 199, 0.4) 48%, rgba(1, 60, 95, 0.5) 100%) !important;
+            border-radius: 0px !important;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1064,7 +1064,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 0 0 15px rgba(2, 132, 199, 0.4), 0 0 12px rgba(2, 132, 199, 0.5);
+            box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 0 rgba(0, 0, 0, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.55), 0 0 12px rgba(2, 132, 199, 0.4);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1090,8 +1090,8 @@ function renderGrid() {
             grid-column: 3;
             grid-row: 8;
             border: 2px dashed #c026d3 !important;
-            background: rgba(192, 38, 211, 0.4) !important;
-            border-radius: 0px;
+            background: linear-gradient(145deg, rgba(232, 121, 249, 0.5) 0%, rgba(192, 38, 211, 0.4) 48%, rgba(90, 15, 100, 0.5) 100%) !important;
+            border-radius: 0px !important;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1099,7 +1099,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 0 0 15px rgba(192, 38, 211, 0.4), 0 0 12px rgba(192, 38, 211, 0.5);
+            box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 0 rgba(0, 0, 0, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.55), 0 0 12px rgba(192, 38, 211, 0.4);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1237,31 +1237,52 @@ function getGradientColor(value, propName) {
 function getGlossyBackground(colorStr, category = '') {
     if (!colorStr) return 'rgba(255,255,255,0.08)';
     
-    let baseRgb = '';
+    let r = 100, g = 100, b = 100;
+    let hasRgb = false;
 
-    if (colorStr.startsWith('hsl')) {
-        const match = colorStr.match(/hsla?\(([^)]+)\)/);
-        if (match) {
-            return `linear-gradient(170deg, hsla(${match[1]}, 0.94) 0%, hsla(${match[1]}, 0.85) 100%)`;
-        }
+    if (colorStr.startsWith('#')) {
+        let hex = colorStr.replace('#', '');
+        if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+        hasRgb = true;
     } else if (colorStr.startsWith('rgb')) {
         const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
         if (match) {
-            baseRgb = `${match[1]},${match[2]},${match[3]}`;
+            r = parseInt(match[1]);
+            g = parseInt(match[2]);
+            b = parseInt(match[3]);
+            hasRgb = true;
         }
-    } else {
-        let hex = colorStr.replace('#', '');
-        if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
-        baseRgb = `${r},${g},${b}`;
+    } else if (colorStr.startsWith('hsl')) {
+        const match = colorStr.match(/hsla?\((\d+),\s*(\d+)%?,\s*(\d+)%?/);
+        if (match) {
+            const h = parseInt(match[1]);
+            const s = parseInt(match[2]);
+            const l = parseInt(match[3]);
+            const lLight = Math.min(100, Math.round(l + 18));
+            const lDark = Math.max(0, Math.round(l - 18));
+            return `linear-gradient(145deg, hsl(${h}, ${s}%, ${lLight}%) 0%, hsl(${h}, ${s}%, ${l}%) 48%, hsl(${h}, ${s}%, ${lDark}%) 100%)`;
+        }
     }
 
-    if (!baseRgb) return colorStr;
+    if (hasRgb) {
+        // Directional Light Gradient for 2.5D Fake Depth:
+        // Top-left illuminated highlight (35% brighter tint towards light source)
+        const lr = Math.min(255, Math.round(r + (255 - r) * 0.35));
+        const lg = Math.min(255, Math.round(g + (255 - g) * 0.35));
+        const lb = Math.min(255, Math.round(b + (255 - b) * 0.35));
 
-    // Solid / Clean Luminous: 94% on top to 84% on bottom - eliminates murky black center wash
-    return `linear-gradient(170deg, rgba(${baseRgb}, 0.94) 0%, rgba(${baseRgb}, 0.84) 100%)`;
+        // Bottom-right shadow (38% deeper shade for pronounced 3D depth)
+        const dr = Math.round(r * 0.62);
+        const dg = Math.round(g * 0.62);
+        const db = Math.round(b * 0.62);
+
+        return `linear-gradient(145deg, rgb(${lr}, ${lg}, ${lb}) 0%, rgb(${r}, ${g}, ${b}) 48%, rgb(${dr}, ${dg}, ${db}) 100%)`;
+    }
+
+    return colorStr;
 }
 
 function updateGridVisuals() {
