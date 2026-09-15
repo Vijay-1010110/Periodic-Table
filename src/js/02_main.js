@@ -409,16 +409,16 @@ function getGridPosition(z) {
 
 // Category Colors (Full Spectrum High Contrast & Distinct Hues)
 const categoryColors = {
-    'Alkali metal': '#ef4444',        // Pure Red
-    'Alkaline earth metal': '#f97316', // Bright Orange
-    'Transition metal': '#6366f1',     // Indigo Blue
-    'Post-transition metal': '#0284c7',// Steel Blue
-    'Metalloid': '#eab308',            // Canary Yellow / Gold
-    'Reactive nonmetal': '#22c55e',    // Lime Green
-    'Noble gas': '#06b6d4',            // Electric Cyan
-    'Lanthanide': '#ec4899',           // Hot Pink / Magenta
-    'Actinide': '#a855f7',             // Deep Violet Purple
-    'Unknown': '#64748b'              // Slate Gray
+    'Alkali metal': '#f43f5e',        // Vivid Ruby Red / Coral
+    'Alkaline earth metal': '#f97316', // Warm Vivid Sunset Orange
+    'Transition metal': '#4f46e5',     // Vibrant Electric Royal Blue / Indigo
+    'Post-transition metal': '#0284c7',// Bright Azure / Cerulean Blue
+    'Metalloid': '#f59e0b',            // Radiant Amber Gold
+    'Reactive nonmetal': '#10b981',    // Vibrant Emerald / Lime Green
+    'Noble gas': '#06b6d4',            // Electric Neon Cyan
+    'Lanthanide': '#ec4899',           // Hot Fuchsia Pink / Magenta
+    'Actinide': '#a855f7',             // Vivid Deep Violet Purple
+    'Unknown': '#64748b'              // Sleek Silver Slate
 };
 
 // Unified State Colors (Distinct Neon Hues 100% Matched to Legend & Symbol Text)
@@ -1234,7 +1234,7 @@ function getGradientColor(value, propName) {
 }
 
 function getGlossyBackground(colorStr, category = '') {
-    if (!colorStr) return 'rgba(255,255,255,0.02)';
+    if (!colorStr) return 'rgba(255,255,255,0.05)';
     
     const cat = category.toLowerCase();
     const isMetal = cat.includes('metal') || cat.includes('lanthanide') || cat.includes('actinide');
@@ -1260,27 +1260,27 @@ function getGlossyBackground(colorStr, category = '') {
     }
 
     if (isMetal) {
-        // Metallic: Hard diagonal gradient of the SAME color, from bright to dark
+        // Metallic: Rich diagonal luster with luminous saturation across the whole tile (no black center hole)
         if (baseHsl) {
-            return `linear-gradient(135deg, hsla(${baseHsl}, 0.8) 0%, hsla(${baseHsl}, 0.1) 50%, hsla(${baseHsl}, 0.3) 100%)`;
+            return `linear-gradient(135deg, hsla(${baseHsl}, 0.72) 0%, hsla(${baseHsl}, 0.44) 48%, hsla(${baseHsl}, 0.58) 100%)`;
         } else {
-            return `linear-gradient(135deg, rgba(${baseRgb}, 0.8) 0%, rgba(${baseRgb}, 0.1) 50%, rgba(${baseRgb}, 0.3) 100%)`;
+            return `linear-gradient(135deg, rgba(${baseRgb}, 0.72) 0%, rgba(${baseRgb}, 0.44) 48%, rgba(${baseRgb}, 0.58) 100%)`;
         }
     } 
     else if (isGas) {
-        // Gaseous: Bright center, fading to dark edges
+        // Gaseous: Neon glowing core with vibrant saturated edges
         if (baseHsl) {
-            return `radial-gradient(circle at 50% 50%, hsla(${baseHsl}, 0.8) 0%, hsla(${baseHsl}, 0.1) 80%)`;
+            return `radial-gradient(circle at 50% 35%, hsla(${baseHsl}, 0.80) 0%, hsla(${baseHsl}, 0.52) 65%, hsla(${baseHsl}, 0.42) 100%)`;
         } else {
-            return `radial-gradient(circle at 50% 50%, rgba(${baseRgb}, 0.8) 0%, rgba(${baseRgb}, 0.1) 80%)`;
+            return `radial-gradient(circle at 50% 35%, rgba(${baseRgb}, 0.80) 0%, rgba(${baseRgb}, 0.52) 65%, rgba(${baseRgb}, 0.42) 100%)`;
         }
     } 
     else {
-        // Matte / Solid Non-metal: Smooth top-to-bottom
+        // Metalloid / Non-metal: Rich, luminous vertical saturation
         if (baseHsl) {
-            return `linear-gradient(180deg, hsla(${baseHsl}, 0.6) 0%, hsla(${baseHsl}, 0.1) 100%)`;
+            return `linear-gradient(180deg, hsla(${baseHsl}, 0.70) 0%, hsla(${baseHsl}, 0.48) 55%, hsla(${baseHsl}, 0.40) 100%)`;
         } else {
-            return `linear-gradient(180deg, rgba(${baseRgb}, 0.6) 0%, rgba(${baseRgb}, 0.1) 100%)`;
+            return `linear-gradient(180deg, rgba(${baseRgb}, 0.70) 0%, rgba(${baseRgb}, 0.48) 55%, rgba(${baseRgb}, 0.40) 100%)`;
         }
     }
 }
