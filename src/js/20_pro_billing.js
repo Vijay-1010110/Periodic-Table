@@ -137,6 +137,10 @@
                 calloutEl.innerHTML = `You discovered <strong>${featureName}</strong>! Unlock this and all advanced visualizers with Periodica 3D Pro.`;
             } else {
                 calloutEl.innerHTML = `Unlock 3D Quantum Orbitals, Nuclear Isotopes, Reactions Balancer, 3D Crystals, and all 12+ periodic heatmaps!`;
+        if (window.PeriodicaNativeBilling && typeof window.PeriodicaNativeBilling.getProductPrice === 'function') {
+            const livePrice = window.PeriodicaNativeBilling.getProductPrice();
+            if (livePrice && typeof window.onNativeProductPrice === 'function') {
+                window.onNativeProductPrice(livePrice);
             }
         }
 
@@ -218,6 +222,16 @@
             // User cancelled Google Play purchase sheet
         } else if (status === 'error') {
             console.warn('[Billing Error]', msg);
+        }
+    };
+
+    window.onNativeProductPrice = function (priceStr) {
+        if (!priceStr) return;
+        const priceEl = document.getElementById('pro-pricing-display');
+        if (priceEl) priceEl.textContent = priceStr;
+        const buyBtn = document.querySelector('.pro-btn-buy');
+        if (buyBtn) {
+            buyBtn.innerHTML = `<span>⭐</span> Unlock Lifetime Pro (${priceStr})`;
         }
     };
 
