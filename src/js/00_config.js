@@ -40,8 +40,8 @@ window.AppConfig = {
         playStoreTitle: "Periodica 3D: Periodic Table",
         version: "4.3.2",
         bundleId: "com.periodica.app",
-        developerName: "Vijay Vishwakarma",
-        contactEmail: "vijayvishwakarma2532002@gmail.com",
+        developerName: "Vijay-1010110",
+        contactEmail: "periodicax.support@gmail.com",
         privacyPolicyUrl: "https://periodica-3d.web.app/privacy-policy"
     },
 

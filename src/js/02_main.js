@@ -4738,7 +4738,7 @@ function openLegalDoc(type) {
             <h4 style="color:#00d4ff; margin:16px 0 6px;">3. In-App Purchases & Subscriptions</h4>
             <p>All optional Pro subscriptions and "Remove Ads" purchases are processed directly by Google Play or Apple App Store. We do not process or store any financial or billing data.</p>
             <h4 style="color:#00d4ff; margin:16px 0 6px;">4. Contact</h4>
-            <p>Questions or inquiries: <a href="mailto:vijayvishwakarma2532002@gmail.com" style="color:#00d4ff;">vijayvishwakarma2532002@gmail.com</a></p>
+            <p>Questions or inquiries: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff;">periodicax.support@gmail.com</a></p>
         `;
     } else if (type === 'terms') {
         titleEl.innerHTML = '📜 Terms of Use & Conditions';
@@ -4756,7 +4756,7 @@ function openLegalDoc(type) {
             <h4 style="color:#00d4ff; margin:16px 0 6px;">4. Limitation of Liability</h4>
             <p>To the maximum extent permitted by law, the developers and distributors assume no liability for any direct or indirect damages, experimental failure, or laboratory incidents resulting from reliance on the data.</p>
             <h4 style="color:#00d4ff; margin:16px 0 6px;">5. Contact & Corrections</h4>
-            <p>For inquiries or scientific data corrections: <a href="mailto:vijayvishwakarma2532002@gmail.com" style="color:#00d4ff;">vijayvishwakarma2532002@gmail.com</a></p>
+            <p>For inquiries or scientific data corrections: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff;">periodicax.support@gmail.com</a></p>
         `;
     } else if (type === 'disclaimer') {
         titleEl.innerHTML = '⚠️ Scientific Data & Accuracy Disclaimer';
@@ -4784,7 +4784,7 @@ function openLegalDoc(type) {
             <p><strong>PERIODICA 3D IS NOT A CERTIFIED SAFETY PROTOCOL OR CLINICAL TOOL.</strong></p>
             <p>Never rely on this application as a substitute for verified Material Safety Data Sheets (MSDS/SDS), certified laboratory safety procedures, medical diagnoses, chemical synthesis safety, or radiological protection.</p>
             <h4 style="color:#00d4ff; margin:14px 0 6px;">4. Report Data Inaccuracies</h4>
-            <p>We welcome submissions from researchers and educators to continuously improve accuracy. Submit verified citations to: <a href="mailto:vijayvishwakarma2532002@gmail.com" style="color:#00d4ff; font-weight:600;">vijayvishwakarma2532002@gmail.com</a></p>
+            <p>We welcome submissions from researchers and educators to continuously improve accuracy. Submit verified citations to: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff; font-weight:600;">periodicax.support@gmail.com</a></p>
         `;
     } else if (type === 'licenses') {
         titleEl.innerHTML = '⚖️ Open Source & Third-Party Licenses';
@@ -5196,7 +5196,7 @@ function submitRating() {
         if (text) {
             console.log('User Feedback:', text);
             // Optionally mailto
-            window.open(`mailto:vijayvishwakarma2532002@gmail.com?subject=Periodica Feedback (${selectedRatingStars} Stars)&body=${encodeURIComponent(text)}`, '_system');
+            window.open(`mailto:periodicax.support@gmail.com?subject=Periodica Feedback (${selectedRatingStars} Stars)&body=${encodeURIComponent(text)}`, '_system');
         }
     }
     closeRateUsModal();
