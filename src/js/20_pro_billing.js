@@ -122,6 +122,7 @@
                 'crystals': '3D Crystal Lattices & Bravais Unit Cells',
                 'compare': 'Element Comparison Radar & Trend Analytics',
                 'quiz': 'Chemistry Quiz Challenge & Mastery Tracking',
+                'simulations': 'Simulation Lab (Nuclear Chain Reactions, Decays & Molecular Dynamics)',
                 'electronegativity': 'Electronegativity Periodic Heatmap',
                 'ionizationEnergy': 'Multi-Tier Ionization Energy Heatmap',
                 'atomicRadius': 'Empirical Atomic Radius Heatmap',
@@ -137,6 +138,9 @@
                 calloutEl.innerHTML = `You discovered <strong>${featureName}</strong>! Unlock this and all advanced visualizers with Periodica 3D Pro.`;
             } else {
                 calloutEl.innerHTML = `Unlock 3D Quantum Orbitals, Nuclear Isotopes, Reactions Balancer, 3D Crystals, and all 12+ periodic heatmaps!`;
+            }
+        }
+
         if (window.PeriodicaNativeBilling && typeof window.PeriodicaNativeBilling.getProductPrice === 'function') {
             const livePrice = window.PeriodicaNativeBilling.getProductPrice();
             if (livePrice && typeof window.onNativeProductPrice === 'function') {

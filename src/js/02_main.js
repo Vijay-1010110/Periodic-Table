@@ -858,6 +858,9 @@ function switchView(viewId, updateHash = true, pushHistory = true) {
     if (typeof window.stopCrystalViewer === 'function') {
         if (viewId !== 'crystals') window.stopCrystalViewer();
     }
+    if (window.simPlaybackController && typeof window.simPlaybackController.pause === 'function') {
+        if (viewId !== 'simulations') window.simPlaybackController.pause();
+    }
 
     if (viewId === 'electrons') {
         const isMobile = (window.innerWidth <= 1000 || window.innerHeight <= 520);
@@ -908,6 +911,10 @@ function switchView(viewId, updateHash = true, pushHistory = true) {
         if (typeof initCompareView === 'function') initCompareView();
     } else if (viewId === 'quiz') {
         if (typeof initQuizView === 'function') initQuizView();
+    } else if (viewId === 'simulations') {
+        if (window.simPlaybackController && typeof window.simPlaybackController.initUI === 'function') {
+            window.simPlaybackController.initUI();
+        }
     }
 
     // Update social preview image, page title & meta descriptions dynamically
@@ -951,6 +958,10 @@ function handleHashRouting() {
         'crystal': 'crystals',
         'compare': 'compare',
         'quiz': 'quiz',
+        'simulations': 'simulations',
+        'simulation': 'simulations',
+        'simlab': 'simulations',
+        'sim': 'simulations',
         'properties': 'main',
         'property': 'main',
         'main': 'main'
@@ -4198,7 +4209,8 @@ function isAnyModalOpen() {
         'settings-modal', 'wiki-modal', 'legal-doc-modal', 'table-type-modal',
         'card-anatomy-modal', 'temp-converter-modal', 'rate-us-modal',
         'app-update-modal', 'orbital-visualizer-modal', 'decay-explanation-modal',
-        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal'
+        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal',
+        'env-pressure-modal'
     ];
     for (let i = 0; i < modalIds.length; i++) {
         const el = document.getElementById(modalIds[i]);
@@ -4244,7 +4256,8 @@ function initModalSliderObserver() {
         'settings-modal', 'wiki-modal', 'legal-doc-modal', 'table-type-modal',
         'card-anatomy-modal', 'temp-converter-modal', 'rate-us-modal',
         'app-update-modal', 'orbital-visualizer-modal', 'decay-explanation-modal',
-        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal'
+        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal',
+        'env-pressure-modal'
     ];
     const observer = new MutationObserver(() => {
         syncNativeSliderVisibility();
@@ -5621,6 +5634,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         syncNativeSliderVisibility();
     }, 300);
+
+    setTimeout(() => {
+        syncNativeSliderVisibility();
+    }, 800);
 
     // Automatic Startup Update Check
     setTimeout(() => {

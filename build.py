@@ -44,7 +44,12 @@ def build():
         'src/js/02_main.js',
         'src/js/03_orbitals.js',
         'src/js/18_mcp_bridge.js',
-        'src/js/20_pro_billing.js'
+        'src/js/20_pro_billing.js',
+        'src/js/21_environment_pressure_sim.js',
+        'src/js/22_chain_reaction_sim.js',
+        'src/js/23_decay_particle_sim.js',
+        'src/js/24_molecule_physics_sim.js',
+        'src/js/25_simulation_controls.js'
     ]
     js_content = ""
     for jf in js_files:

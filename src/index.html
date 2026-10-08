@@ -238,6 +238,11 @@
                 <span class="nav-text">Quiz</span>
                 <span class="nav-pro-pill">PRO</span>
             </button>
+            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab">
+                <span class="nav-icon">🪐</span>
+                <span class="nav-text">Sim Lab</span>
+                <span class="nav-pro-pill">PRO</span>
+            </button>
             <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
                 <span class="nav-icon">🔄</span>
                 <span class="nav-text">Rotate</span>
@@ -285,6 +290,7 @@
             <button class="nav-btn" data-view="crystals">Crystals <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="compare">Compare <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="quiz">Quiz <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span></button>
         </div>
         <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
             <div class="search-box">
@@ -1216,6 +1222,54 @@
             <div class="view-right sidebar" id="quiz-sidebar" style="display:none;"></div>
         </section>
 
+        <!-- VIEW: SIMULATIONS (SIM LAB PRO) -->
+        <section class="view-mode" id="view-simulations">
+            <div class="sim-header-bar">
+                <div class="sim-tabs-row">
+                    <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
+                        <span>⚛️</span> Chain Reaction
+                    </button>
+                    <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
+                        <span>☢️</span> Particle Decay
+                    </button>
+                    <button class="sim-tab-btn" data-sim="molecule" onclick="switchSimTab('molecule')">
+                        <span>🧬</span> Molecule Physics
+                    </button>
+                    <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
+                        <span>🌍</span> Extreme Phase Lab
+                    </button>
+                </div>
+
+                <!-- Game-Grade Simulation Controls -->
+                <div class="sim-playback-deck">
+                    <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
+                    <button id="sim-btn-step" class="sim-ctrl-btn" onclick="stepSimFrame()" title="Step Forward 1 Frame">⏭️</button>
+                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Chamber / Geometry">🔄</button>
+                    <select id="sim-speed-select" class="sim-speed-select" onchange="changeSimSpeed(this.value)" title="Simulation Speed">
+                        <option value="0.1">0.1x (Slow-Mo)</option>
+                        <option value="0.25">0.25x</option>
+                        <option value="0.5">0.5x</option>
+                        <option value="1.0" selected>1.0x (Normal)</option>
+                        <option value="2.0">2.0x (Fast)</option>
+                        <option value="5.0">5.0x (Hyper)</option>
+                    </select>
+                    <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
+                </div>
+            </div>
+
+            <div class="sim-workspace">
+                <div class="sim-viewport-stage">
+                    <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
+                    <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
+                    <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
+                    <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
+                </div>
+                <div class="sim-tuning-pane" id="sim-tuning-pane">
+                    <!-- Dynamic Parameters populated by renderTuningPanel() -->
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- JS_DATA_INJECT -->
@@ -1540,6 +1594,66 @@
         </div>
     </div>
 
+    <!-- ===================== ENVIRONMENTAL CONDITIONS & PRESSURE MODAL ===================== -->
+    <div id="env-pressure-modal" class="temp-converter-overlay" style="display:none;" onclick="if(event.target===this)closeEnvPressureModal()">
+        <div class="temp-converter-card" style="max-width:540px;">
+            <div class="temp-converter-header">
+                <h3>🪐 Environmental Conditions & Pressure</h3>
+                <button class="temp-converter-close-btn" onclick="closeEnvPressureModal()">&times;</button>
+            </div>
+            <div class="temp-converter-body">
+                <p class="temp-converter-desc">Explore elements under cosmic vacuums, deep-sea abyss hydrostatic pressures, planetary atmospheres, and laser-heated diamond anvil cells.</p>
+                
+                <!-- Cosmic & Laboratory Presets -->
+                <div class="converter-presets-wrap" style="margin-bottom:14px;">
+                    <span class="presets-title">🌌 Environmental Benchmarks:</span>
+                    <div class="presets-buttons-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+                        <button class="preset-btn" onclick="applyEnvModalPreset('earth_stp')">🌍 Earth STP</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('deep_space')">🌌 Deep Space</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('mars_surface')">🪐 Mars Surface</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('mariana_trench')">🌊 Mariana Abyss</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('diamond_anvil')">💎 Diamond Anvil</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('earth_core')">🌋 Earth Core</button>
+                    </div>
+                </div>
+
+                <!-- Live Sliders -->
+                <div style="display:flex; flex-direction:column; gap:12px; background:rgba(0,0,0,0.25); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8; margin-bottom:4px;">
+                            <span>Temperature:</span>
+                            <span id="env-modal-temp-display" class="mono-text" style="color:#00d4ff; font-weight:700;">298 K</span>
+                        </div>
+                        <input type="range" id="env-modal-temp-slider" min="0" max="6000" value="298" class="sim-range-slider" oninput="updateEnvModalState()">
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8; margin-bottom:4px;">
+                            <span>Pressure:</span>
+                            <span id="env-modal-press-display" class="mono-text" style="color:#10b981; font-weight:700;">1.00 atm</span>
+                        </div>
+                        <input type="range" id="env-modal-press-slider" min="-12" max="9" step="0.2" value="0" class="sim-range-slider" oninput="updateEnvModalState()">
+                    </div>
+                </div>
+
+                <!-- Phase Readout for Selected Element -->
+                <div id="env-modal-phase-card" style="margin-top:14px; padding:10px 14px; background:rgba(0, 212, 255, 0.06); border:1px solid rgba(0, 212, 255, 0.25); border-radius:10px; display:flex; align-items:center; justify-content:space-between;">
+                    <div>
+                        <div style="font-size:0.75rem; color:#94a3b8;" id="env-modal-target-element">Target Element: Carbon (C, Z=6)</div>
+                        <div style="font-size:0.95rem; font-weight:800; color:#ffffff;" id="env-modal-phase-label">Phase: SOLID (Graphite / Diamond)</div>
+                    </div>
+                    <span id="env-modal-phase-badge" style="font-size:0.7rem; font-family:var(--font-mono); font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(0,212,255,0.2); color:#00d4ff;">SOLID</span>
+                </div>
+            </div>
+            <div class="temp-converter-footer" style="display:flex; justify-content:space-between; gap:10px;">
+                <button class="temp-cancel-btn" onclick="closeEnvPressureModal()">Close</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="temp-apply-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0;" onclick="applyEnvModalToTable()">Apply to Table</button>
+                    <button class="temp-apply-btn" style="background:linear-gradient(135deg, #00d4ff, #0284c7); color:#000; font-weight:800;" onclick="launchEnvToSimLab()">🔬 Open Sim Lab</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===================== PERIODICA 3D PRO PAYWALL MODAL ===================== -->
     <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this)closeProPaywallModal()">
         <div class="pro-modal-card">
@@ -1603,6 +1717,13 @@
                         <div class="pro-feat-text">
                             <span class="pro-feat-name">Chemistry Quiz Lab</span>
                             <span class="pro-feat-desc">Mastery streak tracker & challenge mode</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🪐</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Physics Simulation Lab</span>
+                            <span class="pro-feat-desc">Nuclear chain reactions, particle decays & molecular dynamics</span>
                         </div>
                     </div>
                     <div class="pro-feat-item">

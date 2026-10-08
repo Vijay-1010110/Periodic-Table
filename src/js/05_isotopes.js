@@ -82,6 +82,1183 @@ function formatCompactHalfLife(iso) {
 }
 
 /**
+ * Comprehensive Nuclear Decay Explanations Dictionary for Educational Popups
+ */
+const decayExplanationsData = {
+    'Stable': {
+        title: 'Stable Nuclides & Valley of Stability',
+        badge: '🟢',
+        badgeColor: '#4ade80',
+        subtitle: 'Ground-State Non-Decaying Isotopes (252 Known)',
+        nuclideCount: '252 Stable Nuclides across 80 Elements',
+        equationText: 'AZX ➔ Indefinitely Stable (No Spontaneous Decay)',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '0' },
+            { label: 'Mass Change (ΔA)', val: '0' },
+            { label: 'Radiation', val: 'None' },
+            { label: 'Half-Life', val: '∞ (Infinite)' }
+        ],
+        mechanism: 'Stable nuclides lie along the <strong>Valley of Stability</strong> (or line of beta-stability), where the strong nuclear attractive force perfectly balances electrostatic Coulomb repulsion among protons. For light nuclei (Z ≤ 20), stability occurs at N/Z ≈ 1.0 (e.g. ¹²C, ¹⁶O). For heavy nuclei, neutron excess increases to N/Z ≈ 1.5 (e.g. ²⁰⁸Pb) to overcome proton-proton repulsion. Nuclei with magic nucleon counts (2, 8, 20, 28, 50, 82, 126) possess completely filled nuclear shells and maximum binding energy per nucleon.',
+        examples: [
+            { parent: '¹²₆C (Carbon-12)', daughter: 'Stable (98.93% Abundance)', note: 'Universal atomic mass standard' },
+            { parent: '⁵⁶₂₆Fe (Iron-56)', daughter: 'Stable (91.75% Abundance)', note: 'Peak nuclear binding energy' },
+            { parent: '²⁰⁸₈₂Pb (Lead-208)', daughter: 'Stable (Double Magic: Z=82, N=126)', note: 'Heaviest stable nuclide' }
+        ]
+    },
+    'Radioactive': {
+        title: 'Radioisotopes & Spontaneous Transmutation',
+        badge: '☢️',
+        badgeColor: '#ef4444',
+        subtitle: 'Unstable Nuclei Undergoing Radioactive Decay (2,900+ Known)',
+        nuclideCount: '2,900+ Radioactive Nuclides across All 118 Elements',
+        equationText: 'N(t) = N₀ · e^(-λt) = N₀ · (½)^(t / t½)',
+        metrics: [
+            { label: 'Primary Cause', val: 'N/Z Imbalance' },
+            { label: 'Decay Law', val: 'Exponential' },
+            { label: 'Decay Modes', val: 'α, β⁻, β⁺/EC, SF, p, n' },
+            { label: 'Half-Lives', val: '10⁻²² s to 10²⁴ yr' }
+        ],
+        mechanism: 'Radioisotopes possess an unfavorable ratio of neutrons to protons (N/Z) or excessive nuclear mass (all elements with Z ≥ 83 have no stable isotopes). To reach a lower ground-state energy, the unstable nucleus spontaneously emits ionizing radiation (alpha particles, beta electrons/positrons, gamma photons, neutrons, or undergoes spontaneous fission). Radioisotopes decay according to first-order exponential kinetics governed by their unique half-life (t½).',
+        examples: [
+            { parent: '¹⁴₆C (Carbon-14)', daughter: '¹⁴₇N + e⁻ + ν̅e (t½ = 5,730 yr)', note: 'Archaeological radiocarbon dating' },
+            { parent: '⁶⁰₂₇Co (Cobalt-60)', daughter: '⁶⁰₂₈Ni + e⁻ + γ (t½ = 5.27 yr)', note: 'Industrial radiography & radiotherapy' },
+            { parent: '²³⁸₉₂U (Uranium-238)', daughter: '²⁰⁶₈₂Pb (t½ = 4.468 × 10⁹ yr)', note: 'Decay chain dating of Earth\'s crust' }
+        ]
+    },
+    'Alpha': {
+        title: 'Alpha Decay (α Emission)',
+        badge: 'α',
+        badgeColor: '#facc15',
+        subtitle: 'Helium-4 Nucleus Ejection via Quantum Tunneling',
+        nuclideCount: '436 Alpha-Emitting Nuclides',
+        equationText: 'AZX ➔ A-4Z-2Y + ⁴₂He²⁺ + Q (Energy)',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '-2' },
+            { label: 'Mass Change (ΔA)', val: '-4' },
+            { label: 'Emitted Particle', val: '⁴₂He²⁺ (Alpha)' },
+            { label: 'Penetration Power', val: 'Low (Stopped by paper)' }
+        ],
+        mechanism: 'In heavy nuclei (predominantly Z ≥ 83), two protons and two neutrons pre-form into an extremely tightly bound ⁴He cluster inside the nucleus. According to Gamow Theory, the alpha particle escapes by <strong>quantum mechanical tunneling</strong> through the Coulomb electrostatic barrier. Alpha particles are heavy, doubly charged (+2e), and possess very high Linear Energy Transfer (LET) and ionization density, but can be stopped by a sheet of paper or outer skin layer.',
+        examples: [
+            { parent: '²³⁸₉₂U (Uranium-238)', daughter: '²³⁴₉₀Th + ⁴₂He (4.27 MeV, t½ = 4.47×10⁹ y)', note: 'Geological timescale nuclear fuel' },
+            { parent: '²⁴¹₉₅Am (Americium-241)', daughter: '²³⁷₉₃Np + ⁴₂He (5.49 MeV, t½ = 432.2 y)', note: 'Commercial ionization smoke detectors' },
+            { parent: '²²⁶₈₈Ra (Radium-226)', daughter: '²²²₈₆Rn + ⁴₂He (4.87 MeV, t½ = 1,600 y)', note: 'Historically discovered by Marie Curie' }
+        ]
+    },
+    'Beta-': {
+        title: 'Beta-Minus Decay (β⁻ Emission)',
+        badge: 'β⁻',
+        badgeColor: '#38bdf8',
+        subtitle: 'Neutron-to-Proton Transmutation via Weak Force',
+        nuclideCount: '1,204 Beta-Minus Nuclides',
+        equationText: 'AZX ➔ AZ+1Y + e⁻ + ν̅e + Q (n ➔ p + e⁻ + ν̅e)',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '+1' },
+            { label: 'Mass Change (ΔA)', val: '0' },
+            { label: 'Emitted Particles', val: 'e⁻ (Beta) + ν̅e (Antineutrino)' },
+            { label: 'Penetration Power', val: 'Medium (Stopped by aluminum)' }
+        ],
+        mechanism: 'Beta-minus decay occurs in <strong>neutron-rich</strong> nuclides lying above the valley of stability. Mediated by the Weak Nuclear Force (W⁻ boson), a down quark within an excess neutron transforms into an up quark, converting the neutron into a proton: <code>n → p + e⁻ + ν̅e</code>. The emitted electron (beta particle) and electron antineutrino share the continuous decay energy spectrum. Beta radiation is deflected by magnetic fields and can be shielded by several millimeters of aluminum or plastic/acrylic.',
+        examples: [
+            { parent: '¹⁴₆C (Carbon-14)', daughter: '¹⁴₇N + e⁻ + ν̅e (156 keV, t½ = 5,730 y)', note: 'Archaeological dating of organic matter' },
+            { parent: '¹³⁷₅₅Cs (Cesium-137)', daughter: '¹³⁷₅₆Ba + e⁻ + ν̅e (1.17 MeV, t½ = 30.17 y)', note: 'Major fission product & industrial tracer' },
+            { parent: '³₁H (Tritium)', daughter: '³₂He + e⁻ + ν̅e (18.6 keV, t½ = 12.32 y)', note: 'Self-luminous emergency exit signs' }
+        ]
+    },
+    'Beta+': {
+        title: 'Beta-Plus & Electron Capture (β⁺ / EC)',
+        badge: 'β⁺',
+        badgeColor: '#c084fc',
+        subtitle: 'Proton-to-Neutron Transmutation & Positron Annihilation',
+        nuclideCount: '1,148 Beta-Plus / EC Nuclides',
+        equationText: 'AZX ➔ AZ-1Y + e⁺ + νe  OR  AZX + e⁻(orbit) ➔ AZ-1Y + νe',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '-1' },
+            { label: 'Mass Change (ΔA)', val: '0' },
+            { label: 'Emitted Particles', val: 'e⁺ (Positron) / νe (Neutrino)' },
+            { label: 'Annihilation', val: 'Produces 2 × 511 keV γ rays' }
+        ],
+        mechanism: 'Occurs in <strong>proton-rich</strong> nuclides lying below the valley of stability. In β⁺ emission, an up quark converts to a down quark via the weak force (W⁺ boson): <code>p → n + e⁺ + νe</code>. When the decay energy Q is less than 1.022 MeV (2 × 511 keV electron rest mass), <strong>Orbital Electron Capture (EC)</strong> dominates, where an inner K-shell electron is captured by the nucleus: <code>p + e⁻ → n + νe</code>. When emitted positrons encounter atomic electrons, they annihilate to produce two back-to-back 511 keV gamma photons, forming the foundation of PET medical scanning.',
+        examples: [
+            { parent: '¹⁸₉F (Fluorine-18)', daughter: '¹⁸₈O + e⁺ + νe (634 keV, t½ = 109.7 min)', note: 'FDG tracer in clinical PET oncology imaging' },
+            { parent: '²²₁₁Na (Sodium-22)', daughter: '²²₁₀Ne + e⁺ + νe (t½ = 2.60 y)', note: 'Laboratory positron annihilation source' },
+            { parent: '⁷₄Be (Beryllium-7)', daughter: '⁷₃Li + νe (Pure EC, t½ = 53.22 d)', note: 'Cosmogenic tracer in atmospheric physics' }
+        ]
+    },
+    'SF': {
+        title: 'Spontaneous Fission (SF)',
+        badge: 'SF',
+        badgeColor: '#f87171',
+        subtitle: 'Spontaneous Nuclear Rupture into Intermediate Fragments',
+        nuclideCount: '112 Fissile Nuclides',
+        equationText: 'AZX ➔ A1Z1Y1 + A2Z2Y2 + 2-4 neutrons + ~200 MeV',
+        metrics: [
+            { label: 'Fragment Splitting', val: 'Binary asymmetric' },
+            { label: 'Neutron Yield', val: '2 to 4 prompt neutrons' },
+            { label: 'Energy Released', val: '~200 MeV / fission' },
+            { label: 'Occurrence', val: 'Heavy Actinides (Z ≥ 90)' }
+        ],
+        mechanism: 'Spontaneous fission occurs exclusively in very heavy actinide and transactinide nuclei where the Coulomb repulsion between numerous protons overcomes the strong nuclear surface tension (fissility parameter Z²/A ≥ 35). Without requiring any external neutron collision, the distorted nucleus tunnels through the fission barrier, snapping into two intermediate-mass daughter nuclei (e.g. around mass 95 and 140) while ejecting multiple prompt neutrons and ~200 MeV of kinetic and gamma energy.',
+        examples: [
+            { parent: '²⁵²₉₈Cf (Californium-252)', daughter: 'Fission Fragments + 3.76 n (t½ = 2.645 y)', note: 'Powerful portable neutron start-up source' },
+            { parent: '²⁴⁴₉₄Pu (Plutonium-244)', daughter: 'Fission Fragments + k n (t½ = 8.0×10⁷ y)', note: 'Extinct primordial solar system fissiogenic nuclide' },
+            { parent: '²⁸⁶₁₁₂Cn (Copernicium-286)', daughter: 'Fragments (100% SF branch, t½ = 8.4 s)', note: 'Superheavy element decay mode' }
+        ]
+    },
+    'Proton': {
+        title: 'Proton Emission (p-Drip Line)',
+        badge: 'p',
+        badgeColor: '#fb923c',
+        subtitle: 'Direct Proton Ejection Beyond the Proton Drip Line',
+        nuclideCount: '78 Proton Emitter Nuclides',
+        equationText: 'AZX ➔ A-1Z-1Y + ¹₁p (Proton) + Q',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '-1' },
+            { label: 'Mass Change (ΔA)', val: '-1' },
+            { label: 'Separation Energy', val: 'Sp < 0 (Unbound)' },
+            { label: 'Occurrence', val: 'Extreme Proton Drip Line' }
+        ],
+        mechanism: 'Proton emission occurs in exotic, highly proton-rich nuclides lying beyond the <strong>Proton Drip Line</strong>, where the nuclear binding energy for the last proton becomes negative (Sp < 0). In this state, the strong force can no longer bind the outermost valence proton, and it escapes the nucleus by tunneling through the Coulomb barrier. It was first observed in nuclear isomer states and is studied at particle accelerator radioactive ion beam facilities.',
+        examples: [
+            { parent: '⁵³ᵐ₂₇Co (Cobalt-53m)', daughter: '⁵²₂₆Fe + p (1.59 MeV, t½ = 247 ms)', note: 'First discovered proton emitter (1970)' },
+            { parent: '¹⁴⁵₆₉Tm (Thulium-145)', daughter: '¹⁴⁴₆₈Er + p (1.73 MeV, t½ = 3.1 µs)', note: 'Direct ground-state proton emitter' },
+            { parent: '¹¹³₅₃I (Iodine-113)', daughter: '¹¹²₅₂Te + p (t½ = 0.6 µs)', note: 'Accelerator-produced drip-line nuclide' }
+        ]
+    },
+    'Neutron': {
+        title: 'Neutron Emission & Delayed Neutrons',
+        badge: 'n',
+        badgeColor: '#2dd4bf',
+        subtitle: 'Direct & Beta-Delayed Neutron Release',
+        nuclideCount: '110 Neutron Emitter Nuclides',
+        equationText: 'AZX ➔ A-1ZX + ¹₀n (Neutron) + Q',
+        metrics: [
+            { label: 'Proton Change (ΔZ)', val: '0' },
+            { label: 'Mass Change (ΔA)', val: '-1' },
+            { label: 'Coulomb Barrier', val: '0 (Neutral particle)' },
+            { label: 'Nuclear Power Role', val: 'Reactor Prompt-Criticality Control' }
+        ],
+        mechanism: 'Neutron emission occurs beyond the <strong>Neutron Drip Line</strong> (Sn < 0) or as <strong>Beta-Delayed Neutron Emission</strong> (β⁻n). Because neutrons are electrically neutral, there is zero Coulomb barrier to hold them back once the nuclear binding is exceeded, resulting in instantaneous emission (10⁻²² s). In nuclear fission reactors, delayed neutron precursors (like ⁸⁷Br) release neutrons after a small beta-decay delay time (0.1 s to 55 s), providing the essential time window needed for reactor control rods to maintain stable criticality.',
+        examples: [
+            { parent: '⁸⁷₃₅Br (Bromine-87)', daughter: '⁸⁷₃₆Kr* ➔ ⁸⁶₃₆Kr + n (t½ = 55.6 s)', note: 'Critical delayed-neutron precursor in nuclear reactors' },
+            { parent: '⁵₂He (Helium-5)', daughter: '⁴₂He + n (t½ ≈ 7 × 10⁻²² s)', note: 'Extremely prompt unbound resonance' },
+            { parent: '¹³⁷₅₃I (Iodine-137)', daughter: '¹³⁷₅₄Xe* ➔ ¹³⁶₅₄Xe + n (t½ = 24.5 s)', note: 'Key fission product delayed emitter' }
+        ]
+    }
+};
+
+/**
+ * Open the decay process explanation modal
+ */
+function openDecayExplanationModal(decayKey) {
+    const data = decayExplanationsData[decayKey];
+    if (!data) return;
+
+    const modal = document.getElementById('decay-explanation-modal');
+    if (!modal) return;
+
+    const header = document.getElementById('dem-header');
+    const badge = document.getElementById('dem-badge');
+    const title = document.getElementById('dem-title');
+    const subtitle = document.getElementById('dem-subtitle');
+    const body = document.getElementById('dem-body');
+    const footCount = document.getElementById('dem-nuclide-count');
+
+    if (badge) {
+        badge.textContent = data.badge;
+        badge.style.background = `${data.badgeColor}25`;
+        badge.style.color = data.badgeColor;
+        badge.style.border = `1.5px solid ${data.badgeColor}`;
+        badge.style.boxShadow = `0 0 10px ${data.badgeColor}66`;
+    }
+    if (title) title.textContent = data.title;
+    if (subtitle) subtitle.textContent = data.subtitle;
+    if (footCount) footCount.textContent = data.nuclideCount;
+    if (header) {
+        header.style.borderBottom = `1px solid ${data.badgeColor}55`;
+        header.style.background = `linear-gradient(90deg, ${data.badgeColor}15 0%, rgba(9, 14, 26, 0.95) 100%)`;
+    }
+
+    let examplesHtml = '';
+    if (data.examples && data.examples.length > 0) {
+        examplesHtml = `
+            <div class="dem-section">
+                <div class="dem-section-title">
+                    <span>🔬</span> Real-World Examples & Decay Paths
+                </div>
+                ${data.examples.map(ex => `
+                    <div class="dem-example-pill">
+                        <div>
+                            <strong style="color: #ffffff;">${ex.parent}</strong>
+                            <span style="color: #00d4ff; margin: 0 4px;">➔</span>
+                            <span style="color: ${data.badgeColor};">${ex.daughter}</span>
+                        </div>
+                        <span style="font-size: 0.52rem; color: #94a3b8; font-style: italic;">${ex.note}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    let metricsHtml = '';
+    if (data.metrics && data.metrics.length > 0) {
+        metricsHtml = `
+            <div class="dem-metrics-row">
+                ${data.metrics.map(m => `
+                    <div class="dem-metric-card">
+                        <span class="dem-metric-label">${m.label}</span>
+                        <span class="dem-metric-val" style="color: ${data.badgeColor};">${m.val}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    body.innerHTML = `
+        <div class="dem-section">
+            <div class="dem-section-title">
+                <span>⚡</span> Transformation Equation & Key Properties
+            </div>
+            <div class="dem-equation-box" style="border-color: ${data.badgeColor}66; color: ${data.badgeColor};">
+                ${data.equationText}
+            </div>
+            ${metricsHtml}
+        </div>
+
+        <div class="dem-section">
+            <div class="dem-section-title">
+                <span>📖</span> Physical Mechanism & Nuclear Dynamics
+            </div>
+            <div style="font-size: 0.66rem; color: #cbd5e1; line-height: 1.45;">
+                ${data.mechanism}
+            </div>
+        </div>
+
+        ${examplesHtml}
+    `;
+
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+}
+window.openDecayExplanationModal = openDecayExplanationModal;
+
+function closeDecayExplanationModal() {
+    const modal = document.getElementById('decay-explanation-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    }
+}
+window.closeDecayExplanationModal = closeDecayExplanationModal;
+
+/**
+ * Render the in-grid isotope legend & decay mode filter chips.
+ */
+function renderIsotopeLegend(targetElement) {
+    const gridContainer = document.getElementById('iso-in-grid-legend');
+    if (!gridContainer) return;
+
+    const el = targetElement || (typeof selectedElement !== 'undefined' ? selectedElement : null) || (typeof elementsData !== 'undefined' ? elementsData[5] : null);
+    const z = el ? el.atomicNumber : 6;
+    const isos = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z] : [];
+    const stableCount = isos.filter(i => isActuallyStable(i)).length;
+    const totalCount = isos.length;
+    const sym = el ? el.symbol : 'C';
+    const name = el ? el.name : 'Carbon';
+
+    const decayModes = [
+        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)' },
+        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)' },
+        { key: 'Beta+', label: 'β⁺ / EC', color: '#c084fc', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)' },
+        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split' },
+        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)' },
+        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)' }
+    ];
+
+    let html = `
+        <div class="unified-isotope-panel">
+            <div class="iso-legend-header-row">
+                <span class="legend-box-title">
+                    <span style="font-size: 0.70rem;">☢️</span> DECAY MODES & NUCLEAR STABILITY
+                </span>
+                <span class="iso-target-indicator">
+                    TARGET: <strong>${name} (${sym}-${z})</strong> • ${totalCount} Isotopes (${stableCount} Stable)
+                </span>
+            </div>
+            <div class="iso-legend-body">
+                <!-- Left Side: Stability Cards (Stacked full height) -->
+                <div class="iso-stability-column">
+                    <div class="iso-stability-card stable-card" data-decay="Stable" style="background: linear-gradient(135deg, rgba(74,222,128,0.25) 0%, rgba(74,222,128,0.09) 100%) !important; border: 1.5px solid rgba(74,222,128,0.65) !important; box-shadow: 0 0 8px rgba(74,222,128,0.25) !important;">
+                        <div class="iso-stab-header">
+                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; flex-shrink: 0;"></span>
+                            <span class="iso-stab-title" style="color: #4ade80;">STABLE NUCLIDES</span>
+                            <span class="iso-stab-badge" style="color: #ffffff; background: rgba(74,222,128,0.35); border: 1px solid rgba(74,222,128,0.7);">252</span>
+                        </div>
+                        <div class="iso-stab-desc" style="color: #cbd5e1;">Ground-state non-decaying</div>
+                    </div>
+                    <div class="iso-stability-card radio-card" data-decay="Radioactive" style="background: linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.09) 100%) !important; border: 1.5px solid rgba(239,68,68,0.65) !important; box-shadow: 0 0 8px rgba(239,68,68,0.25) !important;">
+                        <div class="iso-stab-header">
+                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px #ef4444; flex-shrink: 0;"></span>
+                            <span class="iso-stab-title" style="color: #ef4444;">RADIOISOTOPES</span>
+                            <span class="iso-stab-badge" style="color: #ffffff; background: rgba(239,68,68,0.35); border: 1px solid rgba(239,68,68,0.7);">2,900+</span>
+                        </div>
+                        <div class="iso-stab-desc" style="color: #cbd5e1;">Spontaneous nuclear decay</div>
+                    </div>
+                </div>
+
+                <!-- Center Divider -->
+                <div class="iso-legend-divider"></div>
+
+                <!-- Right Side: 6 Decay Modes Grid -->
+                <div class="iso-decay-grid">
+    `;
+
+    decayModes.forEach(mode => {
+        html += `
+            <div class="iso-mode-card" data-decay="${mode.key}" style="--mode-color: ${mode.color}; background: linear-gradient(135deg, ${mode.color}35 0%, ${mode.color}12 100%) !important; border: 1.5px solid ${mode.color}77 !important; box-shadow: 0 0 8px ${mode.color}33 !important;">
+                <div class="iso-mode-top">
+                    <span class="iso-mode-pill" style="background: ${mode.color}35; color: #ffffff; border: 1px solid ${mode.color}88; font-weight: 700;">${mode.label}</span>
+                    <span class="iso-mode-count" style="color: #ffffff; font-weight: 800; text-shadow: 0 0 6px ${mode.color};">${mode.count}</span>
+                </div>
+                <span class="iso-mode-sub" style="color: #e2e8f0;">${mode.sub}</span>
+            </div>
+        `;
+    });
+
+    html += `
+                </div>
+            </div>
+        </div>
+    `;
+
+    gridContainer.innerHTML = html;
+
+    // Attach tap & long-press handlers: Tap opens standard decay modal; Long-press opens concept inspector with SVG diagrams!
+    gridContainer.querySelectorAll('.iso-stability-card, .iso-mode-card').forEach(card => {
+        if (typeof window.bindLongPress === 'function') {
+            window.bindLongPress(
+                card,
+                (el) => {
+                    const decayKey = el.dataset.decay;
+                    if (window.openLegendConceptModal) window.openLegendConceptModal(decayKey, 'decay');
+                },
+                (el) => {
+                    const decayKey = el.dataset.decay;
+                    openDecayExplanationModal(decayKey);
+                }
+            );
+        } else {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const decayKey = card.dataset.decay;
+                openDecayExplanationModal(decayKey);
+            });
+        }
+    });
+}
+window.renderIsotopeLegend = renderIsotopeLegend;
+
+function applyIsotopeGridHighlighting() {
+    const decayKey = window.activeDecayHighlight;
+    const grid = document.getElementById('isotopes-grid');
+    if (!grid) return;
+
+    const cells = grid.querySelectorAll('.element-cell[data-z]');
+    if (!decayKey) {
+        cells.forEach(cell => {
+            cell.style.opacity = '1';
+            cell.style.filter = '';
+        });
+        return;
+    }
+
+    cells.forEach(cell => {
+        const z = parseInt(cell.dataset.z, 10);
+        const isos = (typeof isotopeData !== 'undefined' && isotopeData[z]) ? isotopeData[z] : [];
+        let matches = false;
+
+        if (decayKey === 'Stable') {
+            matches = isos.some(i => isActuallyStable(i));
+        } else if (decayKey === 'Radioactive') {
+            matches = isos.some(i => !isActuallyStable(i));
+        } else if (decayKey === 'Alpha') {
+            matches = isos.some(i => (/\bA\b/.test(i.decayMode || '') || (i.decayMode || '').includes('Alpha')));
+        } else if (decayKey === 'Beta-') {
+            matches = isos.some(i => (i.decayMode || '').includes('B-'));
+        } else if (decayKey === 'Beta+') {
+            matches = isos.some(i => ((i.decayMode || '').includes('B+') || (i.decayMode || '').includes('EC')));
+        } else if (decayKey === 'SF') {
+            matches = isos.some(i => (i.decayMode || '').includes('SF'));
+        } else if (decayKey === 'Proton') {
+            matches = isos.some(i => /\bp\b/.test(i.decayMode || ''));
+        } else if (decayKey === 'Neutron') {
+            matches = isos.some(i => /\bn\b/.test(i.decayMode || ''));
+        }
+
+        if (matches) {
+            cell.style.opacity = '1';
+            cell.style.filter = 'brightness(1.2) drop-shadow(0 0 6px rgba(0, 212, 255, 0.4))';
+        } else {
+            cell.style.opacity = '0.18';
+            cell.style.filter = 'grayscale(80%)';
+        }
+    });
+}
+window.applyIsotopeGridHighlighting = applyIsotopeGridHighlighting;
+
+/**
+ * Updates the dedicated Isotope Detail Sidebar in #view-isotopes
+ */
+function updateIsotopeSidebar(atomicNumber, force = false) {
+    if (!atomicNumber || atomicNumber < 1 || atomicNumber > 118) return;
+    
+    const listContainer = document.getElementById('iso-sidebar-list');
+    const curT = (typeof currentTemp !== 'undefined') ? Math.round(currentTemp) : 298;
+    const cacheKey = `${atomicNumber}_${window._currentIsoSort || 'neutrons'}_${window._currentIsoOrder || 'asc'}_${curT}`;
+
+    if (!force && currentAtomicNumber === atomicNumber && window._isoSidebarCacheKey === cacheKey && listContainer && listContainer.children.length > 0) {
+        // Fast-path: isotope sidebar is already rendered and up-to-date!
+        return;
+    }
+    currentAtomicNumber = atomicNumber;
+    window._isoSidebarCacheKey = cacheKey;
+
+    const elData = (typeof elementsData !== 'undefined' && elementsData[atomicNumber - 1]) ? elementsData[atomicNumber - 1] : null;
+    if (!elData) return;
+
+    // Show details, hide empty state
+    const emptyState = document.getElementById('iso-empty-state');
+    const elementCard = document.getElementById('iso-element-card');
+    const details = document.getElementById('iso-details');
+    if (emptyState) emptyState.classList.add('hidden');
+    if (elementCard) elementCard.classList.remove('hidden');
+    if (details) details.classList.remove('hidden');
+
+    if (typeof positionMobileSidebar === 'function') {
+        positionMobileSidebar(null, elData);
+    }
+
+    // Header Card
+    const numEl = document.getElementById('iso-number');
+    const massEl = document.getElementById('iso-mass');
+    const symEl = document.getElementById('iso-symbol');
+    const nameEl = document.getElementById('iso-name');
+    const badgeEl = document.getElementById('iso-series-badge');
+    const dotEl = document.getElementById('iso-state-dot');
+    const stateTextEl = document.getElementById('iso-state-text');
+    const countSummaryEl = document.getElementById('iso-count-summary');
+    const tagsEl = document.getElementById('iso-tags-text');
+
+    if (numEl) numEl.innerText = elData.atomicNumber;
+    if (massEl) massEl.innerText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '-';
+    if (symEl) symEl.innerText = elData.symbol;
+    if (nameEl) nameEl.innerText = elData.name;
+
+    const catName = getNormalizedCategory(elData.category, elData.atomicNumber);
+    const catColor = (typeof categoryColors !== 'undefined') ? (categoryColors[catName] || '#00d4ff') : '#00d4ff';
+    const catText = (elData.category || catName).toUpperCase();
+
+    if (badgeEl) {
+        badgeEl.innerHTML = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${catColor}; box-shadow: 0 0 5px ${catColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${catText}</span>`;
+        badgeEl.style.setProperty('color', '#ffffff', 'important');
+        badgeEl.style.setProperty('border-color', catColor, 'important');
+        const bgGrad = `linear-gradient(135deg, ${window.hexToRgba ? window.hexToRgba(catColor, 0.42) : catColor + '55'} 0%, ${window.hexToRgba ? window.hexToRgba(catColor, 0.18) : catColor + '22'} 100%)`;
+        badgeEl.style.setProperty('background', bgGrad, 'important');
+        const glow = window.hexToRgba ? window.hexToRgba(catColor, 0.50) : catColor + '66';
+        badgeEl.style.setProperty('box-shadow', `0 0 8px ${glow}`, 'important');
+    }
+
+    // State at current temperature
+    let currentState = 'Unknown';
+    if (elData.meltingPoint !== null && elData.meltingPoint !== undefined && elData.boilingPoint !== null && elData.boilingPoint !== undefined) {
+        const curT = (typeof currentTemp !== 'undefined') ? currentTemp : 298;
+        if (curT < elData.meltingPoint) currentState = 'Solid';
+        else if (curT >= elData.meltingPoint && curT < elData.boilingPoint) currentState = 'Liquid';
+        else currentState = 'Gas';
+    }
+
+    const stateColors = {
+        'Solid': '#ffffff',   // Crisp Pure White for solid state
+        'Liquid': '#00f0ff',  // Electric Neon Cyan for liquid
+        'Gas': '#ff0055',     // Vibrant Neon Pink-Red for gas
+        'Unknown': '#94a3b8'  // Muted Slate Silver for unknown
+    };
+    const sColor = stateColors[currentState] || '#ffffff';
+    const stateGlow = (currentState === 'Solid') ? '0 0 7px rgba(255, 255, 255, 0.9)' :
+                      (currentState === 'Liquid') ? '0 0 7px #00f0ff' :
+                      (currentState === 'Gas') ? '0 0 7px #ff0055' : '0 0 4px #94a3b8';
+    const statePillBorder = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.45)' :
+                            (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.55)' :
+                            (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.55)' : 'rgba(148, 163, 184, 0.35)';
+    const statePillBg = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.12)' :
+                        (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.14)' :
+                        (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.14)' : 'rgba(148, 163, 184, 0.10)';
+
+    const isoPill = document.getElementById('iso-state-pill');
+    if (dotEl) {
+        dotEl.style.setProperty('background', sColor, 'important');
+        dotEl.style.setProperty('box-shadow', stateGlow, 'important');
+    }
+    if (stateTextEl) {
+        const curT = (typeof currentTemp !== 'undefined') ? Math.round(currentTemp) : 298;
+        stateTextEl.innerText = `${currentState} (${curT} K)`;
+        stateTextEl.style.setProperty('color', sColor, 'important');
+        stateTextEl.style.setProperty('text-shadow', `0 0 6px ${statePillBorder}`, 'important');
+    }
+    if (isoPill) {
+        isoPill.style.setProperty('border-color', statePillBorder, 'important');
+        isoPill.style.setProperty('background', statePillBg, 'important');
+    }
+
+    // Global filter/sort state for isotopes
+    if (typeof window._currentIsoSort === 'undefined') window._currentIsoSort = 'neutrons';
+    if (typeof window._currentIsoOrder === 'undefined') window._currentIsoOrder = 'asc';
+    window._currentSelectedIsotope = null;
+    if (typeof closeIsotopeDetailPanel === 'function') closeIsotopeDetailPanel();
+
+    // Decay Categories Definition
+    const DECAY_CATEGORIES = {
+        'stable': { label: 'Stable Nuclides', short: 'Stable', color: '#4ade80', order: 1 },
+        'beta-minus': { label: 'Beta-Minus Decay (β⁻)', short: 'β⁻', color: '#38bdf8', order: 2 },
+        'beta-plus': { label: 'Beta-Plus / EC (β⁺/EC)', short: 'β⁺/EC', color: '#c084fc', order: 3 },
+        'alpha': { label: 'Alpha Decay (α)', short: 'α', color: '#facc15', order: 4 },
+        'nucleon': { label: 'Proton / Neutron Emission', short: 'p/n', color: '#fb923c', order: 5 },
+        'fission': { label: 'Spontaneous Fission (SF)', short: 'SF', color: '#f87171', order: 6 },
+        'other': { label: 'Other Decay Modes', short: 'Other', color: '#94a3b8', order: 7 }
+    };
+
+    function getDecayCategoryKey(iso) {
+        if (isActuallyStable(iso)) return 'stable';
+        const mode = iso.decayMode || '';
+        if (mode.includes('B-') || mode.includes('2B-')) return 'beta-minus';
+        if (mode.includes('B+') || mode.includes('EC') || mode.includes('2EC')) return 'beta-plus';
+        if (/\bA\b/.test(mode) || mode.includes('Alpha')) return 'alpha';
+        if (/\bp\b/.test(mode) || /\bn\b/.test(mode)) return 'nucleon';
+        if (mode.includes('SF')) return 'fission';
+        return 'other';
+    }
+
+    const rawIsos = (typeof isotopeData !== 'undefined' && isotopeData[atomicNumber]) ? isotopeData[atomicNumber] : [];
+    const stableCount = rawIsos.filter(i => isActuallyStable(i)).length;
+    const radioCount = rawIsos.length - stableCount;
+    const totalCount = rawIsos.length;
+
+    const stableCountEl = document.getElementById('iso-stat-stable-count');
+    const radioCountEl = document.getElementById('iso-stat-radio-count');
+    const totalCountEl = document.getElementById('iso-stat-total-count');
+    const listCountEl = document.getElementById('iso-sidebar-list-count');
+
+    if (stableCountEl) stableCountEl.innerText = stableCount;
+    if (radioCountEl) radioCountEl.innerText = radioCount;
+    if (totalCountEl) totalCountEl.innerText = totalCount;
+    if (listCountEl) listCountEl.innerText = `${totalCount} isotopes`;
+
+    if (countSummaryEl) {
+        countSummaryEl.innerText = `${totalCount} Isotopes (${stableCount} Stable)`;
+    }
+    if (tagsEl) {
+        tagsEl.innerText = `Z=${elData.atomicNumber} • Grp ${elData.group || '-'} • Per ${elData.period || '-'}`;
+    }
+
+    // Function to render the sorted and filtered isotope list
+    function renderSidebarIsotopesList() {
+        const listContainer = document.getElementById('iso-sidebar-list');
+        if (!listContainer) return;
+        listContainer.innerHTML = '';
+
+        if (rawIsos.length === 0) {
+            listContainer.innerHTML = '<div style="color: #94a3b8; font-size: 0.75rem; text-align: center; padding: 12px 0;">No isotope data available.</div>';
+            return;
+        }
+
+        const sortedIsos = [...rawIsos];
+        if (window._currentIsoSort === 'category') {
+            sortedIsos.sort((a, b) => {
+                const catA = DECAY_CATEGORIES[getDecayCategoryKey(a)]?.order || 99;
+                const catB = DECAY_CATEGORIES[getDecayCategoryKey(b)]?.order || 99;
+                if (catA !== catB) {
+                    return window._currentIsoOrder === 'asc' ? (catA - catB) : (catB - catA);
+                }
+                return a.massNumber - b.massNumber;
+            });
+        } else {
+            // Sort by neutrons N = A - Z
+            sortedIsos.sort((a, b) => {
+                const nA = a.massNumber - elData.atomicNumber;
+                const nB = b.massNumber - elData.atomicNumber;
+                return window._currentIsoOrder === 'asc' ? (nA - nB) : (nB - nA);
+            });
+        }
+
+        // Calculate present categories & counts for direct-jump
+        const presentCategories = [];
+        const catCounts = {};
+        rawIsos.forEach(iso => {
+            const catKey = getDecayCategoryKey(iso);
+            if (!catCounts[catKey]) {
+                catCounts[catKey] = 0;
+                presentCategories.push(catKey);
+            }
+            catCounts[catKey]++;
+        });
+        presentCategories.sort((a, b) => (DECAY_CATEGORIES[a]?.order || 99) - (DECAY_CATEGORIES[b]?.order || 99));
+
+        // Render Jump Bar Chips
+        const jumpBar = document.getElementById('iso-category-jump-bar');
+        if (jumpBar) {
+            jumpBar.innerHTML = '';
+            const jumpFrag = document.createDocumentFragment();
+            presentCategories.forEach(catKey => {
+                const catInfo = DECAY_CATEGORIES[catKey];
+                if (!catInfo) return;
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'iso-jump-chip';
+                chip.style.background = `linear-gradient(135deg, ${catInfo.color}33 0%, ${catInfo.color}15 100%)`;
+                chip.style.borderColor = `${catInfo.color}66`;
+                chip.style.color = '#ffffff';
+                chip.style.boxShadow = `0 0 6px ${catInfo.color}33`;
+                chip.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: ${catInfo.color}; box-shadow: 0 0 5px ${catInfo.color};"></span><span>${catInfo.short} (${catCounts[catKey]})</span>`;
+                chip.addEventListener('click', () => {
+                    // Switch to category sort if not already active so headers exist
+                    if (window._currentIsoSort !== 'category') {
+                        window._currentIsoSort = 'category';
+                        const sortCatBtn = document.getElementById('iso-sort-category');
+                        const sortNeuBtn = document.getElementById('iso-sort-neutrons');
+                        if (sortCatBtn) sortCatBtn.classList.add('active');
+                        if (sortNeuBtn) sortNeuBtn.classList.remove('active');
+                        renderSidebarIsotopesList();
+                    }
+                    setTimeout(() => {
+                        const targetEl = document.getElementById(`iso-cat-hdr-${catKey}`);
+                        const listWrap = document.getElementById('iso-sidebar-list');
+                        if (targetEl && listWrap) {
+                            listWrap.scrollTo({ top: targetEl.offsetTop - listWrap.offsetTop, behavior: 'smooth' });
+                        }
+                    }, 50);
+                });
+                jumpFrag.appendChild(chip);
+            });
+            jumpBar.appendChild(jumpFrag);
+        }
+
+        // Render list items with DocumentFragment (Single DOM repaint)
+        let lastCategory = null;
+        const listFragment = document.createDocumentFragment();
+        sortedIsos.forEach((iso) => {
+            const isStable = isActuallyStable(iso);
+            const catKey = getDecayCategoryKey(iso);
+            const catInfo = DECAY_CATEGORIES[catKey] || DECAY_CATEGORIES['other'];
+
+            if (window._currentIsoSort === 'category' && catKey !== lastCategory) {
+                lastCategory = catKey;
+                const catHdr = document.createElement('div');
+                catHdr.className = 'iso-category-header';
+                catHdr.id = `iso-cat-hdr-${catKey}`;
+                catHdr.style.background = `linear-gradient(90deg, ${catInfo.color}28 0%, rgba(0, 0, 0, 0.6) 100%)`;
+                catHdr.style.borderColor = catInfo.color;
+                catHdr.style.color = '#ffffff';
+                catHdr.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: ${catInfo.color}; box-shadow: 0 0 6px ${catInfo.color};"></span><span>${catInfo.label}</span></span><span style="font-family: var(--font-mono); opacity: 0.9; font-size: 0.62rem; color: ${catInfo.color};">${catCounts[catKey]} nuclides</span>`;
+                listFragment.appendChild(catHdr);
+            }
+
+            const dColor = isStable ? '#4ade80' : getDecayColor(iso.decayMode);
+            const dTag = getDecayCompactTag(iso.decayMode, isStable);
+            const hlStr = formatCompactHalfLife(iso);
+            let abundStr = '';
+            if (iso.abundance !== null && iso.abundance !== undefined) {
+                let aVal = iso.abundance;
+                if (aVal > 100) aVal = aVal / 100;
+                abundStr = `${aVal.toFixed(2)}%`;
+            }
+
+            const item = document.createElement('div');
+            const isSelected = (window._currentSelectedIsotope && window._currentSelectedIsotope.massNumber === iso.massNumber);
+            item.className = `iso-sidebar-item ${isStable ? 'stable' : 'unstable'} ${isSelected ? 'selected' : ''}`;
+            item.style.setProperty('border-left', `3.5px solid ${dColor}`, 'important');
+            if (isSelected) {
+                item.style.setProperty('border-color', dColor, 'important');
+                item.style.setProperty('background', `${dColor}24`, 'important');
+                item.style.setProperty('box-shadow', `0 0 10px ${dColor}55`, 'important');
+            }
+            item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-family: var(--font-mono); font-weight: 800; font-size: 0.85rem; color: #ffffff;">
+                        <sup>${iso.massNumber}</sup>${elData.symbol}
+                    </span>
+                    <span style="font-size: 0.70rem; color: #94a3b8;">${elData.name}-${iso.massNumber}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    ${abundStr ? `<span style="font-size: 0.65rem; font-family: var(--font-mono); color: #00d4ff; background: rgba(0,212,255,0.12); padding: 1px 4px; border-radius: 3px;">${abundStr}</span>` : ''}
+                    <span style="font-size: 0.65rem; font-family: var(--font-mono); color: #cbd5e1;">${hlStr}</span>
+                    <span style="font-size: 0.62rem; font-weight: 700; color: ${dColor}; background: ${dColor}22; border: 1px solid ${dColor}55; padding: 1px 5px; border-radius: 4px;">
+                        ${dTag}
+                    </span>
+                </div>
+            `;
+            item.addEventListener('click', () => {
+                window._currentSelectedIsotope = iso;
+                listContainer.querySelectorAll('.iso-sidebar-item').forEach(i => {
+                    i.classList.remove('selected');
+                    i.style.removeProperty('box-shadow');
+                    i.style.setProperty('border-color', 'rgba(255, 255, 255, 0.12)', 'important');
+                    i.style.setProperty('background', 'rgba(15, 23, 42, 0.75)', 'important');
+                });
+                item.classList.add('selected');
+                item.style.setProperty('border-color', dColor, 'important');
+                item.style.setProperty('background', `${dColor}24`, 'important');
+                item.style.setProperty('box-shadow', `0 0 10px ${dColor}55`, 'important');
+                openIsotopeDetailPanel(iso, elData);
+            });
+            listFragment.appendChild(item);
+        });
+        listContainer.appendChild(listFragment);
+    }
+
+    // Attach Sort Controls Listeners once
+    const sortNeutronsBtn = document.getElementById('iso-sort-neutrons');
+    const sortCategoryBtn = document.getElementById('iso-sort-category');
+    const orderToggleBtn = document.getElementById('iso-order-toggle');
+    const orderText = document.getElementById('iso-order-text');
+
+    if (sortNeutronsBtn) {
+        sortNeutronsBtn.onclick = () => {
+            window._currentIsoSort = 'neutrons';
+            sortNeutronsBtn.classList.add('active');
+            if (sortCategoryBtn) sortCategoryBtn.classList.remove('active');
+            renderSidebarIsotopesList();
+        };
+    }
+    if (sortCategoryBtn) {
+        sortCategoryBtn.onclick = () => {
+            window._currentIsoSort = 'category';
+            sortCategoryBtn.classList.add('active');
+            if (sortNeutronsBtn) sortNeutronsBtn.classList.remove('active');
+            renderSidebarIsotopesList();
+        };
+    }
+    if (orderToggleBtn) {
+        orderToggleBtn.onclick = () => {
+            window._currentIsoOrder = window._currentIsoOrder === 'asc' ? 'desc' : 'asc';
+            if (orderText) {
+                orderText.innerText = window._currentIsoOrder === 'asc' ? '▲ Asc' : '▼ Desc';
+            }
+            renderSidebarIsotopesList();
+        };
+    }
+
+    // Initial render of isotope list
+    renderSidebarIsotopesList();
+}
+window.updateIsotopeSidebar = updateIsotopeSidebar;
+
+/**
+ * Opens and populates the secondary opposite-side isotope detail panel
+ */
+function openIsotopeDetailPanel(iso, elData) {
+    if (!iso || !elData) return;
+    const sidebar = document.getElementById('iso-primary-sidebar') || document.querySelector('#view-isotopes .view-right.sidebar');
+    const extPane = document.getElementById('iso-pane-extended');
+    if (!sidebar || !extPane) return;
+
+    // 1. Extend the primary sidebar into two-pane layout
+    sidebar.classList.add('is-extended');
+    extPane.classList.remove('hidden');
+    extPane.scrollTop = 0;
+    sidebar.scrollTop = 0;
+
+    // 2. Color code the Selected Isotope Hero Card (#iso-sub-card)
+    const A = iso.massNumber;
+    const Z = elData.atomicNumber;
+    const N = A - Z;
+    const isStable = isActuallyStable(iso);
+    const dColor = isStable ? '#4ade80' : getDecayColor(iso.decayMode);
+    const dTag = isStable ? 'STABLE NUCLIDE' : `DECAY: ${getDecayCompactTag(iso.decayMode, false)}`;
+
+    const subCard = document.getElementById('iso-sub-card');
+    if (subCard) {
+        const glossBg = (typeof getGlossyBackground === 'function')
+            ? getGlossyBackground(dColor, isStable ? 'stable' : 'radioactive')
+            : `linear-gradient(135deg, ${dColor}33 0%, rgba(9, 14, 26, 0.95) 100%)`;
+        subCard.style.setProperty('background', glossBg, 'important');
+        subCard.style.setProperty('border-color', dColor, 'important');
+        subCard.style.setProperty('box-shadow', `0 6px 20px rgba(0, 0, 0, 0.8), 0 0 14px ${dColor}55`, 'important');
+
+        const numBadge = subCard.querySelector('.ed-number-badge');
+        if (numBadge) {
+            numBadge.style.setProperty('border-color', dColor, 'important');
+            numBadge.style.setProperty('background', `${dColor}22`, 'important');
+            numBadge.style.setProperty('color', '#ffffff', 'important');
+        }
+    }
+
+    const subNumber = document.getElementById('iso-sub-number');
+    const subBadge = document.getElementById('iso-sub-badge');
+    const subMass = document.getElementById('iso-sub-mass');
+    const subSymbol = document.getElementById('iso-sub-symbol');
+    const subName = document.getElementById('iso-sub-name');
+    const subDot = document.getElementById('iso-sub-state-dot');
+    const subStateText = document.getElementById('iso-sub-state-text');
+    const subPill = document.getElementById('iso-sub-state-pill');
+    const subAbund = document.getElementById('iso-sub-abundance-text');
+    const subNeutrons = document.getElementById('iso-sub-neutrons-text');
+
+    if (subNumber) subNumber.innerText = A;
+    if (subMass) subMass.innerText = iso.mass ? iso.mass.toFixed(6) : `${A}.000000`;
+    if (subSymbol) {
+        subSymbol.innerHTML = `<sup>${A}</sup>${elData.symbol}`;
+        subSymbol.style.setProperty('color', '#ffffff', 'important');
+        subSymbol.style.setProperty('text-shadow', `0 0 10px ${dColor}88`, 'important');
+    }
+    if (subName) subName.innerText = `${elData.name}-${A}`;
+
+    if (subBadge) {
+        subBadge.innerHTML = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${dColor}; box-shadow: 0 0 6px ${dColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${dTag}</span>`;
+        subBadge.style.setProperty('color', '#ffffff', 'important');
+        subBadge.style.setProperty('border-color', dColor, 'important');
+        subBadge.style.setProperty('background', `linear-gradient(135deg, ${dColor}55 0%, ${dColor}22 100%)`, 'important');
+        subBadge.style.setProperty('box-shadow', `0 0 10px ${dColor}66`, 'important');
+    }
+
+    if (subDot) {
+        subDot.style.setProperty('background', dColor, 'important');
+        subDot.style.setProperty('box-shadow', `0 0 7px ${dColor}`, 'important');
+    }
+    if (subStateText) {
+        subStateText.innerText = isStable ? 'Stable Nuclide' : `T½: ${formatCompactHalfLife(iso)}`;
+        subStateText.style.setProperty('color', dColor, 'important');
+        subStateText.style.setProperty('text-shadow', `0 0 6px ${dColor}88`, 'important');
+    }
+    if (subPill) {
+        subPill.style.setProperty('border-color', `${dColor}66`, 'important');
+        subPill.style.setProperty('background', `${dColor}18`, 'important');
+    }
+    if (subAbund) {
+        if (iso.abundance !== null && iso.abundance !== undefined) {
+            let aVal = iso.abundance;
+            if (aVal > 100) aVal = aVal / 100;
+            subAbund.innerText = `${aVal.toFixed(2)}% Natural Abundance`;
+            subAbund.style.color = '#4ade80';
+        } else {
+            subAbund.innerText = isStable ? 'Observationally Stable' : 'Synthetic / Trace Isotope';
+            subAbund.style.color = '#94a3b8';
+        }
+    }
+    if (subNeutrons) {
+        subNeutrons.innerText = `N = ${N} • Z = ${Z} • A = ${A}`;
+    }
+
+    // Populate Tab 1: Decay Diagram
+    renderSubDecayDiagram(iso, elData);
+
+    // Populate Tab 2: Info List
+    renderSubInfoList(iso, elData);
+
+    // Populate Tab 3: Simulator
+    initSubHalfLifeSimulator(iso, elData);
+
+    // Setup Sub Tab Navigation Listeners
+    setupSubTabNavigation();
+}
+window.openIsotopeDetailPanel = openIsotopeDetailPanel;
+
+function closeIsotopeDetailPanel() {
+    const extPane = document.getElementById('iso-pane-extended');
+    if (extPane) {
+        extPane.classList.add('hidden');
+    }
+    const sidebar = document.getElementById('iso-primary-sidebar') || document.querySelector('#view-isotopes .view-right.sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('is-extended');
+    }
+    const listContainer = document.getElementById('iso-sidebar-list');
+    if (listContainer) {
+        listContainer.querySelectorAll('.iso-sidebar-item').forEach(i => {
+            i.classList.remove('selected');
+            i.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+            i.style.background = 'rgba(15, 23, 42, 0.75)';
+            i.style.boxShadow = 'none';
+        });
+    }
+    window._currentSelectedIsotope = null;
+}
+window.closeIsotopeDetailPanel = closeIsotopeDetailPanel;
+
+function setupSubTabNavigation() {
+    const tabs = ['decay', 'info', 'sim'];
+    tabs.forEach(tab => {
+        const btn = document.getElementById(`subtab-btn-${tab}`);
+        if (btn) {
+            btn.onclick = () => {
+                tabs.forEach(t => {
+                    const b = document.getElementById(`subtab-btn-${t}`);
+                    const c = document.getElementById(`iso-subtab-${t}`);
+                    if (b) b.classList.toggle('active', t === tab);
+                    if (c) {
+                        c.classList.toggle('active', t === tab);
+                        c.classList.toggle('hidden', t !== tab);
+                    }
+                });
+            };
+        }
+    });
+}
+
+function renderSubDecayDiagram(iso, elData) {
+    const container = document.getElementById('iso-sub-decay-diagram');
+    if (!container) return;
+
+    const A = iso.massNumber;
+    const Z = elData.atomicNumber;
+    const N = A - Z;
+    const isStable = isActuallyStable(iso);
+
+    if (isStable) {
+        const ratioNZ = (N / Math.max(1, Z)).toFixed(2);
+        const bindingStr = iso.bindingEnergy ? `${(iso.bindingEnergy / A).toFixed(2)} MeV/A` : 'High';
+        container.innerHTML = `
+            <div class="iso-sub-decay-stage">
+                <div class="iso-sub-decay-equation" style="color: #4ade80; border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.1);">
+                    VALLEY OF NUCLEAR STABILITY &bull; STABLE
+                </div>
+                <div class="iso-sub-flow-row">
+                    <div class="iso-sub-nuclide-box" style="border-color: #4ade80;">
+                        <span class="iso-sub-nuclide-sym"><sup>${A}</sup>${elData.symbol}</span>
+                        <span class="iso-sub-nuclide-meta">Z=${Z} &bull; N=${N}</span>
+                    </div>
+                    <div class="iso-sub-decay-arrow">
+                        <span style="font-size: 1.3rem; color: #4ade80;">🛡️</span>
+                        <span class="iso-sub-arrow-particle" style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3);">
+                            Zero Decay
+                        </span>
+                    </div>
+                    <div class="iso-sub-nuclide-box" style="border-color: rgba(74, 222, 128, 0.5); opacity: 0.85;">
+                        <span style="font-size: 0.72rem; color: #cbd5e1; font-weight: 600;">N/Z Ratio</span>
+                        <span style="font-size: 1rem; font-family: var(--font-mono); font-weight: 800; color: #4ade80;">${ratioNZ}</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; font-family: var(--font-mono); padding: 4px 6px; background: rgba(0,0,0,0.3); border-radius: 6px;">
+                    <span>Binding Energy: <strong style="color: #facc15;">${bindingStr}</strong></span>
+                    <span>Half-life: <strong style="color: #4ade80;">∞ (Stable)</strong></span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // Radioactive decay calculation
+    const mode = iso.decayMode || '';
+    let dZ = Z;
+    let dA = A;
+    let particleStr = '+ Radiation';
+    let particleLabel = 'Beta-';
+
+    if (/\bA\b/.test(mode) || mode.includes('Alpha')) {
+        dZ = Z - 2;
+        dA = A - 4;
+        particleStr = '+ ⁴₂α';
+        particleLabel = 'Alpha (α)';
+    } else if (mode.includes('B-') || mode.includes('2B-')) {
+        dZ = Z + 1;
+        dA = A;
+        particleStr = '+ e⁻ + ν̄ₑ';
+        particleLabel = 'Beta- (β⁻)';
+    } else if (mode.includes('B+') || mode.includes('EC')) {
+        dZ = Z - 1;
+        dA = A;
+        particleStr = '+ e⁺ + νₑ';
+        particleLabel = 'Beta+ / EC';
+    } else if (/\bp\b/.test(mode)) {
+        dZ = Z - 1;
+        dA = A - 1;
+        particleStr = '+ p⁺';
+        particleLabel = 'Proton (p)';
+    } else if (/\bn\b/.test(mode)) {
+        dZ = Z;
+        dA = A - 1;
+        particleStr = '+ n⁰';
+        particleLabel = 'Neutron (n)';
+    } else if (mode.includes('SF')) {
+        dZ = Math.max(1, Math.floor(Z / 2));
+        dA = Math.max(1, Math.floor((A - 2) / 2));
+        particleStr = '+ Fission Fragments';
+        particleLabel = 'Fission (SF)';
+    }
+
+    const dEl = (typeof elementsData !== 'undefined' && elementsData[dZ - 1]) ? elementsData[dZ - 1] : { symbol: '?', name: 'Daughter' };
+    const dN = dA - dZ;
+    const dColor = getDecayColor(mode);
+    const qVal = iso.decayEnergy ? `${iso.decayEnergy.toFixed(2)} keV` : (iso.massExcess ? `${Math.abs(iso.massExcess).toFixed(2)} MeV` : 'Calculated');
+
+    container.innerHTML = `
+        <div class="iso-sub-decay-stage">
+            <div class="iso-sub-decay-equation">
+                <sup>${A}</sup>${elData.symbol} &rarr; <sup>${dA}</sup>${dEl.symbol} ${particleStr}
+            </div>
+            <div class="iso-sub-flow-row">
+                <div class="iso-sub-nuclide-box" style="border-color: #00d4ff;">
+                    <span class="iso-sub-nuclide-sym"><sup>${A}</sup>${elData.symbol}</span>
+                    <span class="iso-sub-nuclide-meta">Z=${Z} &bull; N=${N}</span>
+                </div>
+                <div class="iso-sub-decay-arrow">
+                    <span style="font-size: 1.1rem; color: ${dColor}; font-weight: bold;">&xrarr;</span>
+                    <span class="iso-sub-arrow-particle" style="background: ${dColor}22; color: ${dColor}; border: 1px solid ${dColor}55;">
+                        ${particleLabel}
+                    </span>
+                </div>
+                <div class="iso-sub-nuclide-box" style="border-color: #a855f7;">
+                    <span class="iso-sub-nuclide-sym"><sup>${dA}</sup>${dEl.symbol}</span>
+                    <span class="iso-sub-nuclide-meta">Z=${dZ} &bull; N=${dN}</span>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #94a3b8; font-family: var(--font-mono); padding: 4px 6px; background: rgba(0,0,0,0.35); border-radius: 6px;">
+                <span>Q-Energy: <strong style="color: #38bdf8;">${qVal}</strong></span>
+                <span>T½: <strong style="color: #facc15;">${formatCompactHalfLife(iso)}</strong></span>
+            </div>
+        </div>
+    `;
+}
+
+function renderSubInfoList(iso, elData) {
+    const A = iso.massNumber;
+    const Z = elData.atomicNumber;
+    const N = A - Z;
+
+    const setVal = (id, val, color) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.innerText = val !== null && val !== undefined && val !== '' ? val : '-';
+            if (color) el.style.color = color;
+            else el.style.color = '';
+        }
+    };
+
+    setVal('sub-val-mass', iso.mass ? `${iso.mass.toFixed(6)} u` : `${A}.000000 u`, '#ffffff');
+    setVal('sub-val-excess', iso.massExcess ? `${iso.massExcess.toFixed(3)} MeV` : '-', '#00d4ff');
+    setVal('sub-val-binding', iso.bindingEnergy ? `${(iso.bindingEnergy / A).toFixed(3)} MeV` : '-', '#38bdf8');
+    
+    let abundStr = '-';
+    if (iso.abundance !== null && iso.abundance !== undefined) {
+        let a = iso.abundance;
+        if (a > 100) a = a / 100;
+        abundStr = `${a.toFixed(3)}%`;
+    }
+    setVal('sub-val-abundance', abundStr, isActuallyStable(iso) ? '#4ade80' : '#cbd5e1');
+    setVal('sub-val-halflife', isActuallyStable(iso) ? '∞ (Stable)' : formatCompactHalfLife(iso), isActuallyStable(iso) ? '#4ade80' : '#facc15');
+    setVal('sub-val-decay', iso.decayMode || (isActuallyStable(iso) ? 'None (Stable)' : 'Radioactive'), '#c084fc');
+    setVal('sub-val-qval', iso.decayEnergy ? `${iso.decayEnergy.toFixed(2)} keV` : (iso.massExcess ? `${Math.abs(iso.massExcess).toFixed(2)} MeV` : '-'), '#38bdf8');
+    setVal('sub-val-spin', iso.spin || '-', '#f472b6');
+    setVal('sub-val-magnetic', iso.magneticMoment ? `${iso.magneticMoment.toFixed(4)} μN` : '-', '#cbd5e1');
+    setVal('sub-val-quadrupole', iso.quadrupoleMoment ? `${iso.quadrupoleMoment.toFixed(4)} b` : '-', '#cbd5e1');
+    setVal('sub-val-nucleons', `N = ${N} • Z = ${Z}`, '#00d4ff');
+}
+
+function initSubHalfLifeSimulator(iso, elData) {
+    const isStable = isActuallyStable(iso);
+    const badgeEl = document.getElementById('sub-sim-halflife-badge');
+    const reactionBanner = document.getElementById('sub-sim-reaction-banner');
+    const slider = document.getElementById('sub-sim-time-slider');
+    const timeText = document.getElementById('sub-sim-time-text');
+    const parentVal = document.getElementById('sub-sim-parent-val');
+    const daughterVal = document.getElementById('sub-sim-daughter-val');
+    const parentBar = document.getElementById('sub-sim-decay-bar-parent');
+    const daughterBar = document.getElementById('sub-sim-decay-bar-daughter');
+
+    if (!slider) return;
+
+    if (isStable) {
+        if (badgeEl) {
+            badgeEl.innerText = 'T½ = ∞ (Stable)';
+            badgeEl.style.color = '#4ade80';
+            badgeEl.style.borderColor = '#4ade80';
+        }
+        if (reactionBanner) {
+            reactionBanner.innerHTML = `<sup>${iso.massNumber}</sup>${elData.symbol} is 100% Stable (Zero Decay)`;
+        }
+        slider.value = 0;
+        slider.disabled = true;
+        if (timeText) timeText.innerText = 'Stable (No Decay)';
+        if (parentVal) parentVal.innerText = '100.0%';
+        if (daughterVal) daughterVal.innerText = '0.0%';
+        if (parentBar) parentBar.style.width = '100%';
+        if (daughterBar) daughterBar.style.width = '0%';
+        return;
+    }
+
+    slider.disabled = false;
+    slider.value = 0;
+
+    const hlStr = formatCompactHalfLife(iso);
+    if (badgeEl) {
+        badgeEl.innerText = `T½ = ${hlStr}`;
+        badgeEl.style.color = '#facc15';
+        badgeEl.style.borderColor = '#facc15';
+    }
+
+    // Reaction equation
+    const Z = elData.atomicNumber;
+    const A = iso.massNumber;
+    const mode = iso.decayMode || '';
+    let dZ = Z, dA = A, particleStr = '+ Radiation';
+    if (/\bA\b/.test(mode) || mode.includes('Alpha')) { dZ = Z - 2; dA = A - 4; particleStr = '+ ⁴₂α'; }
+    else if (mode.includes('B-') || mode.includes('2B-')) { dZ = Z + 1; dA = A; particleStr = '+ e⁻ + ν̄ₑ'; }
+    else if (mode.includes('B+') || mode.includes('EC')) { dZ = Z - 1; dA = A; particleStr = '+ e⁺ + νₑ'; }
+    else if (/\bp\b/.test(mode)) { dZ = Z - 1; dA = A - 1; particleStr = '+ p⁺'; }
+    else if (/\bn\b/.test(mode)) { dZ = Z; dA = A - 1; particleStr = '+ n⁰'; }
+    else if (mode.includes('SF')) { dZ = Math.max(1, Math.floor(Z / 2)); dA = Math.max(1, Math.floor((A - 2) / 2)); particleStr = '+ Fission'; }
+
+    const dEl = (typeof elementsData !== 'undefined' && elementsData[dZ - 1]) ? elementsData[dZ - 1] : { symbol: '?' };
+    if (reactionBanner) {
+        reactionBanner.innerHTML = `<sup>${A}</sup>${elData.symbol} &rarr; <sup>${dA}</sup>${dEl.symbol} ${particleStr}`;
+    }
+
+    const updateSimValues = () => {
+        const pct = parseFloat(slider.value) / 100;
+        const halfLives = pct * 7.0; // 0 to 7 half-lives
+        const remainingPct = 100 * Math.pow(0.5, halfLives);
+        const daughterPct = 100 - remainingPct;
+
+        if (parentVal) parentVal.innerText = `${remainingPct.toFixed(1)}%`;
+        if (daughterVal) daughterVal.innerText = `${daughterPct.toFixed(1)}%`;
+        if (parentBar) parentBar.style.width = `${remainingPct}%`;
+        if (daughterBar) daughterBar.style.width = `${daughterPct}%`;
+
+        // Elapsed time in physical units
+        const numVal = iso.halfLife || 1;
+        const unit = iso.halfLifeUnit || '';
+        const elapsedVal = halfLives * numVal;
+        let timeFormatted = '';
+        if (elapsedVal < 0.01) timeFormatted = `${elapsedVal.toExponential(2)} ${unit}`;
+        else if (elapsedVal > 100000) timeFormatted = `${elapsedVal.toExponential(2)} ${unit}`;
+        else timeFormatted = `${elapsedVal.toFixed(2)} ${unit}`;
+
+        if (timeText) {
+            timeText.innerText = `${timeFormatted} (${halfLives.toFixed(2)} T½)`;
+        }
+    };
+
+    slider.oninput = updateSimValues;
+    updateSimValues();
+}
+
+function openIsotopeModal(atomicNumber, initialIndex = 0) {
+    if (!atomicNumber || atomicNumber < 1 || atomicNumber > 118) {
+        atomicNumber = currentAtomicNumber || 1;
+    }
+    updateIsotopeSidebar(atomicNumber);
+    const rawIsos = (typeof isotopeData !== 'undefined' && isotopeData[atomicNumber]) ? isotopeData[atomicNumber] : [];
+    if (rawIsos.length > 0) {
+        const elData = (typeof elementsData !== 'undefined' && elementsData[atomicNumber - 1]) ? elementsData[atomicNumber - 1] : null;
+        const targetIso = rawIsos[initialIndex] || rawIsos[0];
+        if (elData && targetIso) {
+            openIsotopeDetailPanel(targetIso, elData);
+        }
+    }
+}
+window.openIsotopeModal = openIsotopeModal;
+
+
+/**
  * Main update function called when an element is selected
  * or when switching to the isotopes view.
  */
@@ -260,16 +1437,37 @@ function updateIsotopesView(atomicNumber) {
             <span class="cell-value" style="color: #ffffff;">${compactHalfLife}</span>
         `;
         
+        item.onmouseenter = () => {
+            if (!item.classList.contains('selected')) {
+                item.style.borderColor = '#00d4ff';
+                item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.6), 0 8px 18px rgba(0, 212, 255, 0.4), inset 0 0 10px ${indicatorColor}33`;
+                item.style.transform = 'scale(1.08) translateY(-2px)';
+                item.style.zIndex = '10';
+            }
+        };
+        item.onmouseleave = () => {
+            if (!item.classList.contains('selected')) {
+                item.style.borderColor = indicatorColor;
+                item.style.boxShadow = '';
+                item.style.transform = 'none';
+                item.style.zIndex = '1';
+            }
+        };
+        
         item.onclick = () => {
             document.querySelectorAll('.iso-element-cell, .iso-list-item').forEach(el => {
                 el.classList.remove('selected');
                 const mColor = el.dataset.mainColor || 'rgba(255, 255, 255, 0.2)';
                 el.style.borderColor = mColor;
                 el.style.boxShadow = '';
-                el.style.transform = '';
-                el.style.zIndex = '';
+                el.style.transform = 'none';
+                el.style.zIndex = '1';
             });
             item.classList.add('selected');
+            item.style.borderColor = '#00d4ff';
+            item.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+            item.style.transform = 'scale(1.04)';
+            item.style.zIndex = '8';
             item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
             renderIsotopeDetails(index);
         };
@@ -297,6 +1495,9 @@ function updateIsotopesView(atomicNumber) {
     const firstItem = listContainer.querySelector('.iso-element-cell, .iso-list-item');
     if (firstItem) {
         firstItem.classList.add('selected');
+        firstItem.style.borderColor = '#00d4ff';
+        firstItem.style.boxShadow = `inset 0 1px 2px rgba(255,255,255,0.8), 0 0 22px #00d4ff, inset 0 0 12px rgba(0, 212, 255, 0.3)`;
+        firstItem.style.transform = 'scale(1.04)';
     }
     renderIsotopeDetails(0);
     
@@ -374,23 +1575,23 @@ function renderIsotopeDetails(index) {
         const halfLifeBadge = isStable ? 'Half-life: ∞' : `t½: ${compactHalfLife}`;
 
         isoCard.innerHTML = `
-            <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 18px); min-width: 0;">
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono); flex-shrink: 0;">
-                    <span style="font-size: clamp(1rem, 2.5vw, 1.35rem); font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
-                    <span style="font-size: clamp(0.85rem, 2vw, 1.1rem); font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.05; font-family: var(--font-mono);">
+                    <span style="font-size: 1.35rem; font-weight: 800; color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.4);">${iso.massNumber}</span>
+                    <span style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.7);">${Z}</span>
                 </div>
-                <div style="font-size: clamp(1.8rem, 5vw, 3.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1; flex-shrink: 0;">${elData.symbol}</div>
-                <div style="display: flex; flex-direction: column; justify-content: center; gap: 3px; line-height: 1.15; min-width: 0;">
-                    <span style="font-size: clamp(1.05rem, 3vw, 1.55rem); font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${isoName}</span>
-                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                        <span style="font-size: clamp(0.7rem, 1.8vw, 0.85rem); font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 2px 8px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px; white-space: nowrap;">${statusHtml}</span>
-                        <span style="font-size: clamp(0.68rem, 1.8vw, 0.82rem); font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">${halfLifeBadge}</span>
+                <div style="font-size: 3.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; text-shadow: 0 2px 8px rgba(0,0,0,0.9); line-height: 1;">${elData.symbol}</div>
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 5px; line-height: 1.15;">
+                    <span style="font-size: 1.55rem; font-weight: 800; font-family: var(--font-ui); text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: #fff; letter-spacing: -0.2px;">${isoName}</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.85rem; font-family: var(--font-ui); text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 700; padding: 3px 12px; border-radius: 14px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.3px;">${statusHtml}</span>
+                        <span style="font-size: 0.82rem; font-family: var(--font-mono); color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.35); padding: 3px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">${halfLifeBadge}</span>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; line-height: 1.25; font-family: var(--font-mono); flex-shrink: 0;">
-                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Mass: <strong style="color:#fff; font-weight: 800;">${massStr} u</strong></div>
-                <div style="font-size: clamp(0.78rem, 2vw, 0.95rem); color: rgba(255,255,255,0.75); white-space: nowrap;">Neutrons: <strong style="color:#00d4ff; font-weight: 800;">${N}</strong></div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 6px; line-height: 1.25; font-family: var(--font-mono);">
+                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Mass: <strong style="color:#fff; font-size: 1.05rem; font-weight: 800;">${massStr} u</strong></div>
+                <div style="font-size: 0.95rem; color: rgba(255,255,255,0.75);">Neutrons: <strong style="color:#00d4ff; font-size: 1.05rem; font-weight: 800;">${N}</strong></div>
             </div>
         `;
     }
@@ -405,22 +1606,22 @@ function renderIsotopeDetails(index) {
             elCard.style.background = getGlossyBackground(catColor, catName);
             elCard.style.border = `1.5px solid ${catColor}`;
             elCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: clamp(8px, 2.5vw, 14px); min-width: 0;">
-                    <div style="width: clamp(46px, 10vw, 64px); height: clamp(46px, 10vw, 64px); background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
-                        <span style="position: absolute; top: 2px; left: 4px; font-size: 0.65rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
-                        <span style="font-size: clamp(1.4rem, 4vw, 2.2rem); font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 64px; height: 64px; background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; flex-shrink: 0; box-shadow: inset 0 1px 3px rgba(255,255,255,0.3);">
+                        <span style="position: absolute; top: 3px; left: 5px; font-size: 0.68rem; font-family: var(--font-mono); color: rgba(255,255,255,0.75); font-weight: 700;">${elData.atomicNumber}</span>
+                        <span style="font-size: 2.2rem; font-family: var(--font-mono); font-weight: 800; color: ${stateColor}; line-height: 1;">${elData.symbol}</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 2px; line-height: 1.15; min-width: 0;">
-                        <span style="font-size: clamp(1rem, 2.8vw, 1.45rem); font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${elData.name}</span>
-                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                            <span style="font-size: 0.68rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 5px; border-radius: 4px; white-space: nowrap;">${catName}</span>
-                            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono); white-space: nowrap;">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.15;">
+                        <span style="font-size: 1.45rem; font-weight: 800; font-family: var(--font-ui); color: #fff; letter-spacing: -0.2px;">${elData.name}</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.72rem; color: #00d4ff; font-weight: 700; font-family: var(--font-ui); text-transform: uppercase; background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3); padding: 1px 6px; border-radius: 6px;">${catName}</span>
+                            <span style="font-size: 0.78rem; color: rgba(255,255,255,0.75); font-family: var(--font-mono);">${elData.atomicMass ? elData.atomicMass.toFixed(3) + ' u' : ''}</span>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; font-family: var(--font-mono); font-size: 0.75rem; flex-shrink: 0;">
-                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700; white-space: nowrap;">Z = ${elData.atomicNumber}</span>
-                    <span style="background: rgba(0,0,0,0.45); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">Avg N = ${defaultN}</span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px; font-family: var(--font-mono); font-size: 0.78rem; flex-shrink: 0;">
+                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: #00d4ff; font-weight: 700;">Z = ${elData.atomicNumber}</span>
+                    <span style="background: rgba(0,0,0,0.45); padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-weight: 700;">Avg N = ${defaultN}</span>
                 </div>
             `;
         }
@@ -1143,75 +2344,7 @@ function initHalfLifeSimulator(iso) {
         });
     };
     
-    slider.oninput = () => {
-        stopSimPlayback();
-        updateSim();
-    };
-
-    // Playback Controls
-    let simPlayInterval = null;
-    const playBtn = document.getElementById('sim-play-btn');
-    const resetBtn = document.getElementById('sim-reset-btn');
-    const jumpBtns = document.querySelectorAll('.sim-jump-btn');
-
-    function stopSimPlayback() {
-        if (simPlayInterval) {
-            clearInterval(simPlayInterval);
-            simPlayInterval = null;
-        }
-        if (playBtn) {
-            playBtn.innerHTML = '▶ Play Decay';
-            playBtn.style.background = 'rgba(0, 212, 255, 0.18)';
-            playBtn.style.color = '#00d4ff';
-        }
-    }
-
-    if (playBtn) {
-        playBtn.onclick = () => {
-            if (iso.isStable) return;
-            if (simPlayInterval) {
-                stopSimPlayback();
-            } else {
-                if (parseFloat(slider.value) >= parseFloat(slider.max)) {
-                    slider.value = 0;
-                    updateSim();
-                }
-                playBtn.innerHTML = '⏸ Pause';
-                playBtn.style.background = 'rgba(250, 204, 21, 0.2)';
-                playBtn.style.color = '#facc15';
-                
-                simPlayInterval = setInterval(() => {
-                    let cur = parseFloat(slider.value);
-                    if (cur >= parseFloat(slider.max)) {
-                        stopSimPlayback();
-                    } else {
-                        slider.value = Math.min(parseFloat(slider.max), cur + 0.1);
-                        updateSim();
-                    }
-                }, 100);
-            }
-        };
-    }
-
-    if (resetBtn) {
-        resetBtn.onclick = () => {
-            stopSimPlayback();
-            slider.value = 0;
-            updateSim();
-        };
-    }
-
-    jumpBtns.forEach(btn => {
-        btn.onclick = () => {
-            stopSimPlayback();
-            const step = parseFloat(btn.dataset.step);
-            if (!isNaN(step)) {
-                slider.value = step;
-                updateSim();
-            }
-        };
-    });
-
+    slider.oninput = updateSim;
     updateSim();
 }
 
@@ -1232,7 +2365,7 @@ function closeIsotopeModal() {
 }
 window.closeIsotopeModal = closeIsotopeModal;
 
-// Setup close button, tab switching, mobile gestures, and keyboard/backdrop shortcuts
+// Setup close button, tab switching, and keyboard/backdrop shortcuts
 document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('close-modal-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeIsotopeModal);
@@ -1244,86 +2377,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const decayOverlay = document.getElementById('decay-explanation-modal');
+    if (decayOverlay) {
+        decayOverlay.addEventListener('click', (e) => {
+            if (e.target === decayOverlay) closeDecayExplanationModal();
+        });
+    }
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const overlay = document.getElementById('isotope-modal-overlay');
             if (overlay && !overlay.classList.contains('hidden')) {
                 closeIsotopeModal();
             }
+            const dem = document.getElementById('decay-explanation-modal');
+            if (dem && dem.style.display !== 'none') {
+                closeDecayExplanationModal();
+            }
         }
     });
 
     // Setup Inspector Tab Switching
-    const tabBtns = Array.from(document.querySelectorAll('.iso-tab-btn'));
-    const tabContents = ['decay', 'physics', 'simulator'];
-
-    function switchIsoTab(targetTab) {
-        tabBtns.forEach(b => {
-            if (b.dataset.tab === targetTab) b.classList.add('active');
-            else b.classList.remove('active');
-        });
-        document.querySelectorAll('.iso-tab-content').forEach(content => {
-            content.style.display = 'none';
-        });
-        const activeContent = document.getElementById(`iso-tab-${targetTab}`);
-        if (activeContent) activeContent.style.display = 'flex';
-    }
-
-    tabBtns.forEach(btn => {
+    document.querySelectorAll('.iso-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            switchIsoTab(btn.dataset.tab);
+            document.querySelectorAll('.iso-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const targetTab = btn.dataset.tab;
+            document.querySelectorAll('.iso-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const activeContent = document.getElementById(`iso-tab-${targetTab}`);
+            if (activeContent) activeContent.style.display = 'flex';
         });
-    });
-
-    // Touch Gestures (Swipe Left / Right to change tabs, Swipe Down to close modal)
-    const modal = document.getElementById('isotope-modal');
-    if (modal) {
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchStartTime = 0;
-
-        modal.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                touchStartTime = Date.now();
-            }
-        }, { passive: true });
-
-        modal.addEventListener('touchend', (e) => {
-            if (e.changedTouches.length === 1) {
-                const deltaX = e.changedTouches[0].clientX - touchStartX;
-                const deltaY = e.changedTouches[0].clientY - touchStartY;
-                const timeDiff = Date.now() - touchStartTime;
-
-                // Swipe Down on top header area to dismiss
-                if (touchStartY < 120 && deltaY > 70 && Math.abs(deltaX) < 50 && timeDiff < 400) {
-                    closeIsotopeModal();
-                    return;
-                }
-
-                // Horizontal Swipe on tab container (min 60px horizontal, max 40px vertical)
-                if (Math.abs(deltaX) > 60 && Math.abs(deltaY) < 45 && timeDiff < 400) {
-                    const activeBtn = document.querySelector('.iso-tab-btn.active');
-                    const curTab = activeBtn ? activeBtn.dataset.tab : 'decay';
-                    const curIndex = tabContents.indexOf(curTab);
-                    if (deltaX < 0 && curIndex < tabContents.length - 1) {
-                        // Swipe Left -> Next Tab
-                        switchIsoTab(tabContents[curIndex + 1]);
-                    } else if (deltaX > 0 && curIndex > 0) {
-                        // Swipe Right -> Prev Tab
-                        switchIsoTab(tabContents[curIndex - 1]);
-                    }
-                }
-            }
-        }, { passive: true });
-    }
-
-    // Browser Back Button Navigation Support
-    window.addEventListener('popstate', () => {
-        const overlay = document.getElementById('isotope-modal-overlay');
-        if (overlay && !overlay.classList.contains('hidden') && overlay.style.display !== 'none') {
-            closeIsotopeModal();
-        }
     });
 });
