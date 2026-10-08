@@ -462,6 +462,46 @@ function renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, eleme
         totalProductMass += pCoeffs[i] * getFormulaMolarMass(str);
     });
 
+    // Educational Chemical Reaction Process Stepper
+    const chemStepper = document.getElementById('chem-reaction-process-stepper');
+    if (chemStepper) {
+        chemStepper.innerHTML = `
+            <div class="chem-stepper-track">
+                <div class="chem-step-card">
+                    <span class="cs-icon">🧪</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 1: Reactants</span>
+                        <span class="cs-label">${reactantStrs.join(' + ')}</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚡</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 2: Activation</span>
+                        <span class="cs-label">Bonds break apart</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚛️</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 3: Conservation</span>
+                        <span class="cs-label">${elements.length} elements conserved</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card active">
+                    <span class="cs-icon">✨</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 4: Products</span>
+                        <span class="cs-label">${productStrs.join(' + ')}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     // Inline Stoichiometry for Direct Mobile Visibility
     const inlineStoich = document.getElementById('reaction-inline-stoich');
     const inlineHtml = `

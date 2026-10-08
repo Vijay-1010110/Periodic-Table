@@ -25,13 +25,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
-    z-index: 10;
-    gap: 12px;
+    padding: 6px 12px;
+    background: rgba(15, 23, 42, 0.90);
+    backdrop-filter: blur(14px);
+    border-bottom: 1.5px solid rgba(0, 212, 255, 0.25);
+    z-index: 20;
+    gap: 8px;
     flex-shrink: 0;
+    min-height: 46px;
 }
 
 .sim-tabs-row {
@@ -40,6 +41,9 @@
     gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-width: 0;
 }
 
 .sim-tabs-row::-webkit-scrollbar {
@@ -50,41 +54,43 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #94a3b8;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
     border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.82rem;
+    font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .sim-tab-btn:hover {
-    background: rgba(0, 212, 255, 0.08);
+    background: rgba(0, 212, 255, 0.12);
     color: #ffffff;
-    border-color: rgba(0, 212, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.4);
 }
 
 .sim-tab-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(168, 85, 247, 0.18));
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(168, 85, 247, 0.25));
     border-color: #00d4ff;
     color: #ffffff;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.35);
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
 /* Game-Level Playback Controls Bar */
 .sim-playback-deck {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4px 10px;
-    border-radius: 10px;
+    gap: 5px;
+    background: rgba(10, 16, 30, 0.92);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    padding: 3px 6px;
+    border-radius: 9px;
+    flex-shrink: 0;
 }
 
 .sim-ctrl-btn {
@@ -94,16 +100,17 @@
     width: 32px;
     height: 32px;
     border-radius: 7px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     color: #e2e8f0;
-    font-size: 0.85rem;
+    font-size: 0.90rem;
     cursor: pointer;
     transition: all 0.15s ease;
+    touch-action: manipulation;
 }
 
 .sim-ctrl-btn:hover {
-    background: rgba(0, 212, 255, 0.2);
+    background: rgba(0, 212, 255, 0.25);
     border-color: #00d4ff;
     color: #ffffff;
 }
@@ -113,13 +120,13 @@
 }
 
 .sim-speed-select {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.35);
     color: #00d4ff;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    padding: 4px 8px;
+    padding: 5px 6px;
     border-radius: 6px;
     cursor: pointer;
     outline: none;
@@ -141,9 +148,11 @@
     position: relative;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: #020408;
 }
 
 .sim-canvas {
@@ -153,45 +162,297 @@
     cursor: crosshair;
 }
 
-/* Right Parameters & Tuning Deck */
-.sim-tuning-pane {
-    width: 290px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(14px);
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+/* ==================== GAME REACTION PROCESS STEPPER & NARRATOR ==================== */
+.sim-reaction-stepper {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    right: 10px;
+    z-index: 15;
     display: flex;
     flex-direction: column;
-    padding: 14px;
-    gap: 12px;
-    overflow-y: auto;
-    flex-shrink: 0;
-    z-index: 5;
+    gap: 5px;
+    pointer-events: none;
+    max-width: calc(100% - 20px);
 }
 
-.sim-pane-section {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+.stepper-track {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+    max-width: 100%;
+    gap: 5px;
+    background: rgba(10, 16, 30, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(0, 212, 255, 0.3);
+    border-radius: 10px;
+    padding: 4px 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+}
+
+.stepper-track::-webkit-scrollbar {
+    display: none;
+}
+
+.step-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.step-card .step-icon {
+    font-size: 0.95rem;
+}
+
+.step-card .step-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.step-card .step-num {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+.step-card .step-label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #cbd5e1;
+}
+
+.stepper-connector {
+    color: rgba(0, 212, 255, 0.5);
+    font-weight: 800;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+/* Active Highlighted Reaction Step */
+.step-card.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(245, 158, 11, 0.25));
+    border-color: #00d4ff;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.45);
+    transform: scale(1.02);
+}
+
+.step-card.active .step-num {
+    color: #38bdf8;
+}
+
+.step-card.active .step-label {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+/* Live Reaction Process Narrator Pill */
+.sim-narrator-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 7px;
+    padding: 4px 10px;
+    margin: 0 auto;
+    max-width: 95%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+}
+
+.sim-narrator-pill .narrator-icon {
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.sim-narrator-pill .narrator-msg {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.25;
+    text-align: center;
+}
+
+/* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
+.sim-tuning-pane {
+    width: 320px;
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(16px);
+    border-left: 1.5px solid rgba(0, 212, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 14px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+/* Game vs Controls Subdeck Toggle */
+.sim-subdeck-pills {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sim-subdeck-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 7px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.sim-subdeck-btn.active {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Missions Cards List */
+.sim-missions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sim-mission-card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s ease;
+}
+
+.sim-mission-card.completed {
+    border-color: rgba(74, 222, 128, 0.5);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.mission-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.mission-title {
+    font-size: 0.90rem;
+    font-weight: 800;
+    color: #f1f5f9;
+}
+
+.mission-status-badge {
+    font-size: 0.70rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: var(--font-mono);
+}
+
+.mission-status-badge.active {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.mission-status-badge.done {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.mission-desc {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    line-height: 1.35;
+}
+
+.mission-progress-bar-wrap {
+    width: 100%;
+    height: 7px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.mission-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #4ade80);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.mission-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+}
+
+.mission-reward-badge {
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+/* Sections in Controls Deck */
+.sim-pane-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 14px;
 }
 
 .sim-pane-title {
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 0.86rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: #00d4ff;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .sim-input-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 12px;
 }
 
 .sim-input-row:last-child {
@@ -201,90 +462,194 @@
 .sim-input-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.74rem;
-    color: #94a3b8;
+    align-items: center;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #cbd5e1;
     font-family: var(--font-ui);
+}
+
+.large-sim-select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    border-radius: 8px;
 }
 
 .sim-val-badge {
     font-family: var(--font-mono);
     color: #38bdf8;
-    font-weight: 600;
+    font-weight: 800;
+    font-size: 0.95rem;
 }
 
 .sim-range-slider {
     width: 100%;
+    height: 8px;
     accent-color: #00d4ff;
     cursor: pointer;
+    border-radius: 4px;
 }
 
-/* Action Buttons inside Deck */
+.slider-hint-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Big Tactile Arcade Action Buttons */
+.sim-arcade-actions-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
 .sim-action-btn {
     width: 100%;
-    padding: 9px 12px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.90rem;
+    font-weight: 800;
     font-family: var(--font-ui);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     transition: all 0.2s ease;
     border: none;
+    touch-action: manipulation;
+}
+
+.large-arcade-btn {
+    min-height: 46px;
+    letter-spacing: 0.03em;
+    font-size: 0.92rem;
 }
 
 .sim-action-btn.primary {
     background: linear-gradient(135deg, #00d4ff, #0284c7);
     color: #000000;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
 .sim-action-btn.danger {
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
 }
 
 .sim-action-btn:active {
     transform: scale(0.97);
 }
 
-/* Environmental Pressure Launcher Button in Main Toolbar */
-.env-pressure-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(16, 185, 129, 0.12));
-    border: 1px solid rgba(0, 212, 255, 0.35);
-    color: #38bdf8;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    height: 28px;
-}
-
-.env-pressure-btn:hover {
-    background: rgba(0, 212, 255, 0.22);
-    border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
-}
-
-/* Responsive adjustment for Mobile Landscape */
-@media (max-width: 900px) {
+/* ==================== RESPONSIVE RULES FOR MOBILE & SPLIT MODE ==================== */
+@media (orientation: landscape) {
+    .sim-workspace {
+        flex-direction: row;
+    }
     .sim-tuning-pane {
-        width: 230px;
-        padding: 10px;
+        width: clamp(260px, 32vw, 320px);
+        max-height: 100%;
+    }
+}
+
+@media (orientation: portrait), (max-width: 600px) and (orientation: portrait) {
+    .sim-workspace {
+        flex-direction: column;
+    }
+
+    .sim-viewport-stage {
+        flex: 1;
+        min-height: 240px;
+    }
+
+    .sim-tuning-pane {
+        width: 100%;
+        max-height: 48vh;
+        border-left: none;
+        border-top: 1.5px solid rgba(0, 212, 255, 0.25);
+        padding: 12px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .sim-header-bar {
+        padding: 4px 8px;
+        gap: 6px;
+    }
+
+    .sim-tab-btn {
+        padding: 5px 9px;
+        font-size: 0.78rem;
+        gap: 4px;
+    }
+
+    .stepper-track {
+        padding: 3px 6px;
+        gap: 4px;
+    }
+
+    .step-card {
+        padding: 2px 6px;
+    }
+
+    .step-card .step-label {
+        font-size: 0.72rem;
+    }
+
+    .sim-narrator-pill {
+        padding: 3px 8px;
+    }
+
+    .sim-narrator-pill .narrator-msg {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-height: 540px) and (orientation: landscape) {
+    .sim-header-bar {
+        padding: 3px 8px;
+        min-height: 42px;
+    }
+
+    .sim-ctrl-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.82rem;
+    }
+
+    .sim-speed-select {
+        padding: 3px 5px;
+        font-size: 0.74rem;
+    }
+
+    .sim-tuning-pane {
+        width: 270px;
+        padding: 8px 10px;
         gap: 8px;
     }
-    .sim-pane-section {
-        padding: 8px;
+
+    .sim-reaction-stepper {
+        top: 4px;
+        gap: 3px;
+    }
+
+    .stepper-track {
+        padding: 2px 6px;
+        gap: 3px;
+    }
+
+    .step-card {
+        padding: 2px 6px;
+    }
+
+    .sim-narrator-pill {
+        padding: 2px 8px;
     }
 }

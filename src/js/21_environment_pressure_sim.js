@@ -168,21 +168,21 @@
          * Calculates state of matter using thermodynamic phase boundary equations
          */
         calculatePhase(elementData, T = this.temperatureK, P = this.pressureAtm) {
-            if (!elementData) return { state: 'Unknown', color: '#94a3b8', details: 'N/A' };
-
-            const Z = elementData.atomicNumber;
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const el = elementData || allElements.find(e => e.atomicNumber === this.activeElementId) || { atomicNumber: 6, meltingPoint: 3823, boilingPoint: 5100, name: 'Carbon' };
+            const Z = el.atomicNumber || 6;
             const thermo = THERMO_ELEMENT_DB[Z] || {
-                Tt: elementData.melt ? Number(elementData.melt) : 1000,
+                Tt: el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : 1000),
                 Pt: 0.001,
-                Tc: elementData.boil ? Number(elementData.boil) * 1.5 : 2000,
+                Tc: el.boilingPoint ? Number(el.boilingPoint) * 1.5 : (el.boil ? Number(el.boil) * 1.5 : 2000),
                 Pc: 500,
                 P_metal: 5e6,
                 deltaH_vap: 50.0,
                 deltaH_fus: 10.0
             };
 
-            const T_melt_1atm = elementData.melt ? Number(elementData.melt) : thermo.Tt;
-            const T_boil_1atm = elementData.boil ? Number(elementData.boil) : thermo.Tc;
+            const T_melt_1atm = el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : thermo.Tt);
+            const T_boil_1atm = el.boilingPoint ? Number(el.boilingPoint) : (el.boil ? Number(el.boil) : thermo.Tc);
 
             // 1. Plasma Regime (Thermonuclear / Ionization)
             if (T > 25000 || (T > 10000 && P < 0.01)) {
@@ -280,15 +280,28 @@
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
-            const padLeft = 45;
-            const padBottom = 30;
-            const padTop = 20;
-            const padRight = 20;
+            const padLeft = 55;
+            const padBottom = 35;
+            const padTop = 25;
+            const padRight = 25;
             const plotW = w - padLeft - padRight;
             const plotH = h - padTop - padBottom;
 
@@ -302,7 +315,7 @@
             const mapY = (logP) => padTop + (1 - (logP - minLogP) / (maxLogP - minLogP)) * plotH;
 
             // Background Grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
             ctx.lineWidth = 1;
             for (let t = 1000; t <= 5000; t += 1000) {
                 const x = mapX(t);
@@ -311,9 +324,9 @@
                 ctx.lineTo(x, h - padBottom);
                 ctx.stroke();
 
-                ctx.fillStyle = '#64748b';
-                ctx.font = '9px monospace';
-                ctx.fillText(`${t}K`, x - 12, h - padBottom + 14);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px monospace';
+                ctx.fillText(`${t}K`, x - 14, h - padBottom + 16);
             }
 
             for (let lp = minLogP; lp <= maxLogP; lp += 3) {
@@ -323,9 +336,9 @@
                 ctx.lineTo(w - padRight, y);
                 ctx.stroke();
 
-                ctx.fillStyle = '#64748b';
-                ctx.font = '9px monospace';
-                ctx.fillText(`10^${lp}`, 8, y + 3);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px monospace';
+                ctx.fillText(`10^${lp}`, 10, y + 4);
             }
 
             const Tm0 = elementData?.melt ? Number(elementData.melt) : 1000;
@@ -333,7 +346,7 @@
 
             // Phase Boundary Curves (Solid-Liquid Simon line)
             ctx.strokeStyle = '#00d4ff';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.0;
             ctx.beginPath();
             for (let lp = minLogP; lp <= maxLogP; lp += 0.2) {
                 const p = Math.pow(10, lp);
@@ -347,7 +360,7 @@
 
             // Phase Boundary Curves (Liquid-Gas Clausius-Clapeyron curve)
             ctx.strokeStyle = '#f97316';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.0;
             ctx.beginPath();
             let first = true;
             for (let lp = minLogP; lp <= 3; lp += 0.2) {
@@ -364,14 +377,14 @@
             ctx.stroke();
 
             // Labels
-            ctx.fillStyle = 'rgba(0, 212, 255, 0.7)';
-            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.9)';
+            ctx.font = 'bold 13px sans-serif';
             ctx.fillText('SOLID', mapX(Tm0 * 0.4), mapY(2));
 
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.7)';
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
             ctx.fillText('LIQUID', mapX((Tm0 + Tb0) / 2), mapY(2));
 
-            ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
+            ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
             ctx.fillText('GAS', mapX(Math.min(maxT * 0.85, Tb0 * 1.5)), mapY(-3));
 
             // Current Operating Point Indicator (Glowing Reticle)
@@ -380,18 +393,20 @@
             const curY = mapY(curLogP);
 
             ctx.shadowColor = '#00d4ff';
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 14;
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
-            ctx.arc(curX, curY, 6, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 7, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
 
             ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2.0;
             ctx.beginPath();
-            ctx.arc(curX, curY, 10, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 12, 0, Math.PI * 2);
             ctx.stroke();
+
+            ctx.restore();
         }
     }
 

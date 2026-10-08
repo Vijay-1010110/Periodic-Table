@@ -297,14 +297,33 @@
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = this.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = this.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            if (Math.abs(this.width - clientW) > 30 || Math.abs(this.height - clientH) > 30) {
+                this.width = clientW;
+                this.height = clientH;
+                this.loadPreset(this.currentKey);
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
             // Subtle Molecular Orbital Density Background Vignette
             const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 30, w / 2, h / 2, w * 0.5);
-            bgGrad.addColorStop(0, 'rgba(0, 212, 255, 0.04)');
+            bgGrad.addColorStop(0, 'rgba(0, 212, 255, 0.05)');
             bgGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, w, h);
@@ -323,7 +342,7 @@
 
                 // Color shifts to warning red as bond is stretched under tension
                 ctx.strokeStyle = strain > 0.45 ? '#ef4444' : (strain > 0.2 ? '#f59e0b' : 'rgba(255, 255, 255, 0.5)');
-                ctx.lineWidth = 4.5;
+                ctx.lineWidth = 5.5;
                 ctx.beginPath();
                 ctx.moveTo(a1.x, a1.y);
                 ctx.lineTo(a2.x, a2.y);
@@ -331,7 +350,7 @@
 
                 // Inner core line
                 ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = 2.0;
                 ctx.beginPath();
                 ctx.moveTo(a1.x, a1.y);
                 ctx.lineTo(a2.x, a2.y);
@@ -340,48 +359,63 @@
 
             // Render Atoms (3D CPK Spheres)
             for (const atom of this.atoms) {
+                const r = Math.max(16, atom.radius * 1.1);
                 const grad = ctx.createRadialGradient(
-                    atom.x - atom.radius * 0.35, atom.y - atom.radius * 0.35, atom.radius * 0.1,
-                    atom.x, atom.y, atom.radius
+                    atom.x - r * 0.35, atom.y - r * 0.35, r * 0.1,
+                    atom.x, atom.y, r
                 );
                 grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(0.3, atom.color);
                 grad.addColorStop(1, '#0f172a');
 
                 ctx.shadowColor = atom.color;
-                ctx.shadowBlur = atom.isDragged ? 18 : 6;
+                ctx.shadowBlur = atom.isDragged ? 22 : 8;
                 ctx.fillStyle = grad;
                 ctx.beginPath();
-                ctx.arc(atom.x, atom.y, atom.radius, 0, Math.PI * 2);
+                ctx.arc(atom.x, atom.y, r, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.lineWidth = 1.0;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.lineWidth = 1.2;
                 ctx.stroke();
 
-                // Chemical Symbol
+                // Chemical Symbol (Large, bold, crisp)
                 ctx.fillStyle = atom.element === 'H' ? '#0f172a' : '#ffffff';
-                ctx.font = 'bold 9px sans-serif';
-                ctx.fillText(atom.element, atom.x - 3.5, atom.y + 3.5);
+                ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(atom.element, atom.x, atom.y);
             }
 
-            // Telemetry HUD
+            // Telemetry HUD (Large, clear typography)
             const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-            ctx.lineWidth = 1;
-            ctx.fillRect(10, 10, 210, 65);
-            ctx.strokeRect(10, 10, 210, 65);
+            const hudW = Math.min(260, w * 0.44);
+            const hudH = 88;
+            const hudX = 14;
+            const hudY = 14;
+
+            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
+            ctx.fill();
+            ctx.stroke();
 
             ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 11px monospace';
-            ctx.fillText(preset.name, 18, 26);
+            ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`🧬 ${preset.name}`, hudX + 10, hudY + 10);
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '9px monospace';
-            ctx.fillText(`Thermal Agitation: ${this.temperatureK.toFixed(0)} K`, 18, 42);
-            ctx.fillText(`Interactive Mode:  Drag any atom!`, 18, 58);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11.5px monospace';
+            ctx.fillText(`Thermal Agitation: ${this.temperatureK.toFixed(0)} K`, hudX + 10, hudY + 32);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText(`💡 Mode: Touch & drag atom!`, hudX + 10, hudY + 54);
+
+            ctx.restore();
         }
     }
 

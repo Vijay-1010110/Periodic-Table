@@ -973,6 +973,8 @@
                     <div class="balanced-equation-text" id="balanced-equation-text">
                         CH₄ + 2O₂ &nbsp;➔&nbsp; CO₂ + 2H₂O
                     </div>
+                    <!-- Educational Chemical Reaction Transformation Stepper -->
+                    <div class="chem-reaction-process-stepper" id="chem-reaction-process-stepper"></div>
                     <!-- Inline Stoichiometry for Direct Mobile Visibility -->
                     <div class="reaction-inline-stoich" id="reaction-inline-stoich"></div>
                     <!-- Atom Conservation & Inventory Table -->
@@ -1247,12 +1249,12 @@
                     <button id="sim-btn-step" class="sim-ctrl-btn" onclick="stepSimFrame()" title="Step Forward 1 Frame">⏭️</button>
                     <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Chamber / Geometry">🔄</button>
                     <select id="sim-speed-select" class="sim-speed-select" onchange="changeSimSpeed(this.value)" title="Simulation Speed">
-                        <option value="0.1">0.1x (Slow-Mo)</option>
+                        <option value="0.1">0.1x</option>
                         <option value="0.25">0.25x</option>
                         <option value="0.5">0.5x</option>
-                        <option value="1.0" selected>1.0x (Normal)</option>
-                        <option value="2.0">2.0x (Fast)</option>
-                        <option value="5.0">5.0x (Hyper)</option>
+                        <option value="1.0" selected>1.0x</option>
+                        <option value="2.0">2.0x</option>
+                        <option value="5.0">5.0x</option>
                     </select>
                     <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
                 </div>
@@ -1260,6 +1262,47 @@
 
             <div class="sim-workspace">
                 <div class="sim-viewport-stage">
+                    <!-- Interactive Game Reaction Process Stepper & Live Narrator -->
+                    <div class="sim-reaction-stepper" id="sim-reaction-stepper">
+                        <div class="stepper-track">
+                            <div class="step-card active" id="rxn-step-1">
+                                <span class="step-icon">🎯</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 1</span>
+                                    <span class="step-label">Fire Neutron</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-2">
+                                <span class="step-icon">⚡</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 2</span>
+                                    <span class="step-label">Core Absorption</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-3">
+                                <span class="step-icon">💥</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 3</span>
+                                    <span class="step-label">Nuclear Split (+200 MeV)</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-4">
+                                <span class="step-icon">🔄</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 4</span>
+                                    <span class="step-label">Chain Multiplier</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sim-narrator-pill" id="sim-narrator-pill">
+                            <span class="narrator-icon">💡</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start the chain reaction!</span>
+                        </div>
+                    </div>
+
                     <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>

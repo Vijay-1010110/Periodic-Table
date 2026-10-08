@@ -8853,6 +8853,74 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; bac
     border-radius: 4px;
 }
 
+/* Chemical Reaction Transformation Process Stepper */
+.chem-reaction-process-stepper {
+    margin: 12px 0;
+    width: 100%;
+}
+
+.chem-stepper-track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 10px;
+    padding: 8px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.chem-stepper-track::-webkit-scrollbar {
+    display: none;
+}
+
+.chem-step-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.chem-step-card.active {
+    background: rgba(0, 212, 255, 0.16);
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+}
+
+.cs-icon {
+    font-size: 1.1rem;
+}
+
+.cs-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.cs-num {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #38bdf8;
+    text-transform: uppercase;
+}
+
+.cs-label {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.chem-connector {
+    color: rgba(0, 212, 255, 0.5);
+    font-weight: 800;
+}
+
 /* Atom Inventory Table */
 .atom-inventory-card {
     background: rgba(10, 20, 38, 0.6);
@@ -8892,11 +8960,12 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; bac
     display: flex;
     flex-direction: column;
     gap: 6px;
+    overflow-x: auto;
 }
 
 .atom-inv-head-row {
     display: grid;
-    grid-template-columns: 140px 1fr 30px 1fr 140px;
+    grid-template-columns: minmax(90px, 140px) 1fr 24px 1fr minmax(90px, 140px);
     font-size: 0.72rem;
     color: #94a3b8;
     text-transform: uppercase;
@@ -8907,7 +8976,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; bac
 
 .atom-inv-row {
     display: grid;
-    grid-template-columns: 140px 1fr 30px 1fr 140px;
+    grid-template-columns: minmax(90px, 140px) 1fr 24px 1fr minmax(90px, 140px);
     align-items: center;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -10112,13 +10181,14 @@ body.is-pro-user .nav-pro-pill {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
-    z-index: 10;
-    gap: 12px;
+    padding: 6px 12px;
+    background: rgba(15, 23, 42, 0.90);
+    backdrop-filter: blur(14px);
+    border-bottom: 1.5px solid rgba(0, 212, 255, 0.25);
+    z-index: 20;
+    gap: 8px;
     flex-shrink: 0;
+    min-height: 46px;
 }
 
 .sim-tabs-row {
@@ -10127,6 +10197,9 @@ body.is-pro-user .nav-pro-pill {
     gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-width: 0;
 }
 
 .sim-tabs-row::-webkit-scrollbar {
@@ -10137,41 +10210,43 @@ body.is-pro-user .nav-pro-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #94a3b8;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
     border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.82rem;
+    font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .sim-tab-btn:hover {
-    background: rgba(0, 212, 255, 0.08);
+    background: rgba(0, 212, 255, 0.12);
     color: #ffffff;
-    border-color: rgba(0, 212, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.4);
 }
 
 .sim-tab-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(168, 85, 247, 0.18));
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(168, 85, 247, 0.25));
     border-color: #00d4ff;
     color: #ffffff;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.35);
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
 /* Game-Level Playback Controls Bar */
 .sim-playback-deck {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4px 10px;
-    border-radius: 10px;
+    gap: 5px;
+    background: rgba(10, 16, 30, 0.92);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    padding: 3px 6px;
+    border-radius: 9px;
+    flex-shrink: 0;
 }
 
 .sim-ctrl-btn {
@@ -10181,16 +10256,17 @@ body.is-pro-user .nav-pro-pill {
     width: 32px;
     height: 32px;
     border-radius: 7px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     color: #e2e8f0;
-    font-size: 0.85rem;
+    font-size: 0.90rem;
     cursor: pointer;
     transition: all 0.15s ease;
+    touch-action: manipulation;
 }
 
 .sim-ctrl-btn:hover {
-    background: rgba(0, 212, 255, 0.2);
+    background: rgba(0, 212, 255, 0.25);
     border-color: #00d4ff;
     color: #ffffff;
 }
@@ -10200,13 +10276,13 @@ body.is-pro-user .nav-pro-pill {
 }
 
 .sim-speed-select {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.35);
     color: #00d4ff;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    padding: 4px 8px;
+    padding: 5px 6px;
     border-radius: 6px;
     cursor: pointer;
     outline: none;
@@ -10228,9 +10304,11 @@ body.is-pro-user .nav-pro-pill {
     position: relative;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: #020408;
 }
 
 .sim-canvas {
@@ -10240,45 +10318,297 @@ body.is-pro-user .nav-pro-pill {
     cursor: crosshair;
 }
 
-/* Right Parameters & Tuning Deck */
-.sim-tuning-pane {
-    width: 290px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(14px);
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+/* ==================== GAME REACTION PROCESS STEPPER & NARRATOR ==================== */
+.sim-reaction-stepper {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    right: 10px;
+    z-index: 15;
     display: flex;
     flex-direction: column;
-    padding: 14px;
-    gap: 12px;
-    overflow-y: auto;
-    flex-shrink: 0;
-    z-index: 5;
+    gap: 5px;
+    pointer-events: none;
+    max-width: calc(100% - 20px);
 }
 
-.sim-pane-section {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+.stepper-track {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+    max-width: 100%;
+    gap: 5px;
+    background: rgba(10, 16, 30, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(0, 212, 255, 0.3);
+    border-radius: 10px;
+    padding: 4px 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+}
+
+.stepper-track::-webkit-scrollbar {
+    display: none;
+}
+
+.step-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.step-card .step-icon {
+    font-size: 0.95rem;
+}
+
+.step-card .step-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.step-card .step-num {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+.step-card .step-label {
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #cbd5e1;
+}
+
+.stepper-connector {
+    color: rgba(0, 212, 255, 0.5);
+    font-weight: 800;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+/* Active Highlighted Reaction Step */
+.step-card.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(245, 158, 11, 0.25));
+    border-color: #00d4ff;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.45);
+    transform: scale(1.02);
+}
+
+.step-card.active .step-num {
+    color: #38bdf8;
+}
+
+.step-card.active .step-label {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+/* Live Reaction Process Narrator Pill */
+.sim-narrator-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 7px;
+    padding: 4px 10px;
+    margin: 0 auto;
+    max-width: 95%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+}
+
+.sim-narrator-pill .narrator-icon {
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.sim-narrator-pill .narrator-msg {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.25;
+    text-align: center;
+}
+
+/* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
+.sim-tuning-pane {
+    width: 320px;
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(16px);
+    border-left: 1.5px solid rgba(0, 212, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 14px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+/* Game vs Controls Subdeck Toggle */
+.sim-subdeck-pills {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sim-subdeck-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 7px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.sim-subdeck-btn.active {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Missions Cards List */
+.sim-missions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sim-mission-card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s ease;
+}
+
+.sim-mission-card.completed {
+    border-color: rgba(74, 222, 128, 0.5);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.mission-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.mission-title {
+    font-size: 0.90rem;
+    font-weight: 800;
+    color: #f1f5f9;
+}
+
+.mission-status-badge {
+    font-size: 0.70rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: var(--font-mono);
+}
+
+.mission-status-badge.active {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.mission-status-badge.done {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.mission-desc {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    line-height: 1.35;
+}
+
+.mission-progress-bar-wrap {
+    width: 100%;
+    height: 7px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.mission-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #4ade80);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.mission-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+}
+
+.mission-reward-badge {
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+/* Sections in Controls Deck */
+.sim-pane-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 14px;
 }
 
 .sim-pane-title {
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 0.86rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: #00d4ff;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .sim-input-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 12px;
 }
 
 .sim-input-row:last-child {
@@ -10288,91 +10618,195 @@ body.is-pro-user .nav-pro-pill {
 .sim-input-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.74rem;
-    color: #94a3b8;
+    align-items: center;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #cbd5e1;
     font-family: var(--font-ui);
+}
+
+.large-sim-select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    border-radius: 8px;
 }
 
 .sim-val-badge {
     font-family: var(--font-mono);
     color: #38bdf8;
-    font-weight: 600;
+    font-weight: 800;
+    font-size: 0.95rem;
 }
 
 .sim-range-slider {
     width: 100%;
+    height: 8px;
     accent-color: #00d4ff;
     cursor: pointer;
+    border-radius: 4px;
 }
 
-/* Action Buttons inside Deck */
+.slider-hint-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Big Tactile Arcade Action Buttons */
+.sim-arcade-actions-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
 .sim-action-btn {
     width: 100%;
-    padding: 9px 12px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.90rem;
+    font-weight: 800;
     font-family: var(--font-ui);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     transition: all 0.2s ease;
     border: none;
+    touch-action: manipulation;
+}
+
+.large-arcade-btn {
+    min-height: 46px;
+    letter-spacing: 0.03em;
+    font-size: 0.92rem;
 }
 
 .sim-action-btn.primary {
     background: linear-gradient(135deg, #00d4ff, #0284c7);
     color: #000000;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
 .sim-action-btn.danger {
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
 }
 
 .sim-action-btn:active {
     transform: scale(0.97);
 }
 
-/* Environmental Pressure Launcher Button in Main Toolbar */
-.env-pressure-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(16, 185, 129, 0.12));
-    border: 1px solid rgba(0, 212, 255, 0.35);
-    color: #38bdf8;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    height: 28px;
-}
-
-.env-pressure-btn:hover {
-    background: rgba(0, 212, 255, 0.22);
-    border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
-}
-
-/* Responsive adjustment for Mobile Landscape */
-@media (max-width: 900px) {
+/* ==================== RESPONSIVE RULES FOR MOBILE & SPLIT MODE ==================== */
+@media (orientation: landscape) {
+    .sim-workspace {
+        flex-direction: row;
+    }
     .sim-tuning-pane {
-        width: 230px;
-        padding: 10px;
+        width: clamp(260px, 32vw, 320px);
+        max-height: 100%;
+    }
+}
+
+@media (orientation: portrait), (max-width: 600px) and (orientation: portrait) {
+    .sim-workspace {
+        flex-direction: column;
+    }
+
+    .sim-viewport-stage {
+        flex: 1;
+        min-height: 240px;
+    }
+
+    .sim-tuning-pane {
+        width: 100%;
+        max-height: 48vh;
+        border-left: none;
+        border-top: 1.5px solid rgba(0, 212, 255, 0.25);
+        padding: 12px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .sim-header-bar {
+        padding: 4px 8px;
+        gap: 6px;
+    }
+
+    .sim-tab-btn {
+        padding: 5px 9px;
+        font-size: 0.78rem;
+        gap: 4px;
+    }
+
+    .stepper-track {
+        padding: 3px 6px;
+        gap: 4px;
+    }
+
+    .step-card {
+        padding: 2px 6px;
+    }
+
+    .step-card .step-label {
+        font-size: 0.72rem;
+    }
+
+    .sim-narrator-pill {
+        padding: 3px 8px;
+    }
+
+    .sim-narrator-pill .narrator-msg {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-height: 540px) and (orientation: landscape) {
+    .sim-header-bar {
+        padding: 3px 8px;
+        min-height: 42px;
+    }
+
+    .sim-ctrl-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.82rem;
+    }
+
+    .sim-speed-select {
+        padding: 3px 5px;
+        font-size: 0.74rem;
+    }
+
+    .sim-tuning-pane {
+        width: 270px;
+        padding: 8px 10px;
         gap: 8px;
     }
-    .sim-pane-section {
-        padding: 8px;
+
+    .sim-reaction-stepper {
+        top: 4px;
+        gap: 3px;
+    }
+
+    .stepper-track {
+        padding: 2px 6px;
+        gap: 3px;
+    }
+
+    .step-card {
+        padding: 2px 6px;
+    }
+
+    .sim-narrator-pill {
+        padding: 2px 8px;
     }
 }
 
@@ -94990,6 +95424,46 @@ function renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, eleme
         totalProductMass += pCoeffs[i] * getFormulaMolarMass(str);
     });
 
+    // Educational Chemical Reaction Process Stepper
+    const chemStepper = document.getElementById('chem-reaction-process-stepper');
+    if (chemStepper) {
+        chemStepper.innerHTML = `
+            <div class="chem-stepper-track">
+                <div class="chem-step-card">
+                    <span class="cs-icon">🧪</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 1: Reactants</span>
+                        <span class="cs-label">${reactantStrs.join(' + ')}</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚡</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 2: Activation</span>
+                        <span class="cs-label">Bonds break apart</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚛️</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 3: Conservation</span>
+                        <span class="cs-label">${elements.length} elements conserved</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card active">
+                    <span class="cs-icon">✨</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 4: Products</span>
+                        <span class="cs-label">${productStrs.join(' + ')}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     // Inline Stoichiometry for Direct Mobile Visibility
     const inlineStoich = document.getElementById('reaction-inline-stoich');
     const inlineHtml = `
@@ -105850,21 +106324,21 @@ window.OrbitalViewer = {
          * Calculates state of matter using thermodynamic phase boundary equations
          */
         calculatePhase(elementData, T = this.temperatureK, P = this.pressureAtm) {
-            if (!elementData) return { state: 'Unknown', color: '#94a3b8', details: 'N/A' };
-
-            const Z = elementData.atomicNumber;
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const el = elementData || allElements.find(e => e.atomicNumber === this.activeElementId) || { atomicNumber: 6, meltingPoint: 3823, boilingPoint: 5100, name: 'Carbon' };
+            const Z = el.atomicNumber || 6;
             const thermo = THERMO_ELEMENT_DB[Z] || {
-                Tt: elementData.melt ? Number(elementData.melt) : 1000,
+                Tt: el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : 1000),
                 Pt: 0.001,
-                Tc: elementData.boil ? Number(elementData.boil) * 1.5 : 2000,
+                Tc: el.boilingPoint ? Number(el.boilingPoint) * 1.5 : (el.boil ? Number(el.boil) * 1.5 : 2000),
                 Pc: 500,
                 P_metal: 5e6,
                 deltaH_vap: 50.0,
                 deltaH_fus: 10.0
             };
 
-            const T_melt_1atm = elementData.melt ? Number(elementData.melt) : thermo.Tt;
-            const T_boil_1atm = elementData.boil ? Number(elementData.boil) : thermo.Tc;
+            const T_melt_1atm = el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : thermo.Tt);
+            const T_boil_1atm = el.boilingPoint ? Number(el.boilingPoint) : (el.boil ? Number(el.boil) : thermo.Tc);
 
             // 1. Plasma Regime (Thermonuclear / Ionization)
             if (T > 25000 || (T > 10000 && P < 0.01)) {
@@ -105962,15 +106436,28 @@ window.OrbitalViewer = {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
-            const padLeft = 45;
-            const padBottom = 30;
-            const padTop = 20;
-            const padRight = 20;
+            const padLeft = 55;
+            const padBottom = 35;
+            const padTop = 25;
+            const padRight = 25;
             const plotW = w - padLeft - padRight;
             const plotH = h - padTop - padBottom;
 
@@ -105984,7 +106471,7 @@ window.OrbitalViewer = {
             const mapY = (logP) => padTop + (1 - (logP - minLogP) / (maxLogP - minLogP)) * plotH;
 
             // Background Grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
             ctx.lineWidth = 1;
             for (let t = 1000; t <= 5000; t += 1000) {
                 const x = mapX(t);
@@ -105993,9 +106480,9 @@ window.OrbitalViewer = {
                 ctx.lineTo(x, h - padBottom);
                 ctx.stroke();
 
-                ctx.fillStyle = '#64748b';
-                ctx.font = '9px monospace';
-                ctx.fillText(`${t}K`, x - 12, h - padBottom + 14);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px monospace';
+                ctx.fillText(`${t}K`, x - 14, h - padBottom + 16);
             }
 
             for (let lp = minLogP; lp <= maxLogP; lp += 3) {
@@ -106005,9 +106492,9 @@ window.OrbitalViewer = {
                 ctx.lineTo(w - padRight, y);
                 ctx.stroke();
 
-                ctx.fillStyle = '#64748b';
-                ctx.font = '9px monospace';
-                ctx.fillText(`10^${lp}`, 8, y + 3);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '11px monospace';
+                ctx.fillText(`10^${lp}`, 10, y + 4);
             }
 
             const Tm0 = elementData?.melt ? Number(elementData.melt) : 1000;
@@ -106015,7 +106502,7 @@ window.OrbitalViewer = {
 
             // Phase Boundary Curves (Solid-Liquid Simon line)
             ctx.strokeStyle = '#00d4ff';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.0;
             ctx.beginPath();
             for (let lp = minLogP; lp <= maxLogP; lp += 0.2) {
                 const p = Math.pow(10, lp);
@@ -106029,7 +106516,7 @@ window.OrbitalViewer = {
 
             // Phase Boundary Curves (Liquid-Gas Clausius-Clapeyron curve)
             ctx.strokeStyle = '#f97316';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.0;
             ctx.beginPath();
             let first = true;
             for (let lp = minLogP; lp <= 3; lp += 0.2) {
@@ -106046,14 +106533,14 @@ window.OrbitalViewer = {
             ctx.stroke();
 
             // Labels
-            ctx.fillStyle = 'rgba(0, 212, 255, 0.7)';
-            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.9)';
+            ctx.font = 'bold 13px sans-serif';
             ctx.fillText('SOLID', mapX(Tm0 * 0.4), mapY(2));
 
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.7)';
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
             ctx.fillText('LIQUID', mapX((Tm0 + Tb0) / 2), mapY(2));
 
-            ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
+            ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
             ctx.fillText('GAS', mapX(Math.min(maxT * 0.85, Tb0 * 1.5)), mapY(-3));
 
             // Current Operating Point Indicator (Glowing Reticle)
@@ -106062,18 +106549,20 @@ window.OrbitalViewer = {
             const curY = mapY(curLogP);
 
             ctx.shadowColor = '#00d4ff';
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 14;
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
-            ctx.arc(curX, curY, 6, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 7, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
 
             ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2.0;
             ctx.beginPath();
-            ctx.arc(curX, curY, 10, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 12, 0, Math.PI * 2);
             ctx.stroke();
+
+            ctx.restore();
         }
     }
 
@@ -106195,8 +106684,8 @@ window.OrbitalViewer = {
 
 // 22_chain_reaction_sim.js
 /**
- * PERIODICA 3D - Nuclear Chain Reaction Simulation Engine
- * Real-time Fission Dynamics, Neutron Transport, Moderation & Criticality Physics
+ * PERIODICA 3D - Nuclear Chain Reaction Simulation & Interactive Game Engine
+ * Real-time Fission Dynamics, Neutron Transport, Moderation & Criticality Game Suite
  * 
  * Sourced from IAEA Nuclear Data Services & Evaluated Nuclear Data File (ENDF/B-VIII.0).
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
@@ -106213,44 +106702,47 @@ window.OrbitalViewer = {
             name: 'Uranium-235',
             symbol: '²³⁵U',
             color: '#10b981',
+            glowColor: 'rgba(16, 185, 129, 0.65)',
             fissionQMeV: 202.5,
             avgPromptNeutrons: 2.43,
             thermalCrossSectionBarns: 585.0,
             fastCrossSectionBarns: 1.25,
             delayedFraction: 0.0065,
-            desc: 'Thermal fissile isotope used in commercial LWRs and historical enriched devices.'
+            desc: 'Thermal fissile isotope used in commercial LWRs and enriched devices.'
         },
         'PU239': {
             name: 'Plutonium-239',
             symbol: '²³⁹Pu',
             color: '#f59e0b',
+            glowColor: 'rgba(245, 158, 11, 0.70)',
             fissionQMeV: 207.1,
             avgPromptNeutrons: 2.88,
             thermalCrossSectionBarns: 748.0,
             fastCrossSectionBarns: 1.80,
             delayedFraction: 0.0021,
-            desc: 'High neutron yield fissile actinide; lower critical mass and rapid prompt response.'
+            desc: 'High neutron yield actinide; rapid prompt response and lower critical mass.'
         },
         'U238': {
             name: 'Uranium-238 (Depleted)',
             symbol: '²³⁸U',
             color: '#64748b',
+            glowColor: 'rgba(100, 116, 139, 0.45)',
             fissionQMeV: 205.0,
             avgPromptNeutrons: 2.50,
             thermalCrossSectionBarns: 0.00002, // Non-fissile to thermal
-            fastCrossSectionBarns: 0.60, // Threshold > 1 MeV
+            fastCrossSectionBarns: 0.60,
             delayedFraction: 0.0157,
-            desc: 'Fertile isotope; captures thermal neutrons into Pu-239; fissionable only by energetic fast neutrons.'
+            desc: 'Fertile isotope; captures thermal neutrons into Pu-239; fissions only with energetic fast neutrons.'
         }
     };
 
     /**
-     * Moderator Characteristics (Elastic neutron energy loss: xi parameter)
+     * Moderator Characteristics
      */
     const MODERATOR_SPECS = {
-        'light_water': { name: 'Light Water (H₂O)', xi: 0.925, slowingRatio: 61, color: 'rgba(0, 212, 255, 0.15)' },
-        'heavy_water': { name: 'Heavy Water (D₂O)', xi: 0.508, slowingRatio: 5670, color: 'rgba(59, 130, 246, 0.20)' },
-        'graphite':    { name: 'Nuclear Graphite (C)', xi: 0.158, slowingRatio: 192, color: 'rgba(75, 85, 99, 0.25)' },
+        'light_water': { name: 'Light Water (H₂O)', xi: 0.925, slowingRatio: 61, color: 'rgba(0, 212, 255, 0.12)' },
+        'heavy_water': { name: 'Heavy Water (D₂O)', xi: 0.508, slowingRatio: 5670, color: 'rgba(59, 130, 246, 0.18)' },
+        'graphite':    { name: 'Nuclear Graphite (C)', xi: 0.158, slowingRatio: 192, color: 'rgba(75, 85, 99, 0.22)' },
         'vacuum':      { name: 'Fast / Vacuum (No Moderator)', xi: 0.0, slowingRatio: 0, color: 'transparent' }
     };
 
@@ -106264,19 +106756,24 @@ window.OrbitalViewer = {
             this.vx = vx;
             this.vy = vy;
             this.isThermal = isThermal;
-            this.energyMeV = isThermal ? 0.000000025 : 2.0; // 0.025 eV vs 2 MeV
+            this.energyMeV = isThermal ? 0.000000025 : 2.0;
             this.age = 0;
             this.alive = true;
+            this.trail = [];
         }
 
         update(dt, width, height, moderator) {
+            // Save trail for visual clarity
+            this.trail.push({ x: this.x, y: this.y });
+            if (this.trail.length > 5) this.trail.shift();
+
             this.x += this.vx * dt;
             this.y += this.vy * dt;
             this.age += dt;
 
             // Moderator collisions (thermalization)
             if (!this.isThermal && moderator && moderator.xi > 0) {
-                if (Math.random() < 0.04 * moderator.xi) {
+                if (Math.random() < 0.05 * moderator.xi) {
                     this.isThermal = true;
                     this.energyMeV = 0.000000025;
                     this.vx *= 0.45;
@@ -106290,20 +106787,24 @@ window.OrbitalViewer = {
             }
 
             // Natural decay / absorption loss
-            if (this.age > 8.0) {
+            if (this.age > 7.0) {
                 this.alive = false;
             }
         }
     }
 
     class FissileNucleus {
-        constructor(x, y, fuelType = 'U235') {
+        constructor(x, y, fuelType = 'U235', radius = 16) {
             this.x = x;
             this.y = y;
             this.fuelType = fuelType;
-            this.radius = 9;
+            this.radius = radius;
             this.fissioned = false;
-            this.excitation = 0;
+            this.pulsePhase = Math.random() * Math.PI * 2;
+        }
+
+        update(dt) {
+            this.pulsePhase += dt * 3.0;
         }
     }
 
@@ -106311,20 +106812,60 @@ window.OrbitalViewer = {
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.radius = 4;
-            this.maxRadius = 38;
+            this.radius = 6;
+            this.maxRadius = 46;
             this.opacity = 1.0;
         }
 
         update(dt) {
-            this.radius += 90 * dt;
-            this.opacity -= 2.2 * dt;
+            this.radius += 110 * dt;
+            this.opacity -= 2.4 * dt;
+            return this.opacity > 0;
+        }
+    }
+
+    // Daughter fission fragments flying outward: Krypton-92 and Barium-141
+    class FissionFragment {
+        constructor(x, y, symbol, color, vx, vy) {
+            this.x = x;
+            this.y = y;
+            this.symbol = symbol;
+            this.color = color;
+            this.vx = vx;
+            this.vy = vy;
+            this.opacity = 1.0;
+            this.age = 0;
+        }
+
+        update(dt) {
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
+            this.age += dt;
+            this.opacity -= 1.8 * dt;
+            return this.opacity > 0;
+        }
+    }
+
+    // Floating Game Score & Energy Popups
+    class FloatingScoreText {
+        constructor(x, y, text, color = '#fbbf24') {
+            this.x = x;
+            this.y = y;
+            this.text = text;
+            this.color = color;
+            this.opacity = 1.0;
+            this.vy = -36;
+        }
+
+        update(dt) {
+            this.y += this.vy * dt;
+            this.opacity -= 1.3 * dt;
             return this.opacity > 0;
         }
     }
 
     /**
-     * Master ChainReactionSimulationEngine
+     * Master ChainReactionSimulationEngine with Game Progression & Step Narrator
      */
     class ChainReactionSimulationEngine {
         constructor() {
@@ -106335,16 +106876,68 @@ window.OrbitalViewer = {
             this.neutrons = [];
             this.targets = [];
             this.flashes = [];
-            this.width = 600;
-            this.height = 400;
+            this.fragments = [];
+            this.floatingTexts = [];
+            this.width = 700;
+            this.height = 420;
 
-            // Telemetry
-            this.generationHistory = [];
+            // Telemetry & Game State
             this.fissionsTotal = 0;
             this.currentPowerMW = 0;
-            this.keff = 0.98;
+            this.keff = 0.0;
             this.promptCritical = false;
             this.scramActive = false;
+
+            // Gamification
+            this.score = 0;
+            this.chainCombo = 0;
+            this.comboTimer = 0;
+            this.stableCriticalTimer = 0;
+
+            // Reaction Process Step Tracker (1 to 4)
+            this.activeReactionStep = 1;
+            this.stepHighlightTimer = 0;
+            this.reactionNarrative = 'Ready to launch! Tap "Fire Neutron" or tap anywhere in the reactor to start the fission process.';
+
+            // Missions System
+            this.gameMissions = [
+                {
+                    id: 'm1',
+                    title: 'The First Spark 🎯',
+                    desc: 'Fire a neutron and trigger your first nuclear fission!',
+                    goal: 1,
+                    current: 0,
+                    completed: false,
+                    badge: 'Atom Breaker ⭐'
+                },
+                {
+                    id: 'm2',
+                    title: 'Chain Reaction Combo ⚡',
+                    desc: 'Achieve a chain cascade splitting at least 10 atoms in one continuous surge!',
+                    goal: 10,
+                    current: 0,
+                    completed: false,
+                    badge: 'Chain Master ⚡'
+                },
+                {
+                    id: 'm3',
+                    title: 'Grid Power Stability 🔋',
+                    desc: 'Balance Control Rods to hold reactor in steady Critical state (k-eff 0.99 - 1.02) for 6 seconds!',
+                    goal: 6.0,
+                    current: 0.0,
+                    completed: false,
+                    badge: 'Reactor Operator 🎖️'
+                },
+                {
+                    id: 'm4',
+                    title: 'Prevent Meltdown 🚨',
+                    desc: 'Reach supercritical power (>2,000 MW) and execute an emergency SCRAM before temperature critical!',
+                    goal: 1,
+                    current: 0,
+                    completed: false,
+                    badge: 'Meltdown Hero 🛡️'
+                }
+            ];
 
             this.initChamber();
         }
@@ -106353,47 +106946,88 @@ window.OrbitalViewer = {
             this.targets = [];
             this.neutrons = [];
             this.flashes = [];
+            this.fragments = [];
+            this.floatingTexts = [];
             this.fissionsTotal = 0;
             this.currentPowerMW = 0;
+            this.chainCombo = 0;
+            this.comboTimer = 0;
+            this.stableCriticalTimer = 0;
             this.scramActive = false;
+            this.activeReactionStep = 1;
+            this.reactionNarrative = 'Reactor chamber ready. Fire a neutron to initiate the nuclear fission process!';
 
-            // Generate lattice of fissile nuclei inside chamber
-            const cols = 10;
-            const rows = 7;
-            const startX = 60;
-            const startY = 50;
-            const gapX = (this.width - 120) / (cols - 1);
-            const gapY = (this.height - 100) / (rows - 1);
+            this.repositionLattice(this.width, this.height);
+        }
+
+        repositionLattice(w, h) {
+            this.width = Math.max(320, w);
+            this.height = Math.max(240, h);
+            this.targets = [];
+
+            // Compute optimal grid layout based on viewport dimensions
+            const cols = Math.max(6, Math.min(12, Math.floor(this.width / 62)));
+            const rows = Math.max(4, Math.min(8, Math.floor(this.height / 54)));
+            const cellRadius = Math.max(13, Math.min(18, Math.floor(Math.min(this.width / cols, this.height / rows) * 0.28)));
+
+            const marginX = Math.max(35, this.width * 0.06);
+            const marginTop = Math.max(88, this.height * 0.22);
+            const marginBottom = 48;
+            const spanW = this.width - marginX * 2;
+            const spanH = Math.max(120, this.height - marginTop - marginBottom);
+
+            const gapX = spanW / Math.max(1, cols - 1);
+            const gapY = spanH / Math.max(1, rows - 1);
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    const jitterX = (Math.random() - 0.5) * 8;
-                    const jitterY = (Math.random() - 0.5) * 8;
+                    const jitterX = (Math.random() - 0.5) * 4;
+                    const jitterY = (Math.random() - 0.5) * 4;
                     this.targets.push(new FissileNucleus(
-                        startX + c * gapX + jitterX,
-                        startY + r * gapY + jitterY,
-                        this.fuelType
+                        marginX + c * gapX + jitterX,
+                        marginTop + r * gapY + jitterY,
+                        this.fuelType,
+                        cellRadius
                     ));
                 }
             }
         }
 
         /**
-         * Inject a prompt trigger neutron from user tap or injector gun
+         * Fire a neutron from injector nozzle or direct touch
          */
-        injectNeutron(x = 30, y = this.height / 2, angleRad = (Math.random() - 0.5) * 0.4) {
-            const speed = 260; // Simulation velocity
+        injectNeutron(x = 35, y = this.height / 2, angleRad = (Math.random() - 0.5) * 0.35, speed = 280) {
             const vx = Math.cos(angleRad) * speed;
             const vy = Math.sin(angleRad) * speed;
             this.neutrons.push(new Neutron(x, y, vx, vy, false));
+
+            this.activeReactionStep = 1;
+            this.reactionNarrative = '🎯 Step 1: Free neutron launched into reactor core traveling toward ²³⁵U fuel atoms!';
+            this.updateDOMStepper();
 
             if (window.physicsAudio) {
                 window.physicsAudio.playNeutronGun();
             }
         }
 
+        /**
+         * Aim and fire toward target coordinates
+         */
+        aimAndFire(targetX, targetY) {
+            const startX = 30;
+            const startY = this.height / 2;
+            const dx = targetX - startX;
+            const dy = targetY - startY;
+            const angle = Math.atan2(dy, dx);
+            this.injectNeutron(startX, startY, angle, 320);
+        }
+
         setControlRods(percentage) {
             this.controlRodInsertion = Math.max(0, Math.min(1.0, Number(percentage) || 0));
+            if (this.controlRodInsertion < 0.95) {
+                this.scramActive = false;
+            }
+            this.updateDOMStepper();
         }
 
         setFuel(fuelKey) {
@@ -106410,13 +107044,39 @@ window.OrbitalViewer = {
         }
 
         /**
-         * Emergency SCRAM: 100% control rods immediately dropped
+         * Emergency SCRAM: Control rods slam shut (100%) to quench runaway reaction
          */
         triggerSCRAM() {
             this.scramActive = true;
             this.controlRodInsertion = 1.0;
+            this.chainCombo = 0;
+            this.reactionNarrative = '🚨 EMERGENCY SCRAM ACTIVATED! Control rods fully lowered to 100% — absorbing all free neutrons!';
+            this.updateDOMStepper();
+
+            // Check Mission 4
+            const m4 = this.gameMissions.find(m => m.id === 'm4');
+            if (m4 && !m4.completed && this.currentPowerMW > 1500) {
+                m4.current = 1;
+                m4.completed = true;
+                this.score += 1000;
+                this.onMissionCompleted(m4);
+            }
+
             if (window.physicsAudio) {
                 window.physicsAudio.playScramAlarm();
+            }
+        }
+
+        onMissionCompleted(mission) {
+            this.floatingTexts.push(new FloatingScoreText(this.width / 2, this.height * 0.35, `🏆 ${mission.title} COMPLETED! +500 PTS`, '#4ade80'));
+            if (window.physicsAudio) {
+                window.physicsAudio.playMissionCompleteChime?.();
+            }
+            if (window.NativeServices?.Haptics) {
+                window.NativeServices.Haptics.notification('SUCCESS');
+            }
+            if (typeof window.renderTuningPanel === 'function') {
+                window.renderTuningPanel('chain_reaction');
             }
         }
 
@@ -106424,12 +107084,25 @@ window.OrbitalViewer = {
             const fuelSpec = FUEL_SPECS[this.fuelType] || FUEL_SPECS['U235'];
             const modSpec = MODERATOR_SPECS[this.moderatorType] || MODERATOR_SPECS['light_water'];
 
+            // Combo Decay
+            if (this.comboTimer > 0) {
+                this.comboTimer -= dt;
+                if (this.comboTimer <= 0) {
+                    this.chainCombo = 0;
+                }
+            }
+
+            // Pulse target animations
+            for (const t of this.targets) {
+                t.update(dt);
+            }
+
             let newNeutrons = [];
             let fissionsThisStep = 0;
 
-            // Control Rod vertical barrier geometry (e.g. 3 inserted blades)
+            // Control Rod vertical barrier geometry
             const rodPositionsX = [this.width * 0.28, this.width * 0.50, this.width * 0.72];
-            const rodMaxDepth = this.height * 0.85;
+            const rodMaxDepth = this.height * 0.88;
             const rodCurrentDepth = rodMaxDepth * this.controlRodInsertion;
 
             // Update Neutrons
@@ -106441,9 +107114,10 @@ window.OrbitalViewer = {
                 // Check Control Rod Absorption
                 let absorbedByRod = false;
                 for (const rx of rodPositionsX) {
-                    if (Math.abs(n.x - rx) < 10 && n.y < rodCurrentDepth) {
+                    if (Math.abs(n.x - rx) < 14 && n.y < rodCurrentDepth) {
                         absorbedByRod = true;
                         n.alive = false;
+                        this.floatingTexts.push(new FloatingScoreText(rx, n.y, 'Absorbed 🛡️', '#94a3b8'));
                         break;
                     }
                 }
@@ -106458,9 +107132,8 @@ window.OrbitalViewer = {
                     const dy = n.y - target.y;
                     const distSq = dx * dx + dy * dy;
 
-                    // Cross section probability (Thermal neutrons have vastly higher cross-section)
-                    const baseProb = n.isThermal ? 0.85 : 0.18;
-                    const effectiveRadius = n.isThermal ? (target.radius + 6) : (target.radius + 2);
+                    const baseProb = n.isThermal ? 0.88 : 0.22;
+                    const effectiveRadius = n.isThermal ? (target.radius + 8) : (target.radius + 3);
 
                     if (distSq < effectiveRadius * effectiveRadius) {
                         if (Math.random() < baseProb) {
@@ -106469,20 +107142,75 @@ window.OrbitalViewer = {
                             n.alive = false;
                             fissionsThisStep++;
                             this.fissionsTotal++;
+                            this.chainCombo++;
+                            this.comboTimer = 1.3;
+                            this.score += 200 + this.chainCombo * 25;
 
+                            // Spawn Fission Flash
                             this.flashes.push(new FissionFlash(target.x, target.y));
 
+                            // Spawn Daughter Fission Fragments (Krypton & Barium splitting)
+                            const splitAngle = Math.random() * Math.PI;
+                            const fragSpeed = 70;
+                            this.fragments.push(new FissionFragment(
+                                target.x, target.y,
+                                '⁹²Kr', '#38bdf8',
+                                Math.cos(splitAngle) * fragSpeed,
+                                Math.sin(splitAngle) * fragSpeed
+                            ));
+                            this.fragments.push(new FissionFragment(
+                                target.x, target.y,
+                                '¹⁴¹Ba', '#fb923c',
+                                -Math.cos(splitAngle) * fragSpeed,
+                                -Math.sin(splitAngle) * fragSpeed
+                            ));
+
+                            // Floating Game Score Text
+                            this.floatingTexts.push(new FloatingScoreText(
+                                target.x, target.y - 14,
+                                `+${fuelSpec.fissionQMeV.toFixed(0)} MeV ⚡`,
+                                '#fbbf24'
+                            ));
+
                             // Emit 2 to 3 prompt neutrons in random directions
-                            const numEmitted = Math.random() < 0.5 ? 2 : 3;
+                            const numEmitted = Math.random() < 0.45 ? 2 : 3;
                             for (let k = 0; k < numEmitted; k++) {
                                 const angle = Math.random() * Math.PI * 2;
-                                const speed = 240 + Math.random() * 80;
+                                const speed = 250 + Math.random() * 90;
                                 newNeutrons.push(new Neutron(
                                     target.x, target.y,
                                     Math.cos(angle) * speed,
                                     Math.sin(angle) * speed,
                                     false
                                 ));
+                            }
+
+                            // Update Reaction Process Stepper
+                            if (this.chainCombo > 1) {
+                                this.activeReactionStep = 4;
+                                this.reactionNarrative = `🔄 Step 4: Multiplier Active! Chain combo x${this.chainCombo} — emitted neutrons striking adjacent fuel cells!`;
+                            } else {
+                                this.activeReactionStep = 3;
+                                this.reactionNarrative = `💥 Step 3: FISSION! Nucleus split into Krypton & Barium, releasing +${fuelSpec.fissionQMeV.toFixed(0)} MeV and 2-3 prompt neutrons!`;
+                            }
+
+                            // Check Missions
+                            const m1 = this.gameMissions.find(m => m.id === 'm1');
+                            if (m1 && !m1.completed) {
+                                m1.current = 1;
+                                m1.completed = true;
+                                this.score += 250;
+                                this.onMissionCompleted(m1);
+                            }
+
+                            const m2 = this.gameMissions.find(m => m.id === 'm2');
+                            if (m2 && !m2.completed) {
+                                m2.current = Math.max(m2.current, this.chainCombo);
+                                if (m2.current >= m2.goal) {
+                                    m2.completed = true;
+                                    this.score += 500;
+                                    this.onMissionCompleted(m2);
+                                }
                             }
 
                             if (window.physicsAudio) {
@@ -106497,24 +107225,72 @@ window.OrbitalViewer = {
             // Filter dead neutrons & append newly born neutrons
             this.neutrons = this.neutrons.filter(n => n.alive).concat(newNeutrons);
 
-            // Cap max neutrons for 60fps mobile stability
-            if (this.neutrons.length > 350) {
-                this.neutrons = this.neutrons.slice(-350);
+            // Cap max neutrons for mobile 60fps stability
+            if (this.neutrons.length > 280) {
+                this.neutrons = this.neutrons.slice(-280);
             }
 
-            // Update Flashes
+            // Update Flashes, Fragments & Floating texts
             this.flashes = this.flashes.filter(f => f.update(dt));
+            this.fragments = this.fragments.filter(fg => fg.update(dt));
+            this.floatingTexts = this.floatingTexts.filter(ft => ft.update(dt));
 
             // Calculate Effective Multiplication Factor (k_eff)
             if (this.neutrons.length > 0) {
                 const birthRate = newNeutrons.length;
-                this.keff = (birthRate / Math.max(1, (this.neutrons.length - birthRate) * 0.15)) * 0.95;
+                this.keff = (birthRate / Math.max(1, (this.neutrons.length - birthRate) * 0.16)) * 0.96;
             } else {
                 this.keff = 0.0;
             }
 
-            this.promptCritical = this.keff > 1.05 && this.neutrons.length > 30;
-            this.currentPowerMW = fissionsThisStep * fuelSpec.fissionQMeV * 1.602e-13 * 1e6; // Instantaneous MW proxy
+            this.promptCritical = this.keff > 1.03 && this.neutrons.length > 25;
+            this.currentPowerMW = fissionsThisStep * fuelSpec.fissionQMeV * 1.602e-13 * 1.2e6;
+
+            // Check Mission 3 (Stable Criticality)
+            const m3 = this.gameMissions.find(m => m.id === 'm3');
+            if (m3 && !m3.completed) {
+                if (this.keff >= 0.99 && this.keff <= 1.02 && this.neutrons.length > 5) {
+                    this.stableCriticalTimer += dt;
+                    m3.current = Math.min(m3.goal, this.stableCriticalTimer);
+                    if (this.stableCriticalTimer >= m3.goal) {
+                        m3.completed = true;
+                        this.score += 600;
+                        this.onMissionCompleted(m3);
+                    }
+                } else {
+                    this.stableCriticalTimer = Math.max(0, this.stableCriticalTimer - dt * 0.5);
+                    m3.current = this.stableCriticalTimer;
+                }
+            }
+
+            // Idle reset narrative
+            if (this.neutrons.length === 0 && fissionsThisStep === 0 && !this.scramActive) {
+                if (this.activeReactionStep > 1) {
+                    this.activeReactionStep = 1;
+                    this.reactionNarrative = 'Core quiet. Tap anywhere on the grid or press "Fire Neutron" to start the reaction!';
+                    this.updateDOMStepper();
+                }
+            }
+        }
+
+        updateDOMStepper() {
+            // Update Stepper Step Highlights
+            for (let s = 1; s <= 4; s++) {
+                const stepEl = document.getElementById(`rxn-step-${s}`);
+                if (stepEl) {
+                    if (s === this.activeReactionStep) {
+                        stepEl.classList.add('active');
+                    } else {
+                        stepEl.classList.remove('active');
+                    }
+                }
+            }
+
+            // Update Narrator Banner Text
+            const msgEl = document.getElementById('sim-narrator-msg');
+            if (msgEl && msgEl.textContent !== this.reactionNarrative) {
+                msgEl.textContent = this.reactionNarrative;
+            }
         }
 
         render(canvas) {
@@ -106522,77 +107298,156 @@ window.OrbitalViewer = {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = this.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = this.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            // Recompute lattice if geometry shifted significantly
+            if (Math.abs(this.width - clientW) > 25 || Math.abs(this.height - clientH) > 25) {
+                this.repositionLattice(clientW, clientH);
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = this.width;
+            const h = this.height;
 
             ctx.clearRect(0, 0, w, h);
 
-            // Cherenkov Radiation Ambient Glow (as neutron population escalates)
-            const cherenkovAlpha = Math.min(0.45, (this.neutrons.length / 180) * 0.45);
+            // 1. Ambient Cherenkov Radiation Glow
+            const cherenkovAlpha = Math.min(0.40, (this.neutrons.length / 140) * 0.40);
             if (cherenkovAlpha > 0.01) {
-                const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.6);
+                const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.55);
                 grad.addColorStop(0, `rgba(0, 212, 255, ${cherenkovAlpha})`);
                 grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, 0, w, h);
             }
 
-            // Moderator Background Tint
+            // 2. Moderator Background Tint
             const modSpec = MODERATOR_SPECS[this.moderatorType];
             if (modSpec && modSpec.color !== 'transparent') {
                 ctx.fillStyle = modSpec.color;
                 ctx.fillRect(0, 0, w, h);
             }
 
-            // Control Rods
-            const rodPositionsX = [w * 0.28, w * 0.50, w * 0.72];
-            const rodDepth = h * 0.85 * this.controlRodInsertion;
-            ctx.fillStyle = '#475569';
-            ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 1.5;
-
-            for (const rx of rodPositionsX) {
-                ctx.fillRect(rx - 7, 0, 14, rodDepth);
-                ctx.strokeRect(rx - 7, 0, 14, rodDepth);
-
-                // Boron Carbide Crosshatch
-                ctx.fillStyle = '#f59e0b';
-                ctx.fillRect(rx - 4, rodDepth - 6, 8, 4);
-                ctx.fillStyle = '#475569';
+            // 3. Grid Lattice subtle background lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+            ctx.lineWidth = 1;
+            for (let gx = 50; gx < w; gx += 50) {
+                ctx.beginPath();
+                ctx.moveTo(gx, 0);
+                ctx.lineTo(gx, h);
+                ctx.stroke();
+            }
+            for (let gy = 40; gy < h; gy += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(w, gy);
+                ctx.stroke();
             }
 
-            // Fissile Targets
-            for (const t of this.targets) {
-                ctx.beginPath();
-                ctx.arc(t.x, t.y, t.radius, 0, Math.PI * 2);
-                if (t.fissioned) {
-                    ctx.fillStyle = '#334155';
-                    ctx.fill();
-                    ctx.strokeStyle = '#1e293b';
-                    ctx.stroke();
-                } else {
-                    const fuelSpec = FUEL_SPECS[t.fuelType] || FUEL_SPECS['U235'];
-                    ctx.fillStyle = fuelSpec.color;
-                    ctx.shadowColor = fuelSpec.color;
-                    ctx.shadowBlur = 8;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
+            // 4. Control Rods (Boron Carbide Absorber Blades)
+            const rodPositionsX = [w * 0.28, w * 0.50, w * 0.72];
+            const rodDepth = h * 0.88 * this.controlRodInsertion;
+            const rodW = 18;
 
-                    // Label Z
-                    ctx.fillStyle = '#000000';
-                    ctx.font = 'bold 8px monospace';
-                    ctx.fillText('92', t.x - 5, t.y + 3);
+            for (const rx of rodPositionsX) {
+                // Rod channel casing
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+                ctx.fillRect(rx - rodW / 2, 0, rodW, h * 0.90);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.strokeRect(rx - rodW / 2, 0, rodW, h * 0.90);
+
+                if (rodDepth > 4) {
+                    // Active Boron blade
+                    const bladeGrad = ctx.createLinearGradient(rx - rodW / 2, 0, rx + rodW / 2, 0);
+                    bladeGrad.addColorStop(0, '#334155');
+                    bladeGrad.addColorStop(0.5, '#64748b');
+                    bladeGrad.addColorStop(1, '#334155');
+                    ctx.fillStyle = bladeGrad;
+                    ctx.fillRect(rx - rodW / 2 + 1, 0, rodW - 2, rodDepth);
+
+                    // Caution Hazard Stripes at bottom tip
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillRect(rx - rodW / 2 + 2, Math.max(0, rodDepth - 10), rodW - 4, 8);
                 }
             }
 
-            // Fission Flashes
+            // 5. Fissile Nuclei (Atoms)
+            const fuelSpec = FUEL_SPECS[this.fuelType] || FUEL_SPECS['U235'];
+            for (const t of this.targets) {
+                if (t.fissioned) {
+                    // Spent / Split atom crater
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, t.radius * 0.85, 0, Math.PI * 2);
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fill();
+                    ctx.strokeStyle = '#334155';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#64748b';
+                    ctx.font = 'bold 10px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('⚡', t.x, t.y);
+                } else {
+                    // Active Fuel Atom with glowing orbital shell
+                    const pulse = Math.sin(t.pulsePhase) * 1.5;
+                    const r = t.radius + pulse;
+
+                    // Outer orbital aura
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, r + 4, 0, Math.PI * 2);
+                    ctx.fillStyle = fuelSpec.glowColor;
+                    ctx.fill();
+
+                    // Solid atom core
+                    const coreGrad = ctx.createRadialGradient(t.x - r * 0.3, t.y - r * 0.3, 1, t.x, t.y, r);
+                    coreGrad.addColorStop(0, '#ffffff');
+                    coreGrad.addColorStop(0.35, fuelSpec.color);
+                    coreGrad.addColorStop(1, '#064e3b');
+                    ctx.fillStyle = coreGrad;
+
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+
+                    // Element Symbol (Crisp, bold, large readable typography)
+                    ctx.fillStyle = '#000000';
+                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(fuelSpec.symbol, t.x, t.y);
+                }
+            }
+
+            // 6. Daughter Fragments Flying Outward
+            for (const fg of this.fragments) {
+                ctx.fillStyle = fg.color;
+                ctx.font = 'bold 12px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(fg.symbol, fg.x, fg.y);
+            }
+
+            // 7. Fission Shockwave Flashes
             for (const f of this.flashes) {
                 const flashGrad = ctx.createRadialGradient(f.x, f.y, 1, f.x, f.y, f.radius);
                 flashGrad.addColorStop(0, `rgba(255, 255, 255, ${f.opacity})`);
-                flashGrad.addColorStop(0.5, `rgba(245, 158, 11, ${f.opacity * 0.7})`);
+                flashGrad.addColorStop(0.4, `rgba(245, 158, 11, ${f.opacity * 0.8})`);
                 flashGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
                 ctx.fillStyle = flashGrad;
                 ctx.beginPath();
@@ -106600,49 +107455,98 @@ window.OrbitalViewer = {
                 ctx.fill();
             }
 
-            // Neutrons
+            // 8. Neutrons with Glowing Trails
             for (const n of this.neutrons) {
+                // Trail
+                if (n.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(n.trail[0].x, n.trail[0].y);
+                    for (let ti = 1; ti < n.trail.length; ti++) {
+                        ctx.lineTo(n.trail[ti].x, n.trail[ti].y);
+                    }
+                    ctx.strokeStyle = n.isThermal ? 'rgba(0, 212, 255, 0.45)' : 'rgba(251, 191, 36, 0.45)';
+                    ctx.lineWidth = n.isThermal ? 2.5 : 1.8;
+                    ctx.stroke();
+                }
+
+                // Head
                 ctx.beginPath();
-                ctx.arc(n.x, n.y, n.isThermal ? 3.5 : 2.5, 0, Math.PI * 2);
+                ctx.arc(n.x, n.y, n.isThermal ? 4.5 : 3.5, 0, Math.PI * 2);
                 ctx.fillStyle = n.isThermal ? '#00d4ff' : '#ffffff';
                 ctx.shadowColor = n.isThermal ? '#00d4ff' : '#fbbf24';
-                ctx.shadowBlur = n.isThermal ? 6 : 4;
+                ctx.shadowBlur = 8;
                 ctx.fill();
                 ctx.shadowBlur = 0;
             }
 
-            // Telemetry HUD Overlay
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-            ctx.lineWidth = 1;
-            ctx.fillRect(10, 10, 190, 78);
-            ctx.strokeRect(10, 10, 190, 78);
+            // 9. Floating Score & Energy Labels (+200 MeV)
+            for (const ft of this.floatingTexts) {
+                ctx.fillStyle = ft.color;
+                ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                ctx.shadowBlur = 4;
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.shadowBlur = 0;
+            }
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '10px monospace';
-            ctx.fillText(`Free Neutrons:  ${this.neutrons.length}`, 18, 28);
-            ctx.fillText(`Fissions Total: ${this.fissionsTotal}`, 18, 44);
+            // 10. Sci-Fi Game Bottom Telemetry Bar (Docked cleanly across bottom, ZERO overlap!)
+            const barH = 32;
+            const barY = h - barH - 8;
+            const barX = 10;
+            const barW = w - 20;
 
-            // K_eff Color Tag
+            ctx.fillStyle = 'rgba(10, 15, 29, 0.92)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.40)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.roundRect(barX, barY, barW, barH, 7);
+            ctx.fill();
+            ctx.stroke();
+
+            // Status label
             let kColor = '#10b981';
             let kLabel = 'SUBCRITICAL';
             if (this.keff >= 0.99 && this.keff <= 1.02) {
                 kColor = '#38bdf8';
-                kLabel = 'CRITICAL (STEADY)';
+                kLabel = 'CRITICAL';
             } else if (this.keff > 1.02) {
                 kColor = '#ef4444';
                 kLabel = 'SUPERCRITICAL';
             }
 
-            ctx.fillStyle = kColor;
             ctx.font = 'bold 11px monospace';
-            ctx.fillText(`k-eff: ${this.keff.toFixed(3)} [${kLabel}]`, 18, 62);
+            ctx.textBaseline = 'middle';
+            const midY = barY + barH / 2;
 
-            if (this.promptCritical) {
-                ctx.fillStyle = '#f43f5e';
-                ctx.font = 'bold 10px monospace';
-                ctx.fillText(`⚠️ PROMPT RUNAWAY`, 18, 78);
+            if (barW < 360) {
+                // Compact 2-column mode for narrow mobile / split screens
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText(`⚡ ${this.currentPowerMW.toFixed(0)} MW`, barX + 8, midY);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillText(`⭐ ${this.score} [${kLabel}]`, barX + barW * 0.50, midY);
+            } else {
+                const colW = barW / 4;
+                // Segment 1: Power
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText(`⚡ ${this.currentPowerMW.toFixed(0)} MW`, barX + 8, midY);
+
+                // Segment 2: Fissions
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText(`🎯 ${this.fissionsTotal}/${this.targets.length}`, barX + colW + 4, midY);
+
+                // Segment 3: k-eff
+                ctx.fillStyle = kColor;
+                ctx.fillText(`k: ${this.keff.toFixed(2)} [${kLabel}]`, barX + colW * 2 + 4, midY);
+
+                // Segment 4: Score & Combo
+                ctx.fillStyle = '#fbbf24';
+                const comboText = this.chainCombo > 1 ? `x${this.chainCombo}🔥` : `⭐ ${this.score}`;
+                ctx.fillText(comboText, barX + colW * 3 + 4, midY);
             }
+
+            ctx.restore();
         }
     }
 
@@ -106945,8 +107849,26 @@ window.OrbitalViewer = {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = this.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = this.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            this.width = clientW;
+            this.height = clientH;
+            this.sourceX = 40;
+            this.sourceY = clientH / 2;
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
@@ -106959,11 +107881,11 @@ window.OrbitalViewer = {
 
             // Magnetic Field Lines Visual Indicator (dots for +B out-of-screen, crosses for -B into-screen)
             if (Math.abs(this.magneticFieldTesla) > 0.05) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-                ctx.font = '8px monospace';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+                ctx.font = 'bold 12px monospace';
                 const symbol = this.magneticFieldTesla > 0 ? '⊙' : '⊗';
-                for (let x = 40; x < w; x += 60) {
-                    for (let y = 30; y < h; y += 50) {
+                for (let x = 40; x < w; x += 55) {
+                    for (let y = 30; y < h; y += 45) {
                         ctx.fillText(symbol, x, y);
                     }
                 }
@@ -106980,7 +107902,7 @@ window.OrbitalViewer = {
                 ctx.shadowColor = p.color;
                 ctx.shadowBlur = 8;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.trackWidth * 0.75, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, Math.max(3.5, p.trackWidth * 0.9), 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
             }
@@ -107000,32 +107922,46 @@ window.OrbitalViewer = {
             ctx.fillStyle = '#334155';
             ctx.strokeStyle = '#f59e0b';
             ctx.lineWidth = 1.5;
-            ctx.fillRect(this.sourceX - 16, this.sourceY - 14, 20, 28);
-            ctx.strokeRect(this.sourceX - 16, this.sourceY - 14, 20, 28);
+            ctx.fillRect(this.sourceX - 18, this.sourceY - 18, 24, 36);
+            ctx.strokeRect(this.sourceX - 18, this.sourceY - 18, 24, 36);
 
             // Trefoil Radiation Symbol
             ctx.fillStyle = '#f59e0b';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillText('☢', this.sourceX - 12, this.sourceY + 4);
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('☢', this.sourceX - 6, this.sourceY);
 
-            // Telemetry HUD
+            // Telemetry HUD (Large, clear typography)
             const preset = DECAY_PRESETS.find(p => p.id === this.currentPresetId) || DECAY_PRESETS[0];
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.25)';
-            ctx.lineWidth = 1;
-            ctx.fillRect(10, 10, 230, 80);
-            ctx.strokeRect(10, 10, 230, 80);
+            const hudW = Math.min(270, w * 0.45);
+            const hudH = 100;
+            const hudX = 14;
+            const hudY = 14;
+
+            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
+            ctx.fill();
+            ctx.stroke();
 
             ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 11px monospace';
-            ctx.fillText(`${preset.name} (${preset.particle})`, 18, 26);
+            ctx.font = 'bold 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`☢️ ${preset.name} (${preset.particle})`, hudX + 10, hudY + 10);
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '9px monospace';
-            ctx.fillText(`Half-life:    ${preset.halfLifeStr}`, 18, 42);
-            ctx.fillText(`Q-Value:      ${preset.energyMeV} MeV`, 18, 56);
-            ctx.fillText(`Magnetic B:   ${this.magneticFieldTesla > 0 ? '+' : ''}${this.magneticFieldTesla.toFixed(1)} Tesla`, 18, 70);
-            ctx.fillText(`Events Log:   ${this.totalDecaysCount}`, 18, 84);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11.5px monospace';
+            ctx.fillText(`Half-life:  ${preset.halfLifeStr}`, hudX + 10, hudY + 30);
+            ctx.fillText(`Q-Value:    ${preset.energyMeV} MeV`, hudX + 10, hudY + 48);
+            ctx.fillText(`Magnetic B: ${this.magneticFieldTesla > 0 ? '+' : ''}${this.magneticFieldTesla.toFixed(1)} Tesla`, hudX + 10, hudY + 66);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillText(`Events Log: ${this.totalDecaysCount} Decays`, hudX + 10, hudY + 84);
+
+            ctx.restore();
         }
     }
 
@@ -107336,14 +108272,33 @@ window.OrbitalViewer = {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = this.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = this.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            if (Math.abs(this.width - clientW) > 30 || Math.abs(this.height - clientH) > 30) {
+                this.width = clientW;
+                this.height = clientH;
+                this.loadPreset(this.currentKey);
+            }
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
             // Subtle Molecular Orbital Density Background Vignette
             const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 30, w / 2, h / 2, w * 0.5);
-            bgGrad.addColorStop(0, 'rgba(0, 212, 255, 0.04)');
+            bgGrad.addColorStop(0, 'rgba(0, 212, 255, 0.05)');
             bgGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, w, h);
@@ -107362,7 +108317,7 @@ window.OrbitalViewer = {
 
                 // Color shifts to warning red as bond is stretched under tension
                 ctx.strokeStyle = strain > 0.45 ? '#ef4444' : (strain > 0.2 ? '#f59e0b' : 'rgba(255, 255, 255, 0.5)');
-                ctx.lineWidth = 4.5;
+                ctx.lineWidth = 5.5;
                 ctx.beginPath();
                 ctx.moveTo(a1.x, a1.y);
                 ctx.lineTo(a2.x, a2.y);
@@ -107370,7 +108325,7 @@ window.OrbitalViewer = {
 
                 // Inner core line
                 ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = 2.0;
                 ctx.beginPath();
                 ctx.moveTo(a1.x, a1.y);
                 ctx.lineTo(a2.x, a2.y);
@@ -107379,48 +108334,63 @@ window.OrbitalViewer = {
 
             // Render Atoms (3D CPK Spheres)
             for (const atom of this.atoms) {
+                const r = Math.max(16, atom.radius * 1.1);
                 const grad = ctx.createRadialGradient(
-                    atom.x - atom.radius * 0.35, atom.y - atom.radius * 0.35, atom.radius * 0.1,
-                    atom.x, atom.y, atom.radius
+                    atom.x - r * 0.35, atom.y - r * 0.35, r * 0.1,
+                    atom.x, atom.y, r
                 );
                 grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(0.3, atom.color);
                 grad.addColorStop(1, '#0f172a');
 
                 ctx.shadowColor = atom.color;
-                ctx.shadowBlur = atom.isDragged ? 18 : 6;
+                ctx.shadowBlur = atom.isDragged ? 22 : 8;
                 ctx.fillStyle = grad;
                 ctx.beginPath();
-                ctx.arc(atom.x, atom.y, atom.radius, 0, Math.PI * 2);
+                ctx.arc(atom.x, atom.y, r, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.lineWidth = 1.0;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.lineWidth = 1.2;
                 ctx.stroke();
 
-                // Chemical Symbol
+                // Chemical Symbol (Large, bold, crisp)
                 ctx.fillStyle = atom.element === 'H' ? '#0f172a' : '#ffffff';
-                ctx.font = 'bold 9px sans-serif';
-                ctx.fillText(atom.element, atom.x - 3.5, atom.y + 3.5);
+                ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(atom.element, atom.x, atom.y);
             }
 
-            // Telemetry HUD
+            // Telemetry HUD (Large, clear typography)
             const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-            ctx.lineWidth = 1;
-            ctx.fillRect(10, 10, 210, 65);
-            ctx.strokeRect(10, 10, 210, 65);
+            const hudW = Math.min(260, w * 0.44);
+            const hudH = 88;
+            const hudX = 14;
+            const hudY = 14;
+
+            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
+            ctx.fill();
+            ctx.stroke();
 
             ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 11px monospace';
-            ctx.fillText(preset.name, 18, 26);
+            ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`🧬 ${preset.name}`, hudX + 10, hudY + 10);
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '9px monospace';
-            ctx.fillText(`Thermal Agitation: ${this.temperatureK.toFixed(0)} K`, 18, 42);
-            ctx.fillText(`Interactive Mode:  Drag any atom!`, 18, 58);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11.5px monospace';
+            ctx.fillText(`Thermal Agitation: ${this.temperatureK.toFixed(0)} K`, hudX + 10, hudY + 32);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText(`💡 Mode: Touch & drag atom!`, hudX + 10, hudY + 54);
+
+            ctx.restore();
         }
     }
 
@@ -107620,6 +108590,48 @@ window.OrbitalViewer = {
             osc.start(t);
             osc.stop(t + 0.32);
         }
+
+        playMissionCompleteChime() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            // Celebratory major chord chime: C5 (523Hz), E5 (659Hz), G5 (784Hz), C6 (1046Hz)
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, idx) => {
+                const noteTime = t + idx * 0.08;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, noteTime);
+                gain.gain.setValueAtTime(0.28, noteTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(noteTime);
+                osc.stop(noteTime + 0.36);
+            });
+        }
+
+        playComboPulse() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, t);
+            osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
+            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.14);
+        }
     }
 
     /**
@@ -107757,11 +108769,23 @@ window.OrbitalViewer = {
         if (!window.simPlaybackController) return;
         window.simPlaybackController.setActiveTab(tabName);
 
-        // Update Tab Buttons
+        // Update Tab Buttons and ensure active button is scrolled into view
         document.querySelectorAll('.sim-tab-btn').forEach(btn => {
-            if (btn.getAttribute('data-sim') === tabName) btn.classList.add('active');
-            else btn.classList.remove('active');
+            if (btn.getAttribute('data-sim') === tabName) {
+                btn.classList.add('active');
+                if (typeof btn.scrollIntoView === 'function') {
+                    btn.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+                }
+            } else {
+                btn.classList.remove('active');
+            }
         });
+
+        // Reaction Stepper is ONLY visible for Nuclear Chain Reaction!
+        const stepper = document.getElementById('sim-reaction-stepper');
+        if (stepper) {
+            stepper.style.display = (tabName === 'chain_reaction') ? 'flex' : 'none';
+        }
 
         // Switch Visible Canvases
         const canvases = {
@@ -107822,146 +108846,252 @@ window.OrbitalViewer = {
     /**
      * Render Contextual Parameter Deck for Active Simulation
      */
+    let activeChainSubdeck = 'missions'; // 'missions' | 'controls'
+
+    function setChainSubdeck(deck) {
+        activeChainSubdeck = deck;
+        renderTuningPanel('chain_reaction');
+    }
+    window.setChainSubdeck = setChainSubdeck;
+
+    /**
+     * Render Contextual Parameter Deck for Active Simulation
+     */
     function renderTuningPanel(tabName) {
         const pane = document.getElementById('sim-tuning-pane');
         if (!pane) return;
 
         if (tabName === 'chain_reaction') {
             const engine = window.chainReactionEngine;
+            const missions = engine ? engine.gameMissions : [];
+            const completedCount = missions.filter(m => m.completed).length;
+
             pane.innerHTML = `
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>⚛️</span> Reactor Parameters</div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Fissile Fuel:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.chainReactionEngine.setFuel(this.value)">
-                            <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>Uranium-235 (Thermal)</option>
-                            <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>Plutonium-239 (Fast)</option>
-                            <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>Uranium-238 (Depleted)</option>
-                        </select>
-                    </div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Moderator Medium:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.chainReactionEngine.setModerator(this.value)">
-                            <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water (H₂O)</option>
-                            <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water (D₂O)</option>
-                            <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (C)</option>
-                            <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Core)</option>
-                        </select>
-                    </div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Control Rods (Absorber):</span><span id="rod-val-display" class="sim-val-badge">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</span></label>
-                        <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
-                    </div>
+                <!-- Sub-deck Game vs Controls Mode Selector -->
+                <div class="sim-subdeck-pills">
+                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'missions' ? 'active' : ''}" onclick="setChainSubdeck('missions')">
+                        🎮 Game Missions (${completedCount}/${missions.length})
+                    </button>
+                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'controls' ? 'active' : ''}" onclick="setChainSubdeck('controls')">
+                        ⚙️ Reactor Controls
+                    </button>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.chainReactionEngine.injectNeutron()">
-                        <span>🚀</span> Inject Prompt Neutron
+                <!-- Always Visible Fast Action Arcade Buttons -->
+                <div class="sim-arcade-actions-block" style="margin-top: 6px; margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.chainReactionEngine.injectNeutron()">
+                        <span>🚀</span> FIRE NEUTRON (LAUNCH)
                     </button>
-                    <button class="sim-action-btn danger" onclick="window.chainReactionEngine.triggerSCRAM(); document.getElementById('rod-val-display').textContent='100%';">
-                        <span>🚨</span> EMERGENCY SCRAM
+                    <button class="sim-action-btn danger large-arcade-btn" onclick="window.chainReactionEngine.triggerSCRAM();">
+                        <span>🚨</span> EMERGENCY SCRAM (STOP)
                     </button>
                 </div>
-                <p style="font-size:0.68rem; color:#64748b; line-height:1.4;">
-                    💡 <em>Tip: Tap anywhere on the reactor viewport to launch a neutron in that direction!</em>
-                </p>
+
+                ${activeChainSubdeck === 'missions' ? `
+                    <!-- GAME MISSIONS PANEL -->
+                    <div class="sim-missions-list">
+                        ${missions.map(m => {
+                            const pct = Math.min(100, Math.round((m.current / m.goal) * 100));
+                            return `
+                                <div class="sim-mission-card ${m.completed ? 'completed' : ''}">
+                                    <div class="mission-header-row">
+                                        <span class="mission-title">${m.title}</span>
+                                        <span class="mission-status-badge ${m.completed ? 'done' : 'active'}">
+                                            ${m.completed ? 'COMPLETED ✅' : 'IN PROGRESS ⏳'}
+                                        </span>
+                                    </div>
+                                    <div class="mission-desc">${m.desc}</div>
+                                    <div class="mission-progress-bar-wrap">
+                                        <div class="mission-progress-bar" style="width: ${pct}%;"></div>
+                                    </div>
+                                    <div class="mission-footer-row">
+                                        <span class="mission-progress-text">${typeof m.current === 'number' && m.current % 1 !== 0 ? m.current.toFixed(1) : m.current} / ${m.goal}</span>
+                                        <span class="mission-reward-badge">${m.badge}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <p style="font-size:0.80rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
+                        🎯 <em>Tip: Tap anywhere on the reactor grid to aim & shoot a neutron directly at fuel atoms!</em>
+                    </p>
+                ` : `
+                    <!-- REACTOR CONTROLS PANEL -->
+                    <div class="sim-pane-section">
+                        <div class="sim-pane-title"><span>⚛️</span> Reactor Core Parameters</div>
+                        
+                        <div class="sim-input-row">
+                            <label class="sim-input-label"><span>Fissile Fuel Element:</span></label>
+                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setFuel(this.value)">
+                                <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Uranium-235 (Commercial Fissile)</option>
+                                <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Plutonium-239 (Fast Neutron)</option>
+                                <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Uranium-238 (Depleted Fertile)</option>
+                            </select>
+                        </div>
+
+                        <div class="sim-input-row">
+                            <label class="sim-input-label"><span>Moderator Medium:</span></label>
+                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setModerator(this.value)">
+                                <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O (Thermalizes Neutrons)</option>
+                                <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O (Low Absorption)</option>
+                                <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (Solid Core)</option>
+                                <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Reactor, No Slowing)</option>
+                            </select>
+                        </div>
+
+                        <div class="sim-input-row">
+                            <div class="sim-input-label">
+                                <span>Control Rods (Absorption):</span>
+                                <span id="rod-val-display" class="sim-val-badge">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</span>
+                            </div>
+                            <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
+                            <div class="slider-hint-row">
+                                <span>⚡ Pull (More Power)</span>
+                                <span>⬇️ Insert (Cool Down)</span>
+                            </div>
+                        </div>
+                    </div>
+                `}
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
+                        <span>⚡</span> EMIT RADIATION PULSE
+                    </button>
+                    <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
+                        <span>🧹</span> CLEAR VAPOR TRACKS
+                    </button>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>☢️</span> Particle Chamber</div>
+                    <div class="sim-pane-title"><span>☢️</span> Particle Cloud Chamber</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Nuclide Source:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                        <label class="sim-input-label"><span>Nuclide Radiation Source:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
                             ${window.DECAY_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.name} (${p.particle})</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Magnetic Field B:</span><span id="b-val-display" class="sim-val-badge">${engine ? engine.magneticFieldTesla.toFixed(1) : '1.0'} T</span></label>
-                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${(engine ? engine.magneticFieldTesla : 1.0) * 10}" oninput="const b=this.value/10; document.getElementById('b-val-display').textContent=(b>0?'+':'')+b.toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(b);">
+                        <div class="sim-input-label">
+                            <span>Magnetic Field B:</span>
+                            <span id="b-val-display" class="sim-val-badge">${engine ? engine.magneticFieldTesla.toFixed(1) : '1.0'} Tesla</span>
+                        </div>
+                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${(engine ? engine.magneticFieldTesla : 1.0) * 10}" oninput="const b=this.value/10; document.getElementById('b-val-display').textContent=(b>0?'+':'')+b.toFixed(1)+' Tesla'; window.nuclearDecayEngine.setMagneticField(b);">
+                        <div class="slider-hint-row">
+                            <span>⊗ Inward (-B)</span>
+                            <span>⊙ Outward (+B)</span>
+                        </div>
                     </div>
                     <div class="sim-input-row">
                         <label class="sim-input-label"><span>Emission Mode:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.nuclearDecayEngine.autoTrigger=(this.value==='auto')">
-                            <option value="auto" ${engine && engine.autoTrigger ? 'selected' : ''}>Continuous Emission</option>
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.autoTrigger=(this.value==='auto')">
+                            <option value="auto" ${engine && engine.autoTrigger ? 'selected' : ''}>Continuous Radiation Beam</option>
                             <option value="manual" ${engine && !engine.autoTrigger ? 'selected' : ''}>Manual Pulses Only</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.nuclearDecayEngine.triggerDecay()">
-                        <span>⚡</span> Emit Radiation Pulse
-                    </button>
-                    <button class="sim-action-btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1;" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
-                        <span>🧹</span> Clear Vapor Tracks
-                    </button>
-                </div>
-                <p style="font-size:0.68rem; color:#64748b; line-height:1.4;">
-                    Lorentz Force F = q(v × B) curves positively charged α particles gently and negatively charged β⁻ electrons into tight spirals!
+                <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
+                    💡 <strong>Lorentz Force:</strong> Positively charged α curves gently; negatively charged β⁻ curls tightly opposite!
                 </p>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
+                        <span>🔄</span> RESET REST GEOMETRY
+                    </button>
+                    <button class="sim-action-btn" style="background:rgba(168,85,247,0.18); color:#d8b4fe; border:1px solid rgba(168,85,247,0.4);" onclick="if(window.molecularDynamicsEngine){window.molecularDynamicsEngine.atoms.forEach(a=>{a.vx+=(Math.random()-0.5)*200;a.vy+=(Math.random()-0.5)*200;}); if(window.physicsAudio)window.physicsAudio.playBondReleaseSnap();}">
+                        <span>⚡</span> JOLT THERMAL VIBRATION
+                    </button>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🧬</span> Molecule Topology</div>
+                    <div class="sim-pane-title"><span>🧬</span> Molecule Topology & Physics</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Molecule:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
-                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water (H₂O)</option>
-                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide (CO₂)</option>
-                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane (CH₄)</option>
-                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene (C₆H₆)</option>
+                        <label class="sim-input-label"><span>Chemical Molecule:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
+                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water (H₂O - Polar Covalent)</option>
+                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide (CO₂ - Linear Double Bond)</option>
+                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane (CH₄ - Tetrahedral Hydrocarbon)</option>
+                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene (C₆H₆ - Aromatic Ring)</option>
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Thermal Temperature:</span><span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '300'} K</span></label>
+                        <div class="sim-input-label">
+                            <span>Thermal Temperature:</span>
+                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '300'} K</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="1" max="2500" value="${engine ? engine.temperatureK : 300}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
+                        <div class="slider-hint-row">
+                            <span>❄️ Absolute Zero (1 K)</span>
+                            <span>🔥 Extreme Agitation (2500 K)</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
-                        <span>🔄</span> Reset Rest Geometry
-                    </button>
-                </div>
-                <p style="font-size:0.68rem; color:#00d4ff; font-weight:600; line-height:1.4;">
-                    🎮 <strong>Tactile Interaction:</strong> Touch and drag any atom in the viewport to stretch chemical bonds like spring wires!
+                <p style="font-size:0.78rem; color:#00d4ff; font-weight:600; line-height:1.4; margin:4px 0 0; text-align:center;">
+                    🎮 <strong>Touch Gameplay:</strong> Drag any atom on screen with your finger to stretch chemical bonds like quantum springs!
                 </p>
             `;
         } else if (tabName === 'environment') {
             const engine = window.envSimulationEngine;
-            const elData = window.elementsData ? window.elementsData.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6)) : null;
-            const phase = engine ? engine.calculatePhase(elData) : { badge: 'SOLID', color: '#00d4ff', details: '' };
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6));
+            const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
 
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Presets at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <div style="display:flex; gap:6px;">
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(0,212,255,0.18); border:1px solid rgba(0,212,255,0.4); color:#00d4ff;" onclick="window.envSimulationEngine.setPreset('earth_stp'); renderTuningPanel('environment');">
+                            🌍 Earth STP
+                        </button>
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.4); color:#93c5fd;" onclick="window.envSimulationEngine.setPreset('deep_space'); renderTuningPanel('environment');">
+                            ❄️ Cryo Deep
+                        </button>
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.4); color:#fca5a5;" onclick="window.envSimulationEngine.setPreset('sun_core'); renderTuningPanel('environment');">
+                            ☀️ Solar Core
+                        </button>
+                    </div>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🌍</span> Extreme Environments</div>
+                    <div class="sim-pane-title"><span>🌍</span> Extreme Cosmic Environments</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Cosmic / Lab Preset:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
+                        <label class="sim-input-label"><span>Cosmic / Planetary Preset:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
                             ${window.ENVIRONMENT_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Temperature:</span><span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span></label>
+                        <div class="sim-input-label">
+                            <span>Temperature:</span>
+                            <span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="0" max="6000" value="${engine ? Math.min(6000, engine.temperatureK) : 298}" oninput="document.getElementById('env-temp-display').textContent=this.value+' K'; window.envSimulationEngine.setTemperature(this.value); renderTuningPanel('environment');">
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Pressure:</span><span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span></label>
+                        <div class="sim-input-label">
+                            <span>Pressure:</span>
+                            <span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); window.envSimulationEngine.setPressure(p); renderTuningPanel('environment');">
                     </div>
                 </div>
 
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>📊</span> Phase Determination</div>
-                    <div style="display:inline-block; padding:4px 8px; border-radius:6px; font-weight:800; font-family:var(--font-mono); font-size:0.75rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color}; color:${phase.color}; margin-bottom:6px;">
-                        ${phase.badge}
+                    <div class="sim-pane-title"><span>📊</span> Phase State</div>
+                    <div style="display:inline-block; padding:6px 12px; border-radius:8px; font-weight:800; font-family:var(--font-mono); font-size:0.95rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color || '#00d4ff'}; color:${phase.color || '#00d4ff'}; margin-bottom:8px;">
+                        ${phase.badge || '🧊 SOLID'}
                     </div>
-                    <p style="font-size:0.70rem; color:#cbd5e1; line-height:1.4; margin:0;">
-                        ${phase.details}
+                    <p style="font-size:0.78rem; color:#cbd5e1; line-height:1.4; margin:0;">
+                        ${phase.details || 'Rigid crystalline lattice.'}
                     </p>
                 </div>
             `;
@@ -107969,20 +109099,18 @@ window.OrbitalViewer = {
     }
 
     /**
-     * Setup Interactive Touch/Pointer Listeners on Canvases
+     * Setup Interactive Touch/Pointer Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
-        // 1. Chain Reaction Canvas Click/Tap (Injects neutron at tap position)
+        // 1. Chain Reaction Canvas Click/Tap (Aims & Fires neutron toward tap)
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
                 const rect = chainCanvas.getBoundingClientRect();
-                const scaleX = chainCanvas.width / rect.width;
-                const scaleY = chainCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.chainReactionEngine) {
-                    window.chainReactionEngine.injectNeutron(x, y, (Math.random() - 0.5) * 6.28);
+                    window.chainReactionEngine.aimAndFire(x, y);
                 }
             });
         }
@@ -107992,10 +109120,8 @@ window.OrbitalViewer = {
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
                 const rect = decayCanvas.getBoundingClientRect();
-                const scaleX = decayCanvas.width / rect.width;
-                const scaleY = decayCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.nuclearDecayEngine) {
                     window.nuclearDecayEngine.triggerDecay(x, y);
                 }
@@ -108007,10 +109133,8 @@ window.OrbitalViewer = {
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
                 const rect = molCanvas.getBoundingClientRect();
-                const scaleX = molCanvas.width / rect.width;
-                const scaleY = molCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.molecularDynamicsEngine) {
                     window.molecularDynamicsEngine.startDrag(x, y);
                 }
@@ -108018,10 +109142,8 @@ window.OrbitalViewer = {
 
             molCanvas.addEventListener('pointermove', (e) => {
                 const rect = molCanvas.getBoundingClientRect();
-                const scaleX = molCanvas.width / rect.width;
-                const scaleY = molCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.molecularDynamicsEngine && window.molecularDynamicsEngine.draggedAtom) {
                     window.molecularDynamicsEngine.dragMove(x, y);
                 }
@@ -109007,6 +110129,8 @@ window.OrbitalViewer = {
                     <div class="balanced-equation-text" id="balanced-equation-text">
                         CH₄ + 2O₂ &nbsp;➔&nbsp; CO₂ + 2H₂O
                     </div>
+                    <!-- Educational Chemical Reaction Transformation Stepper -->
+                    <div class="chem-reaction-process-stepper" id="chem-reaction-process-stepper"></div>
                     <!-- Inline Stoichiometry for Direct Mobile Visibility -->
                     <div class="reaction-inline-stoich" id="reaction-inline-stoich"></div>
                     <!-- Atom Conservation & Inventory Table -->
@@ -109281,12 +110405,12 @@ window.OrbitalViewer = {
                     <button id="sim-btn-step" class="sim-ctrl-btn" onclick="stepSimFrame()" title="Step Forward 1 Frame">⏭️</button>
                     <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Chamber / Geometry">🔄</button>
                     <select id="sim-speed-select" class="sim-speed-select" onchange="changeSimSpeed(this.value)" title="Simulation Speed">
-                        <option value="0.1">0.1x (Slow-Mo)</option>
+                        <option value="0.1">0.1x</option>
                         <option value="0.25">0.25x</option>
                         <option value="0.5">0.5x</option>
-                        <option value="1.0" selected>1.0x (Normal)</option>
-                        <option value="2.0">2.0x (Fast)</option>
-                        <option value="5.0">5.0x (Hyper)</option>
+                        <option value="1.0" selected>1.0x</option>
+                        <option value="2.0">2.0x</option>
+                        <option value="5.0">5.0x</option>
                     </select>
                     <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
                 </div>
@@ -109294,6 +110418,47 @@ window.OrbitalViewer = {
 
             <div class="sim-workspace">
                 <div class="sim-viewport-stage">
+                    <!-- Interactive Game Reaction Process Stepper & Live Narrator -->
+                    <div class="sim-reaction-stepper" id="sim-reaction-stepper">
+                        <div class="stepper-track">
+                            <div class="step-card active" id="rxn-step-1">
+                                <span class="step-icon">🎯</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 1</span>
+                                    <span class="step-label">Fire Neutron</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-2">
+                                <span class="step-icon">⚡</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 2</span>
+                                    <span class="step-label">Core Absorption</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-3">
+                                <span class="step-icon">💥</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 3</span>
+                                    <span class="step-label">Nuclear Split (+200 MeV)</span>
+                                </div>
+                            </div>
+                            <div class="stepper-connector">➔</div>
+                            <div class="step-card" id="rxn-step-4">
+                                <span class="step-icon">🔄</span>
+                                <div class="step-content">
+                                    <span class="step-num">Step 4</span>
+                                    <span class="step-label">Chain Multiplier</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sim-narrator-pill" id="sim-narrator-pill">
+                            <span class="narrator-icon">💡</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start the chain reaction!</span>
+                        </div>
+                    </div>
+
                     <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>

@@ -186,6 +186,48 @@
             osc.start(t);
             osc.stop(t + 0.32);
         }
+
+        playMissionCompleteChime() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            // Celebratory major chord chime: C5 (523Hz), E5 (659Hz), G5 (784Hz), C6 (1046Hz)
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, idx) => {
+                const noteTime = t + idx * 0.08;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, noteTime);
+                gain.gain.setValueAtTime(0.28, noteTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(noteTime);
+                osc.stop(noteTime + 0.36);
+            });
+        }
+
+        playComboPulse() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, t);
+            osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
+            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.14);
+        }
     }
 
     /**
@@ -323,11 +365,23 @@
         if (!window.simPlaybackController) return;
         window.simPlaybackController.setActiveTab(tabName);
 
-        // Update Tab Buttons
+        // Update Tab Buttons and ensure active button is scrolled into view
         document.querySelectorAll('.sim-tab-btn').forEach(btn => {
-            if (btn.getAttribute('data-sim') === tabName) btn.classList.add('active');
-            else btn.classList.remove('active');
+            if (btn.getAttribute('data-sim') === tabName) {
+                btn.classList.add('active');
+                if (typeof btn.scrollIntoView === 'function') {
+                    btn.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+                }
+            } else {
+                btn.classList.remove('active');
+            }
         });
+
+        // Reaction Stepper is ONLY visible for Nuclear Chain Reaction!
+        const stepper = document.getElementById('sim-reaction-stepper');
+        if (stepper) {
+            stepper.style.display = (tabName === 'chain_reaction') ? 'flex' : 'none';
+        }
 
         // Switch Visible Canvases
         const canvases = {
@@ -388,146 +442,252 @@
     /**
      * Render Contextual Parameter Deck for Active Simulation
      */
+    let activeChainSubdeck = 'missions'; // 'missions' | 'controls'
+
+    function setChainSubdeck(deck) {
+        activeChainSubdeck = deck;
+        renderTuningPanel('chain_reaction');
+    }
+    window.setChainSubdeck = setChainSubdeck;
+
+    /**
+     * Render Contextual Parameter Deck for Active Simulation
+     */
     function renderTuningPanel(tabName) {
         const pane = document.getElementById('sim-tuning-pane');
         if (!pane) return;
 
         if (tabName === 'chain_reaction') {
             const engine = window.chainReactionEngine;
+            const missions = engine ? engine.gameMissions : [];
+            const completedCount = missions.filter(m => m.completed).length;
+
             pane.innerHTML = `
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>⚛️</span> Reactor Parameters</div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Fissile Fuel:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.chainReactionEngine.setFuel(this.value)">
-                            <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>Uranium-235 (Thermal)</option>
-                            <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>Plutonium-239 (Fast)</option>
-                            <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>Uranium-238 (Depleted)</option>
-                        </select>
-                    </div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Moderator Medium:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.chainReactionEngine.setModerator(this.value)">
-                            <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water (H₂O)</option>
-                            <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water (D₂O)</option>
-                            <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (C)</option>
-                            <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Core)</option>
-                        </select>
-                    </div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Control Rods (Absorber):</span><span id="rod-val-display" class="sim-val-badge">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</span></label>
-                        <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
-                    </div>
+                <!-- Sub-deck Game vs Controls Mode Selector -->
+                <div class="sim-subdeck-pills">
+                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'missions' ? 'active' : ''}" onclick="setChainSubdeck('missions')">
+                        🎮 Game Missions (${completedCount}/${missions.length})
+                    </button>
+                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'controls' ? 'active' : ''}" onclick="setChainSubdeck('controls')">
+                        ⚙️ Reactor Controls
+                    </button>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.chainReactionEngine.injectNeutron()">
-                        <span>🚀</span> Inject Prompt Neutron
+                <!-- Always Visible Fast Action Arcade Buttons -->
+                <div class="sim-arcade-actions-block" style="margin-top: 6px; margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.chainReactionEngine.injectNeutron()">
+                        <span>🚀</span> FIRE NEUTRON (LAUNCH)
                     </button>
-                    <button class="sim-action-btn danger" onclick="window.chainReactionEngine.triggerSCRAM(); document.getElementById('rod-val-display').textContent='100%';">
-                        <span>🚨</span> EMERGENCY SCRAM
+                    <button class="sim-action-btn danger large-arcade-btn" onclick="window.chainReactionEngine.triggerSCRAM();">
+                        <span>🚨</span> EMERGENCY SCRAM (STOP)
                     </button>
                 </div>
-                <p style="font-size:0.68rem; color:#64748b; line-height:1.4;">
-                    💡 <em>Tip: Tap anywhere on the reactor viewport to launch a neutron in that direction!</em>
-                </p>
+
+                ${activeChainSubdeck === 'missions' ? `
+                    <!-- GAME MISSIONS PANEL -->
+                    <div class="sim-missions-list">
+                        ${missions.map(m => {
+                            const pct = Math.min(100, Math.round((m.current / m.goal) * 100));
+                            return `
+                                <div class="sim-mission-card ${m.completed ? 'completed' : ''}">
+                                    <div class="mission-header-row">
+                                        <span class="mission-title">${m.title}</span>
+                                        <span class="mission-status-badge ${m.completed ? 'done' : 'active'}">
+                                            ${m.completed ? 'COMPLETED ✅' : 'IN PROGRESS ⏳'}
+                                        </span>
+                                    </div>
+                                    <div class="mission-desc">${m.desc}</div>
+                                    <div class="mission-progress-bar-wrap">
+                                        <div class="mission-progress-bar" style="width: ${pct}%;"></div>
+                                    </div>
+                                    <div class="mission-footer-row">
+                                        <span class="mission-progress-text">${typeof m.current === 'number' && m.current % 1 !== 0 ? m.current.toFixed(1) : m.current} / ${m.goal}</span>
+                                        <span class="mission-reward-badge">${m.badge}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <p style="font-size:0.80rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
+                        🎯 <em>Tip: Tap anywhere on the reactor grid to aim & shoot a neutron directly at fuel atoms!</em>
+                    </p>
+                ` : `
+                    <!-- REACTOR CONTROLS PANEL -->
+                    <div class="sim-pane-section">
+                        <div class="sim-pane-title"><span>⚛️</span> Reactor Core Parameters</div>
+                        
+                        <div class="sim-input-row">
+                            <label class="sim-input-label"><span>Fissile Fuel Element:</span></label>
+                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setFuel(this.value)">
+                                <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Uranium-235 (Commercial Fissile)</option>
+                                <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Plutonium-239 (Fast Neutron)</option>
+                                <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Uranium-238 (Depleted Fertile)</option>
+                            </select>
+                        </div>
+
+                        <div class="sim-input-row">
+                            <label class="sim-input-label"><span>Moderator Medium:</span></label>
+                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setModerator(this.value)">
+                                <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O (Thermalizes Neutrons)</option>
+                                <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O (Low Absorption)</option>
+                                <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (Solid Core)</option>
+                                <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Reactor, No Slowing)</option>
+                            </select>
+                        </div>
+
+                        <div class="sim-input-row">
+                            <div class="sim-input-label">
+                                <span>Control Rods (Absorption):</span>
+                                <span id="rod-val-display" class="sim-val-badge">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</span>
+                            </div>
+                            <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
+                            <div class="slider-hint-row">
+                                <span>⚡ Pull (More Power)</span>
+                                <span>⬇️ Insert (Cool Down)</span>
+                            </div>
+                        </div>
+                    </div>
+                `}
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
+                        <span>⚡</span> EMIT RADIATION PULSE
+                    </button>
+                    <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
+                        <span>🧹</span> CLEAR VAPOR TRACKS
+                    </button>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>☢️</span> Particle Chamber</div>
+                    <div class="sim-pane-title"><span>☢️</span> Particle Cloud Chamber</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Nuclide Source:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                        <label class="sim-input-label"><span>Nuclide Radiation Source:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
                             ${window.DECAY_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.name} (${p.particle})</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Magnetic Field B:</span><span id="b-val-display" class="sim-val-badge">${engine ? engine.magneticFieldTesla.toFixed(1) : '1.0'} T</span></label>
-                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${(engine ? engine.magneticFieldTesla : 1.0) * 10}" oninput="const b=this.value/10; document.getElementById('b-val-display').textContent=(b>0?'+':'')+b.toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(b);">
+                        <div class="sim-input-label">
+                            <span>Magnetic Field B:</span>
+                            <span id="b-val-display" class="sim-val-badge">${engine ? engine.magneticFieldTesla.toFixed(1) : '1.0'} Tesla</span>
+                        </div>
+                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${(engine ? engine.magneticFieldTesla : 1.0) * 10}" oninput="const b=this.value/10; document.getElementById('b-val-display').textContent=(b>0?'+':'')+b.toFixed(1)+' Tesla'; window.nuclearDecayEngine.setMagneticField(b);">
+                        <div class="slider-hint-row">
+                            <span>⊗ Inward (-B)</span>
+                            <span>⊙ Outward (+B)</span>
+                        </div>
                     </div>
                     <div class="sim-input-row">
                         <label class="sim-input-label"><span>Emission Mode:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.nuclearDecayEngine.autoTrigger=(this.value==='auto')">
-                            <option value="auto" ${engine && engine.autoTrigger ? 'selected' : ''}>Continuous Emission</option>
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.autoTrigger=(this.value==='auto')">
+                            <option value="auto" ${engine && engine.autoTrigger ? 'selected' : ''}>Continuous Radiation Beam</option>
                             <option value="manual" ${engine && !engine.autoTrigger ? 'selected' : ''}>Manual Pulses Only</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.nuclearDecayEngine.triggerDecay()">
-                        <span>⚡</span> Emit Radiation Pulse
-                    </button>
-                    <button class="sim-action-btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1;" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
-                        <span>🧹</span> Clear Vapor Tracks
-                    </button>
-                </div>
-                <p style="font-size:0.68rem; color:#64748b; line-height:1.4;">
-                    Lorentz Force F = q(v × B) curves positively charged α particles gently and negatively charged β⁻ electrons into tight spirals!
+                <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
+                    💡 <strong>Lorentz Force:</strong> Positively charged α curves gently; negatively charged β⁻ curls tightly opposite!
                 </p>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
+                        <span>🔄</span> RESET REST GEOMETRY
+                    </button>
+                    <button class="sim-action-btn" style="background:rgba(168,85,247,0.18); color:#d8b4fe; border:1px solid rgba(168,85,247,0.4);" onclick="if(window.molecularDynamicsEngine){window.molecularDynamicsEngine.atoms.forEach(a=>{a.vx+=(Math.random()-0.5)*200;a.vy+=(Math.random()-0.5)*200;}); if(window.physicsAudio)window.physicsAudio.playBondReleaseSnap();}">
+                        <span>⚡</span> JOLT THERMAL VIBRATION
+                    </button>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🧬</span> Molecule Topology</div>
+                    <div class="sim-pane-title"><span>🧬</span> Molecule Topology & Physics</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Molecule:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
-                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water (H₂O)</option>
-                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide (CO₂)</option>
-                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane (CH₄)</option>
-                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene (C₆H₆)</option>
+                        <label class="sim-input-label"><span>Chemical Molecule:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
+                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water (H₂O - Polar Covalent)</option>
+                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide (CO₂ - Linear Double Bond)</option>
+                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane (CH₄ - Tetrahedral Hydrocarbon)</option>
+                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene (C₆H₆ - Aromatic Ring)</option>
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Thermal Temperature:</span><span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '300'} K</span></label>
+                        <div class="sim-input-label">
+                            <span>Thermal Temperature:</span>
+                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '300'} K</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="1" max="2500" value="${engine ? engine.temperatureK : 300}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
+                        <div class="slider-hint-row">
+                            <span>❄️ Absolute Zero (1 K)</span>
+                            <span>🔥 Extreme Agitation (2500 K)</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="sim-pane-section" style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="sim-action-btn primary" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
-                        <span>🔄</span> Reset Rest Geometry
-                    </button>
-                </div>
-                <p style="font-size:0.68rem; color:#00d4ff; font-weight:600; line-height:1.4;">
-                    🎮 <strong>Tactile Interaction:</strong> Touch and drag any atom in the viewport to stretch chemical bonds like spring wires!
+                <p style="font-size:0.78rem; color:#00d4ff; font-weight:600; line-height:1.4; margin:4px 0 0; text-align:center;">
+                    🎮 <strong>Touch Gameplay:</strong> Drag any atom on screen with your finger to stretch chemical bonds like quantum springs!
                 </p>
             `;
         } else if (tabName === 'environment') {
             const engine = window.envSimulationEngine;
-            const elData = window.elementsData ? window.elementsData.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6)) : null;
-            const phase = engine ? engine.calculatePhase(elData) : { badge: 'SOLID', color: '#00d4ff', details: '' };
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6));
+            const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
 
             pane.innerHTML = `
+                <!-- Always Visible Fast Action Presets at TOP -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                    <div style="display:flex; gap:6px;">
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(0,212,255,0.18); border:1px solid rgba(0,212,255,0.4); color:#00d4ff;" onclick="window.envSimulationEngine.setPreset('earth_stp'); renderTuningPanel('environment');">
+                            🌍 Earth STP
+                        </button>
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.4); color:#93c5fd;" onclick="window.envSimulationEngine.setPreset('deep_space'); renderTuningPanel('environment');">
+                            ❄️ Cryo Deep
+                        </button>
+                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.4); color:#fca5a5;" onclick="window.envSimulationEngine.setPreset('sun_core'); renderTuningPanel('environment');">
+                            ☀️ Solar Core
+                        </button>
+                    </div>
+                </div>
+
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🌍</span> Extreme Environments</div>
+                    <div class="sim-pane-title"><span>🌍</span> Extreme Cosmic Environments</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Cosmic / Lab Preset:</span></label>
-                        <select class="sim-speed-select" style="width:100%;" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
+                        <label class="sim-input-label"><span>Cosmic / Planetary Preset:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
                             ${window.ENVIRONMENT_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Temperature:</span><span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span></label>
+                        <div class="sim-input-label">
+                            <span>Temperature:</span>
+                            <span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="0" max="6000" value="${engine ? Math.min(6000, engine.temperatureK) : 298}" oninput="document.getElementById('env-temp-display').textContent=this.value+' K'; window.envSimulationEngine.setTemperature(this.value); renderTuningPanel('environment');">
                     </div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Pressure:</span><span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span></label>
+                        <div class="sim-input-label">
+                            <span>Pressure:</span>
+                            <span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span>
+                        </div>
                         <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); window.envSimulationEngine.setPressure(p); renderTuningPanel('environment');">
                     </div>
                 </div>
 
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>📊</span> Phase Determination</div>
-                    <div style="display:inline-block; padding:4px 8px; border-radius:6px; font-weight:800; font-family:var(--font-mono); font-size:0.75rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color}; color:${phase.color}; margin-bottom:6px;">
-                        ${phase.badge}
+                    <div class="sim-pane-title"><span>📊</span> Phase State</div>
+                    <div style="display:inline-block; padding:6px 12px; border-radius:8px; font-weight:800; font-family:var(--font-mono); font-size:0.95rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color || '#00d4ff'}; color:${phase.color || '#00d4ff'}; margin-bottom:8px;">
+                        ${phase.badge || '🧊 SOLID'}
                     </div>
-                    <p style="font-size:0.70rem; color:#cbd5e1; line-height:1.4; margin:0;">
-                        ${phase.details}
+                    <p style="font-size:0.78rem; color:#cbd5e1; line-height:1.4; margin:0;">
+                        ${phase.details || 'Rigid crystalline lattice.'}
                     </p>
                 </div>
             `;
@@ -535,20 +695,18 @@
     }
 
     /**
-     * Setup Interactive Touch/Pointer Listeners on Canvases
+     * Setup Interactive Touch/Pointer Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
-        // 1. Chain Reaction Canvas Click/Tap (Injects neutron at tap position)
+        // 1. Chain Reaction Canvas Click/Tap (Aims & Fires neutron toward tap)
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
                 const rect = chainCanvas.getBoundingClientRect();
-                const scaleX = chainCanvas.width / rect.width;
-                const scaleY = chainCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.chainReactionEngine) {
-                    window.chainReactionEngine.injectNeutron(x, y, (Math.random() - 0.5) * 6.28);
+                    window.chainReactionEngine.aimAndFire(x, y);
                 }
             });
         }
@@ -558,10 +716,8 @@
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
                 const rect = decayCanvas.getBoundingClientRect();
-                const scaleX = decayCanvas.width / rect.width;
-                const scaleY = decayCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.nuclearDecayEngine) {
                     window.nuclearDecayEngine.triggerDecay(x, y);
                 }
@@ -573,10 +729,8 @@
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
                 const rect = molCanvas.getBoundingClientRect();
-                const scaleX = molCanvas.width / rect.width;
-                const scaleY = molCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.molecularDynamicsEngine) {
                     window.molecularDynamicsEngine.startDrag(x, y);
                 }
@@ -584,10 +738,8 @@
 
             molCanvas.addEventListener('pointermove', (e) => {
                 const rect = molCanvas.getBoundingClientRect();
-                const scaleX = molCanvas.width / rect.width;
-                const scaleY = molCanvas.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (window.molecularDynamicsEngine && window.molecularDynamicsEngine.draggedAtom) {
                     window.molecularDynamicsEngine.dragMove(x, y);
                 }

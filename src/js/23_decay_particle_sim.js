@@ -288,8 +288,26 @@
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            const w = canvas.width = this.width = canvas.clientWidth * (window.devicePixelRatio || 1);
-            const h = canvas.height = this.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            const rect = canvas.getBoundingClientRect();
+            const clientW = Math.max(300, rect.width || canvas.clientWidth || 600);
+            const clientH = Math.max(220, rect.height || canvas.clientHeight || 400);
+            const dpr = window.devicePixelRatio || 1;
+
+            if (canvas.width !== Math.round(clientW * dpr) || canvas.height !== Math.round(clientH * dpr)) {
+                canvas.width = Math.round(clientW * dpr);
+                canvas.height = Math.round(clientH * dpr);
+            }
+
+            this.width = clientW;
+            this.height = clientH;
+            this.sourceX = 40;
+            this.sourceY = clientH / 2;
+
+            ctx.save();
+            ctx.scale(dpr, dpr);
+
+            const w = clientW;
+            const h = clientH;
 
             ctx.clearRect(0, 0, w, h);
 
@@ -302,11 +320,11 @@
 
             // Magnetic Field Lines Visual Indicator (dots for +B out-of-screen, crosses for -B into-screen)
             if (Math.abs(this.magneticFieldTesla) > 0.05) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-                ctx.font = '8px monospace';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+                ctx.font = 'bold 12px monospace';
                 const symbol = this.magneticFieldTesla > 0 ? '⊙' : '⊗';
-                for (let x = 40; x < w; x += 60) {
-                    for (let y = 30; y < h; y += 50) {
+                for (let x = 40; x < w; x += 55) {
+                    for (let y = 30; y < h; y += 45) {
                         ctx.fillText(symbol, x, y);
                     }
                 }
@@ -323,7 +341,7 @@
                 ctx.shadowColor = p.color;
                 ctx.shadowBlur = 8;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.trackWidth * 0.75, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, Math.max(3.5, p.trackWidth * 0.9), 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
             }
@@ -343,32 +361,46 @@
             ctx.fillStyle = '#334155';
             ctx.strokeStyle = '#f59e0b';
             ctx.lineWidth = 1.5;
-            ctx.fillRect(this.sourceX - 16, this.sourceY - 14, 20, 28);
-            ctx.strokeRect(this.sourceX - 16, this.sourceY - 14, 20, 28);
+            ctx.fillRect(this.sourceX - 18, this.sourceY - 18, 24, 36);
+            ctx.strokeRect(this.sourceX - 18, this.sourceY - 18, 24, 36);
 
             // Trefoil Radiation Symbol
             ctx.fillStyle = '#f59e0b';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillText('☢', this.sourceX - 12, this.sourceY + 4);
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('☢', this.sourceX - 6, this.sourceY);
 
-            // Telemetry HUD
+            // Telemetry HUD (Large, clear typography)
             const preset = DECAY_PRESETS.find(p => p.id === this.currentPresetId) || DECAY_PRESETS[0];
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.25)';
-            ctx.lineWidth = 1;
-            ctx.fillRect(10, 10, 230, 80);
-            ctx.strokeRect(10, 10, 230, 80);
+            const hudW = Math.min(270, w * 0.45);
+            const hudH = 100;
+            const hudX = 14;
+            const hudY = 14;
+
+            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
+            ctx.fill();
+            ctx.stroke();
 
             ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 11px monospace';
-            ctx.fillText(`${preset.name} (${preset.particle})`, 18, 26);
+            ctx.font = 'bold 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`☢️ ${preset.name} (${preset.particle})`, hudX + 10, hudY + 10);
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '9px monospace';
-            ctx.fillText(`Half-life:    ${preset.halfLifeStr}`, 18, 42);
-            ctx.fillText(`Q-Value:      ${preset.energyMeV} MeV`, 18, 56);
-            ctx.fillText(`Magnetic B:   ${this.magneticFieldTesla > 0 ? '+' : ''}${this.magneticFieldTesla.toFixed(1)} Tesla`, 18, 70);
-            ctx.fillText(`Events Log:   ${this.totalDecaysCount}`, 18, 84);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11.5px monospace';
+            ctx.fillText(`Half-life:  ${preset.halfLifeStr}`, hudX + 10, hudY + 30);
+            ctx.fillText(`Q-Value:    ${preset.energyMeV} MeV`, hudX + 10, hudY + 48);
+            ctx.fillText(`Magnetic B: ${this.magneticFieldTesla > 0 ? '+' : ''}${this.magneticFieldTesla.toFixed(1)} Tesla`, hudX + 10, hudY + 66);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillText(`Events Log: ${this.totalDecaysCount} Decays`, hudX + 10, hudY + 84);
+
+            ctx.restore();
         }
     }
 
