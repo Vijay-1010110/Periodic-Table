@@ -109,6 +109,7 @@ button, input, select, textarea, a, .nav-btn, .mobile-nav-item, .prop-item, .ele
 
 .view-left {
     flex: 1;
+    min-width: 0 !important;
     height: 100% !important;
     max-height: 100% !important;
     display: flex;
@@ -361,7 +362,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 /* Grid */
-.grid-wrapper { flex: 1; overflow-x: auto; overflow-y: hidden; padding: 5px 15px 5px 15px; }
+.grid-wrapper { flex: 1; min-width: 0 !important; min-height: 0 !important; overflow-x: auto; overflow-y: hidden; padding: 5px 15px 5px 15px; }
 .periodic-grid {
     display: grid;
     grid-template-columns: repeat(18, minmax(30px, 1fr));
@@ -1623,6 +1624,7 @@ body.has-native-slider #temp-custom-slider {
         grid-template-rows: repeat(10, max-content) !important;
         width: 100% !important;
         min-width: 780px !important;
+        min-height: 380px !important;
         max-width: 960px !important;
         gap: 3px !important;
         transform: none !important;
@@ -1630,11 +1632,11 @@ body.has-native-slider #temp-custom-slider {
     }
 
     .element-cell {
-        min-width: 0 !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
         width: 100% !important;
         height: auto !important;
         aspect-ratio: 1 / 1.02 !important; /* Compact, balanced square periodic table cell */
-        min-height: 0 !important;
         border-radius: 4px !important;
         padding: 1px 0 !important;
         display: flex !important;
@@ -2028,7 +2030,10 @@ body.has-native-slider #temp-custom-slider {
         height: 100% !important;
         max-height: 100% !important;
         width: 100% !important;
-        overflow: hidden !important;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-x pan-y pinch-zoom !important;
         padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box !important;
@@ -2038,13 +2043,12 @@ body.has-native-slider #temp-custom-slider {
     #electrons-grid,
     #isotopes-grid {
         display: grid !important;
-        grid-template-columns: repeat(18, minmax(0, 1fr)) !important;
-        grid-template-rows: repeat(7, minmax(0, 1fr)) 8px repeat(2, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(18, minmax(38px, 1fr)) !important;
+        grid-template-rows: repeat(7, minmax(34px, 1fr)) 8px repeat(2, minmax(34px, 1fr)) !important;
         width: 100% !important;
         height: 100% !important;
-        max-height: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
+        min-width: 760px !important;
+        min-height: 380px !important;
         gap: 2px !important;
         margin: 0 auto !important;
         box-sizing: border-box !important;
@@ -2077,9 +2081,9 @@ body.has-native-slider #temp-custom-slider {
     #isotopes-grid .element-cell {
         aspect-ratio: auto !important;
         height: 100% !important;
-        max-height: 100% !important;
         width: 100% !important;
-        min-height: 0 !important;
+        min-width: 38px !important;
+        min-height: 34px !important;
         padding: 0 !important;
         margin: 0 !important;
         display: flex !important;
@@ -3160,8 +3164,8 @@ body.has-native-slider #temp-custom-slider {
         top: max(40px, env(safe-area-inset-top, 0px)) !important;
         height: auto !important;
         max-height: calc(100vh - 54px) !important;
-        width: min(340px, 46vw) !important;
-        max-width: 360px !important;
+        width: min(340px, calc(100vw - 24px)) !important;
+        max-width: calc(100vw - 24px) !important;
         z-index: 3500 !important;
         background: #090e1a !important; /* 100% Solid Dark Navy */
         border: 1.5px solid #00d4ff !important;
@@ -3214,9 +3218,51 @@ body.has-native-slider #temp-custom-slider {
         right: auto !important;
     }
 
-    /* Hide close button entirely */
-    .sidebar-close-btn {
-        display: none !important;
+    /* Mobile / Floating Detail Sidebar Close Button */
+    .ed-close-btn {
+        display: none;
+    }
+    .view-right .sidebar-close-btn,
+    .ed-close-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+        min-height: 22px !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid rgba(0, 212, 255, 0.4) !important;
+        color: #00d4ff !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        cursor: pointer !important;
+        z-index: 50 !important;
+        padding: 0 !important;
+        margin-left: 6px !important;
+        flex-shrink: 0 !important;
+        touch-action: manipulation !important;
+        pointer-events: auto !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+        transition: background 0.15s ease, transform 0.15s ease !important;
+    }
+    .view-right .sidebar-close-btn:active,
+    .ed-close-btn:active {
+        background: #ef4444 !important;
+        border-color: #ef4444 !important;
+        color: #ffffff !important;
+        transform: scale(0.92) !important;
+    }
+
+    @media (max-width: 600px) {
+        .view-right {
+            left: 10px !important;
+            right: 10px !important;
+            width: auto !important;
+            max-width: calc(100vw - 20px) !important;
+        }
     }
 
     .view-right .property-list h3,

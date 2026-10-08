@@ -1062,7 +1062,7 @@ function setupUI() {
     window.addEventListener('hashchange', handleHashRouting);
     
     // Fast mobile sidebar close buttons
-    document.querySelectorAll('.sidebar-close-btn').forEach(btn => {
+    document.querySelectorAll('.sidebar-close-btn, .ed-close-btn').forEach(btn => {
         const handleClose = (e) => {
             if (e) {
                 e.preventDefault();
@@ -3906,19 +3906,27 @@ function positionMobileSidebar(cell, el) {
 
     if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
         let isLeftHalf = false;
-        if (el) {
+        if (cell) {
+            const rect = cell.getBoundingClientRect();
+            if (rect.width > 0) {
+                const cellCenterX = rect.left + rect.width / 2;
+                isLeftHalf = cellCenterX < (window.innerWidth / 2);
+            }
+        } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
+            const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
+            if (screenPos) {
+                isLeftHalf = screenPos.x < (window.innerWidth / 2);
+            } else {
+                const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
+                isLeftHalf = (pos.col <= 9);
+            }
+        } else if (el) {
             const z = el.atomicNumber || el.z;
             if (typeof getGridPosition === 'function' && z) {
                 const pos = getGridPosition(z);
                 isLeftHalf = (pos.col <= 9);
             } else {
                 isLeftHalf = (el.group || 1) <= 9;
-            }
-        } else if (cell) {
-            const rect = cell.getBoundingClientRect();
-            if (rect.width > 0) {
-                const cellCenterX = rect.left + rect.width / 2;
-                isLeftHalf = cellCenterX < (window.innerWidth / 2);
             }
         }
 
@@ -3967,6 +3975,7 @@ function closeMobileSidebar() {
     }
 }
 window.closeMobileSidebar = closeMobileSidebar;
+window.dismissDetailSidebar = closeMobileSidebar;
 
 window.addEventListener('resize', () => {
     if (window.innerWidth > 1000 && window.innerHeight > 520) {

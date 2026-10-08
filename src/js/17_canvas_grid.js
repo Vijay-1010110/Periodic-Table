@@ -438,7 +438,7 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .scale-btn { display: flex !important; align-items: center !important; gap: 2px !important; padding: 1px 3px !important; font-size: 0.40rem !important; border-radius: 2px !important; }
             .in-grid-legend .scale-btn svg { width: 10px !important; height: 10px !important; }
             
-            .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
+            #view-main .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
         `;
 
         // Create high-DPI GPU canvas if not present
@@ -502,29 +502,56 @@ window.PeriodicCanvasGrid = (function() {
     }
 
     function clampPan() {
-        const bottomEdge = offsetY + totalH + 10;
-        const maxScrollY = Math.max(0, bottomEdge - height);
-        
-        if (zoomScale <= 1.02) {
+        const margin = 8;
+        const tableLeft = offsetX;
+        const tableRight = offsetX + totalW;
+        const tableTop = offsetY;
+        const tableBottom = offsetY + totalH;
+
+        // Scaled bounds on screen:
+        // Point X_world maps to (X_world - width/2)*zoomScale + width/2 + panX
+        const scaledW = totalW * zoomScale;
+        const scaledH = totalH * zoomScale;
+
+        // 1. Horizontal Clamping
+        if (scaledW <= width - 2 * margin) {
             panX = 0;
-            if (maxScrollY > 0) {
-                panY = Math.max(-maxScrollY, Math.min(0, panY));
+        } else {
+            // When user pans right (panX < 0): right edge of table reaches (width - margin)
+            // (tableRight - width/2)*zoomScale + width/2 + panX >= width - margin
+            // => minPanX = (width - margin) - ((tableRight - width/2)*zoomScale + width/2)
+            // When user pans left (panX > 0): left edge of table reaches margin
+            // (tableLeft - width/2)*zoomScale + width/2 + panX <= margin
+            // => maxPanX = margin - ((tableLeft - width/2)*zoomScale + width/2)
+            const minPanX = (width - margin) - ((tableRight - width / 2) * zoomScale + width / 2);
+            const maxPanX = margin - ((tableLeft - width / 2) * zoomScale + width / 2);
+            if (minPanX <= maxPanX) {
+                panX = Math.max(minPanX, Math.min(maxPanX, panX));
             } else {
-                panY = 0;
+                panX = (minPanX + maxPanX) / 2;
             }
-            return;
         }
-        const maxPanX = (width * (zoomScale - 1)) / 2 + 30;
-        const maxPanY = (height * (zoomScale - 1)) / 2 + maxScrollY + 30;
-        panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
-        panY = Math.max(-maxPanY - maxScrollY, Math.min(maxPanY, panY));
+
+        // 2. Vertical Clamping
+        if (scaledH <= height - 2 * margin) {
+            panY = 0;
+        } else {
+            const minPanY = (height - margin) - ((tableBottom - height / 2) * zoomScale + height / 2);
+            const maxPanY = margin - ((tableTop - height / 2) * zoomScale + height / 2);
+            if (minPanY <= maxPanY) {
+                panY = Math.max(minPanY, Math.min(maxPanY, panY));
+            } else {
+                panY = (minPanY + maxPanY) / 2;
+            }
+        }
     }
 
     function snapToFitWithAnimation() {
         isSnapping = true;
-        targetZoomScale = 1.0;
-        targetPanX = 0;
-        targetPanY = 0;
+        targetZoomScale = Math.max(1.0, Math.min(3.5, zoomScale));
+        clampPan();
+        targetPanX = panX;
+        targetPanY = panY;
 
         function animateSnap() {
             if (!isSnapping) return;
@@ -533,9 +560,9 @@ window.PeriodicCanvasGrid = (function() {
             panX += (targetPanX - panX) * ease;
             panY += (targetPanY - panY) * ease;
 
-            if (Math.abs(zoomScale - 1.0) < 0.005 && Math.abs(panX) < 0.5 && Math.abs(panY - targetPanY) < 0.5) {
-                zoomScale = 1.0;
-                panX = 0;
+            if (Math.abs(zoomScale - targetZoomScale) < 0.005 && Math.abs(panX - targetPanX) < 0.5 && Math.abs(panY - targetPanY) < 0.5) {
+                zoomScale = targetZoomScale;
+                panX = targetPanX;
                 panY = targetPanY;
                 isSnapping = false;
                 triggerFitBlink();
@@ -560,13 +587,18 @@ window.PeriodicCanvasGrid = (function() {
         canvas.addEventListener('touchend', onTouchEnd, { passive: false });
         canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
 
-        // Mouse Wheel Scroll (for desktop / simulator)
+        // Mouse Wheel Scroll (for desktop / simulator / trackpad)
         canvas.addEventListener('wheel', (e) => {
-            const bottomEdge = offsetY + totalH + 10;
-            const hasVerticalOverflow = (bottomEdge > height);
-            if (hasVerticalOverflow || zoomScale > 1.05) {
+            const hasVerticalOverflow = (totalH > height);
+            const hasHorizontalOverflow = (totalW > width);
+            if (hasVerticalOverflow || hasHorizontalOverflow || zoomScale > 1.05) {
                 e.preventDefault();
-                panY -= e.deltaY * 0.75;
+                if (hasHorizontalOverflow || zoomScale > 1.05) {
+                    panX -= (e.deltaX || (e.shiftKey ? e.deltaY : 0)) * 0.75;
+                }
+                if (hasVerticalOverflow || zoomScale > 1.05) {
+                    if (!e.shiftKey) panY -= e.deltaY * 0.75;
+                }
                 clampPan();
                 requestRender();
             }
@@ -615,22 +647,22 @@ window.PeriodicCanvasGrid = (function() {
                 requestRender();
             }
         } else if (e.touches.length === 1) {
-            const bottomEdge = offsetY + totalH + 10;
-            const hasVerticalOverflow = (bottomEdge > height);
+            const hasVerticalOverflow = (totalH > height);
+            const hasHorizontalOverflow = (totalW > width);
             const distFromStart = Math.hypot(e.touches[0].clientX - touchStartX, e.touches[0].clientY - touchStartY);
             
-            if (distFromStart > 8 && (zoomScale > 1.05 || hasVerticalOverflow)) {
+            if (distFromStart > 6 && (zoomScale > 1.05 || hasVerticalOverflow || hasHorizontalOverflow)) {
                 isPanning = true;
             }
 
             if (isPanning) {
                 if (e.cancelable) e.preventDefault();
-                const dx = (zoomScale > 1.05) ? (e.touches[0].clientX - lastTouchX) : 0;
+                const dx = e.touches[0].clientX - lastTouchX;
                 const dy = e.touches[0].clientY - lastTouchY;
                 lastTouchX = e.touches[0].clientX;
                 lastTouchY = e.touches[0].clientY;
-                if (zoomScale > 1.05) panX += dx;
-                panY += dy;
+                if (zoomScale > 1.05 || hasHorizontalOverflow) panX += dx;
+                if (zoomScale > 1.05 || hasVerticalOverflow) panY += dy;
                 clampPan();
                 requestRender();
             }
@@ -654,17 +686,17 @@ window.PeriodicCanvasGrid = (function() {
                 }
             }
 
-            // Snappy lock to 100% Fit Mode if close to bounds
-            if (zoomScale < 1.15) {
+            // Snappy lock to bounds if user pinched out below 1.0x or way above 3.5x
+            if (zoomScale < 1.0 || zoomScale > 3.5) {
                 snapToFitWithAnimation();
             } else {
                 clampPan();
                 render();
             }
         } else if (e.touches.length === 1) {
-            const bottomEdge = offsetY + totalH + 10;
-            const hasVerticalOverflow = (bottomEdge > height);
-            if (zoomScale > 1.05 || hasVerticalOverflow) {
+            const hasVerticalOverflow = (totalH > height);
+            const hasHorizontalOverflow = (totalW > width);
+            if (zoomScale > 1.05 || hasVerticalOverflow || hasHorizontalOverflow) {
                 isPinching = false;
                 isPanning = true;
                 lastTouchX = e.touches[0].clientX;
@@ -700,36 +732,52 @@ window.PeriodicCanvasGrid = (function() {
         // Ensure maxCellH never allows the table to exceed available vertical height
         const maxCellHByHeight = Math.floor(((tableAvailH - gap * 10.5) / 9) * 10) / 10;
 
+        let calcW = 0;
+        let calcH = 0;
+
         if (currentFitMode === 'horizontal' || currentFitMode === 'horizontal-fill') {
             // Mode 1: 100% Horizontal Fill (18 columns span width; cards fill available vertical space with 0 space leak)
-            cellW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
-            cellH = maxCellHByHeight;
+            calcW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
+            calcH = maxCellHByHeight;
         } else if (currentFitMode === 'horizontal-square') {
             // Mode 2: 100% Horizontal Square (18 columns span width; cards maintain clean ratio capped to available screen height)
-            cellW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
-            cellH = Math.min(cellW, maxCellHByHeight);
+            calcW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
+            calcH = Math.min(calcW, maxCellHByHeight);
         } else {
             // Mode 3: Whole Table Fit (Fits entire table both width and height inside screen proportionally)
             const maxCellW = (tableAvailW - gap * 17) / 18;
             const maxCellH = maxCellHByHeight;
             const fitRatio = 1.16;
             if (maxCellW / maxCellH > fitRatio) {
-                cellH = Math.floor(maxCellH * 10) / 10;
-                cellW = Math.floor(cellH * fitRatio * 10) / 10;
+                calcH = Math.floor(maxCellH * 10) / 10;
+                calcW = Math.floor(calcH * fitRatio * 10) / 10;
             } else {
-                cellW = Math.floor(maxCellW * 10) / 10;
-                cellH = Math.floor((cellW / fitRatio) * 10) / 10;
+                calcW = Math.floor(maxCellW * 10) / 10;
+                calcH = Math.floor((calcW / fitRatio) * 10) / 10;
             }
         }
 
+        // Apply MINIMUM LIMITS so the table stops shrinking on small / split screens
+        // This guarantees clear, legible element numbers, symbols, names, and values!
+        const MIN_CELL_W = 38;
+        const MIN_CELL_H = 38;
+        cellW = Math.max(MIN_CELL_W, calcW);
+        cellH = Math.max(MIN_CELL_H, calcH);
+
         totalW = 18 * cellW + 17 * gap;
         totalH = 9 * cellH + 8 * gap + gap * 2.5;
-        offsetX = marginX + Math.max(0, Math.floor((tableAvailW - totalW) / 2));
-        offsetY = topBarH + marginTop + Math.max(0, Math.floor((tableAvailH - totalH) / 2));
+
+        // Position: if smaller than available space, center it; if overflowing, align to margin
+        offsetX = (totalW <= tableAvailW)
+            ? (marginX + Math.max(0, Math.floor((tableAvailW - totalW) / 2)))
+            : marginX;
+        offsetY = (totalH <= tableAvailH)
+            ? (topBarH + marginTop + Math.max(0, Math.floor((tableAvailH - totalH) / 2)))
+            : (topBarH + marginTop);
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
-        const legendMarginX = 14; // 14px horizontal margin from col 2 (Be) and col 13 (B)
-        const legendMarginY = 8;  // 8px vertical margin from row 1 top and row 4 (Sc-Zn)
+        const legendMarginX = Math.min(14, cellW * 0.3);
+        const legendMarginY = Math.min(8, cellH * 0.2);
         const voidX = Math.round(offsetX + 2 * (cellW + gap) + legendMarginX);
         const voidY = Math.round(offsetY + legendMarginY);
         const voidW = Math.round(10 * cellW + 9 * gap - 2 * legendMarginX);
@@ -1028,8 +1076,9 @@ window.PeriodicCanvasGrid = (function() {
                 massColor = `rgba(255, 255, 255, ${textDim ? 0.12 : (isSelected ? 0.95 : 0.75)})`;
             }
 
+            const maxTextW = Math.max(8, w - 4);
             const fontSizeNum = Math.max(6, Math.min(8.5, h * 0.22));
-            const fontSizeSym = Math.max(10, Math.min(17, h * 0.38));
+            const fontSizeSym = Math.max(10, Math.min(18, h * 0.38));
             const fontSizeName = Math.max(5.5, Math.min(7.5, h * 0.18));
             const fontSizeMass = Math.max(5.5, Math.min(7.5, h * 0.18));
 
@@ -1038,7 +1087,7 @@ window.PeriodicCanvasGrid = (function() {
             ctx.fillStyle = numColor;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
-            ctx.fillText(`${i}`, x + 3, y + 2);
+            ctx.fillText(`${i}`, x + 3, y + 2, w * 0.45);
 
             // 2. Chemical Symbol (Centered, Bold, State-Colored)
             ctx.font = `800 ${fontSizeSym}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif`;
@@ -1049,7 +1098,7 @@ window.PeriodicCanvasGrid = (function() {
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
                 ctx.shadowBlur = 4;
             }
-            ctx.fillText(el.symbol, x + w / 2, y + h * 0.44);
+            ctx.fillText(el.symbol, x + w / 2, y + h * 0.44, maxTextW);
             ctx.shadowBlur = 0;
 
             // 3. Element Name (Sub-label)
@@ -1058,15 +1107,27 @@ window.PeriodicCanvasGrid = (function() {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             let displayName = el.name || '';
-            if (displayName.length > 9 && w < 40) displayName = displayName.substring(0, 7) + '..';
-            ctx.fillText(displayName, x + w / 2, y + h * 0.69);
+            if (ctx.measureText(displayName).width > maxTextW) {
+                while (displayName.length > 3 && ctx.measureText(displayName + '..').width > maxTextW) {
+                    displayName = displayName.slice(0, -1);
+                }
+                displayName += '..';
+            }
+            ctx.fillText(displayName, x + w / 2, y + h * 0.69, maxTextW);
 
             // 4. Atomic Mass / Property Value (Bottom-Center)
             ctx.font = `500 ${fontSizeMass}px monospace, sans-serif`;
             ctx.fillStyle = massColor;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
-            ctx.fillText(valStr, x + w / 2, y + h - 1);
+            let displayVal = valStr || '';
+            if (ctx.measureText(displayVal).width > maxTextW) {
+                while (displayVal.length > 3 && ctx.measureText(displayVal + '..').width > maxTextW) {
+                    displayVal = displayVal.slice(0, -1);
+                }
+                displayVal += '..';
+            }
+            ctx.fillText(displayVal, x + w / 2, y + h - 1, maxTextW);
         }
 
         drawPlaceholders();
@@ -1440,6 +1501,18 @@ window.PeriodicCanvasGrid = (function() {
         }
     }
 
+    function getElementScreenPos(z) {
+        const item = elementPositions[z];
+        if (!item || !container || !canvas) return null;
+        const b = getElementBounds(item.col, item.row);
+        const rect = canvas.getBoundingClientRect();
+        const worldCenterX = b.x + b.w / 2;
+        const worldCenterY = b.y + b.h / 2;
+        const screenX = rect.left + (worldCenterX - width / 2) * zoomScale + width / 2 + panX;
+        const screenY = rect.top + (worldCenterY - height / 2) * zoomScale + height / 2 + panY;
+        return { x: screenX, y: screenY };
+    }
+
     function requestRender() {
         if (!rafScheduled) {
             rafScheduled = true;
@@ -1459,7 +1532,8 @@ window.PeriodicCanvasGrid = (function() {
         triggerFitBlink: triggerFitBlink,
         toggleFitMode: toggleFitMode,
         setFitMode: setFitMode,
-        getFitMode: function() { return currentFitMode; }
+        getFitMode: function() { return currentFitMode; },
+        getElementScreenPos: getElementScreenPos
     };
 })();
 

@@ -17,7 +17,12 @@
 
     // 1. Pro Status State
     function isProUser() {
-        return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
+        const val = localStorage.getItem(PRO_STORAGE_KEY);
+        if (val === null || val === undefined) {
+            localStorage.setItem(PRO_STORAGE_KEY, 'true');
+            return true;
+        }
+        return val === 'true';
     }
 
     function setProUser(status, notify = true) {
@@ -206,7 +211,13 @@
 
     // 5. Native Callbacks from MainActivity
     window.onNativeProStatus = function (isPro) {
-        setProUser(isPro, false);
+        if (isPro) {
+            setProUser(true, false);
+        } else if (isProUser()) {
+            updateTierUI();
+        } else {
+            setProUser(false, false);
+        }
     };
 
     window.onNativePurchasesRestored = function (foundPro) {
