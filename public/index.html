@@ -9919,6 +9919,21 @@ body.is-pro-user .nav-pro-pill {
     display: none !important;
 }
 
+.nav-beta-pill {
+    font-size: 0.52rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.25));
+    border: 1px solid rgba(0, 212, 255, 0.6);
+    color: #00d4ff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+    display: inline-block;
+    margin-left: 4px;
+}
+
 /* Pro Paywall Modal Overlay */
 .pro-modal-overlay {
     position: fixed;
@@ -10204,6 +10219,24 @@ body.is-pro-user .nav-pro-pill {
 
 .sim-tabs-row::-webkit-scrollbar {
     display: none;
+}
+
+.sim-beta-tag {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.20));
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    color: #00d4ff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    user-select: none;
 }
 
 .sim-tab-btn {
@@ -109394,10 +109427,11 @@ window.OrbitalViewer = {
                 <span class="nav-text">Quiz</span>
                 <span class="nav-pro-pill">PRO</span>
             </button>
-            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab">
+            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab (Beta Preview)">
                 <span class="nav-icon">🪐</span>
                 <span class="nav-text">Sim Lab</span>
                 <span class="nav-pro-pill">PRO</span>
+                <span class="nav-beta-pill">BETA</span>
             </button>
             <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
                 <span class="nav-icon">🔄</span>
@@ -109446,7 +109480,7 @@ window.OrbitalViewer = {
             <button class="nav-btn" data-view="crystals">Crystals <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="compare">Compare <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="quiz">Quiz <span class="nav-pro-pill">PRO</span></button>
-            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span> <span class="nav-beta-pill">BETA</span></button>
         </div>
         <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
             <div class="search-box">
@@ -110385,6 +110419,7 @@ window.OrbitalViewer = {
         <section class="view-mode" id="view-simulations">
             <div class="sim-header-bar">
                 <div class="sim-tabs-row">
+                    <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
                         <span>⚛️</span> Chain Reaction
                     </button>

@@ -238,10 +238,11 @@
                 <span class="nav-text">Quiz</span>
                 <span class="nav-pro-pill">PRO</span>
             </button>
-            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab">
+            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab (Beta Preview)">
                 <span class="nav-icon">🪐</span>
                 <span class="nav-text">Sim Lab</span>
                 <span class="nav-pro-pill">PRO</span>
+                <span class="nav-beta-pill">BETA</span>
             </button>
             <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
                 <span class="nav-icon">🔄</span>
@@ -290,7 +291,7 @@
             <button class="nav-btn" data-view="crystals">Crystals <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="compare">Compare <span class="nav-pro-pill">PRO</span></button>
             <button class="nav-btn" data-view="quiz">Quiz <span class="nav-pro-pill">PRO</span></button>
-            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span> <span class="nav-beta-pill">BETA</span></button>
         </div>
         <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
             <div class="search-box">
@@ -1229,6 +1230,7 @@
         <section class="view-mode" id="view-simulations">
             <div class="sim-header-bar">
                 <div class="sim-tabs-row">
+                    <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
                         <span>⚛️</span> Chain Reaction
                     </button>

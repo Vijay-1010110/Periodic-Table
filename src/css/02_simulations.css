@@ -50,6 +50,24 @@
     display: none;
 }
 
+.sim-beta-tag {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.20));
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    color: #00d4ff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
 .sim-tab-btn {
     display: inline-flex;
     align-items: center;

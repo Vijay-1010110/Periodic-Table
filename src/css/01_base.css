@@ -9890,6 +9890,21 @@ body.is-pro-user .nav-pro-pill {
     display: none !important;
 }
 
+.nav-beta-pill {
+    font-size: 0.52rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.25));
+    border: 1px solid rgba(0, 212, 255, 0.6);
+    color: #00d4ff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+    display: inline-block;
+    margin-left: 4px;
+}
+
 /* Pro Paywall Modal Overlay */
 .pro-modal-overlay {
     position: fixed;
