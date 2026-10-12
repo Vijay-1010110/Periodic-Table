@@ -10481,16 +10481,99 @@ body.is-pro-user .nav-pro-pill {
 /* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
 .sim-tuning-pane {
     width: 320px;
-    background: rgba(15, 23, 42, 0.82);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(16px);
-    border-left: 1.5px solid rgba(0, 212, 255, 0.2);
+    border-left: 1.5px solid rgba(0, 212, 255, 0.25);
     display: flex;
     flex-direction: column;
     padding: 16px;
-    gap: 14px;
+    gap: 12px;
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 10;
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.25s ease,
+                padding 0.25s ease;
+}
+
+/* Progressive Scenario Selector Pills */
+.sim-scenario-pills {
+    display: flex;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 4px;
+    border-radius: 9px;
+    border: 1px solid rgba(0, 212, 255, 0.22);
+}
+
+.sim-scenario-btn {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.sim-scenario-btn:hover {
+    color: #e2e8f0;
+}
+
+.sim-scenario-btn.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(168, 85, 247, 0.35));
+    border: 1px solid rgba(0, 212, 255, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+}
+
+/* Sleek Floating Drawer Toggle Button */
+.sim-drawer-toggle-btn {
+    position: absolute;
+    bottom: 46px;
+    right: 14px;
+    z-index: 25;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 20px;
+    color: #e2e8f0;
+    font-size: 0.80rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.25);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    touch-action: manipulation;
+}
+
+.sim-drawer-toggle-btn:hover {
+    background: rgba(0, 212, 255, 0.20);
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.45);
+    transform: translateY(-2px);
+}
+
+.sim-drawer-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.drawer-arrow {
+    font-size: 0.70rem;
+    transition: transform 0.25s ease;
+    color: #00d4ff;
 }
 
 /* Game vs Controls Subdeck Toggle */
@@ -10745,6 +10828,14 @@ body.is-pro-user .nav-pro-pill {
         width: clamp(260px, 32vw, 320px);
         max-height: 100%;
     }
+    .sim-tuning-pane.sim-drawer-collapsed {
+        width: 0 !important;
+        padding: 0 !important;
+        border-left: none !important;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden !important;
+    }
 }
 
 @media (orientation: portrait), (max-width: 600px) and (orientation: portrait) {
@@ -10764,6 +10855,25 @@ body.is-pro-user .nav-pro-pill {
         border-top: 1.5px solid rgba(0, 212, 255, 0.25);
         padding: 12px;
         gap: 10px;
+    }
+
+    .sim-tuning-pane.sim-drawer-collapsed {
+        max-height: 0 !important;
+        padding: 0 12px !important;
+        border-top: none !important;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden !important;
+    }
+
+    .sim-drawer-toggle-btn {
+        bottom: 12px;
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .sim-drawer-toggle-btn:hover {
+        transform: translateX(50%) translateY(-2px);
     }
 }
 
@@ -106188,8 +106298,19 @@ window.OrbitalViewer = {
 
 // 21_environment_pressure_sim.js
 /**
- * PERIODICA 3D - Environment & Pressure Simulation System
- * Advanced P-T Phase Space, Extreme Planetary/Cosmic Environments & Clausius-Clapeyron Engine
+ * PERIODICA 3D - Environment & Pressure Simulation System (Extreme Phase Lab)
+ * Live Visual Atom Chamber & Clausius-Clapeyron Phase Space Engine
+ * 
+ * Features:
+ * 1. Live Visual Atom Chamber (PhET / Brilliant.org Model):
+ *    - Solid: Crystalline lattice with bond lines; thermal harmonic vibration increases toward melting point.
+ *    - Liquid: Cohesive fluid pool at bottom; atoms roll, flow, and tumble past each other with meniscus waves.
+ *    - Gas: Dispersed thermal kinetic vapor; elastic collisions against chamber walls & movable pressure piston.
+ *    - Plasma: Ionized nuclei with glowing coronal halos, detached electrons buzzing erratically, and lightning arcs.
+ *    - Supercritical Fluid: Dense penetrative fluid with turbulent density eddies beyond critical point (Tc, Pc).
+ * 2. Movable Hydraulic Pressure Piston (responds to pressure slider / presets in real time).
+ * 3. Thermal Plate at bottom (frost cyan <100K, steel 300K, heat coils >1000K, incandescent plasma >3000K).
+ * 4. Dual View Modes: Visual Atom Chamber, P-T Phase Diagram, and Split View (Chamber + P-T Radar).
  * 
  * Compliant with NIST Chemistry WebBook, IUPAC standards, and Bridgman high-pressure physics.
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
@@ -106201,8 +106322,8 @@ window.OrbitalViewer = {
     // Physical Constants
     const R_GAS = 8.314462618; // J / (mol * K)
     const ATM_TO_PA = 101325; // 1 atm in Pascals
-    const BAR_TO_PA = 100000; // 1 bar in Pascals
-    const GPA_TO_PA = 1e9; // 1 GPa in Pascals
+    const BAR_TO_PA = 100000;
+    const GPA_TO_PA = 1e9;
 
     /**
      * Environment Presets spanning the Universe & High-Pressure Laboratories
@@ -106282,7 +106403,24 @@ window.OrbitalViewer = {
     };
 
     /**
-     * EnvironmentSimulationEngine (OOP Architecture)
+     * Physical Chamber Atom Entity
+     */
+    class ChamberAtom {
+        constructor(x, y, radius = 9, color = '#38bdf8') {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 20;
+            this.vy = (Math.random() - 0.5) * 20;
+            this.radius = radius;
+            this.color = color;
+            this.latticeX = x;
+            this.latticeY = y;
+            this.electronAngle = Math.random() * Math.PI * 2;
+        }
+    }
+
+    /**
+     * EnvironmentSimulationEngine (OOP Architecture with Live Atom Chamber)
      */
     class EnvironmentSimulationEngine {
         constructor() {
@@ -106291,11 +106429,60 @@ window.OrbitalViewer = {
             this.currentPresetId = 'earth_stp';
             this.listeners = new Set();
             this.activeElementId = 6; // Carbon default
+
+            // View Mode: 'split' | 'chamber' | 'diagram'
+            this.viewMode = 'split';
+
+            // Chamber Simulation State
+            this.atoms = [];
+            this.electrons = [];
+            this.plasmaSparks = [];
+            this.chamberWidth = 600;
+            this.chamberHeight = 400;
+            this.pistonY = 80;
+            this.targetPistonY = 80;
+            this.prevPhaseCode = 'solid';
+            this.lastFrameTime = performance.now();
+
+            this.initChamberAtoms(this.chamberWidth, this.chamberHeight);
         }
 
-        /**
-         * Subscribe to P-T state changes
-         */
+        setViewMode(mode) {
+            if (['split', 'chamber', 'diagram'].includes(mode)) {
+                this.viewMode = mode;
+                if (typeof window.renderTuningPanel === 'function') {
+                    window.renderTuningPanel('environment');
+                }
+            }
+        }
+
+        initChamberAtoms(w, h) {
+            this.chamberWidth = Math.max(300, w);
+            this.chamberHeight = Math.max(220, h);
+            this.atoms = [];
+            this.electrons = [];
+            this.plasmaSparks = [];
+
+            const atomCount = 64;
+            const cols = 8;
+            const rows = 8;
+            const latticeSpacing = 24;
+
+            const boxLeft = Math.max(40, this.chamberWidth * 0.12);
+            const boxBottom = this.chamberHeight - 48;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const ax = boxLeft + c * latticeSpacing + (Math.random() - 0.5) * 2;
+                    const ay = boxBottom - (rows - 1 - r) * latticeSpacing;
+                    const atom = new ChamberAtom(ax, ay, 9, '#38bdf8');
+                    atom.latticeX = boxLeft + c * latticeSpacing;
+                    atom.latticeY = boxBottom - (rows - 1 - r) * latticeSpacing;
+                    this.atoms.push(atom);
+                }
+            }
+        }
+
         subscribe(listener) {
             if (typeof listener === 'function') {
                 this.listeners.add(listener);
@@ -106321,7 +106508,8 @@ window.OrbitalViewer = {
                 pressureGPa: (this.pressureAtm * ATM_TO_PA) / 1e9,
                 pressurePsi: this.pressureAtm * 14.6959,
                 currentPresetId: this.currentPresetId,
-                activeElementId: this.activeElementId
+                activeElementId: this.activeElementId,
+                viewMode: this.viewMode
             };
         }
 
@@ -106348,50 +106536,68 @@ window.OrbitalViewer = {
             this.notify();
         }
 
-        setActiveElement(atomicNumber) {
-            this.activeElementId = atomicNumber;
-            this.notify();
+        quickJumpPhase(phaseType) {
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1000, boil: 2500 };
+            const Tm = elData.melt ? Number(elData.melt) : 1000;
+            const Tb = elData.boil ? Number(elData.boil) : 2500;
+
+            if (phaseType === 'solid') {
+                this.setTemperature(Math.max(5, Tm * 0.45));
+                this.setPressure(1.0);
+            } else if (phaseType === 'liquid') {
+                this.setTemperature(Tm + (Tb - Tm) * 0.40);
+                this.setPressure(1.0);
+            } else if (phaseType === 'gas') {
+                this.setTemperature(Tb * 1.35);
+                this.setPressure(1.0);
+            } else if (phaseType === 'plasma') {
+                this.setTemperature(18000);
+                this.setPressure(0.05);
+            }
+
+            if (window.physicsAudio) {
+                window.physicsAudio.playPhaseTransitionSizzle?.(phaseType);
+            }
         }
 
-        /**
-         * Calculates state of matter using thermodynamic phase boundary equations
-         */
-        calculatePhase(elementData, T = this.temperatureK, P = this.pressureAtm) {
-            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const el = elementData || allElements.find(e => e.atomicNumber === this.activeElementId) || { atomicNumber: 6, meltingPoint: 3823, boilingPoint: 5100, name: 'Carbon' };
-            const Z = el.atomicNumber || 6;
+        calculatePhase(elementData) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+            const Z = this.activeElementId;
+
             const thermo = THERMO_ELEMENT_DB[Z] || {
-                Tt: el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : 1000),
-                Pt: 0.001,
-                Tc: el.boilingPoint ? Number(el.boilingPoint) * 1.5 : (el.boil ? Number(el.boil) * 1.5 : 2000),
-                Pc: 500,
-                P_metal: 5e6,
-                deltaH_vap: 50.0,
+                Tt: elementData?.melt ? Number(elementData.melt) : 1000,
+                Pt: 0.01,
+                Tc: elementData?.boil ? Number(elementData.boil) * 1.5 : 3000,
+                Pc: 100,
+                P_metal: 1e7,
+                deltaH_vap: 150.0,
                 deltaH_fus: 10.0
             };
 
-            const T_melt_1atm = el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : thermo.Tt);
-            const T_boil_1atm = el.boilingPoint ? Number(el.boilingPoint) : (el.boil ? Number(el.boil) : thermo.Tc);
+            const T_melt_1atm = elementData?.melt ? Number(elementData.melt) : 1000;
+            const T_boil_1atm = elementData?.boil ? Number(elementData.boil) : 2500;
 
-            // 1. Plasma Regime (Thermonuclear / Ionization)
+            // 1. Plasma Regime
             if (T > 25000 || (T > 10000 && P < 0.01)) {
                 return {
                     state: 'Plasma',
                     code: 'plasma',
                     color: '#f43f5e',
                     badge: '⚡ PLASMA',
-                    details: 'Thermal ionization strips orbital electrons into a glowing soup of bare nuclei and free electrons.'
+                    details: 'Thermal ionization strips orbital electrons into glowing ions and free electrons.'
                 };
             }
 
-            // 2. High-Pressure Degenerate / Metallic Phase Transition
+            // 2. High-Pressure Metallic Phase
             if (thermo.P_metal > 0 && P >= thermo.P_metal) {
                 return {
                     state: 'Metallic / Degenerate Solid',
                     code: 'metallic',
                     color: '#38bdf8',
                     badge: '💎 METALLIC SOLID',
-                    details: `Extreme compressive stress (>${(thermo.P_metal * ATM_TO_PA / 1e9).toFixed(1)} GPa) forces electron delocalization into high-density conduction bands.`
+                    details: `Extreme compressive stress (>${(thermo.P_metal * ATM_TO_PA / 1e9).toFixed(1)} GPa) forces electron delocalization.`
                 };
             }
 
@@ -106402,24 +106608,17 @@ window.OrbitalViewer = {
                     code: 'supercritical',
                     color: '#eab308',
                     badge: '🌀 SUPERCRITICAL',
-                    details: 'Beyond critical point (Tc, Pc); liquid and vapor densities merge into a high-density, low-viscosity penetrative fluid.'
+                    details: 'Beyond critical point (Tc, Pc); liquid and vapor merge into penetrative supercritical fluid.'
                 };
             }
 
-            // 4. Pressure-Shifted Boiling Curve via Clausius-Clapeyron Approximation
-            // P_boil(T) = 1 atm * exp[ -DeltaH_vap/R * (1/T - 1/T_boil_1atm) ]
+            // 4. Pressure-Shifted Boiling & Melting Curves
             let dynamicTboil = T_boil_1atm;
             if (thermo.deltaH_vap > 0 && T_boil_1atm > 0) {
                 const invT = (1 / T_boil_1atm) - (R_GAS * Math.log(Math.max(1e-12, P))) / (thermo.deltaH_vap * 1000);
-                if (invT > 0) {
-                    dynamicTboil = 1 / invT;
-                } else {
-                    dynamicTboil = T_boil_1atm * 3;
-                }
+                dynamicTboil = (invT > 0) ? (1 / invT) : (T_boil_1atm * 3);
             }
 
-            // 5. Pressure-Shifted Melting Curve (Simon-Glatzel Relation)
-            // P = a * ((T_m / T_0)^c - 1)
             let dynamicTmelt = T_melt_1atm;
             if (P > 1.0) {
                 dynamicTmelt = T_melt_1atm * Math.pow(1 + P / 5000, 0.12);
@@ -106427,7 +106626,6 @@ window.OrbitalViewer = {
                 dynamicTmelt = Math.max(0.1, T_melt_1atm * Math.pow(Math.max(1e-6, P), 0.02));
             }
 
-            // Determine State
             if (T < dynamicTmelt) {
                 return {
                     state: 'Solid',
@@ -106456,15 +106654,135 @@ window.OrbitalViewer = {
                     badge: '💨 GAS',
                     meltAtP: dynamicTmelt,
                     boilAtP: dynamicTboil,
-                    details: `Dispersed thermal kinetic vapor phase. Condensation occurs if cooled below ${dynamicTboil.toFixed(1)} K.`
+                    details: `Dispersed thermal kinetic vapor. Condensation occurs if cooled below ${dynamicTboil.toFixed(1)} K.`
                 };
             }
         }
 
-        /**
-         * Renders an interactive 2D P-T Phase Diagram on an HTML5 canvas
-         */
-        renderPhaseDiagram(canvas, elementData) {
+        updateChamberPhysics(dt, w, h, phase) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+
+            // Compute Piston Height based on Log Pressure
+            // At P = 1e-6: piston at y=25. At P = 1 atm: y=80. At P = 1e6: y = h * 0.65.
+            const logP = Math.max(-6, Math.min(6, Math.log10(Math.max(1e-12, P))));
+            const pFraction = (logP - (-6)) / 12.0; // 0 to 1
+            const minPistonY = 32;
+            const maxPistonY = h - 110;
+            this.targetPistonY = minPistonY + pFraction * (maxPistonY - minPistonY);
+            this.pistonY += (this.targetPistonY - this.pistonY) * Math.min(1.0, dt * 6.0);
+
+            const chamberTop = this.pistonY + 12;
+            const chamberBottom = h - 48;
+            const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(40, w * 0.08);
+            const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(40, w * 0.08));
+
+            // Thermal Velocity Scale
+            const thermalSpeed = Math.min(450, Math.sqrt(Math.max(1, T)) * 3.4);
+
+            for (let i = 0; i < this.atoms.length; i++) {
+                const a = this.atoms[i];
+                a.electronAngle += dt * 6.0;
+
+                if (phase.code === 'solid' || phase.code === 'metallic') {
+                    // Crystalline Lattice Harmonic Vibration
+                    const vibAmp = Math.min(7.0, Math.sqrt(T / 1000) * 1.8);
+                    const jitterX = (Math.random() - 0.5) * vibAmp;
+                    const jitterY = (Math.random() - 0.5) * vibAmp;
+                    a.x += (a.latticeX + jitterX - a.x) * dt * 12.0;
+                    a.y += (a.latticeY + jitterY - a.y) * dt * 12.0;
+                } else if (phase.code === 'liquid') {
+                    // Flowing Liquid Pool with gravity & cohesion
+                    a.vy += 320 * dt; // Gravity
+                    a.vx += (Math.random() - 0.5) * 80 * dt;
+
+                    a.x += a.vx * dt;
+                    a.y += a.vy * dt;
+
+                    // Liquid boundaries
+                    if (a.y > chamberBottom - a.radius) {
+                        a.y = chamberBottom - a.radius;
+                        a.vy = -Math.abs(a.vy) * 0.35;
+                    }
+                    if (a.y < chamberBottom - 110) {
+                        a.vy += 120 * dt; // Surface tension pull
+                    }
+                    if (a.x < chamberLeft + a.radius) {
+                        a.x = chamberLeft + a.radius;
+                        a.vx = Math.abs(a.vx) * 0.5;
+                    }
+                    if (a.x > chamberRight - a.radius) {
+                        a.x = chamberRight - a.radius;
+                        a.vx = -Math.abs(a.vx) * 0.5;
+                    }
+
+                    // Inter-atomic soft repulsion
+                    for (let j = i + 1; j < this.atoms.length; j++) {
+                        const b = this.atoms[j];
+                        const dx = b.x - a.x;
+                        const dy = b.y - a.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const minDist = a.radius + b.radius;
+                        if (dist < minDist && dist > 0.001) {
+                            const overlap = (minDist - dist) * 0.5;
+                            const nx = dx / dist;
+                            const ny = dy / dist;
+                            a.x -= nx * overlap;
+                            a.y -= ny * overlap;
+                            b.x += nx * overlap;
+                            b.y += ny * overlap;
+                        }
+                    }
+                } else if (phase.code === 'gas' || phase.code === 'supercritical' || phase.code === 'plasma') {
+                    // Free kinetic dispersal
+                    if (Math.abs(a.vx) < 10) a.vx = (Math.random() - 0.5) * thermalSpeed;
+                    if (Math.abs(a.vy) < 10) a.vy = (Math.random() - 0.5) * thermalSpeed;
+
+                    a.x += a.vx * dt;
+                    a.y += a.vy * dt;
+
+                    // Collisions with chamber walls
+                    if (a.x < chamberLeft + a.radius) {
+                        a.x = chamberLeft + a.radius;
+                        a.vx = Math.abs(a.vx);
+                    }
+                    if (a.x > chamberRight - a.radius) {
+                        a.x = chamberRight - a.radius;
+                        a.vx = -Math.abs(a.vx);
+                    }
+                    if (a.y > chamberBottom - a.radius) {
+                        a.y = chamberBottom - a.radius;
+                        a.vy = -Math.abs(a.vy);
+                    }
+                    if (a.y < chamberTop + a.radius) {
+                        a.y = chamberTop + a.radius;
+                        a.vy = Math.abs(a.vy);
+                    }
+                }
+            }
+
+            // Plasma Sparks
+            if (phase.code === 'plasma') {
+                if (Math.random() < 0.25 && this.atoms.length > 2) {
+                    const idxA = Math.floor(Math.random() * this.atoms.length);
+                    const idxB = Math.floor(Math.random() * this.atoms.length);
+                    const a1 = this.atoms[idxA];
+                    const a2 = this.atoms[idxB];
+                    this.plasmaSparks.push({
+                        x1: a1.x, y1: a1.y,
+                        x2: a2.x, y2: a2.y,
+                        alpha: 1.0
+                    });
+                }
+            }
+
+            for (const s of this.plasmaSparks) {
+                s.alpha -= dt * 4.5;
+            }
+            this.plasmaSparks = this.plasmaSparks.filter(s => s.alpha > 0);
+        }
+
+        renderPhaseDiagram(canvas) {
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
@@ -106479,65 +106797,293 @@ window.OrbitalViewer = {
                 canvas.height = Math.round(clientH * dpr);
             }
 
+            const now = performance.now();
+            const dt = Math.min(0.05, (now - this.lastFrameTime) / 1000);
+            this.lastFrameTime = now;
+
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { name: 'Carbon', symbol: 'C', melt: 3823, boil: 5100 };
+            const phase = this.calculatePhase(elData);
+
+            // Update Particle Chamber Simulation
+            this.updateChamberPhysics(dt, clientW, clientH, phase);
+
             ctx.save();
             ctx.scale(dpr, dpr);
 
             const w = clientW;
             const h = clientH;
-
             ctx.clearRect(0, 0, w, h);
 
-            const padLeft = 55;
-            const padBottom = 35;
-            const padTop = 25;
-            const padRight = 25;
-            const plotW = w - padLeft - padRight;
+            if (this.viewMode === 'chamber') {
+                this.renderChamberView(ctx, w, h, elData, phase, 0, w);
+            } else if (this.viewMode === 'diagram') {
+                this.renderDiagramView(ctx, w, h, elData, phase, 0, w);
+            } else {
+                // Split View: Chamber on Left (65%), P-T Phase Radar on Right (35%)
+                const chamberW = w * 0.65;
+                const radarW = w * 0.35;
+                this.renderChamberView(ctx, w, h, elData, phase, 0, chamberW);
+                this.renderDiagramView(ctx, w, h, elData, phase, chamberW, radarW);
+            }
+
+            // View Mode Switcher Pills (Top Center of Canvas)
+            this.renderViewSwitcherHUD(ctx, w, h);
+
+            ctx.restore();
+        }
+
+        renderViewSwitcherHUD(ctx, w, h) {
+            const pillY = 10;
+            const modes = [
+                { id: 'split', label: 'Split View', icon: '🔲' },
+                { id: 'chamber', label: 'Atom Chamber', icon: '⚛️' },
+                { id: 'diagram', label: 'P-T Curve', icon: '📈' }
+            ];
+
+            let curX = 14;
+            ctx.font = 'bold 11px var(--font-ui), sans-serif';
+
+            for (const m of modes) {
+                const isCur = this.viewMode === m.id;
+                const text = `${m.icon} ${m.label}`;
+                const textW = ctx.measureText(text).width;
+                const pillW = textW + 18;
+                const pillH = 24;
+
+                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.28)' : 'rgba(15, 23, 42, 0.75)';
+                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = isCur ? 1.5 : 1.0;
+
+                ctx.beginPath();
+                ctx.roundRect(curX, pillY, pillW, pillH, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = isCur ? '#ffffff' : '#94a3b8';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'left';
+                ctx.fillText(text, curX + 9, pillY + pillH / 2);
+
+                curX += pillW + 8;
+            }
+        }
+
+        renderChamberView(ctx, w, h, elData, phase, startX, chamberW) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+            const chamberLeft = startX + Math.max(16, chamberW * 0.05);
+            const chamberRight = startX + chamberW - Math.max(16, chamberW * 0.05);
+            const chamberBottom = h - 46;
+            const chamberTop = this.pistonY + 12;
+
+            // 1. Vessel Glass Enclosure Background
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 2.0;
+            ctx.beginPath();
+            ctx.roundRect(chamberLeft, 38, chamberRight - chamberLeft, chamberBottom - 38, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // 2. Movable Compression Piston
+            const pistonH = 14;
+            const pistonGrad = ctx.createLinearGradient(chamberLeft, this.pistonY, chamberRight, this.pistonY);
+            pistonGrad.addColorStop(0, '#334155');
+            pistonGrad.addColorStop(0.5, '#64748b');
+            pistonGrad.addColorStop(1, '#334155');
+            ctx.fillStyle = pistonGrad;
+            ctx.fillRect(chamberLeft + 2, this.pistonY, chamberRight - chamberLeft - 4, pistonH);
+
+            // Piston Rod
+            ctx.fillStyle = '#475569';
+            const midX = (chamberLeft + chamberRight) / 2;
+            ctx.fillRect(midX - 8, 2, 16, this.pistonY);
+
+            // Piston Pressure Readout Tag
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`HYDRAULIC PISTON: ${P < 0.01 ? P.toExponential(1) : P.toFixed(1)} atm`, midX, this.pistonY - 6);
+
+            // 3. Thermal Plate at Chamber Bottom
+            const plateH = 10;
+            const plateGrad = ctx.createLinearGradient(chamberLeft, chamberBottom, chamberRight, chamberBottom);
+            if (T < 100) {
+                plateGrad.addColorStop(0, '#0284c7');
+                plateGrad.addColorStop(0.5, '#38bdf8');
+                plateGrad.addColorStop(1, '#0284c7');
+            } else if (T < 1000) {
+                plateGrad.addColorStop(0, '#475569');
+                plateGrad.addColorStop(0.5, '#64748b');
+                plateGrad.addColorStop(1, '#475569');
+            } else if (T < 3000) {
+                plateGrad.addColorStop(0, '#ea580c');
+                plateGrad.addColorStop(0.5, '#f97316');
+                plateGrad.addColorStop(1, '#ea580c');
+            } else {
+                plateGrad.addColorStop(0, '#ef4444');
+                plateGrad.addColorStop(0.5, '#ffffff');
+                plateGrad.addColorStop(1, '#ef4444');
+            }
+            ctx.fillStyle = plateGrad;
+            ctx.fillRect(chamberLeft + 2, chamberBottom, chamberRight - chamberLeft - 4, plateH);
+
+            // Thermal plate label
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = 'bold 9px monospace';
+            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 18);
+
+            // 4. Solid Crystal Lattice Bond Lines
+            if (phase.code === 'solid' || phase.code === 'metallic') {
+                ctx.strokeStyle = (phase.code === 'metallic') ? 'rgba(56, 189, 248, 0.45)' : 'rgba(0, 212, 255, 0.35)';
+                ctx.lineWidth = 1.2;
+                for (let i = 0; i < this.atoms.length; i++) {
+                    const a = this.atoms[i];
+                    for (let j = i + 1; j < this.atoms.length; j++) {
+                        const b = this.atoms[j];
+                        const dx = b.x - a.x;
+                        const dy = b.y - a.y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < 30) {
+                            ctx.beginPath();
+                            ctx.moveTo(a.x, a.y);
+                            ctx.lineTo(b.x, b.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            // 5. Plasma Sparks
+            if (phase.code === 'plasma') {
+                for (const s of this.plasmaSparks) {
+                    ctx.strokeStyle = `rgba(244, 63, 94, ${s.alpha})`;
+                    ctx.lineWidth = 2.0;
+                    ctx.beginPath();
+                    ctx.moveTo(s.x1, s.y1);
+                    ctx.lineTo((s.x1 + s.x2) / 2 + (Math.random() - 0.5) * 8, (s.y1 + s.y2) / 2 + (Math.random() - 0.5) * 8);
+                    ctx.lineTo(s.x2, s.y2);
+                    ctx.stroke();
+                }
+            }
+
+            // 6. Atoms Rendering
+            for (const a of this.atoms) {
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2);
+
+                const grad = ctx.createRadialGradient(a.x - 2, a.y - 2, 1, a.x, a.y, a.radius);
+                if (phase.code === 'plasma') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#f43f5e');
+                    grad.addColorStop(1, '#881337');
+                } else if (phase.code === 'liquid') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#10b981');
+                    grad.addColorStop(1, '#064e3b');
+                } else if (phase.code === 'gas') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#f97316');
+                    grad.addColorStop(1, '#7c2d12');
+                } else if (phase.code === 'supercritical') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#eab308');
+                    grad.addColorStop(1, '#713f12');
+                } else {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#00d4ff');
+                    grad.addColorStop(1, '#0369a1');
+                }
+
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 1.0;
+                ctx.stroke();
+
+                // Electron orbit for plasma or gas
+                if (phase.code === 'plasma') {
+                    const ex = a.x + Math.cos(a.electronAngle) * (a.radius + 6);
+                    const ey = a.y + Math.sin(a.electronAngle) * (a.radius + 6);
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.arc(ex, ey, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Phase State Overlay Tag (Inside Chamber)
+            ctx.fillStyle = phase.color || '#00d4ff';
+            ctx.font = 'bold 12px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(`${phase.badge} (${elData.name})`, chamberLeft + 10, chamberBottom - 12);
+        }
+
+        renderDiagramView(ctx, w, h, elData, phase, startX, diagramW) {
+            const padLeft = startX + 46;
+            const padRight = startX + diagramW - 14;
+            const padTop = 38;
+            const padBottom = 34;
+            const plotW = padRight - padLeft;
             const plotH = h - padTop - padBottom;
+
+            // Background Card
+            ctx.fillStyle = 'rgba(10, 15, 28, 0.85)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.25)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.roundRect(startX + 6, padTop - 6, diagramW - 12, h - padTop - 14, 8);
+            ctx.fill();
+            ctx.stroke();
 
             // Coordinate mapping (Log P vs Linear T)
             const minT = 0;
             const maxT = 6000;
-            const minLogP = -6; // 10^-6 atm
-            const maxLogP = 6;  // 10^+6 atm
+            const minLogP = -6;
+            const maxLogP = 6;
 
             const mapX = (t) => padLeft + (t / maxT) * plotW;
             const mapY = (logP) => padTop + (1 - (logP - minLogP) / (maxLogP - minLogP)) * plotH;
 
-            // Background Grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            // Grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
             ctx.lineWidth = 1;
-            for (let t = 1000; t <= 5000; t += 1000) {
+            for (let t = 1500; t <= 4500; t += 1500) {
                 const x = mapX(t);
                 ctx.beginPath();
                 ctx.moveTo(x, padTop);
                 ctx.lineTo(x, h - padBottom);
                 ctx.stroke();
 
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px monospace';
-                ctx.fillText(`${t}K`, x - 14, h - padBottom + 16);
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${t}K`, x, h - padBottom + 12);
             }
 
-            for (let lp = minLogP; lp <= maxLogP; lp += 3) {
+            for (let lp = -3; lp <= 3; lp += 3) {
                 const y = mapY(lp);
                 ctx.beginPath();
                 ctx.moveTo(padLeft, y);
-                ctx.lineTo(w - padRight, y);
+                ctx.lineTo(padRight, y);
                 ctx.stroke();
 
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px monospace';
-                ctx.fillText(`10^${lp}`, 10, y + 4);
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px monospace';
+                ctx.textAlign = 'right';
+                ctx.fillText(`10^${lp}`, padLeft - 4, y + 3);
             }
 
-            const Tm0 = elementData?.melt ? Number(elementData.melt) : 1000;
-            const Tb0 = elementData?.boil ? Number(elementData.boil) : 2500;
+            const Tm0 = elData.melt ? Number(elData.melt) : 1000;
+            const Tb0 = elData.boil ? Number(elData.boil) : 2500;
 
-            // Phase Boundary Curves (Solid-Liquid Simon line)
+            // Solid-Liquid Simon Boundary
             ctx.strokeStyle = '#00d4ff';
-            ctx.lineWidth = 3.0;
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
-            for (let lp = minLogP; lp <= maxLogP; lp += 0.2) {
+            for (let lp = minLogP; lp <= maxLogP; lp += 0.4) {
                 const p = Math.pow(10, lp);
                 const tm = Tm0 * Math.pow(Math.max(1e-4, 1 + p / 5000), 0.12);
                 const px = mapX(tm);
@@ -106547,178 +107093,62 @@ window.OrbitalViewer = {
             }
             ctx.stroke();
 
-            // Phase Boundary Curves (Liquid-Gas Clausius-Clapeyron curve)
+            // Liquid-Gas Vaporization Boundary
             ctx.strokeStyle = '#f97316';
-            ctx.lineWidth = 3.0;
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
-            let first = true;
-            for (let lp = minLogP; lp <= 3; lp += 0.2) {
+            for (let lp = minLogP; lp <= 2.5; lp += 0.3) {
                 const p = Math.pow(10, lp);
-                const invT = (1 / Tb0) - (R_GAS * Math.log(p)) / (80 * 1000);
-                if (invT > 0) {
-                    const tb = 1 / invT;
-                    const px = mapX(tb);
-                    const py = mapY(lp);
-                    if (first) { ctx.moveTo(px, py); first = false; }
-                    else ctx.lineTo(px, py);
-                }
+                const invT = (1 / Tb0) - (R_GAS * Math.log(Math.max(1e-12, p))) / (150 * 1000);
+                const tb = (invT > 0) ? (1 / invT) : (Tb0 * 3);
+                const px = mapX(tb);
+                const py = mapY(lp);
+                if (lp === minLogP) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
             }
             ctx.stroke();
 
-            // Labels
-            ctx.fillStyle = 'rgba(0, 212, 255, 0.9)';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText('SOLID', mapX(Tm0 * 0.4), mapY(2));
-
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
-            ctx.fillText('LIQUID', mapX((Tm0 + Tb0) / 2), mapY(2));
-
-            ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
-            ctx.fillText('GAS', mapX(Math.min(maxT * 0.85, Tb0 * 1.5)), mapY(-3));
-
-            // Current Operating Point Indicator (Glowing Reticle)
-            const curLogP = Math.max(minLogP, Math.min(maxLogP, Math.log10(this.pressureAtm)));
+            // Active State Pulsing Marker
+            const curLogP = Math.max(minLogP, Math.min(maxLogP, Math.log10(Math.max(1e-12, this.pressureAtm))));
             const curX = mapX(Math.min(maxT, this.temperatureK));
             const curY = mapY(curLogP);
 
-            ctx.shadowColor = '#00d4ff';
-            ctx.shadowBlur = 14;
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = phase.color || '#00d4ff';
+            ctx.shadowColor = phase.color || '#00d4ff';
+            ctx.shadowBlur = 12;
             ctx.beginPath();
-            ctx.arc(curX, curY, 7, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 6, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2.0;
-            ctx.beginPath();
-            ctx.arc(curX, curY, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.restore();
-        }
-    }
-
-    function openEnvPressureModal() {
-        const modal = document.getElementById('env-pressure-modal');
-        if (!modal) return;
-        modal.style.display = 'flex';
-
-        const engine = window.envSimulationEngine;
-        if (engine) {
-            const tempSlider = document.getElementById('env-modal-temp-slider');
-            const pressSlider = document.getElementById('env-modal-press-slider');
-            if (tempSlider) tempSlider.value = Math.min(6000, engine.temperatureK);
-            if (pressSlider) pressSlider.value = Math.log10(Math.max(1e-12, engine.pressureAtm));
-        }
-        updateEnvModalState();
-        if (typeof window.syncNativeSliderVisibility === 'function') {
-            window.syncNativeSliderVisibility();
-        }
-    }
-
-    function closeEnvPressureModal() {
-        const modal = document.getElementById('env-pressure-modal');
-        if (modal) modal.style.display = 'none';
-        if (typeof window.syncNativeSliderVisibility === 'function') {
-            window.syncNativeSliderVisibility();
-        }
-    }
-
-    function applyEnvModalPreset(presetId) {
-        if (!window.envSimulationEngine) return;
-        window.envSimulationEngine.setPreset(presetId);
-        const engine = window.envSimulationEngine;
-        const tempSlider = document.getElementById('env-modal-temp-slider');
-        const pressSlider = document.getElementById('env-modal-press-slider');
-        if (tempSlider) tempSlider.value = Math.min(6000, engine.temperatureK);
-        if (pressSlider) pressSlider.value = Math.log10(Math.max(1e-12, engine.pressureAtm));
-        updateEnvModalState();
-    }
-
-    function updateEnvModalState() {
-        const tempSlider = document.getElementById('env-modal-temp-slider');
-        const pressSlider = document.getElementById('env-modal-press-slider');
-        if (!tempSlider || !pressSlider || !window.envSimulationEngine) return;
-
-        const tempK = parseFloat(tempSlider.value);
-        const logP = parseFloat(pressSlider.value);
-        const pressAtm = Math.pow(10, logP);
-
-        window.envSimulationEngine.setTemperature(tempK);
-        window.envSimulationEngine.setPressure(pressAtm);
-
-        const tempDisp = document.getElementById('env-modal-temp-display');
-        const pressDisp = document.getElementById('env-modal-press-display');
-        if (tempDisp) tempDisp.textContent = `${tempK < 10 ? tempK.toFixed(2) : tempK.toFixed(0)} K`;
-        if (pressDisp) {
-            pressDisp.textContent = pressAtm < 0.01 || pressAtm > 1e4 ? `${pressAtm.toExponential(2)} atm` : `${pressAtm.toFixed(2)} atm`;
-        }
-
-        const z = window.selectedElement ? window.selectedElement.atomicNumber : 6;
-        window.envSimulationEngine.setActiveElement(z);
-        const elData = window.elementsData ? window.elementsData.find(e => e.atomicNumber === z) : null;
-        const phase = window.envSimulationEngine.calculatePhase(elData);
-
-        const targetEl = document.getElementById('env-modal-target-element');
-        const phaseLabel = document.getElementById('env-modal-phase-label');
-        const phaseBadge = document.getElementById('env-modal-phase-badge');
-
-        if (targetEl && elData) {
-            targetEl.textContent = `Target Element: ${elData.name} (${elData.symbol}, Z=${elData.atomicNumber})`;
-        }
-        if (phaseLabel) {
-            phaseLabel.textContent = `Phase: ${phase.badge} - ${phase.details}`;
-        }
-        if (phaseBadge) {
-            phaseBadge.textContent = phase.badge;
-            phaseBadge.style.color = phase.color;
-            phaseBadge.style.borderColor = phase.color;
-        }
-    }
-
-    function applyEnvModalToTable() {
-        if (!window.envSimulationEngine) return;
-        const tempK = window.envSimulationEngine.temperatureK;
-        if (typeof window.applyTempPreset === 'function') {
-            window.applyTempPreset(tempK);
-        } else {
-            const tempSlider = document.getElementById('temp-slider');
-            if (tempSlider) {
-                tempSlider.value = Math.round(tempK);
-                tempSlider.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
-        closeEnvPressureModal();
-    }
-
-    function launchEnvToSimLab() {
-        closeEnvPressureModal();
-        if (typeof window.switchView === 'function') {
-            window.switchView('simulations');
-            if (typeof window.switchSimTab === 'function') {
-                window.switchSimTab('environment');
-            }
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(phase.state, curX, curY - 10);
         }
     }
 
     // Attach to Global Scope
     window.EnvironmentSimulationEngine = EnvironmentSimulationEngine;
     window.ENVIRONMENT_PRESETS = ENVIRONMENT_PRESETS;
+    window.THERMO_ELEMENT_DB = THERMO_ELEMENT_DB;
     window.envSimulationEngine = new EnvironmentSimulationEngine();
-    window.openEnvPressureModal = openEnvPressureModal;
-    window.closeEnvPressureModal = closeEnvPressureModal;
-    window.applyEnvModalPreset = applyEnvModalPreset;
-    window.updateEnvModalState = updateEnvModalState;
-    window.applyEnvModalToTable = applyEnvModalToTable;
-    window.launchEnvToSimLab = launchEnvToSimLab;
 
 })();
 
 // 22_chain_reaction_sim.js
 /**
- * PERIODICA 3D - Nuclear Chain Reaction Simulation & Interactive Game Engine
- * Real-time Fission Dynamics, Neutron Transport, Moderation & Criticality Game Suite
+ * PERIODICA 3D - Nuclear Fission & Chain Reaction Simulation Engine
+ * High-Precision PhET & Brilliant.org Pedagogical Architecture
+ * 
+ * Features:
+ * 1. Progressive Scenarios:
+ *    - Scenario 1: Single Nucleus Fission (Tutorial Mode with Bohr-Wheeler Liquid Drop elongation,
+ *                  slow-motion thermal neutron absorption, Kr-92 + Ba-141 scission split,
+ *                  3 prompt neutrons, and +200 MeV energy release).
+ *    - Scenario 2: Chain Reaction Sandbox (Density slider, exponential cascade, combo scoring).
+ *    - Scenario 3: Controlled Reactor Core (Boron control rods, moderator selection, turbine power, SCRAM).
+ * 2. Real-time 60 FPS Canvas Renderer with DPR scaling, Cherenkov radiation, and zero telemetry clipping.
  * 
  * Sourced from IAEA Nuclear Data Services & Evaluated Nuclear Data File (ENDF/B-VIII.0).
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
@@ -106734,6 +107164,8 @@ window.OrbitalViewer = {
         'U235': {
             name: 'Uranium-235',
             symbol: '²³⁵U',
+            protons: 92,
+            neutrons: 143,
             color: '#10b981',
             glowColor: 'rgba(16, 185, 129, 0.65)',
             fissionQMeV: 202.5,
@@ -106746,6 +107178,8 @@ window.OrbitalViewer = {
         'PU239': {
             name: 'Plutonium-239',
             symbol: '²³⁹Pu',
+            protons: 94,
+            neutrons: 145,
             color: '#f59e0b',
             glowColor: 'rgba(245, 158, 11, 0.70)',
             fissionQMeV: 207.1,
@@ -106758,14 +107192,16 @@ window.OrbitalViewer = {
         'U238': {
             name: 'Uranium-238 (Depleted)',
             symbol: '²³⁸U',
+            protons: 92,
+            neutrons: 146,
             color: '#64748b',
             glowColor: 'rgba(100, 116, 139, 0.45)',
             fissionQMeV: 205.0,
             avgPromptNeutrons: 2.50,
-            thermalCrossSectionBarns: 0.00002, // Non-fissile to thermal
+            thermalCrossSectionBarns: 0.00002,
             fastCrossSectionBarns: 0.60,
             delayedFraction: 0.0157,
-            desc: 'Fertile isotope; captures thermal neutrons into Pu-239; fissions only with energetic fast neutrons.'
+            desc: 'Fertile isotope; captures thermal neutrons into Pu-239; fissions only with fast neutrons.'
         }
     };
 
@@ -106796,9 +107232,8 @@ window.OrbitalViewer = {
         }
 
         update(dt, width, height, moderator) {
-            // Save trail for visual clarity
             this.trail.push({ x: this.x, y: this.y });
-            if (this.trail.length > 5) this.trail.shift();
+            if (this.trail.length > 6) this.trail.shift();
 
             this.x += this.vx * dt;
             this.y += this.vy * dt;
@@ -106819,8 +107254,7 @@ window.OrbitalViewer = {
                 this.alive = false;
             }
 
-            // Natural decay / absorption loss
-            if (this.age > 7.0) {
+            if (this.age > 7.5) {
                 this.alive = false;
             }
         }
@@ -106842,70 +107276,81 @@ window.OrbitalViewer = {
     }
 
     class FissionFlash {
-        constructor(x, y) {
+        constructor(x, y, maxRadius = 46) {
             this.x = x;
             this.y = y;
             this.radius = 6;
-            this.maxRadius = 46;
+            this.maxRadius = maxRadius;
             this.opacity = 1.0;
         }
 
         update(dt) {
-            this.radius += 110 * dt;
-            this.opacity -= 2.4 * dt;
+            this.radius += 120 * dt;
+            this.opacity -= 2.2 * dt;
             return this.opacity > 0;
         }
     }
 
-    // Daughter fission fragments flying outward: Krypton-92 and Barium-141
     class FissionFragment {
-        constructor(x, y, symbol, color, vx, vy) {
+        constructor(x, y, symbol, color, vx, vy, radius = 10, label = '') {
             this.x = x;
             this.y = y;
             this.symbol = symbol;
             this.color = color;
             this.vx = vx;
             this.vy = vy;
-            this.opacity = 1.0;
+            this.radius = radius;
+            this.label = label;
             this.age = 0;
+            this.opacity = 1.0;
+            this.trail = [];
         }
 
         update(dt) {
+            this.trail.push({ x: this.x, y: this.y });
+            if (this.trail.length > 5) this.trail.shift();
+
             this.x += this.vx * dt;
             this.y += this.vy * dt;
+            this.vx *= 0.985;
+            this.vy *= 0.985;
             this.age += dt;
-            this.opacity -= 1.8 * dt;
+            this.opacity -= 0.22 * dt;
             return this.opacity > 0;
         }
     }
 
-    // Floating Game Score & Energy Popups
     class FloatingScoreText {
-        constructor(x, y, text, color = '#fbbf24') {
+        constructor(x, y, text, color = '#fbbf24', duration = 1.5) {
             this.x = x;
             this.y = y;
             this.text = text;
             this.color = color;
             this.opacity = 1.0;
-            this.vy = -36;
+            this.vy = -34;
+            this.duration = duration;
         }
 
         update(dt) {
             this.y += this.vy * dt;
-            this.opacity -= 1.3 * dt;
+            this.opacity -= (1.0 / this.duration) * dt;
             return this.opacity > 0;
         }
     }
 
     /**
-     * Master ChainReactionSimulationEngine with Game Progression & Step Narrator
+     * Master ChainReactionSimulationEngine with Progressive Scenarios
      */
     class ChainReactionSimulationEngine {
         constructor() {
+            // Scenario Management: 'single_fission' | 'chain_sandbox' | 'reactor_core'
+            this.currentScenario = 'single_fission';
+
             this.fuelType = 'U235';
             this.moderatorType = 'light_water';
-            this.controlRodInsertion = 0.35; // 35% inserted
-            this.targetCount = 70;
+            this.controlRodInsertion = 0.35;
+            this.atomDensity = 45; // Sandbox atom count
+
             this.neutrons = [];
             this.targets = [];
             this.flashes = [];
@@ -106929,15 +107374,35 @@ window.OrbitalViewer = {
 
             // Reaction Process Step Tracker (1 to 4)
             this.activeReactionStep = 1;
-            this.stepHighlightTimer = 0;
-            this.reactionNarrative = 'Ready to launch! Tap "Fire Neutron" or tap anywhere in the reactor to start the fission process.';
+            this.reactionNarrative = 'Scenario 1: Single Nucleus Fission. Aim neutron gun & tap "FIRE NEUTRON" to observe Bohr-Wheeler liquid-drop split!';
 
-            // Missions System
+            // Single Nucleus Fission Tutorial State Machine
+            this.singleAtomState = {
+                stage: 'ready', // 'ready' | 'neutron_flying' | 'absorbed' | 'elongating' | 'splitting' | 'insight'
+                stageTimer: 0,
+                nucleusX: 0,
+                nucleusY: 0,
+                nucleusRadius: 52,
+                elongation: 1.0,
+                neckFactor: 1.0,
+                oscillation: 0,
+                gunX: 70,
+                gunY: 0,
+                gunAngle: 0,
+                incomingNeutron: null,
+                splitFragments: [],
+                promptNeutrons: [],
+                energyBurstRadius: 0,
+                energyBurstAlpha: 1.0,
+                tutorialCallouts: []
+            };
+
+            // Game Missions
             this.gameMissions = [
                 {
                     id: 'm1',
                     title: 'The First Spark 🎯',
-                    desc: 'Fire a neutron and trigger your first nuclear fission!',
+                    desc: 'Trigger a clean nuclear fission split into Kr-92 and Ba-141!',
                     goal: 1,
                     current: 0,
                     completed: false,
@@ -106964,7 +107429,7 @@ window.OrbitalViewer = {
                 {
                     id: 'm4',
                     title: 'Prevent Meltdown 🚨',
-                    desc: 'Reach supercritical power (>2,000 MW) and execute an emergency SCRAM before temperature critical!',
+                    desc: 'Reach supercritical power (>2,000 MW) and execute an emergency SCRAM before critical!',
                     goal: 1,
                     current: 0,
                     completed: false,
@@ -106973,6 +107438,16 @@ window.OrbitalViewer = {
             ];
 
             this.initChamber();
+        }
+
+        setScenario(scenarioKey) {
+            if (['single_fission', 'chain_sandbox', 'reactor_core'].includes(scenarioKey)) {
+                this.currentScenario = scenarioKey;
+                this.initChamber();
+                if (typeof window.renderTuningPanel === 'function') {
+                    window.renderTuningPanel('chain_reaction');
+                }
+            }
         }
 
         initChamber() {
@@ -106987,35 +107462,86 @@ window.OrbitalViewer = {
             this.comboTimer = 0;
             this.stableCriticalTimer = 0;
             this.scramActive = false;
-            this.activeReactionStep = 1;
-            this.reactionNarrative = 'Reactor chamber ready. Fire a neutron to initiate the nuclear fission process!';
 
-            this.repositionLattice(this.width, this.height);
+            if (this.currentScenario === 'single_fission') {
+                this.initSingleAtomScenario();
+            } else if (this.currentScenario === 'chain_sandbox') {
+                this.activeReactionStep = 1;
+                this.reactionNarrative = 'Scenario 2: Chain Reaction Sandbox. Tap anywhere on the fuel cluster to launch neutrons and trigger cascades!';
+                this.repositionLattice(this.width, this.height, this.atomDensity);
+            } else {
+                this.activeReactionStep = 1;
+                this.reactionNarrative = 'Scenario 3: Controlled Reactor Core. Adjust Boron Control Rods and moderator to maintain steady 1,000 MW power!';
+                this.repositionLattice(this.width, this.height, 56);
+            }
+
+            this.updateDOMStepper();
         }
 
-        repositionLattice(w, h) {
+        initSingleAtomScenario() {
+            this.activeReactionStep = 1;
+            this.reactionNarrative = '🎯 Step 1: Aim the neutron emitter on the left and tap "FIRE NEUTRON" to initiate thermal absorption into ²³⁵U!';
+            
+            const centerX = this.width * 0.55;
+            const centerY = this.height * 0.48;
+            this.singleAtomState = {
+                stage: 'ready',
+                stageTimer: 0,
+                nucleusX: centerX,
+                nucleusY: centerY,
+                nucleusRadius: Math.max(38, Math.min(54, this.height * 0.16)),
+                elongation: 1.0,
+                neckFactor: 1.0,
+                oscillation: 0,
+                gunX: Math.max(50, this.width * 0.10),
+                gunY: centerY,
+                gunAngle: 0,
+                incomingNeutron: null,
+                splitFragments: [],
+                promptNeutrons: [],
+                energyBurstRadius: 0,
+                energyBurstAlpha: 1.0,
+                tutorialCallouts: [
+                    { text: '²³⁵U Fuel Nucleus (92p + 143n)', x: centerX, y: centerY - 65, color: '#10b981' },
+                    { text: 'Aimable Thermal Neutron Gun (0.025 eV)', x: Math.max(50, this.width * 0.10) + 70, y: centerY + 45, color: '#38bdf8' }
+                ]
+            };
+
+            // Calculate direct angle from gun to nucleus
+            const dx = this.singleAtomState.nucleusX - this.singleAtomState.gunX;
+            const dy = this.singleAtomState.nucleusY - this.singleAtomState.gunY;
+            this.singleAtomState.gunAngle = Math.atan2(dy, dx);
+        }
+
+        repositionLattice(w, h, targetCount = 60) {
             this.width = Math.max(320, w);
             this.height = Math.max(240, h);
             this.targets = [];
 
-            // Compute optimal grid layout based on viewport dimensions
-            const cols = Math.max(6, Math.min(12, Math.floor(this.width / 62)));
-            const rows = Math.max(4, Math.min(8, Math.floor(this.height / 54)));
-            const cellRadius = Math.max(13, Math.min(18, Math.floor(Math.min(this.width / cols, this.height / rows) * 0.28)));
+            if (this.currentScenario === 'single_fission') {
+                this.initSingleAtomScenario();
+                return;
+            }
 
-            const marginX = Math.max(35, this.width * 0.06);
-            const marginTop = Math.max(88, this.height * 0.22);
-            const marginBottom = 48;
+            // Grid Layout for Sandbox & Reactor modes
+            const aspect = this.width / this.height;
+            let cols = Math.max(5, Math.min(14, Math.round(Math.sqrt(targetCount * aspect))));
+            let rows = Math.max(3, Math.min(8, Math.round(targetCount / cols)));
+
+            const marginX = Math.max(35, this.width * 0.08);
+            const marginTop = Math.max(80, this.height * 0.22);
+            const marginBottom = 50;
             const spanW = this.width - marginX * 2;
             const spanH = Math.max(120, this.height - marginTop - marginBottom);
 
             const gapX = spanW / Math.max(1, cols - 1);
             const gapY = spanH / Math.max(1, rows - 1);
+            const cellRadius = Math.max(12, Math.min(18, Math.min(gapX, gapY) * 0.36));
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    const jitterX = (Math.random() - 0.5) * 4;
-                    const jitterY = (Math.random() - 0.5) * 4;
+                    const jitterX = (Math.random() - 0.5) * 5;
+                    const jitterY = (Math.random() - 0.5) * 5;
                     this.targets.push(new FissileNucleus(
                         marginX + c * gapX + jitterX,
                         marginTop + r * gapY + jitterY,
@@ -107027,15 +107553,20 @@ window.OrbitalViewer = {
         }
 
         /**
-         * Fire a neutron from injector nozzle or direct touch
+         * Fire a neutron based on current scenario
          */
-        injectNeutron(x = 35, y = this.height / 2, angleRad = (Math.random() - 0.5) * 0.35, speed = 280) {
+        injectNeutron(x = 35, y = this.height / 2, angleRad = 0, speed = 280) {
+            if (this.currentScenario === 'single_fission') {
+                this.fireSingleAtomNeutron();
+                return;
+            }
+
             const vx = Math.cos(angleRad) * speed;
             const vy = Math.sin(angleRad) * speed;
             this.neutrons.push(new Neutron(x, y, vx, vy, false));
 
             this.activeReactionStep = 1;
-            this.reactionNarrative = '🎯 Step 1: Free neutron launched into reactor core traveling toward ²³⁵U fuel atoms!';
+            this.reactionNarrative = '🎯 Step 1: Fast neutron launched into fuel lattice!';
             this.updateDOMStepper();
 
             if (window.physicsAudio) {
@@ -107043,10 +107574,44 @@ window.OrbitalViewer = {
             }
         }
 
-        /**
-         * Aim and fire toward target coordinates
-         */
+        fireSingleAtomNeutron() {
+            const state = this.singleAtomState;
+            if (state.stage !== 'ready' && state.stage !== 'insight') {
+                return;
+            }
+
+            state.stage = 'neutron_flying';
+            state.stageTimer = 0;
+            state.splitFragments = [];
+            state.promptNeutrons = [];
+            state.energyBurstRadius = 0;
+            state.energyBurstAlpha = 1.0;
+
+            const speed = 240;
+            const vx = Math.cos(state.gunAngle) * speed;
+            const vy = Math.sin(state.gunAngle) * speed;
+            state.incomingNeutron = new Neutron(state.gunX, state.gunY, vx, vy, true);
+
+            this.activeReactionStep = 1;
+            this.reactionNarrative = '🎯 Step 1: Thermal neutron in flight toward ²³⁵U nucleus!';
+            this.updateDOMStepper();
+
+            if (window.physicsAudio) {
+                window.physicsAudio.playNeutronGun();
+            }
+        }
+
         aimAndFire(targetX, targetY) {
+            if (this.currentScenario === 'single_fission') {
+                // Update gun angle towards touch and fire
+                const state = this.singleAtomState;
+                const dx = targetX - state.gunX;
+                const dy = targetY - state.gunY;
+                state.gunAngle = Math.atan2(dy, dx);
+                this.fireSingleAtomNeutron();
+                return;
+            }
+
             const startX = 30;
             const startY = this.height / 2;
             const dx = targetX - startX;
@@ -107076,9 +107641,13 @@ window.OrbitalViewer = {
             }
         }
 
-        /**
-         * Emergency SCRAM: Control rods slam shut (100%) to quench runaway reaction
-         */
+        setAtomDensity(count) {
+            this.atomDensity = Math.max(12, Math.min(100, Number(count) || 45));
+            if (this.currentScenario === 'chain_sandbox') {
+                this.repositionLattice(this.width, this.height, this.atomDensity);
+            }
+        }
+
         triggerSCRAM() {
             this.scramActive = true;
             this.controlRodInsertion = 1.0;
@@ -107086,7 +107655,6 @@ window.OrbitalViewer = {
             this.reactionNarrative = '🚨 EMERGENCY SCRAM ACTIVATED! Control rods fully lowered to 100% — absorbing all free neutrons!';
             this.updateDOMStepper();
 
-            // Check Mission 4
             const m4 = this.gameMissions.find(m => m.id === 'm4');
             if (m4 && !m4.completed && this.currentPowerMW > 1500) {
                 m4.current = 1;
@@ -107101,7 +107669,7 @@ window.OrbitalViewer = {
         }
 
         onMissionCompleted(mission) {
-            this.floatingTexts.push(new FloatingScoreText(this.width / 2, this.height * 0.35, `🏆 ${mission.title} COMPLETED! +500 PTS`, '#4ade80'));
+            this.floatingTexts.push(new FloatingScoreText(this.width / 2, this.height * 0.35, `🏆 ${mission.title} COMPLETED! +500 PTS`, '#4ade80', 2.0));
             if (window.physicsAudio) {
                 window.physicsAudio.playMissionCompleteChime?.();
             }
@@ -107114,10 +107682,14 @@ window.OrbitalViewer = {
         }
 
         update(dt) {
+            if (this.currentScenario === 'single_fission') {
+                this.updateSingleAtomScenario(dt);
+                return;
+            }
+
             const fuelSpec = FUEL_SPECS[this.fuelType] || FUEL_SPECS['U235'];
             const modSpec = MODERATOR_SPECS[this.moderatorType] || MODERATOR_SPECS['light_water'];
 
-            // Combo Decay
             if (this.comboTimer > 0) {
                 this.comboTimer -= dt;
                 if (this.comboTimer <= 0) {
@@ -107125,7 +107697,6 @@ window.OrbitalViewer = {
                 }
             }
 
-            // Pulse target animations
             for (const t of this.targets) {
                 t.update(dt);
             }
@@ -107133,30 +107704,28 @@ window.OrbitalViewer = {
             let newNeutrons = [];
             let fissionsThisStep = 0;
 
-            // Control Rod vertical barrier geometry
             const rodPositionsX = [this.width * 0.28, this.width * 0.50, this.width * 0.72];
             const rodMaxDepth = this.height * 0.88;
-            const rodCurrentDepth = rodMaxDepth * this.controlRodInsertion;
+            const rodCurrentDepth = (this.currentScenario === 'reactor_core') ? rodMaxDepth * this.controlRodInsertion : 0;
 
-            // Update Neutrons
             for (let i = 0; i < this.neutrons.length; i++) {
                 const n = this.neutrons[i];
                 n.update(dt, this.width, this.height, modSpec);
                 if (!n.alive) continue;
 
-                // Check Control Rod Absorption
-                let absorbedByRod = false;
-                for (const rx of rodPositionsX) {
-                    if (Math.abs(n.x - rx) < 14 && n.y < rodCurrentDepth) {
-                        absorbedByRod = true;
-                        n.alive = false;
-                        this.floatingTexts.push(new FloatingScoreText(rx, n.y, 'Absorbed 🛡️', '#94a3b8'));
-                        break;
+                if (this.currentScenario === 'reactor_core' && rodCurrentDepth > 5) {
+                    let absorbedByRod = false;
+                    for (const rx of rodPositionsX) {
+                        if (Math.abs(n.x - rx) < 14 && n.y < rodCurrentDepth) {
+                            absorbedByRod = true;
+                            n.alive = false;
+                            this.floatingTexts.push(new FloatingScoreText(rx, n.y, 'Absorbed 🛡️', '#94a3b8'));
+                            break;
+                        }
                     }
+                    if (absorbedByRod) continue;
                 }
-                if (absorbedByRod) continue;
 
-                // Check Fissile Nucleus Collision
                 for (let j = 0; j < this.targets.length; j++) {
                     const target = this.targets[j];
                     if (target.fissioned) continue;
@@ -107165,26 +107734,23 @@ window.OrbitalViewer = {
                     const dy = n.y - target.y;
                     const distSq = dx * dx + dy * dy;
 
-                    const baseProb = n.isThermal ? 0.88 : 0.22;
+                    const baseProb = n.isThermal ? 0.88 : 0.24;
                     const effectiveRadius = n.isThermal ? (target.radius + 8) : (target.radius + 3);
 
                     if (distSq < effectiveRadius * effectiveRadius) {
                         if (Math.random() < baseProb) {
-                            // FISSION EVENT OCCURS!
                             target.fissioned = true;
                             n.alive = false;
                             fissionsThisStep++;
                             this.fissionsTotal++;
                             this.chainCombo++;
-                            this.comboTimer = 1.3;
+                            this.comboTimer = 1.4;
                             this.score += 200 + this.chainCombo * 25;
 
-                            // Spawn Fission Flash
                             this.flashes.push(new FissionFlash(target.x, target.y));
 
-                            // Spawn Daughter Fission Fragments (Krypton & Barium splitting)
                             const splitAngle = Math.random() * Math.PI;
-                            const fragSpeed = 70;
+                            const fragSpeed = 75;
                             this.fragments.push(new FissionFragment(
                                 target.x, target.y,
                                 '⁹²Kr', '#38bdf8',
@@ -107198,18 +107764,16 @@ window.OrbitalViewer = {
                                 -Math.sin(splitAngle) * fragSpeed
                             ));
 
-                            // Floating Game Score Text
                             this.floatingTexts.push(new FloatingScoreText(
                                 target.x, target.y - 14,
                                 `+${fuelSpec.fissionQMeV.toFixed(0)} MeV ⚡`,
                                 '#fbbf24'
                             ));
 
-                            // Emit 2 to 3 prompt neutrons in random directions
                             const numEmitted = Math.random() < 0.45 ? 2 : 3;
                             for (let k = 0; k < numEmitted; k++) {
                                 const angle = Math.random() * Math.PI * 2;
-                                const speed = 250 + Math.random() * 90;
+                                const speed = 240 + Math.random() * 90;
                                 newNeutrons.push(new Neutron(
                                     target.x, target.y,
                                     Math.cos(angle) * speed,
@@ -107218,36 +107782,30 @@ window.OrbitalViewer = {
                                 ));
                             }
 
-                            // Update Reaction Process Stepper
-                            if (this.chainCombo > 1) {
-                                this.activeReactionStep = 4;
-                                this.reactionNarrative = `🔄 Step 4: Multiplier Active! Chain combo x${this.chainCombo} — emitted neutrons striking adjacent fuel cells!`;
-                            } else {
-                                this.activeReactionStep = 3;
-                                this.reactionNarrative = `💥 Step 3: FISSION! Nucleus split into Krypton & Barium, releasing +${fuelSpec.fissionQMeV.toFixed(0)} MeV and 2-3 prompt neutrons!`;
+                            if (this.fissionsTotal === 1) {
+                                const m1 = this.gameMissions.find(m => m.id === 'm1');
+                                if (m1 && !m1.completed) {
+                                    m1.current = 1;
+                                    m1.completed = true;
+                                    this.onMissionCompleted(m1);
+                                }
                             }
 
-                            // Check Missions
-                            const m1 = this.gameMissions.find(m => m.id === 'm1');
-                            if (m1 && !m1.completed) {
-                                m1.current = 1;
-                                m1.completed = true;
-                                this.score += 250;
-                                this.onMissionCompleted(m1);
-                            }
-
-                            const m2 = this.gameMissions.find(m => m.id === 'm2');
-                            if (m2 && !m2.completed) {
-                                m2.current = Math.max(m2.current, this.chainCombo);
-                                if (m2.current >= m2.goal) {
+                            if (this.chainCombo >= 10) {
+                                const m2 = this.gameMissions.find(m => m.id === 'm2');
+                                if (m2 && !m2.completed) {
+                                    m2.current = 10;
                                     m2.completed = true;
-                                    this.score += 500;
                                     this.onMissionCompleted(m2);
                                 }
                             }
 
+                            this.activeReactionStep = 3;
+                            this.reactionNarrative = `💥 Fission split in progress! Combo x${this.chainCombo} generating energy!`;
+                            this.updateDOMStepper();
+
                             if (window.physicsAudio) {
-                                window.physicsAudio.playFissionClick();
+                                window.physicsAudio.playFissionBoom?.() || window.physicsAudio.playFissionClick();
                             }
                             break;
                         }
@@ -107255,20 +107813,15 @@ window.OrbitalViewer = {
                 }
             }
 
-            // Filter dead neutrons & append newly born neutrons
             this.neutrons = this.neutrons.filter(n => n.alive).concat(newNeutrons);
-
-            // Cap max neutrons for mobile 60fps stability
-            if (this.neutrons.length > 280) {
-                this.neutrons = this.neutrons.slice(-280);
+            if (this.neutrons.length > 250) {
+                this.neutrons = this.neutrons.slice(-250);
             }
 
-            // Update Flashes, Fragments & Floating texts
             this.flashes = this.flashes.filter(f => f.update(dt));
             this.fragments = this.fragments.filter(fg => fg.update(dt));
             this.floatingTexts = this.floatingTexts.filter(ft => ft.update(dt));
 
-            // Calculate Effective Multiplication Factor (k_eff)
             if (this.neutrons.length > 0) {
                 const birthRate = newNeutrons.length;
                 this.keff = (birthRate / Math.max(1, (this.neutrons.length - birthRate) * 0.16)) * 0.96;
@@ -107276,13 +107829,12 @@ window.OrbitalViewer = {
                 this.keff = 0.0;
             }
 
-            this.promptCritical = this.keff > 1.03 && this.neutrons.length > 25;
+            this.promptCritical = this.keff > 1.03 && this.neutrons.length > 20;
             this.currentPowerMW = fissionsThisStep * fuelSpec.fissionQMeV * 1.602e-13 * 1.2e6;
 
-            // Check Mission 3 (Stable Criticality)
             const m3 = this.gameMissions.find(m => m.id === 'm3');
-            if (m3 && !m3.completed) {
-                if (this.keff >= 0.99 && this.keff <= 1.02 && this.neutrons.length > 5) {
+            if (m3 && !m3.completed && this.currentScenario === 'reactor_core') {
+                if (this.keff >= 0.99 && this.keff <= 1.02 && this.neutrons.length > 4) {
                     this.stableCriticalTimer += dt;
                     m3.current = Math.min(m3.goal, this.stableCriticalTimer);
                     if (this.stableCriticalTimer >= m3.goal) {
@@ -107296,18 +107848,144 @@ window.OrbitalViewer = {
                 }
             }
 
-            // Idle reset narrative
             if (this.neutrons.length === 0 && fissionsThisStep === 0 && !this.scramActive) {
                 if (this.activeReactionStep > 1) {
                     this.activeReactionStep = 1;
-                    this.reactionNarrative = 'Core quiet. Tap anywhere on the grid or press "Fire Neutron" to start the reaction!';
+                    this.reactionNarrative = 'Core quiet. Tap anywhere on the lattice to inject neutrons!';
+                    this.updateDOMStepper();
+                }
+            }
+        }
+
+        updateSingleAtomScenario(dt) {
+            const state = this.singleAtomState;
+            state.stageTimer += dt;
+
+            // Update Fragments and Prompt Neutrons in single fission mode
+            state.splitFragments = state.splitFragments.filter(fg => fg.update(dt));
+            for (const n of state.promptNeutrons) {
+                n.update(dt, this.width, this.height, null);
+            }
+            state.promptNeutrons = state.promptNeutrons.filter(n => n.alive);
+            this.floatingTexts = this.floatingTexts.filter(ft => ft.update(dt));
+
+            if (state.stage === 'neutron_flying') {
+                if (state.incomingNeutron) {
+                    state.incomingNeutron.update(dt, this.width, this.height, null);
+
+                    const dx = state.incomingNeutron.x - state.nucleusX;
+                    const dy = state.incomingNeutron.y - state.nucleusY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < state.nucleusRadius) {
+                        // Neutron absorbs into nucleus!
+                        state.incomingNeutron = null;
+                        state.stage = 'absorbed';
+                        state.stageTimer = 0;
+                        state.elongation = 1.0;
+                        state.neckFactor = 1.0;
+
+                        this.activeReactionStep = 2;
+                        this.reactionNarrative = '⚡ Step 2: Thermal neutron absorbed into ²³⁵U! Compound nucleus ²³⁶U* formed (+6.5 MeV excitation)!';
+                        this.updateDOMStepper();
+
+                        if (window.physicsAudio) {
+                            window.physicsAudio.playNeutronCapture?.();
+                        }
+                    }
+                }
+            } else if (state.stage === 'absorbed') {
+                // Compound nucleus vibrating (0.9 seconds)
+                state.oscillation += dt * 14.0;
+                if (state.stageTimer >= 0.9) {
+                    state.stage = 'elongating';
+                    state.stageTimer = 0;
+
+                    this.activeReactionStep = 2;
+                    this.reactionNarrative = '⚡ Step 2: Bohr-Wheeler Liquid Drop elongation! Coulomb repulsion between 92 protons stretches the nucleus!';
+                    this.updateDOMStepper();
+
+                    if (window.physicsAudio) {
+                        window.physicsAudio.playElongationTension?.();
+                    }
+                }
+            } else if (state.stage === 'elongating') {
+                // Liquid droplet necking & elongation (1.8 seconds)
+                const progress = Math.min(1.0, state.stageTimer / 1.8);
+                state.elongation = 1.0 + progress * 1.5; // Stretches horizontally to 2.5x
+                state.neckFactor = 1.0 - progress * 0.95; // Neck thins down to 0.05
+                state.oscillation += dt * 8.0;
+
+                if (state.stageTimer >= 1.8) {
+                    // SCISSION SPLIT!
+                    state.stage = 'splitting';
+                    state.stageTimer = 0;
+                    this.fissionsTotal = 1;
+                    this.score += 500;
+
+                    // Spawn fragments Kr-92 and Ba-141
+                    const splitAngle = -0.35;
+                    const speed = 120;
+                    state.splitFragments = [
+                        new FissionFragment(
+                            state.nucleusX - 22, state.nucleusY,
+                            '¹⁴¹Ba', '#fb923c',
+                            -Math.cos(splitAngle) * speed * 0.85,
+                            -Math.sin(splitAngle) * speed * 0.85,
+                            24, 'Barium-141 (56p + 85n, ~85 MeV)'
+                        ),
+                        new FissionFragment(
+                            state.nucleusX + 22, state.nucleusY,
+                            '⁹²Kr', '#38bdf8',
+                            Math.cos(splitAngle) * speed * 1.15,
+                            Math.sin(splitAngle) * speed * 1.15,
+                            18, 'Krypton-92 (36p + 56n, ~98 MeV)'
+                        )
+                    ];
+
+                    // Spawn 3 Prompt Fast Neutrons
+                    state.promptNeutrons = [
+                        new Neutron(state.nucleusX, state.nucleusY - 8, -60, -220, false),
+                        new Neutron(state.nucleusX, state.nucleusY + 8, 180, 160, false),
+                        new Neutron(state.nucleusX, state.nucleusY, 210, -110, false)
+                    ];
+
+                    this.flashes.push(new FissionFlash(state.nucleusX, state.nucleusY, 80));
+                    this.floatingTexts.push(new FloatingScoreText(
+                        state.nucleusX, state.nucleusY - 35,
+                        '+200.5 MeV KINETIC ENERGY RELEASED! 💥',
+                        '#fbbf24', 3.0
+                    ));
+
+                    // Complete Mission 1
+                    const m1 = this.gameMissions.find(m => m.id === 'm1');
+                    if (m1 && !m1.completed) {
+                        m1.current = 1;
+                        m1.completed = true;
+                        this.onMissionCompleted(m1);
+                    }
+
+                    this.activeReactionStep = 3;
+                    this.reactionNarrative = '💥 Step 3: Scission Split! Nucleus divided into ⁹²Kr + ¹⁴¹Ba + 3 prompt neutrons + 200 MeV energy!';
+                    this.updateDOMStepper();
+
+                    if (window.physicsAudio) {
+                        window.physicsAudio.playFissionBoom?.() || window.physicsAudio.playFissionClick();
+                    }
+                }
+            } else if (state.stage === 'splitting') {
+                if (state.stageTimer >= 2.0) {
+                    state.stage = 'insight';
+                    state.stageTimer = 0;
+
+                    this.activeReactionStep = 4;
+                    this.reactionNarrative = '🔄 Step 4: Multiplier Insight! 1 neutron in produced 3 prompt neutrons out! Each can trigger another fission in dense fuel.';
                     this.updateDOMStepper();
                 }
             }
         }
 
         updateDOMStepper() {
-            // Update Stepper Step Highlights
             for (let s = 1; s <= 4; s++) {
                 const stepEl = document.getElementById(`rxn-step-${s}`);
                 if (stepEl) {
@@ -107319,7 +107997,6 @@ window.OrbitalViewer = {
                 }
             }
 
-            // Update Narrator Banner Text
             const msgEl = document.getElementById('sim-narrator-msg');
             if (msgEl && msgEl.textContent !== this.reactionNarrative) {
                 msgEl.textContent = this.reactionNarrative;
@@ -107341,9 +108018,8 @@ window.OrbitalViewer = {
                 canvas.height = Math.round(clientH * dpr);
             }
 
-            // Recompute lattice if geometry shifted significantly
             if (Math.abs(this.width - clientW) > 25 || Math.abs(this.height - clientH) > 25) {
-                this.repositionLattice(clientW, clientH);
+                this.repositionLattice(clientW, clientH, this.atomDensity);
             }
 
             ctx.save();
@@ -107354,7 +108030,347 @@ window.OrbitalViewer = {
 
             ctx.clearRect(0, 0, w, h);
 
-            // 1. Ambient Cherenkov Radiation Glow
+            if (this.currentScenario === 'single_fission') {
+                this.renderSingleAtomScenario(ctx, w, h);
+            } else {
+                this.renderMultiAtomScenario(ctx, w, h);
+            }
+
+            // Always render Floating Scores
+            for (const ft of this.floatingTexts) {
+                ctx.fillStyle = ft.color;
+                ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                ctx.shadowBlur = 5;
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.shadowBlur = 0;
+            }
+
+            // Render Scenario Bar Pills on Top-Left of Canvas
+            this.renderScenarioHUD(ctx, w, h);
+
+            ctx.restore();
+        }
+
+        renderScenarioHUD(ctx, w, h) {
+            const pillY = 12;
+            const scenarios = [
+                { id: 'single_fission', label: '1. Single Atom Fission', icon: '🎯' },
+                { id: 'chain_sandbox', label: '2. Chain Sandbox', icon: '⚡' },
+                { id: 'reactor_core', label: '3. Reactor Core', icon: '🔋' }
+            ];
+
+            let curX = 14;
+            ctx.font = 'bold 11px var(--font-ui), sans-serif';
+
+            for (const s of scenarios) {
+                const isCur = this.currentScenario === s.id;
+                const text = `${s.icon} ${s.label}`;
+                const textW = ctx.measureText(text).width;
+                const pillW = textW + 18;
+                const pillH = 24;
+
+                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.28)' : 'rgba(15, 23, 42, 0.75)';
+                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = isCur ? 1.5 : 1.0;
+
+                ctx.beginPath();
+                ctx.roundRect(curX, pillY, pillW, pillH, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = isCur ? '#ffffff' : '#94a3b8';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'left';
+                ctx.fillText(text, curX + 9, pillY + pillH / 2);
+
+                curX += pillW + 8;
+            }
+        }
+
+        renderSingleAtomScenario(ctx, w, h) {
+            const state = this.singleAtomState;
+
+            // Subtle Cherenkov & Background Grid
+            const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.55);
+            grad.addColorStop(0, 'rgba(0, 212, 255, 0.08)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 1. Neutron Emitter on the Left
+            const gunX = state.gunX;
+            const gunY = state.gunY;
+            const barrelLen = 32;
+            const barrelEndX = gunX + Math.cos(state.gunAngle) * barrelLen;
+            const barrelEndY = gunY + Math.sin(state.gunAngle) * barrelLen;
+
+            // Aim dashed trajectory line
+            if (state.stage === 'ready' || state.stage === 'insight') {
+                ctx.save();
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = 'rgba(0, 212, 255, 0.55)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(barrelEndX, barrelEndY);
+                ctx.lineTo(state.nucleusX, state.nucleusY);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Emitter Body
+            ctx.fillStyle = '#1e293b';
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2.0;
+            ctx.beginPath();
+            ctx.arc(gunX, gunY, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Barrel
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(gunX, gunY);
+            ctx.lineTo(barrelEndX, barrelEndY);
+            ctx.stroke();
+
+            // Gun label
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('EMITTER', gunX, gunY + 28);
+
+            // 2. In-Flight Thermal Neutron
+            if (state.incomingNeutron && state.incomingNeutron.alive) {
+                const n = state.incomingNeutron;
+                ctx.fillStyle = '#00d4ff';
+                ctx.shadowColor = '#00d4ff';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, 6.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 10px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('¹n (Thermal)', n.x, n.y - 12);
+            }
+
+            // 3. Render Large Liquid-Drop Nucleus
+            if (state.stage === 'ready' || state.stage === 'neutron_flying' || state.stage === 'absorbed' || state.stage === 'elongating') {
+                const cx = state.nucleusX;
+                const cy = state.nucleusY;
+                const r = state.nucleusRadius;
+                const elong = state.elongation;
+                const neck = state.neckFactor;
+                const osc = Math.sin(state.oscillation) * 4;
+
+                ctx.save();
+                ctx.translate(cx, cy);
+
+                if (state.stage === 'elongating' && elong > 1.2) {
+                    // Bohr-Wheeler Dumbbell shape (Dual lobe liquid drop with neck)
+                    const lobeDist = (elong - 1.0) * 36;
+                    const lobeR = r * 0.78;
+                    const neckW = r * 0.75 * neck;
+
+                    // Glow aura
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.22)';
+                    ctx.beginPath();
+                    ctx.arc(-lobeDist, 0, lobeR + 10, 0, Math.PI * 2);
+                    ctx.arc(lobeDist, 0, lobeR + 10, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Left Lobe (Ba precursor)
+                    const gradBa = ctx.createRadialGradient(-lobeDist, 0, 2, -lobeDist, 0, lobeR);
+                    gradBa.addColorStop(0, '#ffffff');
+                    gradBa.addColorStop(0.35, '#fb923c');
+                    gradBa.addColorStop(1, '#9a3412');
+                    ctx.fillStyle = gradBa;
+                    ctx.beginPath();
+                    ctx.arc(-lobeDist, 0, lobeR, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Right Lobe (Kr precursor)
+                    const gradKr = ctx.createRadialGradient(lobeDist, 0, 2, lobeDist, 0, lobeR * 0.88);
+                    gradKr.addColorStop(0, '#ffffff');
+                    gradKr.addColorStop(0.35, '#38bdf8');
+                    gradKr.addColorStop(1, '#0369a1');
+                    ctx.fillStyle = gradKr;
+                    ctx.beginPath();
+                    ctx.arc(lobeDist, 0, lobeR * 0.88, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Connecting Neck
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.beginPath();
+                    ctx.roundRect(-lobeDist * 0.6, -neckW / 2, lobeDist * 1.2, neckW, 4);
+                    ctx.fill();
+
+                    // Tension label
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.font = 'bold 11px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('⚡ Coulomb Repulsion > Strong Force', 0, -lobeR - 16);
+                } else {
+                    // Spherical / Oscillating Compound Nucleus
+                    const auraColor = (state.stage === 'absorbed') ? 'rgba(251, 191, 36, 0.45)' : 'rgba(16, 185, 129, 0.35)';
+                    ctx.fillStyle = auraColor;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r + 10 + osc, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    const coreGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 2, 0, 0, r + osc);
+                    if (state.stage === 'absorbed') {
+                        coreGrad.addColorStop(0, '#ffffff');
+                        coreGrad.addColorStop(0.35, '#fbbf24');
+                        coreGrad.addColorStop(1, '#d97706');
+                    } else {
+                        coreGrad.addColorStop(0, '#ffffff');
+                        coreGrad.addColorStop(0.35, '#10b981');
+                        coreGrad.addColorStop(1, '#064e3b');
+                    }
+
+                    ctx.fillStyle = coreGrad;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r + osc, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.lineWidth = 2.0;
+                    ctx.stroke();
+
+                    // Nucleus Label
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 16px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const symText = (state.stage === 'absorbed') ? '²³⁶U*' : '²³⁵U';
+                    ctx.fillText(symText, 0, -4);
+
+                    ctx.font = 'bold 10px monospace';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                    const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited)' : '92p + 143n';
+                    ctx.fillText(nucText, 0, 14);
+                }
+
+                ctx.restore();
+            }
+
+            // 4. Render Fragments Flying Outward
+            for (const fg of state.splitFragments) {
+                // Fragment trail
+                if (fg.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(fg.trail[0].x, fg.trail[0].y);
+                    for (let ti = 1; ti < fg.trail.length; ti++) {
+                        ctx.lineTo(fg.trail[ti].x, fg.trail[ti].y);
+                    }
+                    ctx.strokeStyle = fg.color;
+                    ctx.lineWidth = 3.5;
+                    ctx.stroke();
+                }
+
+                // Fragment Ball
+                const fGrad = ctx.createRadialGradient(fg.x - 4, fg.y - 4, 1, fg.x, fg.y, fg.radius);
+                fGrad.addColorStop(0, '#ffffff');
+                fGrad.addColorStop(0.4, fg.color);
+                fGrad.addColorStop(1, '#0f172a');
+                ctx.fillStyle = fGrad;
+                ctx.beginPath();
+                ctx.arc(fg.x, fg.y, fg.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(fg.symbol, fg.x, fg.y);
+
+                // Callout label
+                if (fg.label) {
+                    ctx.fillStyle = fg.color;
+                    ctx.font = 'bold 10px monospace';
+                    ctx.fillText(fg.label, fg.x, fg.y + fg.radius + 14);
+                }
+            }
+
+            // 5. Render 3 Prompt Fast Neutrons with Glowing Trails
+            for (const pn of state.promptNeutrons) {
+                if (pn.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(pn.trail[0].x, pn.trail[0].y);
+                    for (let ti = 1; ti < pn.trail.length; ti++) {
+                        ctx.lineTo(pn.trail[ti].x, pn.trail[ti].y);
+                    }
+                    ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#fbbf24';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(pn.x, pn.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = 'bold 9px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('¹n (Prompt 2 MeV)', pn.x, pn.y - 10);
+            }
+
+            // 6. Fission Flashes
+            for (const f of this.flashes) {
+                const flashGrad = ctx.createRadialGradient(f.x, f.y, 1, f.x, f.y, f.radius);
+                flashGrad.addColorStop(0, `rgba(255, 255, 255, ${f.opacity})`);
+                flashGrad.addColorStop(0.4, `rgba(245, 158, 11, ${f.opacity * 0.8})`);
+                flashGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                ctx.fillStyle = flashGrad;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 7. Interactive Insight Card when split completes
+            if (state.stage === 'insight') {
+                const cardW = Math.min(480, w - 40);
+                const cardH = 88;
+                const cardX = (w - cardW) / 2;
+                const cardY = h - cardH - 48;
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+                ctx.strokeStyle = '#00d4ff';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.roundRect(cardX, cardY, cardW, cardH, 10);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 12px var(--font-ui), sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('💡 Pedagogical Insight: Fission Multiplier Concept', w / 2, cardY + 22);
+
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = '11px var(--font-ui), sans-serif';
+                ctx.fillText('1 Thermal Neutron absorbed → 3 Prompt Neutrons ejected!', w / 2, cardY + 42);
+                ctx.fillText('In a dense fuel matrix, this multiplies exponentially: 1 ➔ 3 ➔ 9 ➔ 27 atoms!', w / 2, cardY + 58);
+
+                ctx.fillStyle = '#4ade80';
+                ctx.font = 'bold 11px monospace';
+                ctx.fillText('👉 Switch to "Scenario 2: Chain Sandbox" to trigger exponential cascades!', w / 2, cardY + 76);
+            }
+        }
+
+        renderMultiAtomScenario(ctx, w, h) {
+            // Ambient Cherenkov Radiation Glow
             const cherenkovAlpha = Math.min(0.40, (this.neutrons.length / 140) * 0.40);
             if (cherenkovAlpha > 0.01) {
                 const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, w * 0.55);
@@ -107364,14 +108380,14 @@ window.OrbitalViewer = {
                 ctx.fillRect(0, 0, w, h);
             }
 
-            // 2. Moderator Background Tint
+            // Moderator Background Tint
             const modSpec = MODERATOR_SPECS[this.moderatorType];
             if (modSpec && modSpec.color !== 'transparent') {
                 ctx.fillStyle = modSpec.color;
                 ctx.fillRect(0, 0, w, h);
             }
 
-            // 3. Grid Lattice subtle background lines
+            // Subtle Grid Lattice Lines
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
             ctx.lineWidth = 1;
             for (let gx = 50; gx < w; gx += 50) {
@@ -107387,38 +108403,36 @@ window.OrbitalViewer = {
                 ctx.stroke();
             }
 
-            // 4. Control Rods (Boron Carbide Absorber Blades)
-            const rodPositionsX = [w * 0.28, w * 0.50, w * 0.72];
-            const rodDepth = h * 0.88 * this.controlRodInsertion;
-            const rodW = 18;
+            // Control Rods (in Reactor Core mode)
+            if (this.currentScenario === 'reactor_core') {
+                const rodPositionsX = [w * 0.28, w * 0.50, w * 0.72];
+                const rodDepth = h * 0.88 * this.controlRodInsertion;
+                const rodW = 18;
 
-            for (const rx of rodPositionsX) {
-                // Rod channel casing
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
-                ctx.fillRect(rx - rodW / 2, 0, rodW, h * 0.90);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-                ctx.strokeRect(rx - rodW / 2, 0, rodW, h * 0.90);
+                for (const rx of rodPositionsX) {
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+                    ctx.fillRect(rx - rodW / 2, 0, rodW, h * 0.90);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                    ctx.strokeRect(rx - rodW / 2, 0, rodW, h * 0.90);
 
-                if (rodDepth > 4) {
-                    // Active Boron blade
-                    const bladeGrad = ctx.createLinearGradient(rx - rodW / 2, 0, rx + rodW / 2, 0);
-                    bladeGrad.addColorStop(0, '#334155');
-                    bladeGrad.addColorStop(0.5, '#64748b');
-                    bladeGrad.addColorStop(1, '#334155');
-                    ctx.fillStyle = bladeGrad;
-                    ctx.fillRect(rx - rodW / 2 + 1, 0, rodW - 2, rodDepth);
+                    if (rodDepth > 4) {
+                        const bladeGrad = ctx.createLinearGradient(rx - rodW / 2, 0, rx + rodW / 2, 0);
+                        bladeGrad.addColorStop(0, '#334155');
+                        bladeGrad.addColorStop(0.5, '#64748b');
+                        bladeGrad.addColorStop(1, '#334155');
+                        ctx.fillStyle = bladeGrad;
+                        ctx.fillRect(rx - rodW / 2 + 1, 0, rodW - 2, rodDepth);
 
-                    // Caution Hazard Stripes at bottom tip
-                    ctx.fillStyle = '#f59e0b';
-                    ctx.fillRect(rx - rodW / 2 + 2, Math.max(0, rodDepth - 10), rodW - 4, 8);
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.fillRect(rx - rodW / 2 + 2, Math.max(0, rodDepth - 10), rodW - 4, 8);
+                    }
                 }
             }
 
-            // 5. Fissile Nuclei (Atoms)
+            // Fissile Nuclei Atoms
             const fuelSpec = FUEL_SPECS[this.fuelType] || FUEL_SPECS['U235'];
             for (const t of this.targets) {
                 if (t.fissioned) {
-                    // Spent / Split atom crater
                     ctx.beginPath();
                     ctx.arc(t.x, t.y, t.radius * 0.85, 0, Math.PI * 2);
                     ctx.fillStyle = '#1e293b';
@@ -107433,17 +108447,14 @@ window.OrbitalViewer = {
                     ctx.textBaseline = 'middle';
                     ctx.fillText('⚡', t.x, t.y);
                 } else {
-                    // Active Fuel Atom with glowing orbital shell
                     const pulse = Math.sin(t.pulsePhase) * 1.5;
                     const r = t.radius + pulse;
 
-                    // Outer orbital aura
                     ctx.beginPath();
                     ctx.arc(t.x, t.y, r + 4, 0, Math.PI * 2);
                     ctx.fillStyle = fuelSpec.glowColor;
                     ctx.fill();
 
-                    // Solid atom core
                     const coreGrad = ctx.createRadialGradient(t.x - r * 0.3, t.y - r * 0.3, 1, t.x, t.y, r);
                     coreGrad.addColorStop(0, '#ffffff');
                     coreGrad.addColorStop(0.35, fuelSpec.color);
@@ -107458,7 +108469,6 @@ window.OrbitalViewer = {
                     ctx.lineWidth = 1.2;
                     ctx.stroke();
 
-                    // Element Symbol (Crisp, bold, large readable typography)
                     ctx.fillStyle = '#000000';
                     ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.textAlign = 'center';
@@ -107467,7 +108477,7 @@ window.OrbitalViewer = {
                 }
             }
 
-            // 6. Daughter Fragments Flying Outward
+            // Daughter Fragments
             for (const fg of this.fragments) {
                 ctx.fillStyle = fg.color;
                 ctx.font = 'bold 12px monospace';
@@ -107476,7 +108486,7 @@ window.OrbitalViewer = {
                 ctx.fillText(fg.symbol, fg.x, fg.y);
             }
 
-            // 7. Fission Shockwave Flashes
+            // Flashes
             for (const f of this.flashes) {
                 const flashGrad = ctx.createRadialGradient(f.x, f.y, 1, f.x, f.y, f.radius);
                 flashGrad.addColorStop(0, `rgba(255, 255, 255, ${f.opacity})`);
@@ -107488,9 +108498,8 @@ window.OrbitalViewer = {
                 ctx.fill();
             }
 
-            // 8. Neutrons with Glowing Trails
+            // Neutrons with glowing trails
             for (const n of this.neutrons) {
-                // Trail
                 if (n.trail.length > 1) {
                     ctx.beginPath();
                     ctx.moveTo(n.trail[0].x, n.trail[0].y);
@@ -107502,7 +108511,6 @@ window.OrbitalViewer = {
                     ctx.stroke();
                 }
 
-                // Head
                 ctx.beginPath();
                 ctx.arc(n.x, n.y, n.isThermal ? 4.5 : 3.5, 0, Math.PI * 2);
                 ctx.fillStyle = n.isThermal ? '#00d4ff' : '#ffffff';
@@ -107512,19 +108520,7 @@ window.OrbitalViewer = {
                 ctx.shadowBlur = 0;
             }
 
-            // 9. Floating Score & Energy Labels (+200 MeV)
-            for (const ft of this.floatingTexts) {
-                ctx.fillStyle = ft.color;
-                ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                ctx.shadowBlur = 4;
-                ctx.fillText(ft.text, ft.x, ft.y);
-                ctx.shadowBlur = 0;
-            }
-
-            // 10. Sci-Fi Game Bottom Telemetry Bar (Docked cleanly across bottom, ZERO overlap!)
+            // Bottom Telemetry Bar
             const barH = 32;
             const barY = h - barH - 8;
             const barX = 10;
@@ -107538,7 +108534,6 @@ window.OrbitalViewer = {
             ctx.fill();
             ctx.stroke();
 
-            // Status label
             let kColor = '#10b981';
             let kLabel = 'SUBCRITICAL';
             if (this.keff >= 0.99 && this.keff <= 1.02) {
@@ -107554,32 +108549,25 @@ window.OrbitalViewer = {
             const midY = barY + barH / 2;
 
             if (barW < 360) {
-                // Compact 2-column mode for narrow mobile / split screens
                 ctx.fillStyle = '#38bdf8';
                 ctx.fillText(`⚡ ${this.currentPowerMW.toFixed(0)} MW`, barX + 8, midY);
                 ctx.fillStyle = '#fbbf24';
                 ctx.fillText(`⭐ ${this.score} [${kLabel}]`, barX + barW * 0.50, midY);
             } else {
                 const colW = barW / 4;
-                // Segment 1: Power
                 ctx.fillStyle = '#38bdf8';
                 ctx.fillText(`⚡ ${this.currentPowerMW.toFixed(0)} MW`, barX + 8, midY);
 
-                // Segment 2: Fissions
                 ctx.fillStyle = '#cbd5e1';
                 ctx.fillText(`🎯 ${this.fissionsTotal}/${this.targets.length}`, barX + colW + 4, midY);
 
-                // Segment 3: k-eff
                 ctx.fillStyle = kColor;
                 ctx.fillText(`k: ${this.keff.toFixed(2)} [${kLabel}]`, barX + colW * 2 + 4, midY);
 
-                // Segment 4: Score & Combo
                 ctx.fillStyle = '#fbbf24';
                 const comboText = this.chainCombo > 1 ? `x${this.chainCombo}🔥` : `⭐ ${this.score}`;
                 ctx.fillText(comboText, barX + colW * 3 + 4, midY);
             }
-
-            ctx.restore();
         }
     }
 
@@ -108473,10 +109461,10 @@ window.OrbitalViewer = {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
-            // Short burst 2.4 kHz click with random jitter
+            // Sharp burst click with authentic analog Geiger jitter
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(2200 + (Math.random() - 0.5) * 600, t);
-            gain.gain.setValueAtTime(0.25, t);
+            osc.frequency.setValueAtTime(2400 + (Math.random() - 0.5) * 800, t);
+            gain.gain.setValueAtTime(0.28, t);
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.015);
 
             osc.connect(gain);
@@ -108496,10 +109484,10 @@ window.OrbitalViewer = {
             const gain = this.ctx.createGain();
 
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(880, t);
-            osc.frequency.exponentialRampToValueAtTime(220, t + 0.08);
+            osc.frequency.setValueAtTime(940, t);
+            osc.frequency.exponentialRampToValueAtTime(240, t + 0.08);
 
-            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.setValueAtTime(0.32, t);
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
 
             osc.connect(gain);
@@ -108509,7 +109497,7 @@ window.OrbitalViewer = {
             osc.stop(t + 0.09);
         }
 
-        playFissionClick() {
+        playNeutronCapture() {
             if (this.muted) return;
             this.initContext();
             if (!this.ctx) return;
@@ -108518,18 +109506,133 @@ window.OrbitalViewer = {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(140, t);
-            osc.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+            // Ascending resonant ping on neutron absorption
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(320, t);
+            osc.frequency.exponentialRampToValueAtTime(640, t + 0.12);
 
-            gain.gain.setValueAtTime(0.45, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+            gain.gain.setValueAtTime(0.35, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc.start(t);
-            osc.stop(t + 0.15);
+            osc.stop(t + 0.16);
+        }
+
+        playElongationTension() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            // Low oscillating droplet necking frequency
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(110, t);
+            osc.frequency.linearRampToValueAtTime(160, t + 0.18);
+
+            gain.gain.setValueAtTime(0.28, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(t);
+            osc.stop(t + 0.24);
+        }
+
+        playFissionBoom() {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+
+            // Deep Sub-Bass Resonant Fission Boom (55Hz down to 24Hz)
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(55, t);
+            osc.frequency.exponentialRampToValueAtTime(24, t + 0.45);
+
+            gain.gain.setValueAtTime(0.75, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.50);
+
+            // High frequency gamma burst crackle
+            const noise = this.ctx.createOscillator();
+            const noiseGain = this.ctx.createGain();
+            noise.type = 'square';
+            noise.frequency.setValueAtTime(1200, t);
+            noise.frequency.exponentialRampToValueAtTime(180, t + 0.15);
+            noiseGain.gain.setValueAtTime(0.25, t);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            noise.connect(noiseGain);
+            noiseGain.connect(this.ctx.destination);
+
+            osc.start(t);
+            osc.stop(t + 0.52);
+
+            noise.start(t);
+            noise.stop(t + 0.18);
+        }
+
+        playFissionClick() {
+            this.playFissionBoom();
+        }
+
+        playPhaseTransitionSizzle(phaseType) {
+            if (this.muted) return;
+            this.initContext();
+            if (!this.ctx) return;
+
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            if (phaseType === 'solid') {
+                // High crystalline clink
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200, t);
+                osc.frequency.exponentialRampToValueAtTime(2400, t + 0.08);
+                gain.gain.setValueAtTime(0.3, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+            } else if (phaseType === 'liquid') {
+                // Fluid whoosh
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(340, t);
+                osc.frequency.exponentialRampToValueAtTime(180, t + 0.14);
+                gain.gain.setValueAtTime(0.35, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+            } else if (phaseType === 'gas') {
+                // Vapor hiss
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, t);
+                osc.frequency.exponentialRampToValueAtTime(400, t + 0.15);
+                gain.gain.setValueAtTime(0.25, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+            } else {
+                // Plasma electric hum
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(180, t);
+                osc.frequency.exponentialRampToValueAtTime(60, t + 0.25);
+                gain.gain.setValueAtTime(0.35, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+            }
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(t);
+            osc.stop(t + 0.30);
         }
 
         playAnnihilationZap() {
@@ -108545,7 +109648,7 @@ window.OrbitalViewer = {
             osc.frequency.setValueAtTime(3200, t);
             osc.frequency.exponentialRampToValueAtTime(600, t + 0.06);
 
-            gain.gain.setValueAtTime(0.2, t);
+            gain.gain.setValueAtTime(0.22, t);
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
 
             osc.connect(gain);
@@ -108614,14 +109717,14 @@ window.OrbitalViewer = {
             osc.frequency.setValueAtTime(800, t);
             osc.frequency.setValueAtTime(400, t + 0.15);
 
-            gain.gain.setValueAtTime(0.4, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+            gain.gain.setValueAtTime(0.42, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc.start(t);
-            osc.stop(t + 0.32);
+            osc.stop(t + 0.33);
         }
 
         playMissionCompleteChime() {
@@ -108645,25 +109748,6 @@ window.OrbitalViewer = {
                 osc.start(noteTime);
                 osc.stop(noteTime + 0.36);
             });
-        }
-
-        playComboPulse() {
-            if (this.muted) return;
-            this.initContext();
-            if (!this.ctx) return;
-
-            const t = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(440, t);
-            osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
-            gain.gain.setValueAtTime(0.3, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(t);
-            osc.stop(t + 0.14);
         }
     }
 
@@ -108802,7 +109886,7 @@ window.OrbitalViewer = {
         if (!window.simPlaybackController) return;
         window.simPlaybackController.setActiveTab(tabName);
 
-        // Update Tab Buttons and ensure active button is scrolled into view
+        // Update Tab Buttons
         document.querySelectorAll('.sim-tab-btn').forEach(btn => {
             if (btn.getAttribute('data-sim') === tabName) {
                 btn.classList.add('active');
@@ -108866,6 +109950,8 @@ window.OrbitalViewer = {
             window.nuclearDecayEngine.droplets = [];
         } else if (tab === 'molecule' && window.molecularDynamicsEngine) {
             window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey);
+        } else if (tab === 'environment' && window.envSimulationEngine) {
+            window.envSimulationEngine.setPreset('earth_stp');
         }
     }
 
@@ -108876,11 +109962,20 @@ window.OrbitalViewer = {
         if (btn) btn.innerHTML = window.physicsAudio.muted ? '🔇' : '🔊';
     }
 
-    /**
-     * Render Contextual Parameter Deck for Active Simulation
-     */
-    let activeChainSubdeck = 'missions'; // 'missions' | 'controls'
+    // Collapsible Drawer / Bottom Sheet Controller
+    function toggleSimDrawer() {
+        const pane = document.getElementById('sim-tuning-pane');
+        const arrow = document.getElementById('sim-drawer-arrow');
+        if (!pane) return;
 
+        const isCollapsed = pane.classList.toggle('sim-drawer-collapsed');
+        if (arrow) {
+            arrow.textContent = isCollapsed ? '▼' : '▲';
+        }
+    }
+    window.toggleSimDrawer = toggleSimDrawer;
+
+    let activeChainSubdeck = 'missions'; // 'missions' | 'controls'
     function setChainSubdeck(deck) {
         activeChainSubdeck = deck;
         renderTuningPanel('chain_reaction');
@@ -108896,82 +109991,120 @@ window.OrbitalViewer = {
 
         if (tabName === 'chain_reaction') {
             const engine = window.chainReactionEngine;
+            const curScenario = engine ? engine.currentScenario : 'single_fission';
             const missions = engine ? engine.gameMissions : [];
             const completedCount = missions.filter(m => m.completed).length;
 
             pane.innerHTML = `
-                <!-- Sub-deck Game vs Controls Mode Selector -->
-                <div class="sim-subdeck-pills">
-                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'missions' ? 'active' : ''}" onclick="setChainSubdeck('missions')">
-                        🎮 Game Missions (${completedCount}/${missions.length})
+                <!-- Scenario Selector Pills (PhET / Brilliant.org Progression) -->
+                <div class="sim-scenario-pills">
+                    <button class="sim-scenario-btn ${curScenario === 'single_fission' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('single_fission')">
+                        🎯 1. Single Atom
                     </button>
-                    <button class="sim-subdeck-btn ${activeChainSubdeck === 'controls' ? 'active' : ''}" onclick="setChainSubdeck('controls')">
-                        ⚙️ Reactor Controls
+                    <button class="sim-scenario-btn ${curScenario === 'chain_sandbox' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('chain_sandbox')">
+                        ⚡ 2. Sandbox
+                    </button>
+                    <button class="sim-scenario-btn ${curScenario === 'reactor_core' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('reactor_core')">
+                        🔋 3. Reactor Core
                     </button>
                 </div>
 
-                <!-- Always Visible Fast Action Arcade Buttons -->
-                <div class="sim-arcade-actions-block" style="margin-top: 6px; margin-bottom: 10px;">
+                <!-- Thumb-Zone Fast Actions -->
+                <div class="sim-arcade-actions-block" style="margin-top: 2px; margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.chainReactionEngine.injectNeutron()">
-                        <span>🚀</span> FIRE NEUTRON (LAUNCH)
+                        <span>🚀</span> ${curScenario === 'single_fission' ? 'FIRE THERMAL NEUTRON' : 'FIRE NEUTRON (LAUNCH)'}
                     </button>
-                    <button class="sim-action-btn danger large-arcade-btn" onclick="window.chainReactionEngine.triggerSCRAM();">
-                        <span>🚨</span> EMERGENCY SCRAM (STOP)
-                    </button>
+                    ${curScenario === 'reactor_core' ? `
+                        <button class="sim-action-btn danger large-arcade-btn" onclick="window.chainReactionEngine.triggerSCRAM()">
+                            <span>🚨</span> EMERGENCY SCRAM (STOP)
+                        </button>
+                    ` : `
+                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.chainReactionEngine.initChamber()">
+                            <span>🔄</span> RESET ${curScenario === 'single_fission' ? 'NUCLEUS' : 'CORE'}
+                        </button>
+                    `}
                 </div>
 
-                ${activeChainSubdeck === 'missions' ? `
-                    <!-- GAME MISSIONS PANEL -->
-                    <div class="sim-missions-list">
-                        ${missions.map(m => {
-                            const pct = Math.min(100, Math.round((m.current / m.goal) * 100));
-                            return `
-                                <div class="sim-mission-card ${m.completed ? 'completed' : ''}">
-                                    <div class="mission-header-row">
-                                        <span class="mission-title">${m.title}</span>
-                                        <span class="mission-status-badge ${m.completed ? 'done' : 'active'}">
-                                            ${m.completed ? 'COMPLETED ✅' : 'IN PROGRESS ⏳'}
-                                        </span>
-                                    </div>
-                                    <div class="mission-desc">${m.desc}</div>
-                                    <div class="mission-progress-bar-wrap">
-                                        <div class="mission-progress-bar" style="width: ${pct}%;"></div>
-                                    </div>
-                                    <div class="mission-footer-row">
-                                        <span class="mission-progress-text">${typeof m.current === 'number' && m.current % 1 !== 0 ? m.current.toFixed(1) : m.current} / ${m.goal}</span>
-                                        <span class="mission-reward-badge">${m.badge}</span>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                    <p style="font-size:0.80rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
-                        🎯 <em>Tip: Tap anywhere on the reactor grid to aim & shoot a neutron directly at fuel atoms!</em>
-                    </p>
-                ` : `
-                    <!-- REACTOR CONTROLS PANEL -->
+                ${curScenario === 'single_fission' ? `
+                    <!-- SCENARIO 1 TUTORIAL GUIDE -->
                     <div class="sim-pane-section">
-                        <div class="sim-pane-title"><span>⚛️</span> Reactor Core Parameters</div>
-                        
-                        <div class="sim-input-row">
-                            <label class="sim-input-label"><span>Fissile Fuel Element:</span></label>
-                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setFuel(this.value)">
-                                <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Uranium-235 (Commercial Fissile)</option>
-                                <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Plutonium-239 (Fast Neutron)</option>
-                                <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Uranium-238 (Depleted Fertile)</option>
-                            </select>
+                        <div class="sim-pane-title"><span>🔬</span> Fission Mechanics Guide</div>
+                        <p style="font-size:0.80rem; color:#cbd5e1; line-height:1.45; margin:0 0 10px;">
+                            <strong>Bohr-Wheeler Liquid Drop Model:</strong>
+                        </p>
+                        <ul style="font-size:0.77rem; color:#94a3b8; padding-left:18px; line-height:1.4; margin:0 0 10px;">
+                            <li><strong>Step 1:</strong> Incoming thermal neutron (+0.025 eV) absorbs into ²³⁵U.</li>
+                            <li><strong>Step 2:</strong> ²³⁶U* compound nucleus wobbles & elongates into a dumbbell.</li>
+                            <li><strong>Step 3:</strong> Coulomb repulsion overcomes strong force: scission split into ⁹²Kr + ¹⁴¹Ba.</li>
+                            <li><strong>Step 4:</strong> 3 prompt fast neutrons eject, ready to multiply!</li>
+                        </ul>
+                        <div style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); border-radius:8px; padding:8px 10px; font-size:0.76rem; color:#38bdf8;">
+                            🎯 <em>Tap "FIRE THERMAL NEUTRON" or tap the nucleus to watch automatic slow motion!</em>
                         </div>
+                    </div>
+                ` : curScenario === 'chain_sandbox' ? `
+                    <!-- SCENARIO 2 SANDBOX & MISSIONS -->
+                    <div class="sim-subdeck-pills">
+                        <button class="sim-subdeck-btn ${activeChainSubdeck === 'missions' ? 'active' : ''}" onclick="setChainSubdeck('missions')">
+                            🎮 Missions (${completedCount}/${missions.length})
+                        </button>
+                        <button class="sim-subdeck-btn ${activeChainSubdeck === 'controls' ? 'active' : ''}" onclick="setChainSubdeck('controls')">
+                            ⚙️ Atom Density
+                        </button>
+                    </div>
 
-                        <div class="sim-input-row">
-                            <label class="sim-input-label"><span>Moderator Medium:</span></label>
-                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setModerator(this.value)">
-                                <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O (Thermalizes Neutrons)</option>
-                                <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O (Low Absorption)</option>
-                                <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (Solid Core)</option>
-                                <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Reactor, No Slowing)</option>
-                            </select>
+                    ${activeChainSubdeck === 'missions' ? `
+                        <div class="sim-missions-list">
+                            ${missions.map(m => {
+                                const pct = Math.min(100, Math.round((m.current / m.goal) * 100));
+                                return `
+                                    <div class="sim-mission-card ${m.completed ? 'completed' : ''}">
+                                        <div class="mission-header-row">
+                                            <span class="mission-title">${m.title}</span>
+                                            <span class="mission-status-badge ${m.completed ? 'done' : 'active'}">
+                                                ${m.completed ? 'COMPLETED ✅' : 'IN PROGRESS ⏳'}
+                                            </span>
+                                        </div>
+                                        <div class="mission-desc">${m.desc}</div>
+                                        <div class="mission-progress-bar-wrap">
+                                            <div class="mission-progress-bar" style="width: ${pct}%;"></div>
+                                        </div>
+                                        <div class="mission-footer-row">
+                                            <span class="mission-progress-text">${typeof m.current === 'number' && m.current % 1 !== 0 ? m.current.toFixed(1) : m.current} / ${m.goal}</span>
+                                            <span class="mission-reward-badge">${m.badge}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
-
+                    ` : `
+                        <div class="sim-pane-section">
+                            <div class="sim-pane-title"><span>⚛️</span> Fuel Cluster Density</div>
+                            <div class="sim-input-row">
+                                <div class="sim-input-label">
+                                    <span>Fuel Atom Count:</span>
+                                    <span id="density-val-display" class="sim-val-badge">${engine ? engine.atomDensity : 45}</span>
+                                </div>
+                                <input type="range" class="sim-range-slider" min="15" max="100" value="${engine ? engine.atomDensity : 45}" oninput="document.getElementById('density-val-display').textContent=this.value; window.chainReactionEngine.setAtomDensity(this.value);">
+                                <div class="slider-hint-row">
+                                    <span>Sparse (Controlled)</span>
+                                    <span>Dense (Critical Cascade)</span>
+                                </div>
+                            </div>
+                            <div class="sim-input-row">
+                                <label class="sim-input-label"><span>Fissile Fuel:</span></label>
+                                <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setFuel(this.value)">
+                                    <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Uranium-235 (Enriched)</option>
+                                    <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Plutonium-239 (Fast)</option>
+                                    <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Depleted (Fertile)</option>
+                                </select>
+                            </div>
+                        </div>
+                    `}
+                ` : `
+                    <!-- SCENARIO 3 REACTOR CORE -->
+                    <div class="sim-pane-section">
+                        <div class="sim-pane-title"><span>🔋</span> Reactor Power Balancing</div>
                         <div class="sim-input-row">
                             <div class="sim-input-label">
                                 <span>Control Rods (Absorption):</span>
@@ -108979,9 +110112,18 @@ window.OrbitalViewer = {
                             </div>
                             <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
                             <div class="slider-hint-row">
-                                <span>⚡ Pull (More Power)</span>
-                                <span>⬇️ Insert (Cool Down)</span>
+                                <span>⚡ Withdraw (More MW)</span>
+                                <span>⬇️ Insert (Cool Core)</span>
                             </div>
+                        </div>
+                        <div class="sim-input-row">
+                            <label class="sim-input-label"><span>Moderator Medium:</span></label>
+                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setModerator(this.value)">
+                                <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O (Thermalizes)</option>
+                                <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O (Low Loss)</option>
+                                <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (Solid)</option>
+                                <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Core)</option>
+                            </select>
                         </div>
                     </div>
                 `}
@@ -108989,117 +110131,99 @@ window.OrbitalViewer = {
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
             pane.innerHTML = `
-                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
-                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
                         <span>⚡</span> EMIT RADIATION PULSE
                     </button>
                     <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
-                        <span>🧹</span> CLEAR VAPOR TRACKS
+                        <span>🔄</span> CLEAR VAPOR TRACKS
                     </button>
                 </div>
 
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>☢️</span> Particle Cloud Chamber</div>
+                    <div class="sim-pane-title"><span>☢️</span> Radioactive Source</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Nuclide Radiation Source:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
-                            ${window.DECAY_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.name} (${p.particle})</option>`).join('')}
+                        <label class="sim-input-label"><span>Radioactive Isotope:</span></label>
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setNuclide(this.value)">
+                            ${window.DECAY_PRESETS ? window.DECAY_PRESETS.map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('') : ''}
                         </select>
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Magnetic Field B:</span>
-                            <span id="b-val-display" class="sim-val-badge">${engine ? engine.magneticFieldTesla.toFixed(1) : '1.0'} Tesla</span>
+                            <span id="b-field-display" class="sim-val-badge">${engine ? engine.bFieldTesla.toFixed(1) : '2.0'} T</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${(engine ? engine.magneticFieldTesla : 1.0) * 10}" oninput="const b=this.value/10; document.getElementById('b-val-display').textContent=(b>0?'+':'')+b.toFixed(1)+' Tesla'; window.nuclearDecayEngine.setMagneticField(b);">
+                        <input type="range" class="sim-range-slider" min="-50" max="50" value="${engine ? (engine.bFieldTesla * 10).toFixed(0) : '20'}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setBField(this.value/10);">
                         <div class="slider-hint-row">
-                            <span>⊗ Inward (-B)</span>
-                            <span>⊙ Outward (+B)</span>
+                            <span>-5.0 T (Left Curve)</span>
+                            <span>+5.0 T (Right Curve)</span>
                         </div>
-                    </div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Emission Mode:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.autoTrigger=(this.value==='auto')">
-                            <option value="auto" ${engine && engine.autoTrigger ? 'selected' : ''}>Continuous Radiation Beam</option>
-                            <option value="manual" ${engine && !engine.autoTrigger ? 'selected' : ''}>Manual Pulses Only</option>
-                        </select>
                     </div>
                 </div>
-
-                <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4; margin:4px 0 0; text-align:center;">
-                    💡 <strong>Lorentz Force:</strong> Positively charged α curves gently; negatively charged β⁻ curls tightly opposite!
-                </p>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
             pane.innerHTML = `
-                <!-- Always Visible Fast Action Arcade Buttons at TOP -->
-                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
+                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
                         <span>🔄</span> RESET REST GEOMETRY
                     </button>
-                    <button class="sim-action-btn" style="background:rgba(168,85,247,0.18); color:#d8b4fe; border:1px solid rgba(168,85,247,0.4);" onclick="if(window.molecularDynamicsEngine){window.molecularDynamicsEngine.atoms.forEach(a=>{a.vx+=(Math.random()-0.5)*200;a.vy+=(Math.random()-0.5)*200;}); if(window.physicsAudio)window.physicsAudio.playBondReleaseSnap();}">
-                        <span>⚡</span> JOLT THERMAL VIBRATION
+                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(window.molecularDynamicsEngine.atoms[0], 0, -320)">
+                        <span>💥</span> THERMAL IMPULSE
                     </button>
                 </div>
 
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🧬</span> Molecule Topology & Physics</div>
+                    <div class="sim-pane-title"><span>🧬</span> Molecular Geometry</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Chemical Molecule:</span></label>
+                        <label class="sim-input-label"><span>Molecule Species:</span></label>
                         <select class="sim-speed-select large-sim-select" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
-                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water (H₂O - Polar Covalent)</option>
-                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide (CO₂ - Linear Double Bond)</option>
-                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane (CH₄ - Tetrahedral Hydrocarbon)</option>
-                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene (C₆H₆ - Aromatic Ring)</option>
+                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water H₂O (Bent 104.5°)</option>
+                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide CO₂ (Linear)</option>
+                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane CH₄ (Tetrahedral)</option>
+                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene C₆H₆ (Aromatic Ring)</option>
                         </select>
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Thermal Temperature:</span>
-                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '300'} K</span>
+                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '298'} K</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="1" max="2500" value="${engine ? engine.temperatureK : 300}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
-                        <div class="slider-hint-row">
-                            <span>❄️ Absolute Zero (1 K)</span>
-                            <span>🔥 Extreme Agitation (2500 K)</span>
-                        </div>
+                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${engine ? engine.temperatureK : 298}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
                     </div>
                 </div>
-
-                <p style="font-size:0.78rem; color:#00d4ff; font-weight:600; line-height:1.4; margin:4px 0 0; text-align:center;">
-                    🎮 <strong>Touch Gameplay:</strong> Drag any atom on screen with your finger to stretch chemical bonds like quantum springs!
-                </p>
             `;
         } else if (tabName === 'environment') {
             const engine = window.envSimulationEngine;
             const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const elData = allElements.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6));
+            const elData = allElements.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6)) || { name: 'Carbon' };
             const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
 
             pane.innerHTML = `
-                <!-- Always Visible Fast Action Presets at TOP -->
-                <div class="sim-arcade-actions-block" style="margin-bottom: 10px;">
-                    <div style="display:flex; gap:6px;">
-                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(0,212,255,0.18); border:1px solid rgba(0,212,255,0.4); color:#00d4ff;" onclick="window.envSimulationEngine.setPreset('earth_stp'); renderTuningPanel('environment');">
-                            🌍 Earth STP
+                <!-- Quick Phase Jump Thumb Buttons -->
+                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(0,212,255,0.18); border:1px solid rgba(0,212,255,0.4); color:#00d4ff;" onclick="window.envSimulationEngine.quickJumpPhase('solid'); renderTuningPanel('environment');">
+                            🧊 Solid (Freeze)
                         </button>
-                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.4); color:#93c5fd;" onclick="window.envSimulationEngine.setPreset('deep_space'); renderTuningPanel('environment');">
-                            ❄️ Cryo Deep
+                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.4); color:#4ade80;" onclick="window.envSimulationEngine.quickJumpPhase('liquid'); renderTuningPanel('environment');">
+                            💧 Liquid (Melt)
                         </button>
-                        <button class="sim-action-btn" style="flex:1; padding:8px 6px; font-size:0.78rem; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.4); color:#fca5a5;" onclick="window.envSimulationEngine.setPreset('sun_core'); renderTuningPanel('environment');">
-                            ☀️ Solar Core
+                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(249,115,22,0.18); border:1px solid rgba(249,115,22,0.4); color:#fb923c;" onclick="window.envSimulationEngine.quickJumpPhase('gas'); renderTuningPanel('environment');">
+                            💨 Gas (Boil)
+                        </button>
+                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(244,63,94,0.18); border:1px solid rgba(244,63,94,0.4); color:#fda4af;" onclick="window.envSimulationEngine.quickJumpPhase('plasma'); renderTuningPanel('environment');">
+                            ⚡ Plasma (Ionize)
                         </button>
                     </div>
                 </div>
 
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🌍</span> Extreme Cosmic Environments</div>
+                    <div class="sim-pane-title"><span>🌍</span> P-T Thermodynamics</div>
                     <div class="sim-input-row">
                         <label class="sim-input-label"><span>Cosmic / Planetary Preset:</span></label>
                         <select class="sim-speed-select large-sim-select" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
-                            ${window.ENVIRONMENT_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('')}
+                            ${window.ENVIRONMENT_PRESETS ? window.ENVIRONMENT_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('') : ''}
                         </select>
                     </div>
                     <div class="sim-input-row">
@@ -109111,7 +110235,7 @@ window.OrbitalViewer = {
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
-                            <span>Pressure:</span>
+                            <span>Pressure (Hydraulic Piston):</span>
                             <span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span>
                         </div>
                         <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); window.envSimulationEngine.setPressure(p); renderTuningPanel('environment');">
@@ -109120,10 +110244,10 @@ window.OrbitalViewer = {
 
                 <div class="sim-pane-section">
                     <div class="sim-pane-title"><span>📊</span> Phase State</div>
-                    <div style="display:inline-block; padding:6px 12px; border-radius:8px; font-weight:800; font-family:var(--font-mono); font-size:0.95rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color || '#00d4ff'}; color:${phase.color || '#00d4ff'}; margin-bottom:8px;">
+                    <div style="display:inline-block; padding:5px 10px; border-radius:7px; font-weight:800; font-family:var(--font-mono); font-size:0.90rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color || '#00d4ff'}; color:${phase.color || '#00d4ff'}; margin-bottom:6px;">
                         ${phase.badge || '🧊 SOLID'}
                     </div>
-                    <p style="font-size:0.78rem; color:#cbd5e1; line-height:1.4; margin:0;">
+                    <p style="font-size:0.77rem; color:#cbd5e1; line-height:1.4; margin:0;">
                         ${phase.details || 'Rigid crystalline lattice.'}
                     </p>
                 </div>
@@ -109132,23 +110256,62 @@ window.OrbitalViewer = {
     }
 
     /**
-     * Setup Interactive Touch/Pointer Listeners on Canvases (CSS Pixel Space)
+     * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
-        // 1. Chain Reaction Canvas Click/Tap (Aims & Fires neutron toward tap)
+        // 1. Chain Reaction Canvas
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
+
+                // Check if user tapped top HUD scenario pills (y in [10, 38])
+                if (y <= 40 && window.chainReactionEngine) {
+                    if (x >= 14 && x <= 160) {
+                        window.chainReactionEngine.setScenario('single_fission');
+                        return;
+                    } else if (x > 160 && x <= 285) {
+                        window.chainReactionEngine.setScenario('chain_sandbox');
+                        return;
+                    } else if (x > 285 && x <= 420) {
+                        window.chainReactionEngine.setScenario('reactor_core');
+                        return;
+                    }
+                }
+
                 if (window.chainReactionEngine) {
                     window.chainReactionEngine.aimAndFire(x, y);
                 }
             });
         }
 
-        // 2. Decay Chamber Click/Tap (Triggers localized decay pulse)
+        // 2. Environment Phase Chamber Canvas
+        const envCanvas = document.getElementById('env-phase-canvas');
+        if (envCanvas) {
+            envCanvas.addEventListener('pointerdown', (e) => {
+                const rect = envCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Check view mode HUD switcher pills
+                if (y <= 38 && window.envSimulationEngine) {
+                    if (x >= 14 && x <= 110) {
+                        window.envSimulationEngine.setViewMode('split');
+                        return;
+                    } else if (x > 110 && x <= 230) {
+                        window.envSimulationEngine.setViewMode('chamber');
+                        return;
+                    } else if (x > 230 && x <= 340) {
+                        window.envSimulationEngine.setViewMode('diagram');
+                        return;
+                    }
+                }
+            });
+        }
+
+        // 3. Decay Chamber Click/Tap
         const decayCanvas = document.getElementById('decay-sim-canvas');
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
@@ -109161,7 +110324,7 @@ window.OrbitalViewer = {
             });
         }
 
-        // 3. Molecule Dynamics Canvas Drag/Touch
+        // 4. Molecule Dynamics Canvas Drag/Touch
         const molCanvas = document.getElementById('molecule-sim-canvas');
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
@@ -110460,7 +111623,7 @@ window.OrbitalViewer = {
                                 <span class="step-icon">🎯</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 1</span>
-                                    <span class="step-label">Fire Neutron</span>
+                                    <span class="step-label">Launch Neutron</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -110468,7 +111631,7 @@ window.OrbitalViewer = {
                                 <span class="step-icon">⚡</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 2</span>
-                                    <span class="step-label">Core Absorption</span>
+                                    <span class="step-label">Drop Elongation</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -110476,7 +111639,7 @@ window.OrbitalViewer = {
                                 <span class="step-icon">💥</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 3</span>
-                                    <span class="step-label">Nuclear Split (+200 MeV)</span>
+                                    <span class="step-label">Split (+200 MeV)</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -110484,13 +111647,13 @@ window.OrbitalViewer = {
                                 <span class="step-icon">🔄</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 4</span>
-                                    <span class="step-label">Chain Multiplier</span>
+                                    <span class="step-label">3n Multiplier</span>
                                 </div>
                             </div>
                         </div>
                         <div class="sim-narrator-pill" id="sim-narrator-pill">
                             <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start the chain reaction!</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start!</span>
                         </div>
                     </div>
 
@@ -110498,6 +111661,13 @@ window.OrbitalViewer = {
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
+
+                    <!-- Sleek Floating Drawer Toggle Pill Button -->
+                    <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
+                        <span class="drawer-btn-icon">⚙️</span>
+                        <span class="drawer-btn-text">Controls &amp; Missions</span>
+                        <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
+                    </button>
                 </div>
                 <div class="sim-tuning-pane" id="sim-tuning-pane">
                     <!-- Dynamic Parameters populated by renderTuningPanel() -->

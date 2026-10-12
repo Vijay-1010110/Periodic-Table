@@ -1,6 +1,17 @@
 /**
- * PERIODICA 3D - Environment & Pressure Simulation System
- * Advanced P-T Phase Space, Extreme Planetary/Cosmic Environments & Clausius-Clapeyron Engine
+ * PERIODICA 3D - Environment & Pressure Simulation System (Extreme Phase Lab)
+ * Live Visual Atom Chamber & Clausius-Clapeyron Phase Space Engine
+ * 
+ * Features:
+ * 1. Live Visual Atom Chamber (PhET / Brilliant.org Model):
+ *    - Solid: Crystalline lattice with bond lines; thermal harmonic vibration increases toward melting point.
+ *    - Liquid: Cohesive fluid pool at bottom; atoms roll, flow, and tumble past each other with meniscus waves.
+ *    - Gas: Dispersed thermal kinetic vapor; elastic collisions against chamber walls & movable pressure piston.
+ *    - Plasma: Ionized nuclei with glowing coronal halos, detached electrons buzzing erratically, and lightning arcs.
+ *    - Supercritical Fluid: Dense penetrative fluid with turbulent density eddies beyond critical point (Tc, Pc).
+ * 2. Movable Hydraulic Pressure Piston (responds to pressure slider / presets in real time).
+ * 3. Thermal Plate at bottom (frost cyan <100K, steel 300K, heat coils >1000K, incandescent plasma >3000K).
+ * 4. Dual View Modes: Visual Atom Chamber, P-T Phase Diagram, and Split View (Chamber + P-T Radar).
  * 
  * Compliant with NIST Chemistry WebBook, IUPAC standards, and Bridgman high-pressure physics.
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
@@ -12,8 +23,8 @@
     // Physical Constants
     const R_GAS = 8.314462618; // J / (mol * K)
     const ATM_TO_PA = 101325; // 1 atm in Pascals
-    const BAR_TO_PA = 100000; // 1 bar in Pascals
-    const GPA_TO_PA = 1e9; // 1 GPa in Pascals
+    const BAR_TO_PA = 100000;
+    const GPA_TO_PA = 1e9;
 
     /**
      * Environment Presets spanning the Universe & High-Pressure Laboratories
@@ -93,7 +104,24 @@
     };
 
     /**
-     * EnvironmentSimulationEngine (OOP Architecture)
+     * Physical Chamber Atom Entity
+     */
+    class ChamberAtom {
+        constructor(x, y, radius = 9, color = '#38bdf8') {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 20;
+            this.vy = (Math.random() - 0.5) * 20;
+            this.radius = radius;
+            this.color = color;
+            this.latticeX = x;
+            this.latticeY = y;
+            this.electronAngle = Math.random() * Math.PI * 2;
+        }
+    }
+
+    /**
+     * EnvironmentSimulationEngine (OOP Architecture with Live Atom Chamber)
      */
     class EnvironmentSimulationEngine {
         constructor() {
@@ -102,11 +130,60 @@
             this.currentPresetId = 'earth_stp';
             this.listeners = new Set();
             this.activeElementId = 6; // Carbon default
+
+            // View Mode: 'split' | 'chamber' | 'diagram'
+            this.viewMode = 'split';
+
+            // Chamber Simulation State
+            this.atoms = [];
+            this.electrons = [];
+            this.plasmaSparks = [];
+            this.chamberWidth = 600;
+            this.chamberHeight = 400;
+            this.pistonY = 80;
+            this.targetPistonY = 80;
+            this.prevPhaseCode = 'solid';
+            this.lastFrameTime = performance.now();
+
+            this.initChamberAtoms(this.chamberWidth, this.chamberHeight);
         }
 
-        /**
-         * Subscribe to P-T state changes
-         */
+        setViewMode(mode) {
+            if (['split', 'chamber', 'diagram'].includes(mode)) {
+                this.viewMode = mode;
+                if (typeof window.renderTuningPanel === 'function') {
+                    window.renderTuningPanel('environment');
+                }
+            }
+        }
+
+        initChamberAtoms(w, h) {
+            this.chamberWidth = Math.max(300, w);
+            this.chamberHeight = Math.max(220, h);
+            this.atoms = [];
+            this.electrons = [];
+            this.plasmaSparks = [];
+
+            const atomCount = 64;
+            const cols = 8;
+            const rows = 8;
+            const latticeSpacing = 24;
+
+            const boxLeft = Math.max(40, this.chamberWidth * 0.12);
+            const boxBottom = this.chamberHeight - 48;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const ax = boxLeft + c * latticeSpacing + (Math.random() - 0.5) * 2;
+                    const ay = boxBottom - (rows - 1 - r) * latticeSpacing;
+                    const atom = new ChamberAtom(ax, ay, 9, '#38bdf8');
+                    atom.latticeX = boxLeft + c * latticeSpacing;
+                    atom.latticeY = boxBottom - (rows - 1 - r) * latticeSpacing;
+                    this.atoms.push(atom);
+                }
+            }
+        }
+
         subscribe(listener) {
             if (typeof listener === 'function') {
                 this.listeners.add(listener);
@@ -132,7 +209,8 @@
                 pressureGPa: (this.pressureAtm * ATM_TO_PA) / 1e9,
                 pressurePsi: this.pressureAtm * 14.6959,
                 currentPresetId: this.currentPresetId,
-                activeElementId: this.activeElementId
+                activeElementId: this.activeElementId,
+                viewMode: this.viewMode
             };
         }
 
@@ -159,50 +237,68 @@
             this.notify();
         }
 
-        setActiveElement(atomicNumber) {
-            this.activeElementId = atomicNumber;
-            this.notify();
+        quickJumpPhase(phaseType) {
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1000, boil: 2500 };
+            const Tm = elData.melt ? Number(elData.melt) : 1000;
+            const Tb = elData.boil ? Number(elData.boil) : 2500;
+
+            if (phaseType === 'solid') {
+                this.setTemperature(Math.max(5, Tm * 0.45));
+                this.setPressure(1.0);
+            } else if (phaseType === 'liquid') {
+                this.setTemperature(Tm + (Tb - Tm) * 0.40);
+                this.setPressure(1.0);
+            } else if (phaseType === 'gas') {
+                this.setTemperature(Tb * 1.35);
+                this.setPressure(1.0);
+            } else if (phaseType === 'plasma') {
+                this.setTemperature(18000);
+                this.setPressure(0.05);
+            }
+
+            if (window.physicsAudio) {
+                window.physicsAudio.playPhaseTransitionSizzle?.(phaseType);
+            }
         }
 
-        /**
-         * Calculates state of matter using thermodynamic phase boundary equations
-         */
-        calculatePhase(elementData, T = this.temperatureK, P = this.pressureAtm) {
-            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const el = elementData || allElements.find(e => e.atomicNumber === this.activeElementId) || { atomicNumber: 6, meltingPoint: 3823, boilingPoint: 5100, name: 'Carbon' };
-            const Z = el.atomicNumber || 6;
+        calculatePhase(elementData) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+            const Z = this.activeElementId;
+
             const thermo = THERMO_ELEMENT_DB[Z] || {
-                Tt: el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : 1000),
-                Pt: 0.001,
-                Tc: el.boilingPoint ? Number(el.boilingPoint) * 1.5 : (el.boil ? Number(el.boil) * 1.5 : 2000),
-                Pc: 500,
-                P_metal: 5e6,
-                deltaH_vap: 50.0,
+                Tt: elementData?.melt ? Number(elementData.melt) : 1000,
+                Pt: 0.01,
+                Tc: elementData?.boil ? Number(elementData.boil) * 1.5 : 3000,
+                Pc: 100,
+                P_metal: 1e7,
+                deltaH_vap: 150.0,
                 deltaH_fus: 10.0
             };
 
-            const T_melt_1atm = el.meltingPoint ? Number(el.meltingPoint) : (el.melt ? Number(el.melt) : thermo.Tt);
-            const T_boil_1atm = el.boilingPoint ? Number(el.boilingPoint) : (el.boil ? Number(el.boil) : thermo.Tc);
+            const T_melt_1atm = elementData?.melt ? Number(elementData.melt) : 1000;
+            const T_boil_1atm = elementData?.boil ? Number(elementData.boil) : 2500;
 
-            // 1. Plasma Regime (Thermonuclear / Ionization)
+            // 1. Plasma Regime
             if (T > 25000 || (T > 10000 && P < 0.01)) {
                 return {
                     state: 'Plasma',
                     code: 'plasma',
                     color: '#f43f5e',
                     badge: '⚡ PLASMA',
-                    details: 'Thermal ionization strips orbital electrons into a glowing soup of bare nuclei and free electrons.'
+                    details: 'Thermal ionization strips orbital electrons into glowing ions and free electrons.'
                 };
             }
 
-            // 2. High-Pressure Degenerate / Metallic Phase Transition
+            // 2. High-Pressure Metallic Phase
             if (thermo.P_metal > 0 && P >= thermo.P_metal) {
                 return {
                     state: 'Metallic / Degenerate Solid',
                     code: 'metallic',
                     color: '#38bdf8',
                     badge: '💎 METALLIC SOLID',
-                    details: `Extreme compressive stress (>${(thermo.P_metal * ATM_TO_PA / 1e9).toFixed(1)} GPa) forces electron delocalization into high-density conduction bands.`
+                    details: `Extreme compressive stress (>${(thermo.P_metal * ATM_TO_PA / 1e9).toFixed(1)} GPa) forces electron delocalization.`
                 };
             }
 
@@ -213,24 +309,17 @@
                     code: 'supercritical',
                     color: '#eab308',
                     badge: '🌀 SUPERCRITICAL',
-                    details: 'Beyond critical point (Tc, Pc); liquid and vapor densities merge into a high-density, low-viscosity penetrative fluid.'
+                    details: 'Beyond critical point (Tc, Pc); liquid and vapor merge into penetrative supercritical fluid.'
                 };
             }
 
-            // 4. Pressure-Shifted Boiling Curve via Clausius-Clapeyron Approximation
-            // P_boil(T) = 1 atm * exp[ -DeltaH_vap/R * (1/T - 1/T_boil_1atm) ]
+            // 4. Pressure-Shifted Boiling & Melting Curves
             let dynamicTboil = T_boil_1atm;
             if (thermo.deltaH_vap > 0 && T_boil_1atm > 0) {
                 const invT = (1 / T_boil_1atm) - (R_GAS * Math.log(Math.max(1e-12, P))) / (thermo.deltaH_vap * 1000);
-                if (invT > 0) {
-                    dynamicTboil = 1 / invT;
-                } else {
-                    dynamicTboil = T_boil_1atm * 3;
-                }
+                dynamicTboil = (invT > 0) ? (1 / invT) : (T_boil_1atm * 3);
             }
 
-            // 5. Pressure-Shifted Melting Curve (Simon-Glatzel Relation)
-            // P = a * ((T_m / T_0)^c - 1)
             let dynamicTmelt = T_melt_1atm;
             if (P > 1.0) {
                 dynamicTmelt = T_melt_1atm * Math.pow(1 + P / 5000, 0.12);
@@ -238,7 +327,6 @@
                 dynamicTmelt = Math.max(0.1, T_melt_1atm * Math.pow(Math.max(1e-6, P), 0.02));
             }
 
-            // Determine State
             if (T < dynamicTmelt) {
                 return {
                     state: 'Solid',
@@ -267,15 +355,135 @@
                     badge: '💨 GAS',
                     meltAtP: dynamicTmelt,
                     boilAtP: dynamicTboil,
-                    details: `Dispersed thermal kinetic vapor phase. Condensation occurs if cooled below ${dynamicTboil.toFixed(1)} K.`
+                    details: `Dispersed thermal kinetic vapor. Condensation occurs if cooled below ${dynamicTboil.toFixed(1)} K.`
                 };
             }
         }
 
-        /**
-         * Renders an interactive 2D P-T Phase Diagram on an HTML5 canvas
-         */
-        renderPhaseDiagram(canvas, elementData) {
+        updateChamberPhysics(dt, w, h, phase) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+
+            // Compute Piston Height based on Log Pressure
+            // At P = 1e-6: piston at y=25. At P = 1 atm: y=80. At P = 1e6: y = h * 0.65.
+            const logP = Math.max(-6, Math.min(6, Math.log10(Math.max(1e-12, P))));
+            const pFraction = (logP - (-6)) / 12.0; // 0 to 1
+            const minPistonY = 32;
+            const maxPistonY = h - 110;
+            this.targetPistonY = minPistonY + pFraction * (maxPistonY - minPistonY);
+            this.pistonY += (this.targetPistonY - this.pistonY) * Math.min(1.0, dt * 6.0);
+
+            const chamberTop = this.pistonY + 12;
+            const chamberBottom = h - 48;
+            const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(40, w * 0.08);
+            const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(40, w * 0.08));
+
+            // Thermal Velocity Scale
+            const thermalSpeed = Math.min(450, Math.sqrt(Math.max(1, T)) * 3.4);
+
+            for (let i = 0; i < this.atoms.length; i++) {
+                const a = this.atoms[i];
+                a.electronAngle += dt * 6.0;
+
+                if (phase.code === 'solid' || phase.code === 'metallic') {
+                    // Crystalline Lattice Harmonic Vibration
+                    const vibAmp = Math.min(7.0, Math.sqrt(T / 1000) * 1.8);
+                    const jitterX = (Math.random() - 0.5) * vibAmp;
+                    const jitterY = (Math.random() - 0.5) * vibAmp;
+                    a.x += (a.latticeX + jitterX - a.x) * dt * 12.0;
+                    a.y += (a.latticeY + jitterY - a.y) * dt * 12.0;
+                } else if (phase.code === 'liquid') {
+                    // Flowing Liquid Pool with gravity & cohesion
+                    a.vy += 320 * dt; // Gravity
+                    a.vx += (Math.random() - 0.5) * 80 * dt;
+
+                    a.x += a.vx * dt;
+                    a.y += a.vy * dt;
+
+                    // Liquid boundaries
+                    if (a.y > chamberBottom - a.radius) {
+                        a.y = chamberBottom - a.radius;
+                        a.vy = -Math.abs(a.vy) * 0.35;
+                    }
+                    if (a.y < chamberBottom - 110) {
+                        a.vy += 120 * dt; // Surface tension pull
+                    }
+                    if (a.x < chamberLeft + a.radius) {
+                        a.x = chamberLeft + a.radius;
+                        a.vx = Math.abs(a.vx) * 0.5;
+                    }
+                    if (a.x > chamberRight - a.radius) {
+                        a.x = chamberRight - a.radius;
+                        a.vx = -Math.abs(a.vx) * 0.5;
+                    }
+
+                    // Inter-atomic soft repulsion
+                    for (let j = i + 1; j < this.atoms.length; j++) {
+                        const b = this.atoms[j];
+                        const dx = b.x - a.x;
+                        const dy = b.y - a.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const minDist = a.radius + b.radius;
+                        if (dist < minDist && dist > 0.001) {
+                            const overlap = (minDist - dist) * 0.5;
+                            const nx = dx / dist;
+                            const ny = dy / dist;
+                            a.x -= nx * overlap;
+                            a.y -= ny * overlap;
+                            b.x += nx * overlap;
+                            b.y += ny * overlap;
+                        }
+                    }
+                } else if (phase.code === 'gas' || phase.code === 'supercritical' || phase.code === 'plasma') {
+                    // Free kinetic dispersal
+                    if (Math.abs(a.vx) < 10) a.vx = (Math.random() - 0.5) * thermalSpeed;
+                    if (Math.abs(a.vy) < 10) a.vy = (Math.random() - 0.5) * thermalSpeed;
+
+                    a.x += a.vx * dt;
+                    a.y += a.vy * dt;
+
+                    // Collisions with chamber walls
+                    if (a.x < chamberLeft + a.radius) {
+                        a.x = chamberLeft + a.radius;
+                        a.vx = Math.abs(a.vx);
+                    }
+                    if (a.x > chamberRight - a.radius) {
+                        a.x = chamberRight - a.radius;
+                        a.vx = -Math.abs(a.vx);
+                    }
+                    if (a.y > chamberBottom - a.radius) {
+                        a.y = chamberBottom - a.radius;
+                        a.vy = -Math.abs(a.vy);
+                    }
+                    if (a.y < chamberTop + a.radius) {
+                        a.y = chamberTop + a.radius;
+                        a.vy = Math.abs(a.vy);
+                    }
+                }
+            }
+
+            // Plasma Sparks
+            if (phase.code === 'plasma') {
+                if (Math.random() < 0.25 && this.atoms.length > 2) {
+                    const idxA = Math.floor(Math.random() * this.atoms.length);
+                    const idxB = Math.floor(Math.random() * this.atoms.length);
+                    const a1 = this.atoms[idxA];
+                    const a2 = this.atoms[idxB];
+                    this.plasmaSparks.push({
+                        x1: a1.x, y1: a1.y,
+                        x2: a2.x, y2: a2.y,
+                        alpha: 1.0
+                    });
+                }
+            }
+
+            for (const s of this.plasmaSparks) {
+                s.alpha -= dt * 4.5;
+            }
+            this.plasmaSparks = this.plasmaSparks.filter(s => s.alpha > 0);
+        }
+
+        renderPhaseDiagram(canvas) {
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
@@ -290,65 +498,293 @@
                 canvas.height = Math.round(clientH * dpr);
             }
 
+            const now = performance.now();
+            const dt = Math.min(0.05, (now - this.lastFrameTime) / 1000);
+            this.lastFrameTime = now;
+
+            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { name: 'Carbon', symbol: 'C', melt: 3823, boil: 5100 };
+            const phase = this.calculatePhase(elData);
+
+            // Update Particle Chamber Simulation
+            this.updateChamberPhysics(dt, clientW, clientH, phase);
+
             ctx.save();
             ctx.scale(dpr, dpr);
 
             const w = clientW;
             const h = clientH;
-
             ctx.clearRect(0, 0, w, h);
 
-            const padLeft = 55;
-            const padBottom = 35;
-            const padTop = 25;
-            const padRight = 25;
-            const plotW = w - padLeft - padRight;
+            if (this.viewMode === 'chamber') {
+                this.renderChamberView(ctx, w, h, elData, phase, 0, w);
+            } else if (this.viewMode === 'diagram') {
+                this.renderDiagramView(ctx, w, h, elData, phase, 0, w);
+            } else {
+                // Split View: Chamber on Left (65%), P-T Phase Radar on Right (35%)
+                const chamberW = w * 0.65;
+                const radarW = w * 0.35;
+                this.renderChamberView(ctx, w, h, elData, phase, 0, chamberW);
+                this.renderDiagramView(ctx, w, h, elData, phase, chamberW, radarW);
+            }
+
+            // View Mode Switcher Pills (Top Center of Canvas)
+            this.renderViewSwitcherHUD(ctx, w, h);
+
+            ctx.restore();
+        }
+
+        renderViewSwitcherHUD(ctx, w, h) {
+            const pillY = 10;
+            const modes = [
+                { id: 'split', label: 'Split View', icon: '🔲' },
+                { id: 'chamber', label: 'Atom Chamber', icon: '⚛️' },
+                { id: 'diagram', label: 'P-T Curve', icon: '📈' }
+            ];
+
+            let curX = 14;
+            ctx.font = 'bold 11px var(--font-ui), sans-serif';
+
+            for (const m of modes) {
+                const isCur = this.viewMode === m.id;
+                const text = `${m.icon} ${m.label}`;
+                const textW = ctx.measureText(text).width;
+                const pillW = textW + 18;
+                const pillH = 24;
+
+                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.28)' : 'rgba(15, 23, 42, 0.75)';
+                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(255, 255, 255, 0.15)';
+                ctx.lineWidth = isCur ? 1.5 : 1.0;
+
+                ctx.beginPath();
+                ctx.roundRect(curX, pillY, pillW, pillH, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = isCur ? '#ffffff' : '#94a3b8';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'left';
+                ctx.fillText(text, curX + 9, pillY + pillH / 2);
+
+                curX += pillW + 8;
+            }
+        }
+
+        renderChamberView(ctx, w, h, elData, phase, startX, chamberW) {
+            const T = this.temperatureK;
+            const P = this.pressureAtm;
+            const chamberLeft = startX + Math.max(16, chamberW * 0.05);
+            const chamberRight = startX + chamberW - Math.max(16, chamberW * 0.05);
+            const chamberBottom = h - 46;
+            const chamberTop = this.pistonY + 12;
+
+            // 1. Vessel Glass Enclosure Background
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+            ctx.lineWidth = 2.0;
+            ctx.beginPath();
+            ctx.roundRect(chamberLeft, 38, chamberRight - chamberLeft, chamberBottom - 38, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // 2. Movable Compression Piston
+            const pistonH = 14;
+            const pistonGrad = ctx.createLinearGradient(chamberLeft, this.pistonY, chamberRight, this.pistonY);
+            pistonGrad.addColorStop(0, '#334155');
+            pistonGrad.addColorStop(0.5, '#64748b');
+            pistonGrad.addColorStop(1, '#334155');
+            ctx.fillStyle = pistonGrad;
+            ctx.fillRect(chamberLeft + 2, this.pistonY, chamberRight - chamberLeft - 4, pistonH);
+
+            // Piston Rod
+            ctx.fillStyle = '#475569';
+            const midX = (chamberLeft + chamberRight) / 2;
+            ctx.fillRect(midX - 8, 2, 16, this.pistonY);
+
+            // Piston Pressure Readout Tag
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`HYDRAULIC PISTON: ${P < 0.01 ? P.toExponential(1) : P.toFixed(1)} atm`, midX, this.pistonY - 6);
+
+            // 3. Thermal Plate at Chamber Bottom
+            const plateH = 10;
+            const plateGrad = ctx.createLinearGradient(chamberLeft, chamberBottom, chamberRight, chamberBottom);
+            if (T < 100) {
+                plateGrad.addColorStop(0, '#0284c7');
+                plateGrad.addColorStop(0.5, '#38bdf8');
+                plateGrad.addColorStop(1, '#0284c7');
+            } else if (T < 1000) {
+                plateGrad.addColorStop(0, '#475569');
+                plateGrad.addColorStop(0.5, '#64748b');
+                plateGrad.addColorStop(1, '#475569');
+            } else if (T < 3000) {
+                plateGrad.addColorStop(0, '#ea580c');
+                plateGrad.addColorStop(0.5, '#f97316');
+                plateGrad.addColorStop(1, '#ea580c');
+            } else {
+                plateGrad.addColorStop(0, '#ef4444');
+                plateGrad.addColorStop(0.5, '#ffffff');
+                plateGrad.addColorStop(1, '#ef4444');
+            }
+            ctx.fillStyle = plateGrad;
+            ctx.fillRect(chamberLeft + 2, chamberBottom, chamberRight - chamberLeft - 4, plateH);
+
+            // Thermal plate label
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = 'bold 9px monospace';
+            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 18);
+
+            // 4. Solid Crystal Lattice Bond Lines
+            if (phase.code === 'solid' || phase.code === 'metallic') {
+                ctx.strokeStyle = (phase.code === 'metallic') ? 'rgba(56, 189, 248, 0.45)' : 'rgba(0, 212, 255, 0.35)';
+                ctx.lineWidth = 1.2;
+                for (let i = 0; i < this.atoms.length; i++) {
+                    const a = this.atoms[i];
+                    for (let j = i + 1; j < this.atoms.length; j++) {
+                        const b = this.atoms[j];
+                        const dx = b.x - a.x;
+                        const dy = b.y - a.y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < 30) {
+                            ctx.beginPath();
+                            ctx.moveTo(a.x, a.y);
+                            ctx.lineTo(b.x, b.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            // 5. Plasma Sparks
+            if (phase.code === 'plasma') {
+                for (const s of this.plasmaSparks) {
+                    ctx.strokeStyle = `rgba(244, 63, 94, ${s.alpha})`;
+                    ctx.lineWidth = 2.0;
+                    ctx.beginPath();
+                    ctx.moveTo(s.x1, s.y1);
+                    ctx.lineTo((s.x1 + s.x2) / 2 + (Math.random() - 0.5) * 8, (s.y1 + s.y2) / 2 + (Math.random() - 0.5) * 8);
+                    ctx.lineTo(s.x2, s.y2);
+                    ctx.stroke();
+                }
+            }
+
+            // 6. Atoms Rendering
+            for (const a of this.atoms) {
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2);
+
+                const grad = ctx.createRadialGradient(a.x - 2, a.y - 2, 1, a.x, a.y, a.radius);
+                if (phase.code === 'plasma') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#f43f5e');
+                    grad.addColorStop(1, '#881337');
+                } else if (phase.code === 'liquid') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#10b981');
+                    grad.addColorStop(1, '#064e3b');
+                } else if (phase.code === 'gas') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#f97316');
+                    grad.addColorStop(1, '#7c2d12');
+                } else if (phase.code === 'supercritical') {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#eab308');
+                    grad.addColorStop(1, '#713f12');
+                } else {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.35, '#00d4ff');
+                    grad.addColorStop(1, '#0369a1');
+                }
+
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 1.0;
+                ctx.stroke();
+
+                // Electron orbit for plasma or gas
+                if (phase.code === 'plasma') {
+                    const ex = a.x + Math.cos(a.electronAngle) * (a.radius + 6);
+                    const ey = a.y + Math.sin(a.electronAngle) * (a.radius + 6);
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.arc(ex, ey, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Phase State Overlay Tag (Inside Chamber)
+            ctx.fillStyle = phase.color || '#00d4ff';
+            ctx.font = 'bold 12px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(`${phase.badge} (${elData.name})`, chamberLeft + 10, chamberBottom - 12);
+        }
+
+        renderDiagramView(ctx, w, h, elData, phase, startX, diagramW) {
+            const padLeft = startX + 46;
+            const padRight = startX + diagramW - 14;
+            const padTop = 38;
+            const padBottom = 34;
+            const plotW = padRight - padLeft;
             const plotH = h - padTop - padBottom;
+
+            // Background Card
+            ctx.fillStyle = 'rgba(10, 15, 28, 0.85)';
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.25)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.roundRect(startX + 6, padTop - 6, diagramW - 12, h - padTop - 14, 8);
+            ctx.fill();
+            ctx.stroke();
 
             // Coordinate mapping (Log P vs Linear T)
             const minT = 0;
             const maxT = 6000;
-            const minLogP = -6; // 10^-6 atm
-            const maxLogP = 6;  // 10^+6 atm
+            const minLogP = -6;
+            const maxLogP = 6;
 
             const mapX = (t) => padLeft + (t / maxT) * plotW;
             const mapY = (logP) => padTop + (1 - (logP - minLogP) / (maxLogP - minLogP)) * plotH;
 
-            // Background Grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            // Grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
             ctx.lineWidth = 1;
-            for (let t = 1000; t <= 5000; t += 1000) {
+            for (let t = 1500; t <= 4500; t += 1500) {
                 const x = mapX(t);
                 ctx.beginPath();
                 ctx.moveTo(x, padTop);
                 ctx.lineTo(x, h - padBottom);
                 ctx.stroke();
 
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px monospace';
-                ctx.fillText(`${t}K`, x - 14, h - padBottom + 16);
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${t}K`, x, h - padBottom + 12);
             }
 
-            for (let lp = minLogP; lp <= maxLogP; lp += 3) {
+            for (let lp = -3; lp <= 3; lp += 3) {
                 const y = mapY(lp);
                 ctx.beginPath();
                 ctx.moveTo(padLeft, y);
-                ctx.lineTo(w - padRight, y);
+                ctx.lineTo(padRight, y);
                 ctx.stroke();
 
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '11px monospace';
-                ctx.fillText(`10^${lp}`, 10, y + 4);
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px monospace';
+                ctx.textAlign = 'right';
+                ctx.fillText(`10^${lp}`, padLeft - 4, y + 3);
             }
 
-            const Tm0 = elementData?.melt ? Number(elementData.melt) : 1000;
-            const Tb0 = elementData?.boil ? Number(elementData.boil) : 2500;
+            const Tm0 = elData.melt ? Number(elData.melt) : 1000;
+            const Tb0 = elData.boil ? Number(elData.boil) : 2500;
 
-            // Phase Boundary Curves (Solid-Liquid Simon line)
+            // Solid-Liquid Simon Boundary
             ctx.strokeStyle = '#00d4ff';
-            ctx.lineWidth = 3.0;
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
-            for (let lp = minLogP; lp <= maxLogP; lp += 0.2) {
+            for (let lp = minLogP; lp <= maxLogP; lp += 0.4) {
                 const p = Math.pow(10, lp);
                 const tm = Tm0 * Math.pow(Math.max(1e-4, 1 + p / 5000), 0.12);
                 const px = mapX(tm);
@@ -358,170 +794,45 @@
             }
             ctx.stroke();
 
-            // Phase Boundary Curves (Liquid-Gas Clausius-Clapeyron curve)
+            // Liquid-Gas Vaporization Boundary
             ctx.strokeStyle = '#f97316';
-            ctx.lineWidth = 3.0;
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
-            let first = true;
-            for (let lp = minLogP; lp <= 3; lp += 0.2) {
+            for (let lp = minLogP; lp <= 2.5; lp += 0.3) {
                 const p = Math.pow(10, lp);
-                const invT = (1 / Tb0) - (R_GAS * Math.log(p)) / (80 * 1000);
-                if (invT > 0) {
-                    const tb = 1 / invT;
-                    const px = mapX(tb);
-                    const py = mapY(lp);
-                    if (first) { ctx.moveTo(px, py); first = false; }
-                    else ctx.lineTo(px, py);
-                }
+                const invT = (1 / Tb0) - (R_GAS * Math.log(Math.max(1e-12, p))) / (150 * 1000);
+                const tb = (invT > 0) ? (1 / invT) : (Tb0 * 3);
+                const px = mapX(tb);
+                const py = mapY(lp);
+                if (lp === minLogP) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
             }
             ctx.stroke();
 
-            // Labels
-            ctx.fillStyle = 'rgba(0, 212, 255, 0.9)';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText('SOLID', mapX(Tm0 * 0.4), mapY(2));
-
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
-            ctx.fillText('LIQUID', mapX((Tm0 + Tb0) / 2), mapY(2));
-
-            ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
-            ctx.fillText('GAS', mapX(Math.min(maxT * 0.85, Tb0 * 1.5)), mapY(-3));
-
-            // Current Operating Point Indicator (Glowing Reticle)
-            const curLogP = Math.max(minLogP, Math.min(maxLogP, Math.log10(this.pressureAtm)));
+            // Active State Pulsing Marker
+            const curLogP = Math.max(minLogP, Math.min(maxLogP, Math.log10(Math.max(1e-12, this.pressureAtm))));
             const curX = mapX(Math.min(maxT, this.temperatureK));
             const curY = mapY(curLogP);
 
-            ctx.shadowColor = '#00d4ff';
-            ctx.shadowBlur = 14;
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = phase.color || '#00d4ff';
+            ctx.shadowColor = phase.color || '#00d4ff';
+            ctx.shadowBlur = 12;
             ctx.beginPath();
-            ctx.arc(curX, curY, 7, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 6, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2.0;
-            ctx.beginPath();
-            ctx.arc(curX, curY, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.restore();
-        }
-    }
-
-    function openEnvPressureModal() {
-        const modal = document.getElementById('env-pressure-modal');
-        if (!modal) return;
-        modal.style.display = 'flex';
-
-        const engine = window.envSimulationEngine;
-        if (engine) {
-            const tempSlider = document.getElementById('env-modal-temp-slider');
-            const pressSlider = document.getElementById('env-modal-press-slider');
-            if (tempSlider) tempSlider.value = Math.min(6000, engine.temperatureK);
-            if (pressSlider) pressSlider.value = Math.log10(Math.max(1e-12, engine.pressureAtm));
-        }
-        updateEnvModalState();
-        if (typeof window.syncNativeSliderVisibility === 'function') {
-            window.syncNativeSliderVisibility();
-        }
-    }
-
-    function closeEnvPressureModal() {
-        const modal = document.getElementById('env-pressure-modal');
-        if (modal) modal.style.display = 'none';
-        if (typeof window.syncNativeSliderVisibility === 'function') {
-            window.syncNativeSliderVisibility();
-        }
-    }
-
-    function applyEnvModalPreset(presetId) {
-        if (!window.envSimulationEngine) return;
-        window.envSimulationEngine.setPreset(presetId);
-        const engine = window.envSimulationEngine;
-        const tempSlider = document.getElementById('env-modal-temp-slider');
-        const pressSlider = document.getElementById('env-modal-press-slider');
-        if (tempSlider) tempSlider.value = Math.min(6000, engine.temperatureK);
-        if (pressSlider) pressSlider.value = Math.log10(Math.max(1e-12, engine.pressureAtm));
-        updateEnvModalState();
-    }
-
-    function updateEnvModalState() {
-        const tempSlider = document.getElementById('env-modal-temp-slider');
-        const pressSlider = document.getElementById('env-modal-press-slider');
-        if (!tempSlider || !pressSlider || !window.envSimulationEngine) return;
-
-        const tempK = parseFloat(tempSlider.value);
-        const logP = parseFloat(pressSlider.value);
-        const pressAtm = Math.pow(10, logP);
-
-        window.envSimulationEngine.setTemperature(tempK);
-        window.envSimulationEngine.setPressure(pressAtm);
-
-        const tempDisp = document.getElementById('env-modal-temp-display');
-        const pressDisp = document.getElementById('env-modal-press-display');
-        if (tempDisp) tempDisp.textContent = `${tempK < 10 ? tempK.toFixed(2) : tempK.toFixed(0)} K`;
-        if (pressDisp) {
-            pressDisp.textContent = pressAtm < 0.01 || pressAtm > 1e4 ? `${pressAtm.toExponential(2)} atm` : `${pressAtm.toFixed(2)} atm`;
-        }
-
-        const z = window.selectedElement ? window.selectedElement.atomicNumber : 6;
-        window.envSimulationEngine.setActiveElement(z);
-        const elData = window.elementsData ? window.elementsData.find(e => e.atomicNumber === z) : null;
-        const phase = window.envSimulationEngine.calculatePhase(elData);
-
-        const targetEl = document.getElementById('env-modal-target-element');
-        const phaseLabel = document.getElementById('env-modal-phase-label');
-        const phaseBadge = document.getElementById('env-modal-phase-badge');
-
-        if (targetEl && elData) {
-            targetEl.textContent = `Target Element: ${elData.name} (${elData.symbol}, Z=${elData.atomicNumber})`;
-        }
-        if (phaseLabel) {
-            phaseLabel.textContent = `Phase: ${phase.badge} - ${phase.details}`;
-        }
-        if (phaseBadge) {
-            phaseBadge.textContent = phase.badge;
-            phaseBadge.style.color = phase.color;
-            phaseBadge.style.borderColor = phase.color;
-        }
-    }
-
-    function applyEnvModalToTable() {
-        if (!window.envSimulationEngine) return;
-        const tempK = window.envSimulationEngine.temperatureK;
-        if (typeof window.applyTempPreset === 'function') {
-            window.applyTempPreset(tempK);
-        } else {
-            const tempSlider = document.getElementById('temp-slider');
-            if (tempSlider) {
-                tempSlider.value = Math.round(tempK);
-                tempSlider.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
-        closeEnvPressureModal();
-    }
-
-    function launchEnvToSimLab() {
-        closeEnvPressureModal();
-        if (typeof window.switchView === 'function') {
-            window.switchView('simulations');
-            if (typeof window.switchSimTab === 'function') {
-                window.switchSimTab('environment');
-            }
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(phase.state, curX, curY - 10);
         }
     }
 
     // Attach to Global Scope
     window.EnvironmentSimulationEngine = EnvironmentSimulationEngine;
     window.ENVIRONMENT_PRESETS = ENVIRONMENT_PRESETS;
+    window.THERMO_ELEMENT_DB = THERMO_ELEMENT_DB;
     window.envSimulationEngine = new EnvironmentSimulationEngine();
-    window.openEnvPressureModal = openEnvPressureModal;
-    window.closeEnvPressureModal = closeEnvPressureModal;
-    window.applyEnvModalPreset = applyEnvModalPreset;
-    window.updateEnvModalState = updateEnvModalState;
-    window.applyEnvModalToTable = applyEnvModalToTable;
-    window.launchEnvToSimLab = launchEnvToSimLab;
 
 })();

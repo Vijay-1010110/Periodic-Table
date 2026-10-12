@@ -1271,7 +1271,7 @@
                                 <span class="step-icon">🎯</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 1</span>
-                                    <span class="step-label">Fire Neutron</span>
+                                    <span class="step-label">Launch Neutron</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -1279,7 +1279,7 @@
                                 <span class="step-icon">⚡</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 2</span>
-                                    <span class="step-label">Core Absorption</span>
+                                    <span class="step-label">Drop Elongation</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -1287,7 +1287,7 @@
                                 <span class="step-icon">💥</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 3</span>
-                                    <span class="step-label">Nuclear Split (+200 MeV)</span>
+                                    <span class="step-label">Split (+200 MeV)</span>
                                 </div>
                             </div>
                             <div class="stepper-connector">➔</div>
@@ -1295,13 +1295,13 @@
                                 <span class="step-icon">🔄</span>
                                 <div class="step-content">
                                     <span class="step-num">Step 4</span>
-                                    <span class="step-label">Chain Multiplier</span>
+                                    <span class="step-label">3n Multiplier</span>
                                 </div>
                             </div>
                         </div>
                         <div class="sim-narrator-pill" id="sim-narrator-pill">
                             <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start the chain reaction!</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start!</span>
                         </div>
                     </div>
 
@@ -1309,6 +1309,13 @@
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
+
+                    <!-- Sleek Floating Drawer Toggle Pill Button -->
+                    <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
+                        <span class="drawer-btn-icon">⚙️</span>
+                        <span class="drawer-btn-text">Controls &amp; Missions</span>
+                        <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
+                    </button>
                 </div>
                 <div class="sim-tuning-pane" id="sim-tuning-pane">
                     <!-- Dynamic Parameters populated by renderTuningPanel() -->

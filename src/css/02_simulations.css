@@ -310,16 +310,99 @@
 /* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
 .sim-tuning-pane {
     width: 320px;
-    background: rgba(15, 23, 42, 0.82);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(16px);
-    border-left: 1.5px solid rgba(0, 212, 255, 0.2);
+    border-left: 1.5px solid rgba(0, 212, 255, 0.25);
     display: flex;
     flex-direction: column;
     padding: 16px;
-    gap: 14px;
+    gap: 12px;
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 10;
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.25s ease,
+                padding 0.25s ease;
+}
+
+/* Progressive Scenario Selector Pills */
+.sim-scenario-pills {
+    display: flex;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 4px;
+    border-radius: 9px;
+    border: 1px solid rgba(0, 212, 255, 0.22);
+}
+
+.sim-scenario-btn {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.sim-scenario-btn:hover {
+    color: #e2e8f0;
+}
+
+.sim-scenario-btn.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(168, 85, 247, 0.35));
+    border: 1px solid rgba(0, 212, 255, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+}
+
+/* Sleek Floating Drawer Toggle Button */
+.sim-drawer-toggle-btn {
+    position: absolute;
+    bottom: 46px;
+    right: 14px;
+    z-index: 25;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 20px;
+    color: #e2e8f0;
+    font-size: 0.80rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.25);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    touch-action: manipulation;
+}
+
+.sim-drawer-toggle-btn:hover {
+    background: rgba(0, 212, 255, 0.20);
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.45);
+    transform: translateY(-2px);
+}
+
+.sim-drawer-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.drawer-arrow {
+    font-size: 0.70rem;
+    transition: transform 0.25s ease;
+    color: #00d4ff;
 }
 
 /* Game vs Controls Subdeck Toggle */
@@ -574,6 +657,14 @@
         width: clamp(260px, 32vw, 320px);
         max-height: 100%;
     }
+    .sim-tuning-pane.sim-drawer-collapsed {
+        width: 0 !important;
+        padding: 0 !important;
+        border-left: none !important;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden !important;
+    }
 }
 
 @media (orientation: portrait), (max-width: 600px) and (orientation: portrait) {
@@ -593,6 +684,25 @@
         border-top: 1.5px solid rgba(0, 212, 255, 0.25);
         padding: 12px;
         gap: 10px;
+    }
+
+    .sim-tuning-pane.sim-drawer-collapsed {
+        max-height: 0 !important;
+        padding: 0 12px !important;
+        border-top: none !important;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden !important;
+    }
+
+    .sim-drawer-toggle-btn {
+        bottom: 12px;
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .sim-drawer-toggle-btn:hover {
+        transform: translateX(50%) translateY(-2px);
     }
 }
 
