@@ -757,7 +757,7 @@
                     </button>
                 </div>
 
-                <!-- Contextual Thumb-Zone Actions -->
+                <!-- Contextual Thumb-Zone Actions & Game Explanations -->
                 ${curMode === 'transmutation' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                         <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerTransmutation()">
@@ -766,6 +766,9 @@
                         <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.resetTransmutation()">
                             <span>🔄</span> RESET PARENT ATOM
                         </button>
+                    </div>
+                    <div style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#7dd3fc; margin-bottom:8px; line-height:1.4;">
+                        💡 <strong>How Transmutation Works:</strong> An unstable parent nucleus (${curNuclide ? curNuclide.name : ''}) quantum-tunnels a particle (${curNuclide ? curNuclide.particle : ''}), altering its proton count and transmuting into ${curNuclide ? curNuclide.daughter.name : ''}!
                     </div>
                 ` : curMode === 'halflife' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
@@ -776,9 +779,12 @@
                             <span>🔄</span> REPOPULATE 100 ATOMS
                         </button>
                     </div>
+                    <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#86efac; margin-bottom:8px; line-height:1.4;">
+                        ⏱️ <strong>How Half-Life Works:</strong> 100 atoms decay randomly. Exactly ~50% remain after one half-life (t½ = ${curNuclide ? curNuclide.halfLifeStr : ''}). Watch the green curve match N(t) = N₀(½)ᵗ!
+                    </div>
                 ` : curMode === 'shielding' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
+                        <div style="font-size:0.74rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
                             <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.paper ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.paper ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.paper ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('paper')">
                                 📄 Paper ${engine && engine.shieldingBarriers.paper ? 'ON' : 'OFF'}
@@ -791,6 +797,12 @@
                             </button>
                         </div>
                     </div>
+                    <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#fde047; margin-bottom:8px; line-height:1.4;">
+                        🛡️ <strong>Shielding Penetration Rules:</strong><br>
+                        • <strong>Alpha (α):</strong> Heavy &amp; charged — stopped 100% by paper!<br>
+                        • <strong>Beta (β):</strong> Fast electron — passes paper, stopped by aluminum!<br>
+                        • <strong>Gamma (γ):</strong> Piercing photon — only dense lead stops it!
+                    </div>
                 ` : `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                         <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
@@ -799,6 +811,9 @@
                         <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
                             <span>🔄</span> CLEAR VAPOR TRACKS
                         </button>
+                    </div>
+                    <div style="background:rgba(192,132,252,0.08); border:1px solid rgba(192,132,252,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#d8b4fe; margin-bottom:8px; line-height:1.4;">
+                        🧲 <strong>Lorentz Force F = q(v × B):</strong> Magnetic field curves tracks based on charge! Positives curve up, electrons curve down, gammas fly straight!
                     </div>
                 `}
 
@@ -945,6 +960,7 @@
      * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
+        let drawerJustClosed = false;
         // Tap stage/canvas outside drawer on mobile automatically closes drawer
         const stage = document.querySelector('.sim-viewport-stage');
         if (stage) {
@@ -953,6 +969,8 @@
                 if (pane && !pane.classList.contains('sim-drawer-collapsed') && window.innerWidth <= 1024) {
                     if (e.target.closest('#sim-drawer-toggle')) return;
                     toggleSimDrawer(false);
+                    drawerJustClosed = true;
+                    setTimeout(() => { drawerJustClosed = false; }, 280);
                 }
             });
         }
@@ -961,6 +979,7 @@
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -975,6 +994,7 @@
         const decayCanvas = document.getElementById('decay-sim-canvas');
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const engine = window.nuclearDecayEngine;
                 if (!engine) return;
 
@@ -1003,6 +1023,7 @@
         const envCanvas = document.getElementById('env-phase-canvas');
         if (envCanvas) {
             envCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = envCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -1023,23 +1044,11 @@
             });
         }
 
-        // 3. Decay Chamber Click/Tap
-        const decayCanvas = document.getElementById('decay-sim-canvas');
-        if (decayCanvas) {
-            decayCanvas.addEventListener('pointerdown', (e) => {
-                const rect = decayCanvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                if (window.nuclearDecayEngine) {
-                    window.nuclearDecayEngine.triggerDecay(x, y);
-                }
-            });
-        }
-
-        // 4. Molecule Dynamics Canvas Drag/Touch
+        // 3. Molecule Dynamics Canvas Drag/Touch
         const molCanvas = document.getElementById('molecule-sim-canvas');
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = molCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;

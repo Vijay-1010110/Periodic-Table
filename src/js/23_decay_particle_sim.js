@@ -1087,4 +1087,5 @@
     window.NuclearDecaySimulationEngine = NuclearDecaySimulationEngine;
     window.DECAY_PRESETS = DECAY_NUCLIDES;
     window.DECAY_NUCLIDES = DECAY_NUCLIDES;
+    window.nuclearDecayEngine = new NuclearDecaySimulationEngine();
 })();

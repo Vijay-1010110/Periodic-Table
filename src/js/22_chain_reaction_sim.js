@@ -343,8 +343,9 @@
             this.activeReactionStep = 1;
             this.reactionNarrative = '🎯 Step 1: Aim the neutron emitter on the left and tap "FIRE NEUTRON" to initiate thermal absorption into ²³⁵U!';
             
-            const centerX = this.width * 0.55;
-            const centerY = this.height * 0.48;
+            const isMobile = (typeof window !== 'undefined' && window.innerWidth <= 850);
+            const centerX = isMobile ? (this.width * 0.44) : (this.width * 0.52);
+            const centerY = this.height * 0.50;
             this.singleAtomState = {
                 stage: 'ready',
                 stageTimer: 0,
@@ -437,7 +438,9 @@
 
         fireSingleAtomNeutron() {
             const state = this.singleAtomState;
-            if (state.stage !== 'ready' && state.stage !== 'insight') {
+            if (state.stage === 'insight' || state.stage === 'splitting') {
+                this.initSingleAtomScenario();
+            } else if (state.stage !== 'ready') {
                 return;
             }
 
@@ -1085,7 +1088,8 @@
                     ctx.arc(0, 0, r + 10 + osc, 0, Math.PI * 2);
                     ctx.fill();
 
-                    const coreGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 2, 0, 0, r + osc);
+                    // Specular highlight on top-right so mass & atomic numbers on left remain crisp and readable
+                    const coreGrad = ctx.createRadialGradient(r * 0.35, -r * 0.35, 2, 0, 0, r + osc);
                     if (state.stage === 'absorbed') {
                         coreGrad.addColorStop(0, '#ffffff');
                         coreGrad.addColorStop(0.35, '#fbbf24');
@@ -1105,32 +1109,36 @@
                     ctx.lineWidth = 2.0;
                     ctx.stroke();
 
-                    // Refined Nuclear Isotope Label (Scientific notation with clean font)
+                    // Refined Nuclear Isotope Label with strong shadow contrast
+                    ctx.save();
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                    ctx.shadowBlur = 6;
                     const uSym = (state.stage === 'absorbed') ? 'U*' : 'U';
                     const mass = (state.stage === 'absorbed') ? '236' : '235';
 
                     // Element Symbol
-                    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = '#ffffff';
                     ctx.fillText(uSym, 6, -4);
 
                     // Mass Number Superscript to the left
-                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = '#a7f3d0';
-                    ctx.fillText(mass, -14, -10);
+                    ctx.fillText(mass, -15, -11);
 
                     // Atomic Number 92 Subscript to the left
-                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-                    ctx.fillStyle = '#94a3b8';
-                    ctx.fillText('92', -14, 3);
+                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fillText('92', -15, 4);
 
                     // Subtitle (Nucleon Composition)
-                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                    const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited)' : '92p + 143n';
-                    ctx.fillText(nucText, 0, 16);
+                    ctx.font = 'bold 10.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#f1f5f9';
+                    const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited Compound)' : '92p + 143n';
+                    ctx.fillText(nucText, 0, 18);
+                    ctx.restore();
                 }
 
                 ctx.restore();

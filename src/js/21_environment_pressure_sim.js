@@ -164,22 +164,44 @@
             this.electrons = [];
             this.plasmaSparks = [];
 
-            const atomCount = 64;
             const cols = 8;
             const rows = 8;
-            const latticeSpacing = 24;
+            for (let i = 0; i < cols * rows; i++) {
+                this.atoms.push(new ChamberAtom(0, 0, 8, '#38bdf8'));
+            }
+            this.recalculateLatticePositions(this.chamberWidth, this.chamberHeight);
+        }
 
-            const boxLeft = Math.max(40, this.chamberWidth * 0.12);
-            const boxBottom = this.chamberHeight - 48;
+        recalculateLatticePositions(w, h) {
+            this.chamberWidth = Math.max(300, w);
+            this.chamberHeight = Math.max(220, h);
 
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const ax = boxLeft + c * latticeSpacing + (Math.random() - 0.5) * 2;
-                    const ay = boxBottom - (rows - 1 - r) * latticeSpacing;
-                    const atom = new ChamberAtom(ax, ay, 9, '#38bdf8');
-                    atom.latticeX = boxLeft + c * latticeSpacing;
-                    atom.latticeY = boxBottom - (rows - 1 - r) * latticeSpacing;
-                    this.atoms.push(atom);
+            const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(36, w * 0.08);
+            const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(36, w * 0.08));
+            const chamberWidth = chamberRight - chamberLeft;
+            const chamberBottom = h - 46;
+
+            const cols = 8;
+            const rows = 8;
+            const maxSpacingH = (chamberBottom - 110) / rows;
+            const maxSpacingW = (chamberWidth - 36) / cols;
+            const spacing = Math.max(13, Math.min(22, Math.min(maxSpacingH, maxSpacingW)));
+            const atomRadius = Math.max(5.5, Math.min(9.0, spacing * 0.40));
+
+            const latticeTotalW = (cols - 1) * spacing;
+            const boxLeft = chamberLeft + (chamberWidth - latticeTotalW) / 2;
+            const boxBottom = chamberBottom - atomRadius - 4;
+
+            for (let i = 0; i < this.atoms.length; i++) {
+                const atom = this.atoms[i];
+                atom.radius = atomRadius;
+                const r = Math.floor(i / cols);
+                const c = i % cols;
+                atom.latticeX = boxLeft + c * spacing;
+                atom.latticeY = boxBottom - (rows - 1 - r) * spacing;
+                if (atom.x === 0 && atom.y === 0) {
+                    atom.x = atom.latticeX;
+                    atom.y = atom.latticeY;
                 }
             }
         }
@@ -364,17 +386,24 @@
             const T = this.temperatureK;
             const P = this.pressureAtm;
 
+            if (this.lastChamberW !== w || this.lastChamberH !== h || this.lastChamberMode !== this.viewMode) {
+                this.lastChamberW = w;
+                this.lastChamberH = h;
+                this.lastChamberMode = this.viewMode;
+                this.recalculateLatticePositions(w, h);
+            }
+
             // Compute Piston Height based on Log Pressure
-            // At P = 1e-6: piston at y=25. At P = 1 atm: y=80. At P = 1e6: y = h * 0.65.
+            // Piston minimum Y is at 48 to avoid overlapping the top HUD pills
             const logP = Math.max(-6, Math.min(6, Math.log10(Math.max(1e-12, P))));
             const pFraction = (logP - (-6)) / 12.0; // 0 to 1
-            const minPistonY = 32;
+            const minPistonY = 48;
             const maxPistonY = h - 110;
             this.targetPistonY = minPistonY + pFraction * (maxPistonY - minPistonY);
             this.pistonY += (this.targetPistonY - this.pistonY) * Math.min(1.0, dt * 6.0);
 
             const chamberTop = this.pistonY + 12;
-            const chamberBottom = h - 48;
+            const chamberBottom = h - 46;
             const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(40, w * 0.08);
             const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(40, w * 0.08));
 
@@ -552,8 +581,8 @@
                 const pillW = textW + 18;
                 const pillH = 24;
 
-                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.28)' : 'rgba(15, 23, 42, 0.75)';
-                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(255, 255, 255, 0.15)';
+                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.35)' : 'rgba(11, 18, 33, 0.96)';
+                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(0, 212, 255, 0.25)';
                 ctx.lineWidth = isCur ? 1.5 : 1.0;
 
                 ctx.beginPath();
@@ -578,12 +607,12 @@
             const chamberBottom = h - 46;
             const chamberTop = this.pistonY + 12;
 
-            // 1. Vessel Glass Enclosure Background
+            // 1. Vessel Glass Enclosure Background (starts neatly at y=42)
             ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
             ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
             ctx.lineWidth = 2.0;
             ctx.beginPath();
-            ctx.roundRect(chamberLeft, 38, chamberRight - chamberLeft, chamberBottom - 38, 8);
+            ctx.roundRect(chamberLeft, 42, chamberRight - chamberLeft, chamberBottom - 42, 8);
             ctx.fill();
             ctx.stroke();
 
@@ -596,10 +625,12 @@
             ctx.fillStyle = pistonGrad;
             ctx.fillRect(chamberLeft + 2, this.pistonY, chamberRight - chamberLeft - 4, pistonH);
 
-            // Piston Rod
+            // Piston Rod (starts inside enclosure at y=42 so never intersects top HUD)
             ctx.fillStyle = '#475569';
             const midX = (chamberLeft + chamberRight) / 2;
-            ctx.fillRect(midX - 8, 2, 16, this.pistonY);
+            if (this.pistonY > 44) {
+                ctx.fillRect(midX - 8, 42, 16, this.pistonY - 42);
+            }
 
             // Piston Pressure Readout Tag
             ctx.fillStyle = '#38bdf8';
@@ -630,10 +661,16 @@
             ctx.fillStyle = plateGrad;
             ctx.fillRect(chamberLeft + 2, chamberBottom, chamberRight - chamberLeft - 4, plateH);
 
-            // Thermal plate label
+            // Thermal plate label with protective backdrop pill
+            ctx.fillStyle = 'rgba(10, 16, 30, 0.88)';
+            ctx.beginPath();
+            ctx.roundRect(midX - 70, chamberBottom + 5, 140, 18, 4);
+            ctx.fill();
             ctx.fillStyle = '#cbd5e1';
-            ctx.font = 'bold 9px monospace';
-            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 18);
+            ctx.font = 'bold 9.5px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 14);
 
             // 4. Solid Crystal Lattice Bond Lines
             if (phase.code === 'solid' || phase.code === 'metallic') {
@@ -715,11 +752,22 @@
                 }
             }
 
-            // Phase State Overlay Tag (Inside Chamber)
+            // Phase State Overlay Tag with high-contrast protective badge
+            const phaseTagTxt = `${phase.badge} (${elData.name})`;
+            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            const tagW = ctx.measureText(phaseTagTxt).width + 16;
+            ctx.fillStyle = 'rgba(10, 16, 30, 0.90)';
+            ctx.strokeStyle = phase.color || '#00d4ff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(chamberLeft + 10, chamberBottom - 28, tagW, 20, 4);
+            ctx.fill();
+            ctx.stroke();
+
             ctx.fillStyle = phase.color || '#00d4ff';
-            ctx.font = 'bold 12px monospace';
             ctx.textAlign = 'left';
-            ctx.fillText(`${phase.badge} (${elData.name})`, chamberLeft + 10, chamberBottom - 12);
+            ctx.textBaseline = 'middle';
+            ctx.fillText(phaseTagTxt, chamberLeft + 18, chamberBottom - 18);
         }
 
         renderDiagramView(ctx, w, h, elData, phase, startX, diagramW) {

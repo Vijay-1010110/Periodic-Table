@@ -11108,9 +11108,9 @@ body.is-pro-user .nav-pro-pill {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     color: #f1f5f9;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -11154,35 +11154,36 @@ body.is-pro-user .nav-pro-pill {
         position: relative;
     }
 
-    /* 100% Screen Hero: Overlay Slide-In Drawer */
+    /* 100% Screen Hero: Overlay Slide-In Drawer (Optimized for Mobile Landscape) */
     .sim-tuning-pane {
         position: absolute !important;
         top: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        width: min(340px, 88vw) !important;
+        width: min(290px, 44vw) !important;
         max-width: 100vw !important;
         height: 100% !important;
         max-height: 100% !important;
         z-index: 150 !important;
-        background: rgba(10, 16, 30, 0.96) !important;
+        background: rgba(9, 14, 28, 0.97) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
         border-left: 1.5px solid rgba(0, 212, 255, 0.35) !important;
         border-top: none !important;
-        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.85) !important;
+        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.90) !important;
         transform: translateX(0) !important;
         transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
         opacity: 1 !important;
         pointer-events: auto !important;
         overflow-y: auto !important;
-        padding: 12px 14px !important;
-        gap: 10px !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 10px 12px 32px !important;
+        gap: 9px !important;
     }
 
     .sim-tuning-pane.sim-drawer-collapsed {
         transform: translateX(105%) !important;
-        width: min(340px, 88vw) !important;
+        width: min(290px, 44vw) !important;
         opacity: 0 !important;
         pointer-events: none !important;
         overflow: hidden !important;
@@ -107148,22 +107149,44 @@ window.OrbitalViewer = {
             this.electrons = [];
             this.plasmaSparks = [];
 
-            const atomCount = 64;
             const cols = 8;
             const rows = 8;
-            const latticeSpacing = 24;
+            for (let i = 0; i < cols * rows; i++) {
+                this.atoms.push(new ChamberAtom(0, 0, 8, '#38bdf8'));
+            }
+            this.recalculateLatticePositions(this.chamberWidth, this.chamberHeight);
+        }
 
-            const boxLeft = Math.max(40, this.chamberWidth * 0.12);
-            const boxBottom = this.chamberHeight - 48;
+        recalculateLatticePositions(w, h) {
+            this.chamberWidth = Math.max(300, w);
+            this.chamberHeight = Math.max(220, h);
 
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const ax = boxLeft + c * latticeSpacing + (Math.random() - 0.5) * 2;
-                    const ay = boxBottom - (rows - 1 - r) * latticeSpacing;
-                    const atom = new ChamberAtom(ax, ay, 9, '#38bdf8');
-                    atom.latticeX = boxLeft + c * latticeSpacing;
-                    atom.latticeY = boxBottom - (rows - 1 - r) * latticeSpacing;
-                    this.atoms.push(atom);
+            const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(36, w * 0.08);
+            const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(36, w * 0.08));
+            const chamberWidth = chamberRight - chamberLeft;
+            const chamberBottom = h - 46;
+
+            const cols = 8;
+            const rows = 8;
+            const maxSpacingH = (chamberBottom - 110) / rows;
+            const maxSpacingW = (chamberWidth - 36) / cols;
+            const spacing = Math.max(13, Math.min(22, Math.min(maxSpacingH, maxSpacingW)));
+            const atomRadius = Math.max(5.5, Math.min(9.0, spacing * 0.40));
+
+            const latticeTotalW = (cols - 1) * spacing;
+            const boxLeft = chamberLeft + (chamberWidth - latticeTotalW) / 2;
+            const boxBottom = chamberBottom - atomRadius - 4;
+
+            for (let i = 0; i < this.atoms.length; i++) {
+                const atom = this.atoms[i];
+                atom.radius = atomRadius;
+                const r = Math.floor(i / cols);
+                const c = i % cols;
+                atom.latticeX = boxLeft + c * spacing;
+                atom.latticeY = boxBottom - (rows - 1 - r) * spacing;
+                if (atom.x === 0 && atom.y === 0) {
+                    atom.x = atom.latticeX;
+                    atom.y = atom.latticeY;
                 }
             }
         }
@@ -107348,17 +107371,24 @@ window.OrbitalViewer = {
             const T = this.temperatureK;
             const P = this.pressureAtm;
 
+            if (this.lastChamberW !== w || this.lastChamberH !== h || this.lastChamberMode !== this.viewMode) {
+                this.lastChamberW = w;
+                this.lastChamberH = h;
+                this.lastChamberMode = this.viewMode;
+                this.recalculateLatticePositions(w, h);
+            }
+
             // Compute Piston Height based on Log Pressure
-            // At P = 1e-6: piston at y=25. At P = 1 atm: y=80. At P = 1e6: y = h * 0.65.
+            // Piston minimum Y is at 48 to avoid overlapping the top HUD pills
             const logP = Math.max(-6, Math.min(6, Math.log10(Math.max(1e-12, P))));
             const pFraction = (logP - (-6)) / 12.0; // 0 to 1
-            const minPistonY = 32;
+            const minPistonY = 48;
             const maxPistonY = h - 110;
             this.targetPistonY = minPistonY + pFraction * (maxPistonY - minPistonY);
             this.pistonY += (this.targetPistonY - this.pistonY) * Math.min(1.0, dt * 6.0);
 
             const chamberTop = this.pistonY + 12;
-            const chamberBottom = h - 48;
+            const chamberBottom = h - 46;
             const chamberLeft = (this.viewMode === 'split') ? 25 : Math.max(40, w * 0.08);
             const chamberRight = (this.viewMode === 'split') ? (w * 0.62) : (w - Math.max(40, w * 0.08));
 
@@ -107536,8 +107566,8 @@ window.OrbitalViewer = {
                 const pillW = textW + 18;
                 const pillH = 24;
 
-                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.28)' : 'rgba(15, 23, 42, 0.75)';
-                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(255, 255, 255, 0.15)';
+                ctx.fillStyle = isCur ? 'rgba(0, 212, 255, 0.35)' : 'rgba(11, 18, 33, 0.96)';
+                ctx.strokeStyle = isCur ? '#00d4ff' : 'rgba(0, 212, 255, 0.25)';
                 ctx.lineWidth = isCur ? 1.5 : 1.0;
 
                 ctx.beginPath();
@@ -107562,12 +107592,12 @@ window.OrbitalViewer = {
             const chamberBottom = h - 46;
             const chamberTop = this.pistonY + 12;
 
-            // 1. Vessel Glass Enclosure Background
+            // 1. Vessel Glass Enclosure Background (starts neatly at y=42)
             ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
             ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
             ctx.lineWidth = 2.0;
             ctx.beginPath();
-            ctx.roundRect(chamberLeft, 38, chamberRight - chamberLeft, chamberBottom - 38, 8);
+            ctx.roundRect(chamberLeft, 42, chamberRight - chamberLeft, chamberBottom - 42, 8);
             ctx.fill();
             ctx.stroke();
 
@@ -107580,10 +107610,12 @@ window.OrbitalViewer = {
             ctx.fillStyle = pistonGrad;
             ctx.fillRect(chamberLeft + 2, this.pistonY, chamberRight - chamberLeft - 4, pistonH);
 
-            // Piston Rod
+            // Piston Rod (starts inside enclosure at y=42 so never intersects top HUD)
             ctx.fillStyle = '#475569';
             const midX = (chamberLeft + chamberRight) / 2;
-            ctx.fillRect(midX - 8, 2, 16, this.pistonY);
+            if (this.pistonY > 44) {
+                ctx.fillRect(midX - 8, 42, 16, this.pistonY - 42);
+            }
 
             // Piston Pressure Readout Tag
             ctx.fillStyle = '#38bdf8';
@@ -107614,10 +107646,16 @@ window.OrbitalViewer = {
             ctx.fillStyle = plateGrad;
             ctx.fillRect(chamberLeft + 2, chamberBottom, chamberRight - chamberLeft - 4, plateH);
 
-            // Thermal plate label
+            // Thermal plate label with protective backdrop pill
+            ctx.fillStyle = 'rgba(10, 16, 30, 0.88)';
+            ctx.beginPath();
+            ctx.roundRect(midX - 70, chamberBottom + 5, 140, 18, 4);
+            ctx.fill();
             ctx.fillStyle = '#cbd5e1';
-            ctx.font = 'bold 9px monospace';
-            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 18);
+            ctx.font = 'bold 9.5px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`THERMAL PLATE: ${T.toFixed(0)} K`, midX, chamberBottom + 14);
 
             // 4. Solid Crystal Lattice Bond Lines
             if (phase.code === 'solid' || phase.code === 'metallic') {
@@ -107699,11 +107737,22 @@ window.OrbitalViewer = {
                 }
             }
 
-            // Phase State Overlay Tag (Inside Chamber)
+            // Phase State Overlay Tag with high-contrast protective badge
+            const phaseTagTxt = `${phase.badge} (${elData.name})`;
+            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            const tagW = ctx.measureText(phaseTagTxt).width + 16;
+            ctx.fillStyle = 'rgba(10, 16, 30, 0.90)';
+            ctx.strokeStyle = phase.color || '#00d4ff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(chamberLeft + 10, chamberBottom - 28, tagW, 20, 4);
+            ctx.fill();
+            ctx.stroke();
+
             ctx.fillStyle = phase.color || '#00d4ff';
-            ctx.font = 'bold 12px monospace';
             ctx.textAlign = 'left';
-            ctx.fillText(`${phase.badge} (${elData.name})`, chamberLeft + 10, chamberBottom - 12);
+            ctx.textBaseline = 'middle';
+            ctx.fillText(phaseTagTxt, chamberLeft + 18, chamberBottom - 18);
         }
 
         renderDiagramView(ctx, w, h, elData, phase, startX, diagramW) {
@@ -108167,8 +108216,9 @@ window.OrbitalViewer = {
             this.activeReactionStep = 1;
             this.reactionNarrative = '🎯 Step 1: Aim the neutron emitter on the left and tap "FIRE NEUTRON" to initiate thermal absorption into ²³⁵U!';
             
-            const centerX = this.width * 0.55;
-            const centerY = this.height * 0.48;
+            const isMobile = (typeof window !== 'undefined' && window.innerWidth <= 850);
+            const centerX = isMobile ? (this.width * 0.44) : (this.width * 0.52);
+            const centerY = this.height * 0.50;
             this.singleAtomState = {
                 stage: 'ready',
                 stageTimer: 0,
@@ -108261,7 +108311,9 @@ window.OrbitalViewer = {
 
         fireSingleAtomNeutron() {
             const state = this.singleAtomState;
-            if (state.stage !== 'ready' && state.stage !== 'insight') {
+            if (state.stage === 'insight' || state.stage === 'splitting') {
+                this.initSingleAtomScenario();
+            } else if (state.stage !== 'ready') {
                 return;
             }
 
@@ -108909,7 +108961,8 @@ window.OrbitalViewer = {
                     ctx.arc(0, 0, r + 10 + osc, 0, Math.PI * 2);
                     ctx.fill();
 
-                    const coreGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 2, 0, 0, r + osc);
+                    // Specular highlight on top-right so mass & atomic numbers on left remain crisp and readable
+                    const coreGrad = ctx.createRadialGradient(r * 0.35, -r * 0.35, 2, 0, 0, r + osc);
                     if (state.stage === 'absorbed') {
                         coreGrad.addColorStop(0, '#ffffff');
                         coreGrad.addColorStop(0.35, '#fbbf24');
@@ -108929,32 +108982,36 @@ window.OrbitalViewer = {
                     ctx.lineWidth = 2.0;
                     ctx.stroke();
 
-                    // Refined Nuclear Isotope Label (Scientific notation with clean font)
+                    // Refined Nuclear Isotope Label with strong shadow contrast
+                    ctx.save();
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                    ctx.shadowBlur = 6;
                     const uSym = (state.stage === 'absorbed') ? 'U*' : 'U';
                     const mass = (state.stage === 'absorbed') ? '236' : '235';
 
                     // Element Symbol
-                    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = '#ffffff';
                     ctx.fillText(uSym, 6, -4);
 
                     // Mass Number Superscript to the left
-                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = '#a7f3d0';
-                    ctx.fillText(mass, -14, -10);
+                    ctx.fillText(mass, -15, -11);
 
                     // Atomic Number 92 Subscript to the left
-                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-                    ctx.fillStyle = '#94a3b8';
-                    ctx.fillText('92', -14, 3);
+                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fillText('92', -15, 4);
 
                     // Subtitle (Nucleon Composition)
-                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                    const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited)' : '92p + 143n';
-                    ctx.fillText(nucText, 0, 16);
+                    ctx.font = 'bold 10.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#f1f5f9';
+                    const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited Compound)' : '92p + 143n';
+                    ctx.fillText(nucText, 0, 18);
+                    ctx.restore();
                 }
 
                 ctx.restore();
@@ -110368,6 +110425,7 @@ window.OrbitalViewer = {
     window.NuclearDecaySimulationEngine = NuclearDecaySimulationEngine;
     window.DECAY_PRESETS = DECAY_NUCLIDES;
     window.DECAY_NUCLIDES = DECAY_NUCLIDES;
+    window.nuclearDecayEngine = new NuclearDecaySimulationEngine();
 })();
 
 // 24_molecule_physics_sim.js
@@ -111570,7 +111628,7 @@ window.OrbitalViewer = {
                     </button>
                 </div>
 
-                <!-- Contextual Thumb-Zone Actions -->
+                <!-- Contextual Thumb-Zone Actions & Game Explanations -->
                 ${curMode === 'transmutation' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                         <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerTransmutation()">
@@ -111579,6 +111637,9 @@ window.OrbitalViewer = {
                         <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.resetTransmutation()">
                             <span>🔄</span> RESET PARENT ATOM
                         </button>
+                    </div>
+                    <div style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#7dd3fc; margin-bottom:8px; line-height:1.4;">
+                        💡 <strong>How Transmutation Works:</strong> An unstable parent nucleus (${curNuclide ? curNuclide.name : ''}) quantum-tunnels a particle (${curNuclide ? curNuclide.particle : ''}), altering its proton count and transmuting into ${curNuclide ? curNuclide.daughter.name : ''}!
                     </div>
                 ` : curMode === 'halflife' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
@@ -111589,9 +111650,12 @@ window.OrbitalViewer = {
                             <span>🔄</span> REPOPULATE 100 ATOMS
                         </button>
                     </div>
+                    <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#86efac; margin-bottom:8px; line-height:1.4;">
+                        ⏱️ <strong>How Half-Life Works:</strong> 100 atoms decay randomly. Exactly ~50% remain after one half-life (t½ = ${curNuclide ? curNuclide.halfLifeStr : ''}). Watch the green curve match N(t) = N₀(½)ᵗ!
+                    </div>
                 ` : curMode === 'shielding' ? `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
+                        <div style="font-size:0.74rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
                             <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.paper ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.paper ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.paper ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('paper')">
                                 📄 Paper ${engine && engine.shieldingBarriers.paper ? 'ON' : 'OFF'}
@@ -111604,6 +111668,12 @@ window.OrbitalViewer = {
                             </button>
                         </div>
                     </div>
+                    <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#fde047; margin-bottom:8px; line-height:1.4;">
+                        🛡️ <strong>Shielding Penetration Rules:</strong><br>
+                        • <strong>Alpha (α):</strong> Heavy &amp; charged — stopped 100% by paper!<br>
+                        • <strong>Beta (β):</strong> Fast electron — passes paper, stopped by aluminum!<br>
+                        • <strong>Gamma (γ):</strong> Piercing photon — only dense lead stops it!
+                    </div>
                 ` : `
                     <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                         <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
@@ -111612,6 +111682,9 @@ window.OrbitalViewer = {
                         <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
                             <span>🔄</span> CLEAR VAPOR TRACKS
                         </button>
+                    </div>
+                    <div style="background:rgba(192,132,252,0.08); border:1px solid rgba(192,132,252,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#d8b4fe; margin-bottom:8px; line-height:1.4;">
+                        🧲 <strong>Lorentz Force F = q(v × B):</strong> Magnetic field curves tracks based on charge! Positives curve up, electrons curve down, gammas fly straight!
                     </div>
                 `}
 
@@ -111758,6 +111831,7 @@ window.OrbitalViewer = {
      * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
+        let drawerJustClosed = false;
         // Tap stage/canvas outside drawer on mobile automatically closes drawer
         const stage = document.querySelector('.sim-viewport-stage');
         if (stage) {
@@ -111766,6 +111840,8 @@ window.OrbitalViewer = {
                 if (pane && !pane.classList.contains('sim-drawer-collapsed') && window.innerWidth <= 1024) {
                     if (e.target.closest('#sim-drawer-toggle')) return;
                     toggleSimDrawer(false);
+                    drawerJustClosed = true;
+                    setTimeout(() => { drawerJustClosed = false; }, 280);
                 }
             });
         }
@@ -111774,6 +111850,7 @@ window.OrbitalViewer = {
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -111788,6 +111865,7 @@ window.OrbitalViewer = {
         const decayCanvas = document.getElementById('decay-sim-canvas');
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const engine = window.nuclearDecayEngine;
                 if (!engine) return;
 
@@ -111816,6 +111894,7 @@ window.OrbitalViewer = {
         const envCanvas = document.getElementById('env-phase-canvas');
         if (envCanvas) {
             envCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = envCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -111836,23 +111915,11 @@ window.OrbitalViewer = {
             });
         }
 
-        // 3. Decay Chamber Click/Tap
-        const decayCanvas = document.getElementById('decay-sim-canvas');
-        if (decayCanvas) {
-            decayCanvas.addEventListener('pointerdown', (e) => {
-                const rect = decayCanvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                if (window.nuclearDecayEngine) {
-                    window.nuclearDecayEngine.triggerDecay(x, y);
-                }
-            });
-        }
-
-        // 4. Molecule Dynamics Canvas Drag/Touch
+        // 3. Molecule Dynamics Canvas Drag/Touch
         const molCanvas = document.getElementById('molecule-sim-canvas');
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
+                if (drawerJustClosed) return;
                 const rect = molCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
