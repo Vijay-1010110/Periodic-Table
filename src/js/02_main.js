@@ -944,6 +944,12 @@ function handleHashRouting() {
     const hash = window.location.hash.replace('#', '').trim().toLowerCase();
     if (!hash) return;
 
+    if (hash === 'states' || hash === 'environment' || hash === 'phase') {
+        switchView('simulations', false);
+        setTimeout(() => { if (typeof window.switchSimTab === 'function') window.switchSimTab('environment'); }, 100);
+        return;
+    }
+
     const viewMap = {
         'isotopes': 'isotopes',
         'isotope': 'isotopes',

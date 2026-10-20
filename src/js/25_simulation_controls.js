@@ -500,7 +500,7 @@
             } else if (tabName === 'molecule') {
                 msgEl.textContent = '🧬 Touch & drag atoms to stretch harmonic bonds; tap THERMAL JOLT to stimulate vibrations.';
             } else if (tabName === 'environment') {
-                msgEl.textContent = '🌡️ Explore phase boundaries: Heat to melt/boil, cool to crystallize, or compress into dense metal.';
+                msgEl.textContent = '🌡️ Drag hydraulic piston down/up to compress/decompress; tap +200K / -200K to heat/cool!';
             }
         }
 
@@ -951,20 +951,66 @@
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // View mode HUD switcher pills at top left
-                if (y <= 38 && window.envSimulationEngine) {
-                    if (x >= 14 && x <= 110) {
+                // View mode HUD switcher pills at top left (generous thumb zone)
+                if (y <= 50 && window.envSimulationEngine) {
+                    if (x >= 10 && x <= 125) {
                         window.envSimulationEngine.setViewMode('split');
                         return;
-                    } else if (x > 110 && x <= 230) {
+                    } else if (x > 125 && x <= 255) {
                         window.envSimulationEngine.setViewMode('chamber');
                         return;
-                    } else if (x > 230 && x <= 340) {
+                    } else if (x > 255 && x <= 385) {
                         window.envSimulationEngine.setViewMode('diagram');
                         return;
                     }
                 }
+
+                // 2. Check if user tapped inside the P-T Phase Diagram
+                if (window.envSimulationEngine && (window.envSimulationEngine.viewMode === 'split' || window.envSimulationEngine.viewMode === 'diagram')) {
+                    if (window.envSimulationEngine.handleDiagramPointer(x, y)) {
+                        window.envSimulationEngine.isDraggingDiagram = true;
+                        try { envCanvas.setPointerCapture(e.pointerId); } catch (_) {}
+                        return;
+                    }
+                }
+
+                // 3. Hydraulic Piston direct touch/drag
+                if (window.envSimulationEngine) {
+                    if (window.envSimulationEngine.startPistonDrag(x, y)) {
+                        try { envCanvas.setPointerCapture(e.pointerId); } catch (_) {}
+                    }
+                }
             });
+
+            envCanvas.addEventListener('pointermove', (e) => {
+                const rect = envCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (window.envSimulationEngine && window.envSimulationEngine.isDraggingDiagram) {
+                    window.envSimulationEngine.handleDiagramPointer(x, y);
+                    return;
+                }
+
+                if (window.envSimulationEngine && window.envSimulationEngine.isDraggingPiston) {
+                    window.envSimulationEngine.movePistonDrag(x, y);
+                }
+            });
+
+            const stopPiston = (e) => {
+                if (window.envSimulationEngine) {
+                    if (window.envSimulationEngine.isDraggingDiagram) {
+                        window.envSimulationEngine.isDraggingDiagram = false;
+                        try { envCanvas.releasePointerCapture(e.pointerId); } catch (_) {}
+                    }
+                    if (window.envSimulationEngine.isDraggingPiston) {
+                        window.envSimulationEngine.endPistonDrag();
+                        try { envCanvas.releasePointerCapture(e.pointerId); } catch (_) {}
+                    }
+                }
+            };
+            envCanvas.addEventListener('pointerup', stopPiston);
+            envCanvas.addEventListener('pointercancel', stopPiston);
         }
 
         // 4. Molecule Dynamics Canvas Drag/Touch
