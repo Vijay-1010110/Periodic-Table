@@ -670,39 +670,130 @@ body.has-native-slider #temp-custom-slider {
     grid-row: 2;
     display: flex;
     justify-content: center !important;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 8px;
     padding: 0px;
     pointer-events: auto;
-    height: 0;
+    height: 100%;
     min-height: 0;
     overflow: visible;
     z-index: 5;
+    box-sizing: border-box;
     transform-origin: top center !important;
 }
 
 .legend-box {
-    background: rgba(10, 15, 30, 0.96) !important;
-    border: 1px solid rgba(0, 212, 255, 0.35) !important;
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: rgba(9, 14, 26, 0.96) !important;
+    border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+    border-radius: 6px;
+    padding: 6px 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), inset 0 0 15px rgba(0, 212, 255, 0.05);
     z-index: 20 !important;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 0;
 }
+
+.in-grid-legend .category-box {
+    flex: 1.6 !important;
+    min-width: 0 !important;
+}
+
+.in-grid-legend .hero-inspector-box {
+    flex: 1.1 !important;
+    min-width: 0 !important;
+    border-color: rgba(0, 212, 255, 0.45) !important;
+}
+
 .legend-box-title {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    font-weight: 800;
     color: var(--accent-cyan);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.25);
     padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
 }
+
+.legend-box-title .legend-title-help {
+    font-size: 0.55rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
 .legend-box-content {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
 }
+
+.legend-series-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-height: 0;
+    justify-content: space-around;
+}
+
+.legend-group-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-subheading {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 65px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.legend-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    flex: 1;
+}
+
+.legend-states-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 3px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend-states-label {
+    font-size: 0.52rem;
+    color: #94a3b8;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.legend-states-chips {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
 .legend-group {
     display: flex;
     flex-direction: column;
@@ -710,11 +801,11 @@ body.has-native-slider #temp-custom-slider {
     min-width: 100px;
 }
 .legend-group-title {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
     text-transform: uppercase;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     letter-spacing: 0.5px;
 }
 .interactive-super {
@@ -725,9 +816,166 @@ body.has-native-slider #temp-custom-slider {
     color: var(--accent-amber);
     text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
 }
-.legend-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: var(--transition-fast); margin-left: -4px; font-size: 0.7rem; }
-.legend-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
-.legend-color { width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: var(--transition-fast);
+    font-size: 0.62rem;
+    line-height: 1.15;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.legend-item:hover {
+    filter: brightness(1.2);
+    transform: scale(1.04);
+}
+.legend-color { width: 9px; height: 9px; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
+
+/* Central Hero Inspector Card Styles */
+.hero-inspector-body {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+}
+
+.hero-card-tile {
+    width: 68px;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1.5px solid #00d4ff;
+    border-radius: 0px !important;
+    padding: 3px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-tile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    line-height: 1;
+}
+
+.hero-tile-z {
+    font-weight: 800;
+    color: #38bdf8;
+}
+
+.hero-tile-mass {
+    font-size: 0.46rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.hero-tile-sym {
+    font-size: 1.45rem;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1;
+    margin: 2px 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hero-tile-name {
+    font-size: 0.52rem;
+    text-align: center;
+    color: #f1f5f9;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-tile-config {
+    font-size: 0.42rem;
+    font-family: var(--font-mono);
+    text-align: center;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-anatomy-callouts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.55rem;
+    color: #cbd5e1;
+}
+
+.anatomy-callout-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.anatomy-callout-row .callout-tag {
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #38bdf8;
+    min-width: 32px;
+}
+
+.anatomy-callout-hint {
+    font-size: 0.48rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin-top: 3px;
+}
+
+.hero-live-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-prop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.52rem;
+    line-height: 1.2;
+}
+
+.hero-prop-lbl {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.hero-prop-val {
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.hero-cat-pill {
+    font-size: 0.46rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
 
 /* Highlight Logic */
 #main-grid.highlighting-active .element-cell:not(.highlighted),
@@ -10819,51 +11067,221 @@ body.is-pro-user .nav-pro-pill {
     transform: scale(0.97);
 }
 
+
+/* Drawer Header & Clean Close */
+.sim-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    margin-bottom: 2px;
+}
+
+.sim-drawer-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.90rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    font-family: var(--font-ui);
+    letter-spacing: 0.3px;
+}
+
+.sim-drawer-close-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #f1f5f9;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sim-drawer-close-btn:hover,
+.sim-drawer-close-btn:active {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+}
+
+.tab-txt-short {
+    display: none;
+}
+.tab-txt-full {
+    display: inline;
+}
+
+.sim-drawer-toggle-btn.drawer-open {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: scale(0.85) translateY(8px) !important;
+}
 /* ==================== RESPONSIVE RULES FOR MOBILE & SPLIT MODE ==================== */
-@media (orientation: landscape) {
+@media (max-width: 1024px), (orientation: landscape) and (max-height: 540px) {
     .sim-workspace {
+        position: relative;
         flex-direction: row;
+        overflow: hidden;
     }
+
+    .sim-viewport-stage {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 1 100% !important;
+        position: relative;
+    }
+
+    /* 100% Screen Hero: Overlay Slide-In Drawer */
     .sim-tuning-pane {
-        width: clamp(260px, 32vw, 320px);
-        max-height: 100%;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: min(340px, 86vw) !important;
+        max-width: 100vw !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        z-index: 100 !important;
+        background: rgba(10, 16, 30, 0.96) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-left: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+        border-top: none !important;
+        box-shadow: -12px 0 36px rgba(0, 0, 0, 0.85) !important;
+        transform: translateX(0) !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        overflow-y: auto !important;
+        padding: 12px 14px !important;
+        gap: 10px !important;
     }
+
     .sim-tuning-pane.sim-drawer-collapsed {
-        width: 0 !important;
-        padding: 0 !important;
-        border-left: none !important;
-        opacity: 0;
-        pointer-events: none;
+        transform: translateX(105%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
         overflow: hidden !important;
+    }
+
+    .tab-txt-short {
+        display: inline;
+    }
+    .tab-txt-full {
+        display: none;
+    }
+
+    .sim-header-bar {
+        padding: 4px 6px;
+        gap: 5px;
+        min-height: 42px;
+    }
+
+    .sim-tab-btn {
+        padding: 4px 7px;
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+
+    .sim-beta-tag {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    .sim-ctrl-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.80rem;
+    }
+
+    .sim-speed-select {
+        padding: 3px 4px;
+        font-size: 0.72rem;
+    }
+
+    /* Stepper & Live Narrator Compact Mobile Styling */
+    .sim-reaction-stepper {
+        top: 4px;
+        left: 6px;
+        right: 6px;
+        gap: 2px;
+        max-width: calc(100% - 12px);
+    }
+
+    .stepper-track {
+        padding: 2px 5px;
+        gap: 3px;
+        border-radius: 6px;
+    }
+
+    .step-card {
+        padding: 1px 4px;
+        gap: 2px;
+    }
+
+    .step-card .step-num {
+        display: none;
+    }
+
+    .step-card .step-label {
+        font-size: 0.66rem;
+        font-weight: 600;
+    }
+
+    .step-icon {
+        font-size: 0.72rem;
+    }
+
+    .stepper-connector {
+        font-size: 0.60rem;
+        opacity: 0.4;
+    }
+
+    .sim-narrator-pill {
+        padding: 2px 8px;
+        font-size: 0.70rem;
+        max-width: 92%;
+    }
+
+    .narrator-icon {
+        font-size: 0.72rem;
+    }
+
+    .sim-narrator-pill .narrator-msg {
+        font-size: 0.70rem;
     }
 }
 
-@media (orientation: portrait), (max-width: 600px) and (orientation: portrait) {
+/* Portrait Mode Bottom-Sheet */
+@media (max-width: 600px) and (orientation: portrait) {
     .sim-workspace {
         flex-direction: column;
     }
 
-    .sim-viewport-stage {
-        flex: 1;
-        min-height: 240px;
-    }
-
     .sim-tuning-pane {
-        width: 100%;
-        max-height: 48vh;
-        border-left: none;
-        border-top: 1.5px solid rgba(0, 212, 255, 0.25);
-        padding: 12px;
-        gap: 10px;
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        max-height: 65vh !important;
+        border-left: none !important;
+        border-top: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+        border-radius: 16px 16px 0 0 !important;
+        transform: translateY(0) !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
     }
 
     .sim-tuning-pane.sim-drawer-collapsed {
-        max-height: 0 !important;
-        padding: 0 12px !important;
-        border-top: none !important;
-        opacity: 0;
-        pointer-events: none;
-        overflow: hidden !important;
+        transform: translateY(105%) !important;
     }
 
     .sim-drawer-toggle-btn {
@@ -10874,82 +11292,6 @@ body.is-pro-user .nav-pro-pill {
 
     .sim-drawer-toggle-btn:hover {
         transform: translateX(50%) translateY(-2px);
-    }
-}
-
-@media (max-width: 900px) {
-    .sim-header-bar {
-        padding: 4px 8px;
-        gap: 6px;
-    }
-
-    .sim-tab-btn {
-        padding: 5px 9px;
-        font-size: 0.78rem;
-        gap: 4px;
-    }
-
-    .stepper-track {
-        padding: 3px 6px;
-        gap: 4px;
-    }
-
-    .step-card {
-        padding: 2px 6px;
-    }
-
-    .step-card .step-label {
-        font-size: 0.72rem;
-    }
-
-    .sim-narrator-pill {
-        padding: 3px 8px;
-    }
-
-    .sim-narrator-pill .narrator-msg {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-height: 540px) and (orientation: landscape) {
-    .sim-header-bar {
-        padding: 3px 8px;
-        min-height: 42px;
-    }
-
-    .sim-ctrl-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.82rem;
-    }
-
-    .sim-speed-select {
-        padding: 3px 5px;
-        font-size: 0.74rem;
-    }
-
-    .sim-tuning-pane {
-        width: 270px;
-        padding: 8px 10px;
-        gap: 8px;
-    }
-
-    .sim-reaction-stepper {
-        top: 4px;
-        gap: 3px;
-    }
-
-    .stepper-track {
-        padding: 2px 6px;
-        gap: 3px;
-    }
-
-    .step-card {
-        padding: 2px 6px;
-    }
-
-    .sim-narrator-pill {
-        padding: 2px 8px;
     }
 }
 
@@ -21110,7 +21452,9 @@ const elementsData = [
         "symbol": "Ts",
         "name": "Tennessine",
         "atomicMass": 294,
-        "category": "Unknown, probably metalloid",
+        "category": "Reactive nonmetal",
+        "dualCategory": "Metalloid",
+        "classificationNote": "Group 17 halogen, but relativistic spin-orbit coupling predicts significant metalloid semiconductor properties.",
         "block": "p",
         "period": 7,
         "group": 17,
@@ -21468,6 +21812,9 @@ window.PeriodicCanvasGrid = (function() {
     let offsetY = 0;
     let isInitialized = false;
     let rafScheduled = false;
+    let groupHeaderH = 20;
+    let periodMarginLeft = 22;
+    let hoveredZ = null;
 
     // Dual Fit Mode ('horizontal' or 'whole')
     let currentFitMode = 'horizontal';
@@ -21513,21 +21860,83 @@ window.PeriodicCanvasGrid = (function() {
     };
 
     const CATEGORY_COLORS = {
-        'Alkali metal': '#ef4444',
-        'Alkaline earth metal': '#f97316',
-        'Transition metal': '#6366f1',
-        'Post-transition metal': '#0284c7',
-        'Metalloid': '#eab308',
-        'Other nonmetal': '#22c55e',
-        'Other Nonmetals': '#22c55e',
-        'Halogen': '#14b8a6',
-        'Halogens': '#14b8a6',
-        'Noble gas': '#06b6d4',
-        'Noble Gases': '#06b6d4',
-        'Lanthanide': '#ec4899',
-        'Actinide': '#a855f7',
-        'Unknown': '#64748b'
+        'Alkali metal': '#e11d48',          // Vivid Crimson Red
+        'Alkaline earth metal': '#ea580c',  // Warm Tangerine Orange
+        'Transition metal': '#2563eb',      // Royal Cobalt Blue
+        'Post-transition metal': '#0d9488', // Cool Jade Teal
+        'Metalloid': '#d97706',             // Radiant Amber Gold
+        'Reactive nonmetal': '#059669',     // Deep Emerald Green
+        'Other nonmetal': '#059669',        // Deep Emerald Green
+        'Other Nonmetals': '#059669',       // Deep Emerald Green
+        'Halogen': '#059669',               // Group 17 Reactive Nonmetal
+        'Halogens': '#059669',              // Group 17 Reactive Nonmetal
+        'Noble gas': '#7c3aed',             // Imperial Purple / Violet
+        'Noble Gases': '#7c3aed',           // Imperial Purple / Violet
+        'Lanthanide': '#0284c7',            // Electric Cerulean Cyan
+        'Actinide': '#c026d3',              // Vivid Deep Fuchsia Orchid
+        'Unknown': '#475569'                // Refined Slate Gray
     };
+
+    const GROUPS_DATA = [
+        { num: '1', iupac: 'IA' },
+        { num: '2', iupac: 'IIA' },
+        { num: '3', iupac: 'IIIB' },
+        { num: '4', iupac: 'IVB' },
+        { num: '5', iupac: 'VB' },
+        { num: '6', iupac: 'VIB' },
+        { num: '7', iupac: 'VIIB' },
+        { num: '8', iupac: 'VIII' },
+        { num: '9', iupac: 'VIII' },
+        { num: '10', iupac: 'VIII' },
+        { num: '11', iupac: 'IB' },
+        { num: '12', iupac: 'IIB' },
+        { num: '13', iupac: 'IIIA' },
+        { num: '14', iupac: 'IVA' },
+        { num: '15', iupac: 'VA' },
+        { num: '16', iupac: 'VIA' },
+        { num: '17', iupac: 'VIIA' },
+        { num: '18', iupac: 'VIIIA' }
+    ];
+
+    const PERIODS_DATA = [
+        { num: '1', row: 1 },
+        { num: '2', row: 2 },
+        { num: '3', row: 3 },
+        { num: '4', row: 4 },
+        { num: '5', row: 5 },
+        { num: '6', row: 6 },
+        { num: '7', row: 7 }
+    ];
+
+    function hexToRgbComponents(hex) {
+        if (!hex) return [100, 116, 139];
+        let c = hex.replace('#', '');
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        if (isNaN(num)) return [100, 116, 139];
+        return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+    }
+
+    function createCellGradient(ctx, x, y, w, h, hexColor, isSelected, isHovered) {
+        const [r, g, b] = hexToRgbComponents(hexColor);
+        const highlightFactor = isSelected ? 0.40 : (isHovered ? 0.35 : 0.25);
+        const shadowFactor = isSelected ? 0.82 : (isHovered ? 0.72 : 0.62);
+
+        const highlightR = Math.min(255, Math.round(r + (255 - r) * highlightFactor));
+        const highlightG = Math.min(255, Math.round(g + (255 - g) * highlightFactor));
+        const highlightB = Math.min(255, Math.round(b + (255 - b) * highlightFactor));
+
+        const shadowR = Math.max(0, Math.round(r * shadowFactor));
+        const shadowG = Math.max(0, Math.round(g * shadowFactor));
+        const shadowB = Math.max(0, Math.round(b * shadowFactor));
+
+        const alpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.92);
+        const grad = ctx.createLinearGradient(x, y, x + w * 0.85, y + h);
+        grad.addColorStop(0, `rgba(${highlightR}, ${highlightG}, ${highlightB}, ${alpha})`);
+        grad.addColorStop(0.48, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+        grad.addColorStop(1, `rgba(${shadowR}, ${shadowG}, ${shadowB}, ${alpha})`);
+        return grad;
+    }
 
     function hexToRgba(color, alpha) {
         if (!color) return `rgba(100,116,139,${alpha})`;
@@ -21583,16 +21992,17 @@ window.PeriodicCanvasGrid = (function() {
 
     function normalizeCategory(cat, z = null) {
         if (z) {
-            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 85 || z === 117) return 'Halogen';
+            if (z === 117) return 'Reactive nonmetal';
+            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 85) return 'Reactive nonmetal';
             if (z === 2 || z === 10 || z === 18 || z === 36 || z === 54 || z === 86 || z === 118) return 'Noble gas';
-            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Other nonmetal';
+            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Reactive nonmetal';
             if (z === 5 || z === 14 || z === 32 || z === 33 || z === 51 || z === 52) return 'Metalloid';
         }
         if (!cat) return 'Unknown';
         const lowerCat = cat.toLowerCase();
-        if (lowerCat.includes('halogen')) return 'Halogen';
+        if (lowerCat.includes('halogen')) return 'Reactive nonmetal';
         if (lowerCat.includes('noble gas')) return 'Noble gas';
-        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Other nonmetal';
+        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Reactive nonmetal';
         if (lowerCat.includes('transition metal') && !lowerCat.includes('post')) return 'Transition metal';
         if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
         if (lowerCat.includes('metalloid')) return 'Metalloid';
@@ -21669,65 +22079,105 @@ window.PeriodicCanvasGrid = (function() {
                 touch-action: auto !important;
             }
             .in-grid-legend .legend-box {
-                background: rgba(9, 14, 26, 0.98) !important;
-                border: 1px solid rgba(0, 212, 255, 0.35) !important;
+                background: rgba(9, 14, 26, 0.96) !important;
+                border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
-                padding: 2px 4px !important;
+                padding: 4px 8px !important;
                 border-radius: 6px !important;
                 height: 100% !important;
                 box-sizing: border-box !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: flex-start !important;
+                min-height: 0 !important;
             }
-            .in-grid-legend .category-box { flex: 3 !important; min-width: 0 !important; }
-            .in-grid-legend .state-box { flex: 1 !important; min-width: 0 !important; }
+            .in-grid-legend .category-box { flex: 1.6 !important; min-width: 0 !important; }
+            .in-grid-legend .hero-inspector-box { flex: 1.1 !important; min-width: 0 !important; border-color: rgba(0, 212, 255, 0.45) !important; }
             .in-grid-legend .legend-box-title {
-                font-size: 0.44rem !important;
+                font-size: 0.62rem !important;
                 font-weight: 800 !important;
-                margin-bottom: 2px !important;
-                text-align: center !important;
+                margin-bottom: 3px !important;
+                padding-bottom: 2px !important;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
                 color: #00d4ff !important;
                 letter-spacing: 0.5px !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
             }
-            .in-grid-legend .legend-group-title {
-                font-size: 0.40rem !important;
-                font-weight: 700 !important;
-                margin-bottom: 2px !important;
-                text-align: center !important;
+            .in-grid-legend .legend-series-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 3px !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+                justify-content: space-around !important;
+            }
+            .in-grid-legend .legend-group-row {
+                display: flex !important;
+                align-items: center !important;
+                gap: 5px !important;
+            }
+            .in-grid-legend .legend-subheading {
+                font-size: 0.52rem !important;
+                font-weight: 800 !important;
                 color: rgba(255, 255, 255, 0.85) !important;
                 text-transform: uppercase !important;
-                white-space: nowrap !important;
+                letter-spacing: 0.5px !important;
+                min-width: 60px !important;
+                flex-shrink: 0 !important;
                 cursor: pointer !important;
-                transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease !important;
+            }
+            .in-grid-legend .legend-chips-wrap {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 2.5px !important;
+                flex: 1 !important;
+            }
+            .in-grid-legend .legend-states-bar {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 5px !important;
+                margin-top: 2px !important;
+                padding-top: 2px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            .in-grid-legend .legend-states-label {
+                font-size: 0.48rem !important;
+                color: #94a3b8 !important;
+                font-weight: 700 !important;
+                white-space: nowrap !important;
+            }
+            .in-grid-legend .legend-states-chips {
+                display: flex !important;
+                gap: 3px !important;
+                align-items: center !important;
             }
             .in-grid-legend .legend-item {
                 border-radius: 3px !important;
-                padding: 0 2px !important;
-                display: flex !important;
+                padding: 1.5px 5px !important;
+                display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 cursor: pointer !important;
-                line-height: 1.05 !important;
+                line-height: 1.15 !important;
                 box-sizing: border-box !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-                font-size: 0.38rem !important;
+                font-size: 0.58rem !important;
                 margin: 0 !important;
                 text-align: center !important;
-                white-space: normal !important;
+                white-space: nowrap !important;
                 transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, filter 0.15s ease !important;
             }
             .in-grid-legend .legend-item span {
-                font-size: 0.38rem !important;
+                font-size: 0.56rem !important;
                 font-family: var(--font-ui) !important;
                 font-weight: 700 !important;
-                white-space: normal !important;
-                line-height: 1.05 !important;
+                white-space: nowrap !important;
+                line-height: 1.15 !important;
                 text-align: center !important;
-                letter-spacing: -0.2px !important;
             }
             .in-grid-legend .legend-item[data-type="category"] span {
                 color: #ffffff !important;
@@ -21736,20 +22186,24 @@ window.PeriodicCanvasGrid = (function() {
                 color: inherit !important;
             }
             .in-grid-legend .legend-item[data-key="Solid"][data-type="state"] {
-                color: #ffffff !important;
+                color: #0f172a !important;
+                background: #ffffff !important;
+                border: 1px solid #ffffff !important;
             }
             .in-grid-legend .legend-item[data-key="Liquid"][data-type="state"] {
                 color: #00f0ff !important;
+                border: 1px solid #00f0ff !important;
             }
             .in-grid-legend .legend-item[data-key="Gas"][data-type="state"] {
                 color: #ff0055 !important;
+                border: 1px solid #ff0055 !important;
             }
             .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
-                color: #a1a1aa !important;
+                color: #94a3b8 !important;
+                border: 1px dashed rgba(148, 163, 184, 0.7) !important;
             }
-            
             .in-grid-legend .legend-item:hover, .in-grid-legend .legend-item:active {
-                border-color: #ffffff !important;
+                filter: brightness(1.2) !important;
                 box-shadow: 0 0 8px rgba(0, 212, 255, 0.8) !important;
             }
             .in-grid-legend .legend-item-active {
@@ -21758,94 +22212,6 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .legend-item-dimmed {
                 opacity: 0.35 !important;
                 filter: brightness(0.65) !important;
-            }
-            
-            .in-grid-legend .legend-col-metals {
-                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
-            }
-            .in-grid-legend .legend-col-metalloids {
-                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
-            }
-            .in-grid-legend .metals-layout-grid {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metals-top-row {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 1.5px !important;
-                flex: 2 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metals-col-sblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-col-dblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1.2 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-col-pblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-bottom-row {
-                display: flex !important;
-                flex-direction: row !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metalloids-items {
-                flex-direction: column !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-col-nonmetals {
-                flex: 2 !important;
-                min-width: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-            }
-            .in-grid-legend .nonmetals-items {
-                flex: 1 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .state-box .legend-box-content {
-                display: flex !important;
-                flex-direction: column !important;
-                flex: 1 !important;
-                justify-content: space-between !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-group-states {
-                flex: 1 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-group-states .legend-group-items {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                justify-content: space-between !important;
-                flex: 1 !important;
             }
             
             .in-grid-legend .heatmap-controller {
@@ -21874,6 +22240,24 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .heatmap-scale { display: flex !important; flex-direction: column !important; gap: 2px !important; }
             .in-grid-legend .scale-btn { display: flex !important; align-items: center !important; gap: 2px !important; padding: 1px 3px !important; font-size: 0.40rem !important; border-radius: 2px !important; }
             .in-grid-legend .scale-btn svg { width: 10px !important; height: 10px !important; }
+
+            .hero-inspector-body { display: flex !important; gap: 6px !important; flex: 1 !important; min-height: 0 !important; align-items: stretch !important; }
+            .hero-card-tile { width: 66px !important; flex-shrink: 0 !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.5px solid #00d4ff !important; border-radius: 0px !important; padding: 2px 4px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; box-sizing: border-box !important; position: relative !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7) !important; }
+            .hero-tile-top { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; font-family: monospace !important; font-size: 0.52rem !important; line-height: 1 !important; }
+            .hero-tile-z { font-weight: 800 !important; color: #38bdf8 !important; }
+            .hero-tile-mass { font-size: 0.44rem !important; color: rgba(255, 255, 255, 0.75) !important; }
+            .hero-tile-sym { font-size: 1.40rem !important; font-weight: 900 !important; text-align: center !important; line-height: 1 !important; margin: 1px 0 !important; font-family: system-ui, sans-serif !important; }
+            .hero-tile-name { font-size: 0.50rem !important; text-align: center !important; color: #f1f5f9 !important; font-weight: 700 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .hero-tile-config { font-size: 0.40rem !important; font-family: monospace !important; text-align: center !important; color: #94a3b8 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .hero-anatomy-callouts { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 2.5px !important; flex: 1 !important; min-width: 0 !important; font-size: 0.52rem !important; color: #cbd5e1 !important; }
+            .anatomy-callout-row { display: flex !important; align-items: center !important; gap: 3.5px !important; white-space: nowrap !important; }
+            .anatomy-callout-row .callout-tag { font-weight: 800 !important; font-family: monospace !important; color: #38bdf8 !important; min-width: 30px !important; }
+            .anatomy-callout-hint { font-size: 0.46rem !important; color: #94a3b8 !important; font-style: italic !important; margin-top: 2px !important; }
+            .hero-live-details { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 1.5px !important; flex: 1 !important; min-width: 0 !important; }
+            .hero-prop-row { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; font-size: 0.48rem !important; line-height: 1.15 !important; }
+            .hero-prop-lbl { color: #94a3b8 !important; font-weight: 600 !important; }
+            .hero-prop-val { color: #f1f5f9 !important; font-family: monospace !important; font-weight: 700 !important; text-align: right !important; }
+            .hero-cat-pill { font-size: 0.46rem !important; font-weight: 700 !important; padding: 1px 4px !important; border-radius: 2px !important; text-transform: uppercase !important; }
             
             #view-main .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
         `;
@@ -21940,15 +22324,15 @@ window.PeriodicCanvasGrid = (function() {
 
     function clampPan() {
         const margin = 8;
-        const tableLeft = offsetX;
+        const tableLeft = offsetX - periodMarginLeft;
         const tableRight = offsetX + totalW;
-        const tableTop = offsetY;
+        const tableTop = offsetY - groupHeaderH;
         const tableBottom = offsetY + totalH;
 
         // Scaled bounds on screen:
         // Point X_world maps to (X_world - width/2)*zoomScale + width/2 + panX
-        const scaledW = totalW * zoomScale;
-        const scaledH = totalH * zoomScale;
+        const scaledW = (totalW + periodMarginLeft) * zoomScale;
+        const scaledH = (totalH + groupHeaderH) * zoomScale;
 
         // 1. Horizontal Clamping
         if (scaledW <= width - 2 * margin) {
@@ -22018,6 +22402,10 @@ window.PeriodicCanvasGrid = (function() {
         // Pointer Click / Tap
         canvas.addEventListener('click', handlePointerClick, { passive: true });
 
+        // Mouse Hover Tracking for Desktop
+        canvas.addEventListener('mousemove', onMouseMove, { passive: true });
+        canvas.addEventListener('mouseleave', onMouseLeave, { passive: true });
+
         // Multi-touch Pinch-to-Zoom & Pan / Vertical Scroll
         canvas.addEventListener('touchstart', onTouchStart, { passive: false });
         canvas.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -22040,6 +22428,59 @@ window.PeriodicCanvasGrid = (function() {
                 requestRender();
             }
         }, { passive: false });
+    }
+
+    function onMouseMove(e) {
+        if (isPanning || isPinching || !canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const rawX = e.clientX - rect.left;
+        const rawY = e.clientY - rect.top;
+        let clientX = rawX;
+        let clientY = rawY;
+        if (zoomScale !== 1.0 || panX !== 0 || panY !== 0) {
+            clientX = (clientX - (width / 2 + panX)) / zoomScale + width / 2;
+            clientY = (clientY - (height / 2 + panY)) / zoomScale + height / 2;
+        }
+
+        let foundZ = null;
+        for (let i = 1; i <= 118; i++) {
+            const item = elementPositions[i];
+            if (!item) continue;
+            const b = getElementBounds(item.col, item.row);
+            if (clientX >= b.x && clientX <= b.x + b.w && clientY >= b.y && clientY <= b.y + b.h) {
+                foundZ = item.z;
+                break;
+            }
+        }
+
+        if (foundZ !== hoveredZ) {
+            hoveredZ = foundZ;
+            if (hoveredZ) {
+                canvas.style.cursor = 'pointer';
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(hoveredZ);
+                }
+            } else {
+                canvas.style.cursor = 'default';
+                const selZ = (typeof selectedElement !== 'undefined' && selectedElement) ? selectedElement.atomicNumber : null;
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(selZ);
+                }
+            }
+            requestRender();
+        }
+    }
+
+    function onMouseLeave() {
+        if (hoveredZ !== null) {
+            hoveredZ = null;
+            if (canvas) canvas.style.cursor = 'default';
+            const selZ = (typeof selectedElement !== 'undefined' && selectedElement) ? selectedElement.atomicNumber : null;
+            if (typeof window.updateCentralHeroInspector === 'function') {
+                window.updateCentralHeroInspector(selZ);
+            }
+            requestRender();
+        }
     }
 
     let touchStartX = 0;
@@ -22159,12 +22600,15 @@ window.PeriodicCanvasGrid = (function() {
         gap = Math.max(2, Math.min(4, width / 340));
         const topBarH = 24; // Compact clearance for top bar slider and temp readout
         
+        groupHeaderH = Math.max(16, Math.min(22, Math.round(height * 0.038)));
+        periodMarginLeft = Math.max(18, Math.min(26, Math.round(width * 0.024)));
+
         // Explicit table margins so table doesn't touch screen edges
         const marginX = 6;
         const marginTop = 2;
         const marginBottom = 4;
-        const tableAvailW = Math.max(100, width - 2 * marginX);
-        const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom);
+        const tableAvailW = Math.max(100, width - 2 * marginX - periodMarginLeft);
+        const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom - groupHeaderH);
         
         // Ensure maxCellH never allows the table to exceed available vertical height
         const maxCellHByHeight = Math.floor(((tableAvailH - gap * 10.5) / 9) * 10) / 10;
@@ -22205,12 +22649,12 @@ window.PeriodicCanvasGrid = (function() {
         totalH = 9 * cellH + 8 * gap + gap * 2.5;
 
         // Position: if smaller than available space, center it; if overflowing, align to margin
-        offsetX = (totalW <= tableAvailW)
-            ? (marginX + Math.max(0, Math.floor((tableAvailW - totalW) / 2)))
-            : marginX;
-        offsetY = (totalH <= tableAvailH)
-            ? (topBarH + marginTop + Math.max(0, Math.floor((tableAvailH - totalH) / 2)))
-            : (topBarH + marginTop);
+        offsetX = (totalW + periodMarginLeft <= width - 2 * marginX)
+            ? (marginX + periodMarginLeft + Math.max(0, Math.floor((width - 2 * marginX - periodMarginLeft - totalW) / 2)))
+            : (marginX + periodMarginLeft);
+        offsetY = (totalH + groupHeaderH <= height - topBarH - marginTop - marginBottom)
+            ? (topBarH + marginTop + groupHeaderH + Math.max(0, Math.floor((height - topBarH - marginTop - marginBottom - groupHeaderH - totalH) / 2)))
+            : (topBarH + marginTop + groupHeaderH);
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
         const legendMarginX = Math.min(14, cellW * 0.3);
@@ -22376,6 +22820,8 @@ window.PeriodicCanvasGrid = (function() {
                     dualCat = cat === 'Metalloid' ? 'Halogen' : 'Metalloid';
                 } else if (el.atomicNumber === 84) {
                     dualCat = cat === 'Metalloid' ? 'Post-transition metal' : 'Metalloid';
+                } else if (el.atomicNumber === 117) {
+                    dualCat = 'Metalloid';
                 }
                 const stateNames = ['Solid', 'Liquid', 'Gas', 'Unknown'];
                 const curStateName = stateNames[stateCode] || 'Solid';
@@ -22434,39 +22880,54 @@ window.PeriodicCanvasGrid = (function() {
             const stateColor = STATE_COLORS[stateCode] || '#ffffff';
             const isSelected = (selZ === i);
 
+            const isHovered = (hoveredZ === i);
+            const isStateSolid = (activeProp === 'state' && stateCode === 0);
+
             // Dynamic opacity based on highlighting and selection
             let baseAlpha, borderAlpha;
             if (activeHighlight || (activeProp === 'discoveryYear' && typeof window.currentTimelineYear !== 'undefined')) {
                 if (isHighlighted) {
-                    baseAlpha = isSelected ? 0.90 : 0.65;
+                    baseAlpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.88);
                     borderAlpha = 1.0;
                 } else {
-                    baseAlpha = 0.06;
-                    borderAlpha = 0.12;
+                    baseAlpha = 0.08;
+                    borderAlpha = 0.15;
                 }
             } else {
-                baseAlpha = isSelected ? 0.75 : 0.40;
-                borderAlpha = isSelected ? 1.0 : 0.65;
+                baseAlpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.90);
+                borderAlpha = isSelected ? 1.0 : (isHovered ? 0.95 : 0.75);
             }
 
-            const r = 4;
+            // Sharp rectangular card (r = 0)
             ctx.beginPath();
-            ctx.roundRect(x, y, w, h, r);
-            const isStateSolid = (activeProp === 'state' && stateCode === 0);
+            ctx.rect(x, y, w, h);
 
-            // Seamless Full-Height Card Gradient
-            const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
-            if (isStateSolid) {
-                cardGrad.addColorStop(0, isSelected ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.92)');
-                cardGrad.addColorStop(0.45, isSelected ? 'rgba(241, 245, 249, 0.92)' : 'rgba(226, 232, 240, 0.82)');
-                cardGrad.addColorStop(1, isSelected ? 'rgba(203, 213, 225, 0.85)' : 'rgba(203, 213, 225, 0.70)');
+            let cardGrad;
+            if (activeHighlight && !isHighlighted) {
+                // Dimmed element card
+                cardGrad = ctx.createLinearGradient(x, y, x, y + h);
+                cardGrad.addColorStop(0, hexToRgba(cardHex, 0.08));
+                cardGrad.addColorStop(1, hexToRgba(cardHex, 0.03));
+            } else if (isStateSolid) {
+                cardGrad = ctx.createLinearGradient(x, y, x + w * 0.85, y + h);
+                cardGrad.addColorStop(0, isSelected ? 'rgba(255, 255, 255, 0.98)' : (isHovered ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.92)'));
+                cardGrad.addColorStop(0.5, isSelected ? 'rgba(241, 245, 249, 0.95)' : (isHovered ? 'rgba(241, 245, 249, 0.90)' : 'rgba(226, 232, 240, 0.85)'));
+                cardGrad.addColorStop(1, isSelected ? 'rgba(203, 213, 225, 0.90)' : (isHovered ? 'rgba(203, 213, 225, 0.82)' : 'rgba(148, 163, 184, 0.78)'));
             } else {
-                cardGrad.addColorStop(0, hexToRgba(cardHex, isSelected ? 0.88 : (baseAlpha + 0.14)));
-                cardGrad.addColorStop(0.4, hexToRgba(cardHex, isSelected ? 0.72 : baseAlpha));
-                cardGrad.addColorStop(1, hexToRgba(cardHex, isSelected ? 0.55 : Math.max(0.03, baseAlpha - 0.06)));
+                cardGrad = createCellGradient(ctx, x, y, w, h, cardHex, isSelected, isHovered);
             }
             ctx.fillStyle = cardGrad;
             ctx.fill();
+
+            // 2.5D Tactile Depth: Specular top highlight bevel line
+            if (!activeHighlight || isHighlighted) {
+                ctx.fillStyle = isSelected ? 'rgba(255, 255, 255, 0.75)' : (isHovered ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.35)');
+                ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+                // 2.5D Tactile Depth: Bottom shadow lip
+                ctx.fillStyle = isSelected ? 'rgba(0, 240, 255, 0.90)' : (isHovered ? 'rgba(0, 0, 0, 0.75)' : 'rgba(0, 0, 0, 0.55)');
+                ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
+            }
 
             const isUnknownState = (activeProp === 'state' && stateCode === 3);
             if (isUnknownState) {
@@ -22475,17 +22936,30 @@ window.PeriodicCanvasGrid = (function() {
                 ctx.setLineDash([]);
             }
 
-            ctx.strokeStyle = isSelected ? '#00f0ff' : (isStateSolid ? 'rgba(255, 255, 255, 0.95)' : hexToRgba(cardHex, borderAlpha));
-            ctx.lineWidth = isSelected ? 2.5 : (activeHighlight && isHighlighted ? 1.8 : 1);
+            ctx.strokeStyle = isSelected 
+                ? '#00f0ff' 
+                : (isHovered 
+                    ? 'rgba(255, 255, 255, 0.95)' 
+                    : (isStateSolid 
+                        ? 'rgba(255, 255, 255, 0.95)' 
+                        : hexToRgba(cardHex, borderAlpha)));
+            ctx.lineWidth = isSelected ? 2.5 : (isHovered ? 2.0 : (activeHighlight && isHighlighted ? 1.8 : 1.0));
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Selected or Active Elements Glowing Outline
+            // Selected or Hovered or Active Elements Glowing Outline
             if (isSelected) {
                 ctx.shadowColor = '#00f0ff';
                 ctx.shadowBlur = 12;
                 ctx.strokeStyle = '#00f0ff';
                 ctx.lineWidth = 2.5;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            } else if (isHovered) {
+                ctx.shadowColor = cardHex;
+                ctx.shadowBlur = 10;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2.0;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
             } else if (activeHighlight && isHighlighted) {
@@ -22502,15 +22976,15 @@ window.PeriodicCanvasGrid = (function() {
             let numColor, symColorDirect, nameColor, massColor;
 
             if (isStateSolid) {
-                numColor = textDim ? 'rgba(15, 23, 42, 0.25)' : (isSelected ? '#0f172a' : 'rgba(15, 23, 42, 0.85)');
+                numColor = textDim ? 'rgba(15, 23, 42, 0.25)' : (isSelected ? '#0f172a' : 'rgba(15, 23, 42, 0.90)');
                 symColorDirect = textDim ? 'rgba(15, 23, 42, 0.25)' : '#0f172a';
-                nameColor = textDim ? 'rgba(30, 41, 59, 0.20)' : (isSelected ? '#0f172a' : 'rgba(30, 41, 59, 0.90)');
-                massColor = textDim ? 'rgba(51, 65, 85, 0.15)' : (isSelected ? '#1e293b' : 'rgba(51, 65, 85, 0.80)');
+                nameColor = textDim ? 'rgba(30, 41, 59, 0.20)' : (isSelected ? '#0f172a' : 'rgba(30, 41, 59, 0.95)');
+                massColor = textDim ? 'rgba(51, 65, 85, 0.15)' : (isSelected ? '#1e293b' : 'rgba(51, 65, 85, 0.85)');
             } else {
-                numColor = `rgba(255, 255, 255, ${textDim ? 0.20 : (isSelected ? 1.0 : 0.85)})`;
+                numColor = `rgba(255, 255, 255, ${textDim ? 0.20 : (isSelected || isHovered ? 1.0 : 0.90)})`;
                 symColorDirect = textDim ? hexToRgba(stateColor, 0.25) : (isSelected ? (stateCode === 0 ? '#ffffff' : stateColor) : stateColor);
-                nameColor = `rgba(255, 255, 255, ${textDim ? 0.18 : (isSelected ? 1.0 : 0.95)})`;
-                massColor = `rgba(255, 255, 255, ${textDim ? 0.12 : (isSelected ? 0.95 : 0.75)})`;
+                nameColor = `rgba(255, 255, 255, ${textDim ? 0.18 : (isSelected || isHovered ? 1.0 : 0.95)})`;
+                massColor = `rgba(255, 255, 255, ${textDim ? 0.12 : (isSelected || isHovered ? 0.98 : 0.85)})`;
             }
 
             const maxTextW = Math.max(8, w - 4);
@@ -22567,6 +23041,7 @@ window.PeriodicCanvasGrid = (function() {
             ctx.fillText(displayVal, x + w / 2, y + h - 1, maxTextW);
         }
 
+        drawIndicators(groupHeaderH, periodMarginLeft);
         drawPlaceholders();
         drawTableTypeElementBox();
         drawFitModeElementBox();
@@ -22580,6 +23055,108 @@ window.PeriodicCanvasGrid = (function() {
         drawScreenEdgeGlow();
 
         ctx.restore(); // Restore Canvas scale
+    }
+
+    function drawIndicators(gh, pw) {
+        ctx.save();
+        // 1. Group Headers (Columns 1 to 18)
+        for (let col = 1; col <= 18; col++) {
+            const gx = offsetX + (col - 1) * (cellW + gap);
+            const gy = offsetY - gh;
+            const gw = cellW;
+            const gData = GROUPS_DATA[col - 1];
+            if (!gData) continue;
+
+            // Subtle indicator tick at bottom of group header
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+            ctx.fillRect(gx + gw * 0.15, gy + gh - 1.5, gw * 0.7, 1.5);
+
+            // Group Number (1-18)
+            const numFontSize = Math.max(8, Math.min(11, gh * 0.50));
+            ctx.font = `800 ${numFontSize}px monospace, sans-serif`;
+            ctx.fillStyle = '#38bdf8';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = cellW >= 42 ? 'top' : 'middle';
+            
+            if (cellW >= 42) {
+                ctx.fillText(gData.num, gx + gw / 2, gy + 1);
+                // IUPAC Roman numeral label (e.g. IA, IIA, etc.)
+                const iupacFontSize = Math.max(6, Math.min(8.5, gh * 0.36));
+                ctx.font = `600 ${iupacFontSize}px 'IBM Plex Mono', monospace, sans-serif`;
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.85)';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(gData.iupac, gx + gw / 2, gy + gh - 2.5);
+            } else {
+                ctx.fillText(gData.num, gx + gw / 2, gy + gh / 2);
+            }
+        }
+
+        // 2. Period Headers (Periods 1 to 7)
+        for (let p = 0; p < PERIODS_DATA.length; p++) {
+            const pData = PERIODS_DATA[p];
+            const row = pData.row;
+            const py = offsetY + (row - 1) * (cellH + gap);
+            const px = offsetX - pw;
+            const ph = cellH;
+
+            // Subtle indicator pip on right side
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+            ctx.fillRect(px + pw - 2, py + ph * 0.3, 2, ph * 0.4);
+
+            // Period Number (1-7)
+            const pFontSize = Math.max(9, Math.min(12, cellH * 0.28));
+            ctx.font = `800 ${pFontSize}px monospace, sans-serif`;
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(pData.num, px + (pw - 2) / 2, py + ph / 2);
+        }
+
+        // 3. Lanthanides & Actinides Period Indicators (Rows 9 & 10)
+        const py9 = offsetY + (9 - 2) * (cellH + gap) + gap * 2.5;
+        const px9 = offsetX - pw;
+        ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+        ctx.fillRect(px9 + pw - 2, py9 + cellH * 0.3, 2, cellH * 0.4);
+        ctx.font = `800 ${Math.max(8.5, Math.min(11, cellH * 0.25))}px monospace, sans-serif`;
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('6*', px9 + (pw - 2) / 2, py9 + cellH / 2);
+
+        const py10 = offsetY + (10 - 2) * (cellH + gap) + gap * 2.5;
+        ctx.fillStyle = 'rgba(192, 38, 211, 0.45)';
+        ctx.fillRect(px9 + pw - 2, py10 + cellH * 0.3, 2, cellH * 0.4);
+        ctx.font = `800 ${Math.max(8.5, Math.min(11, cellH * 0.25))}px monospace, sans-serif`;
+        ctx.fillStyle = '#e879f9';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('7*', px9 + (pw - 2) / 2, py10 + cellH / 2);
+
+        // 4. Dashed Connector Lines from Row 6/7 Col 3 to Row 9/10 Col 4
+        const bP6 = getElementBounds(3, 6);
+        const bLa = getElementBounds(4, 9);
+        const bP7 = getElementBounds(3, 7);
+        const bAc = getElementBounds(4, 10);
+
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([3, 3]);
+
+        // Lanthanide connector
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(bP6.x + bP6.w, bP6.y + bP6.h * 0.5);
+        ctx.lineTo(bLa.x - 2, bLa.y + bLa.h * 0.5);
+        ctx.stroke();
+
+        // Actinide connector
+        ctx.strokeStyle = 'rgba(232, 121, 249, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(bP7.x + bP7.w, bP7.y + bP7.h * 0.5);
+        ctx.lineTo(bAc.x - 2, bAc.y + bAc.h * 0.5);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.restore();
     }
 
     function drawPlaceholders() {
@@ -22596,9 +23173,18 @@ window.PeriodicCanvasGrid = (function() {
             const h = b.h;
 
             ctx.beginPath();
-            ctx.roundRect(x, y, w, h, 4);
+            ctx.rect(x, y, w, h);
             ctx.fillStyle = hexToRgba(p.color, 0.22);
             ctx.fill();
+
+            // 2.5D Tactile Depth: Specular top highlight bevel line
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+            // 2.5D Tactile Depth: Bottom shadow lip
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
+
             ctx.strokeStyle = hexToRgba(p.color, 1.0);
             ctx.lineWidth = 1;
             ctx.setLineDash([2, 2]);
@@ -22667,7 +23253,7 @@ window.PeriodicCanvasGrid = (function() {
 
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
+        ctx.rect(x, y, w, h);
 
         // Premium obsidian glass background with subtle cyan / purple gradient
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
@@ -22676,6 +23262,14 @@ window.PeriodicCanvasGrid = (function() {
         cardGrad.addColorStop(1, 'rgba(9, 14, 28, 0.96)');
         ctx.fillStyle = cardGrad;
         ctx.fill();
+
+        // 2.5D Tactile Depth: Specular top highlight bevel line
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+        ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+        // 2.5D Tactile Depth: Bottom shadow lip
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.60)';
+        ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
 
         // Neon Glowing Border
         ctx.strokeStyle = 'rgba(0, 212, 255, 0.85)';
@@ -22745,13 +23339,21 @@ window.PeriodicCanvasGrid = (function() {
 
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
+        ctx.rect(x, y, w, h);
 
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
         cardGrad.addColorStop(0, isFit ? 'rgba(16, 36, 56, 0.90)' : 'rgba(15, 23, 42, 0.75)');
         cardGrad.addColorStop(1, isFit ? 'rgba(8, 18, 32, 0.90)' : 'rgba(9, 14, 26, 0.75)');
         ctx.fillStyle = cardGrad;
         ctx.fill();
+
+        // 2.5D Tactile Depth: Specular top highlight bevel line
+        ctx.fillStyle = isFit ? 'rgba(56, 189, 248, 0.40)' : 'rgba(255, 255, 255, 0.25)';
+        ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+        // 2.5D Tactile Depth: Bottom shadow lip
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
 
         ctx.strokeStyle = isFit ? 'rgba(56, 189, 248, 0.85)' : 'rgba(255, 255, 255, 0.25)';
         ctx.lineWidth = isFit ? 1.1 : 1;
@@ -22915,6 +23517,9 @@ window.PeriodicCanvasGrid = (function() {
                 if (typeof selectElement === 'function') {
                     selectElement(item.z, true, true);
                 }
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(item.z);
+                }
                 render();
                 return;
             }
@@ -22933,6 +23538,9 @@ window.PeriodicCanvasGrid = (function() {
             }
             if (typeof selectedElement !== 'undefined') {
                 selectedElement = null;
+            }
+            if (typeof window.updateCentralHeroInspector === 'function') {
+                window.updateCentralHeroInspector(null);
             }
             render();
         }
@@ -101697,58 +102305,41 @@ function renderLegend() {
 
     let html = `
         <div class="legend-box category-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">Element Series ℹ️</div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">
+                <span>⚛️ Element Series & States</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
             <div class="legend-box-content">
-                <!-- Column 1: Metals (70%) -->
-                <div class="legend-col-metals">
-                    <div class="legend-group-title interactive-super" data-group="Metals">Metals</div>
-                    <div class="metals-layout-grid">
-                        <div class="metals-top-row">
-                            <div class="metals-col-sblock">
-                                ${makeLegendItem('Alkali metal')}
-                                ${makeLegendItem('Alkaline earth metal')}
-                            </div>
-                            <div class="metals-col-dblock">
-                                ${makeLegendItem('Transition metal')}
-                            </div>
-                            <div class="metals-col-pblock">
-                                ${makeLegendItem('Post-transition metal')}
-                            </div>
-                        </div>
-                        <div class="metals-bottom-row">
+                <div class="legend-series-grid">
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metals">Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Alkali metal')}
+                            ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
+                            ${makeLegendItem('Transition metal', 'category', 'Transition')}
+                            ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
                             ${makeLegendItem('Lanthanide')}
-                        </div>
-                        <div class="metals-bottom-row">
                             ${makeLegendItem('Actinide')}
                         </div>
                     </div>
-                </div>
-
-                <!-- Column 2: Metalloids (10%) -->
-                <div class="legend-col-metalloids">
-                    <div class="legend-group-title interactive-super" data-group="Metalloids">Metalloids</div>
-                    <div class="metalloids-items">
-                        ${makeLegendItem('Metalloid')}
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metalloids">Metalloids</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Metalloid')}
+                        </div>
+                    </div>
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Non-Metals">Non-Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Reactive nonmetal', 'category', 'Reactive Nonmetal')}
+                            ${makeLegendItem('Noble gas', 'category', 'Noble Gas')}
+                        </div>
                     </div>
                 </div>
-
-                <!-- Column 3: Non-Metals (20%) -->
-                <div class="legend-col-nonmetals">
-                    <div class="legend-group-title interactive-super" data-group="Non-Metals">Non-Metals</div>
-                    <div class="nonmetals-items">
-                        ${makeLegendItem('Other nonmetal', 'category', 'Other Nonmetals')}
-                        ${makeLegendItem('Halogen', 'category', 'Halogens')}
-                        ${makeLegendItem('Noble gas', 'category', 'Noble Gases')}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="legend-box state-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State at Current Temp ℹ️</div>
-            <div class="legend-box-content">
-                <div class="legend-group legend-group-states">
-                    <div class="legend-group-items">
+                
+                <div class="legend-states-bar">
+                    <span class="legend-states-label">State at ${typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298} K (Symbol Color):</span>
+                    <div class="legend-states-chips">
                         ${makeLegendItem('Solid', 'state')}
                         ${makeLegendItem('Liquid', 'state')}
                         ${makeLegendItem('Gas', 'state')}
@@ -101757,10 +102348,17 @@ function renderLegend() {
                 </div>
             </div>
         </div>
+        
+        <div class="legend-box hero-inspector-box" id="central-hero-inspector">
+            <!-- Populated dynamically by updateCentralHeroInspector -->
+        </div>
     `;
     
     legendContainer.innerHTML = html;
     updateLegendIndicatorUI();
+    if (typeof updateCentralHeroInspector === 'function') {
+        updateCentralHeroInspector(null);
+    }
 
     // Interactions for individual items (Tap = highlight/toggle; Long-press = concept modal)
     document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
@@ -101815,6 +102413,111 @@ function renderLegend() {
     });
 }
 
+function updateCentralHeroInspector(z) {
+    const container = document.getElementById('central-hero-inspector');
+    if (!container) return;
+
+    const el = z ? getElementByNumber(z) : (selectedElement || null);
+
+    if (!el) {
+        // Default Key Guide (Carbon reference)
+        const refEl = getElementByNumber(6) || {
+            atomicNumber: 6,
+            symbol: 'C',
+            name: 'Carbon',
+            atomicMass: 12.011,
+            category: 'Reactive nonmetal',
+            electronConfigurationNoble: '[He] 2s² 2p²',
+            electronegativity: 2.55
+        };
+        const catColor = (typeof categoryColors !== 'undefined' && categoryColors['Reactive nonmetal']) ? categoryColors['Reactive nonmetal'] : '#059669';
+        container.innerHTML = `
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view full anatomy guide">
+                <span>🔍 Element Key / Anatomy</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
+            <div class="hero-inspector-body hero-anatomy-mode">
+                <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 14px rgba(5, 150, 105, 0.45);">
+                    <div class="hero-tile-top">
+                        <span class="hero-tile-z" title="Atomic Number (Z)">6</span>
+                        <span class="hero-tile-mass" title="Standard Atomic Weight">12.011 u</span>
+                    </div>
+                    <div class="hero-tile-sym" style="color: #ffffff;" title="Chemical Symbol (White = Solid at 298 K)">C</div>
+                    <div class="hero-tile-name">Carbon</div>
+                    <div class="hero-tile-config">[He] 2s² 2p²</div>
+                </div>
+                <div class="hero-anatomy-callouts">
+                    <div class="anatomy-callout-row"><span class="callout-tag">Z:</span> Atomic Number</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag" style="color: #00f0ff;">Sym:</span> State Color (298 K)</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag">u:</span> Atomic Mass</div>
+                    <div class="anatomy-callout-hint">Hover or tap any element to inspect</div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const zNum = el.atomicNumber;
+    const cat = getNormalizedCategory(el.category, zNum);
+    const catColor = (typeof categoryColors !== 'undefined' && categoryColors[cat]) ? categoryColors[cat] : '#00d4ff';
+
+    let state = 'Unknown';
+    if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
+        const curK = typeof currentTemp !== 'undefined' ? currentTemp : 298;
+        if (curK < el.meltingPoint) state = 'Solid';
+        else if (curK < el.boilingPoint) state = 'Liquid';
+        else state = 'Gas';
+    }
+    const stateColor = (typeof stateTextColors !== 'undefined' && stateTextColors[state]) ? stateTextColors[state] : '#ffffff';
+    const massStr = el.atomicMass ? (typeof el.atomicMass === 'number' ? el.atomicMass.toFixed(3) : el.atomicMass) : '-';
+    const enStr = el.electronegativity ? `${el.electronegativity}` : '-';
+    const cfgStr = el.electronConfigurationNoble || el.electronConfiguration || '-';
+    const densityStr = el.density ? `${el.density} g/cm³` : '-';
+    const mpStr = el.meltingPoint ? `${Math.round(el.meltingPoint)} K` : '-';
+    const bpStr = el.boilingPoint ? `${Math.round(el.boilingPoint)} K` : '-';
+
+    container.innerHTML = `
+        <div class="legend-box-title" style="border-color: ${catColor};">
+            <span style="color: ${catColor}; font-weight: 800;">${el.name.toUpperCase()} (#${zNum})</span>
+            <span class="hero-cat-pill" style="background: ${catColor}33; border: 1px solid ${catColor}; color: #ffffff;">${cat}</span>
+        </div>
+        <div class="hero-inspector-body hero-live-mode">
+            <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 16px ${catColor}66;">
+                <div class="hero-tile-top">
+                    <span class="hero-tile-z">${zNum}</span>
+                    <span class="hero-tile-mass">${massStr} u</span>
+                </div>
+                <div class="hero-tile-sym" style="color: ${stateColor}; text-shadow: 0 0 10px ${stateColor};">${el.symbol}</div>
+                <div class="hero-tile-name">${el.name}</div>
+                <div class="hero-tile-config">${cfgStr}</div>
+            </div>
+            <div class="hero-live-details">
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">State:</span>
+                    <span class="hero-prop-val" style="color: ${stateColor}; font-weight: 800;">${state}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Electroneg:</span>
+                    <span class="hero-prop-val">${enStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Melting Pt:</span>
+                    <span class="hero-prop-val">${mpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Boiling Pt:</span>
+                    <span class="hero-prop-val">${bpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Density:</span>
+                    <span class="hero-prop-val">${densityStr}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+window.updateCentralHeroInspector = updateCentralHeroInspector;
+
 // Select Element
 function selectElement(z, isUserClick = false, openSidebar = true) {
     const el = getElementByNumber(z);
@@ -101839,6 +102542,7 @@ function selectElement(z, isUserClick = false, openSidebar = true) {
     }
     
     selectedElement = el;
+    updateCentralHeroInspector(z);
     
     // Position sidebar immediately before updating DOM content
     const activeView = document.querySelector('.view-mode.active');
@@ -108048,8 +108752,8 @@ window.OrbitalViewer = {
                 ctx.shadowBlur = 0;
             }
 
-            // Render Scenario Bar Pills on Top-Left of Canvas
-            this.renderScenarioHUD(ctx, w, h);
+            // (Scenario bar pills are managed in the slide-over drawer to prevent HUD overlap)
+            // this.renderScenarioHUD(ctx, w, h);
 
             ctx.restore();
         }
@@ -108244,18 +108948,32 @@ window.OrbitalViewer = {
                     ctx.lineWidth = 2.0;
                     ctx.stroke();
 
-                    // Nucleus Label
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 16px monospace';
+                    // Refined Nuclear Isotope Label (Scientific notation with clean font)
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    const symText = (state.stage === 'absorbed') ? '²³⁶U*' : '²³⁵U';
-                    ctx.fillText(symText, 0, -4);
+                    const uSym = (state.stage === 'absorbed') ? 'U*' : 'U';
+                    const mass = (state.stage === 'absorbed') ? '236' : '235';
 
-                    ctx.font = 'bold 10px monospace';
+                    // Element Symbol
+                    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(uSym, 6, -4);
+
+                    // Mass Number Superscript to the left
+                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#a7f3d0';
+                    ctx.fillText(mass, -14, -10);
+
+                    // Atomic Number 92 Subscript to the left
+                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText('92', -14, 3);
+
+                    // Subtitle (Nucleon Composition)
+                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
                     const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited)' : '92p + 143n';
-                    ctx.fillText(nucText, 0, 14);
+                    ctx.fillText(nucText, 0, 16);
                 }
 
                 ctx.restore();
@@ -108780,6 +109498,14 @@ window.OrbitalViewer = {
             this.triggerAccumulator = 0;
         }
 
+        get bFieldTesla() {
+            return this.magneticFieldTesla;
+        }
+
+        set bFieldTesla(v) {
+            this.setMagneticField(v);
+        }
+
         setPreset(presetId) {
             const found = DECAY_PRESETS.find(p => p.id === presetId);
             if (found) {
@@ -108787,8 +109513,16 @@ window.OrbitalViewer = {
             }
         }
 
+        setNuclide(presetId) {
+            this.setPreset(presetId);
+        }
+
         setMagneticField(tesla) {
             this.magneticFieldTesla = Math.max(-3.0, Math.min(3.0, Number(tesla) || 0));
+        }
+
+        setBField(tesla) {
+            this.setMagneticField(tesla);
         }
 
         triggerDecay(x = this.sourceX, y = this.sourceY) {
@@ -109180,6 +109914,17 @@ window.OrbitalViewer = {
 
         setTemperature(kelvin) {
             this.temperatureK = Math.max(1, Math.min(3000, Number(kelvin) || 300));
+        }
+
+        applyImpulse(atomOrIndex = 0, fx = 0, fy = -320) {
+            const atom = (typeof atomOrIndex === 'number') ? this.atoms[atomOrIndex] : (atomOrIndex || this.atoms[0]);
+            if (atom) {
+                atom.vx += (fx || (Math.random() - 0.5) * 200) / (atom.mass || 12);
+                atom.vy += (fy || -320) / (atom.mass || 12);
+                if (window.physicsAudio) {
+                    window.physicsAudio.playBondReleaseSnap();
+                }
+            }
         }
 
         startDrag(screenX, screenY) {
@@ -109963,14 +110708,28 @@ window.OrbitalViewer = {
     }
 
     // Collapsible Drawer / Bottom Sheet Controller
-    function toggleSimDrawer() {
+    function toggleSimDrawer(forceState) {
         const pane = document.getElementById('sim-tuning-pane');
+        const toggleBtn = document.getElementById('sim-drawer-toggle');
         const arrow = document.getElementById('sim-drawer-arrow');
         if (!pane) return;
 
-        const isCollapsed = pane.classList.toggle('sim-drawer-collapsed');
+        if (typeof forceState === 'boolean') {
+            if (forceState) {
+                pane.classList.remove('sim-drawer-collapsed');
+            } else {
+                pane.classList.add('sim-drawer-collapsed');
+            }
+        } else {
+            pane.classList.toggle('sim-drawer-collapsed');
+        }
+
+        const isCollapsed = pane.classList.contains('sim-drawer-collapsed');
         if (arrow) {
-            arrow.textContent = isCollapsed ? '▼' : '▲';
+            arrow.textContent = isCollapsed ? '▲' : '▼';
+        }
+        if (toggleBtn) {
+            toggleBtn.classList.toggle('drawer-open', !isCollapsed);
         }
     }
     window.toggleSimDrawer = toggleSimDrawer;
@@ -109996,6 +110755,14 @@ window.OrbitalViewer = {
             const completedCount = missions.filter(m => m.completed).length;
 
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>⚛️</span>
+                        <span>Fission &amp; Missions</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <!-- Scenario Selector Pills (PhET / Brilliant.org Progression) -->
                 <div class="sim-scenario-pills">
                     <button class="sim-scenario-btn ${curScenario === 'single_fission' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('single_fission')">
@@ -110130,7 +110897,18 @@ window.OrbitalViewer = {
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
+            const bField = (engine && typeof engine.magneticFieldTesla === 'number') ? engine.magneticFieldTesla : (engine && typeof engine.bFieldTesla === 'number' ? engine.bFieldTesla : 1.0);
+            const bVal = (bField * 10).toFixed(0);
+
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>☢️</span>
+                        <span>Particle Decay Chamber</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
                         <span>⚡</span> EMIT RADIATION PULSE
@@ -110144,31 +110922,41 @@ window.OrbitalViewer = {
                     <div class="sim-pane-title"><span>☢️</span> Radioactive Source</div>
                     <div class="sim-input-row">
                         <label class="sim-input-label"><span>Radioactive Isotope:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setNuclide(this.value)">
-                            ${window.DECAY_PRESETS ? window.DECAY_PRESETS.map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('') : ''}
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                            ${(window.DECAY_PRESETS || []).map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Magnetic Field B:</span>
-                            <span id="b-field-display" class="sim-val-badge">${engine ? engine.bFieldTesla.toFixed(1) : '2.0'} T</span>
+                            <span id="b-field-display" class="sim-val-badge">${bField.toFixed(1)} T</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="-50" max="50" value="${engine ? (engine.bFieldTesla * 10).toFixed(0) : '20'}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setBField(this.value/10);">
+                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${bVal}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
                         <div class="slider-hint-row">
-                            <span>-5.0 T (Left Curve)</span>
-                            <span>+5.0 T (Right Curve)</span>
+                            <span>-3.0 T (Left Curve)</span>
+                            <span>+3.0 T (Right Curve)</span>
                         </div>
                     </div>
                 </div>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
+            const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
+
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>🧬</span>
+                        <span>Molecule Dynamics</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
                         <span>🔄</span> RESET REST GEOMETRY
                     </button>
-                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(window.molecularDynamicsEngine.atoms[0], 0, -320)">
+                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(0, 0, -320)">
                         <span>💥</span> THERMAL IMPULSE
                     </button>
                 </div>
@@ -110187,9 +110975,9 @@ window.OrbitalViewer = {
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Thermal Temperature:</span>
-                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '298'} K</span>
+                            <span id="mol-temp-display" class="sim-val-badge">${temp.toFixed(0)} K</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${engine ? engine.temperatureK : 298}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
+                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${temp}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
                     </div>
                 </div>
             `;
@@ -110200,6 +110988,14 @@ window.OrbitalViewer = {
             const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
 
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>🌍</span>
+                        <span>Extreme Thermodynamics</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <!-- Quick Phase Jump Thumb Buttons -->
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
@@ -110259,6 +111055,18 @@ window.OrbitalViewer = {
      * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
+        // Tap stage/canvas outside drawer on mobile automatically closes drawer
+        const stage = document.querySelector('.sim-viewport-stage');
+        if (stage) {
+            stage.addEventListener('pointerdown', (e) => {
+                const pane = document.getElementById('sim-tuning-pane');
+                if (pane && !pane.classList.contains('sim-drawer-collapsed') && window.innerWidth <= 1024) {
+                    if (e.target.closest('#sim-drawer-toggle')) return;
+                    toggleSimDrawer(false);
+                }
+            });
+        }
+
         // 1. Chain Reaction Canvas
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
@@ -110266,20 +111074,6 @@ window.OrbitalViewer = {
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-
-                // Check if user tapped top HUD scenario pills (y in [10, 38])
-                if (y <= 40 && window.chainReactionEngine) {
-                    if (x >= 14 && x <= 160) {
-                        window.chainReactionEngine.setScenario('single_fission');
-                        return;
-                    } else if (x > 160 && x <= 285) {
-                        window.chainReactionEngine.setScenario('chain_sandbox');
-                        return;
-                    } else if (x > 285 && x <= 420) {
-                        window.chainReactionEngine.setScenario('reactor_core');
-                        return;
-                    }
-                }
 
                 if (window.chainReactionEngine) {
                     window.chainReactionEngine.aimAndFire(x, y);
@@ -111584,16 +112378,16 @@ window.OrbitalViewer = {
                 <div class="sim-tabs-row">
                     <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
-                        <span>⚛️</span> Chain Reaction
+                        <span>⚛️</span> <span class="tab-txt-full">Chain Reaction</span><span class="tab-txt-short">Fission</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
-                        <span>☢️</span> Particle Decay
+                        <span>☢️</span> <span class="tab-txt-full">Particle Decay</span><span class="tab-txt-short">Decay</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="molecule" onclick="switchSimTab('molecule')">
-                        <span>🧬</span> Molecule Physics
+                        <span>🧬</span> <span class="tab-txt-full">Molecule Physics</span><span class="tab-txt-short">Molecules</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
-                        <span>🌍</span> Extreme Phase Lab
+                        <span>🌍</span> <span class="tab-txt-full">Extreme Phase Lab</span><span class="tab-txt-short">Phase Lab</span>
                     </button>
                 </div>
 
@@ -111653,7 +112447,7 @@ window.OrbitalViewer = {
                         </div>
                         <div class="sim-narrator-pill" id="sim-narrator-pill">
                             <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start!</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                         </div>
                     </div>
 
@@ -111665,11 +112459,11 @@ window.OrbitalViewer = {
                     <!-- Sleek Floating Drawer Toggle Pill Button -->
                     <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
                         <span class="drawer-btn-icon">⚙️</span>
-                        <span class="drawer-btn-text">Controls &amp; Missions</span>
+                        <span class="drawer-btn-text">Controls</span>
                         <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
                     </button>
                 </div>
-                <div class="sim-tuning-pane" id="sim-tuning-pane">
+                <div class="sim-tuning-pane sim-drawer-collapsed" id="sim-tuning-pane">
                     <!-- Dynamic Parameters populated by renderTuningPanel() -->
                 </div>
             </div>

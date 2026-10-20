@@ -538,14 +538,28 @@
     }
 
     // Collapsible Drawer / Bottom Sheet Controller
-    function toggleSimDrawer() {
+    function toggleSimDrawer(forceState) {
         const pane = document.getElementById('sim-tuning-pane');
+        const toggleBtn = document.getElementById('sim-drawer-toggle');
         const arrow = document.getElementById('sim-drawer-arrow');
         if (!pane) return;
 
-        const isCollapsed = pane.classList.toggle('sim-drawer-collapsed');
+        if (typeof forceState === 'boolean') {
+            if (forceState) {
+                pane.classList.remove('sim-drawer-collapsed');
+            } else {
+                pane.classList.add('sim-drawer-collapsed');
+            }
+        } else {
+            pane.classList.toggle('sim-drawer-collapsed');
+        }
+
+        const isCollapsed = pane.classList.contains('sim-drawer-collapsed');
         if (arrow) {
-            arrow.textContent = isCollapsed ? '▼' : '▲';
+            arrow.textContent = isCollapsed ? '▲' : '▼';
+        }
+        if (toggleBtn) {
+            toggleBtn.classList.toggle('drawer-open', !isCollapsed);
         }
     }
     window.toggleSimDrawer = toggleSimDrawer;
@@ -571,6 +585,14 @@
             const completedCount = missions.filter(m => m.completed).length;
 
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>⚛️</span>
+                        <span>Fission &amp; Missions</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <!-- Scenario Selector Pills (PhET / Brilliant.org Progression) -->
                 <div class="sim-scenario-pills">
                     <button class="sim-scenario-btn ${curScenario === 'single_fission' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('single_fission')">
@@ -705,7 +727,18 @@
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
+            const bField = (engine && typeof engine.magneticFieldTesla === 'number') ? engine.magneticFieldTesla : (engine && typeof engine.bFieldTesla === 'number' ? engine.bFieldTesla : 1.0);
+            const bVal = (bField * 10).toFixed(0);
+
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>☢️</span>
+                        <span>Particle Decay Chamber</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
                         <span>⚡</span> EMIT RADIATION PULSE
@@ -719,31 +752,41 @@
                     <div class="sim-pane-title"><span>☢️</span> Radioactive Source</div>
                     <div class="sim-input-row">
                         <label class="sim-input-label"><span>Radioactive Isotope:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setNuclide(this.value)">
-                            ${window.DECAY_PRESETS ? window.DECAY_PRESETS.map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('') : ''}
+                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                            ${(window.DECAY_PRESETS || []).map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
                         </select>
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Magnetic Field B:</span>
-                            <span id="b-field-display" class="sim-val-badge">${engine ? engine.bFieldTesla.toFixed(1) : '2.0'} T</span>
+                            <span id="b-field-display" class="sim-val-badge">${bField.toFixed(1)} T</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="-50" max="50" value="${engine ? (engine.bFieldTesla * 10).toFixed(0) : '20'}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setBField(this.value/10);">
+                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${bVal}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
                         <div class="slider-hint-row">
-                            <span>-5.0 T (Left Curve)</span>
-                            <span>+5.0 T (Right Curve)</span>
+                            <span>-3.0 T (Left Curve)</span>
+                            <span>+3.0 T (Right Curve)</span>
                         </div>
                     </div>
                 </div>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
+            const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
+
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>🧬</span>
+                        <span>Molecule Dynamics</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
                         <span>🔄</span> RESET REST GEOMETRY
                     </button>
-                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(window.molecularDynamicsEngine.atoms[0], 0, -320)">
+                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(0, 0, -320)">
                         <span>💥</span> THERMAL IMPULSE
                     </button>
                 </div>
@@ -762,9 +805,9 @@
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Thermal Temperature:</span>
-                            <span id="mol-temp-display" class="sim-val-badge">${engine ? engine.temperatureK.toFixed(0) : '298'} K</span>
+                            <span id="mol-temp-display" class="sim-val-badge">${temp.toFixed(0)} K</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${engine ? engine.temperatureK : 298}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
+                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${temp}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
                     </div>
                 </div>
             `;
@@ -775,6 +818,14 @@
             const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
 
             pane.innerHTML = `
+                <div class="sim-drawer-header">
+                    <div class="sim-drawer-title">
+                        <span>🌍</span>
+                        <span>Extreme Thermodynamics</span>
+                    </div>
+                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+                </div>
+
                 <!-- Quick Phase Jump Thumb Buttons -->
                 <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
@@ -834,6 +885,18 @@
      * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
      */
     function setupCanvasInteractions() {
+        // Tap stage/canvas outside drawer on mobile automatically closes drawer
+        const stage = document.querySelector('.sim-viewport-stage');
+        if (stage) {
+            stage.addEventListener('pointerdown', (e) => {
+                const pane = document.getElementById('sim-tuning-pane');
+                if (pane && !pane.classList.contains('sim-drawer-collapsed') && window.innerWidth <= 1024) {
+                    if (e.target.closest('#sim-drawer-toggle')) return;
+                    toggleSimDrawer(false);
+                }
+            });
+        }
+
         // 1. Chain Reaction Canvas
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
@@ -841,20 +904,6 @@
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-
-                // Check if user tapped top HUD scenario pills (y in [10, 38])
-                if (y <= 40 && window.chainReactionEngine) {
-                    if (x >= 14 && x <= 160) {
-                        window.chainReactionEngine.setScenario('single_fission');
-                        return;
-                    } else if (x > 160 && x <= 285) {
-                        window.chainReactionEngine.setScenario('chain_sandbox');
-                        return;
-                    } else if (x > 285 && x <= 420) {
-                        window.chainReactionEngine.setScenario('reactor_core');
-                        return;
-                    }
-                }
 
                 if (window.chainReactionEngine) {
                     window.chainReactionEngine.aimAndFire(x, y);

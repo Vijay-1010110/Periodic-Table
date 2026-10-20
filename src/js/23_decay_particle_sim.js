@@ -198,6 +198,14 @@
             this.triggerAccumulator = 0;
         }
 
+        get bFieldTesla() {
+            return this.magneticFieldTesla;
+        }
+
+        set bFieldTesla(v) {
+            this.setMagneticField(v);
+        }
+
         setPreset(presetId) {
             const found = DECAY_PRESETS.find(p => p.id === presetId);
             if (found) {
@@ -205,8 +213,16 @@
             }
         }
 
+        setNuclide(presetId) {
+            this.setPreset(presetId);
+        }
+
         setMagneticField(tesla) {
             this.magneticFieldTesla = Math.max(-3.0, Math.min(3.0, Number(tesla) || 0));
+        }
+
+        setBField(tesla) {
+            this.setMagneticField(tesla);
         }
 
         triggerDecay(x = this.sourceX, y = this.sourceY) {

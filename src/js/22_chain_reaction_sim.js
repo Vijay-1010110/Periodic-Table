@@ -909,8 +909,8 @@
                 ctx.shadowBlur = 0;
             }
 
-            // Render Scenario Bar Pills on Top-Left of Canvas
-            this.renderScenarioHUD(ctx, w, h);
+            // (Scenario bar pills are managed in the slide-over drawer to prevent HUD overlap)
+            // this.renderScenarioHUD(ctx, w, h);
 
             ctx.restore();
         }
@@ -1105,18 +1105,32 @@
                     ctx.lineWidth = 2.0;
                     ctx.stroke();
 
-                    // Nucleus Label
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 16px monospace';
+                    // Refined Nuclear Isotope Label (Scientific notation with clean font)
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    const symText = (state.stage === 'absorbed') ? '²³⁶U*' : '²³⁵U';
-                    ctx.fillText(symText, 0, -4);
+                    const uSym = (state.stage === 'absorbed') ? 'U*' : 'U';
+                    const mass = (state.stage === 'absorbed') ? '236' : '235';
 
-                    ctx.font = 'bold 10px monospace';
+                    // Element Symbol
+                    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(uSym, 6, -4);
+
+                    // Mass Number Superscript to the left
+                    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#a7f3d0';
+                    ctx.fillText(mass, -14, -10);
+
+                    // Atomic Number 92 Subscript to the left
+                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText('92', -14, 3);
+
+                    // Subtitle (Nucleon Composition)
+                    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
                     const nucText = (state.stage === 'absorbed') ? '92p + 144n (Excited)' : '92p + 143n';
-                    ctx.fillText(nucText, 0, 14);
+                    ctx.fillText(nucText, 0, 16);
                 }
 
                 ctx.restore();

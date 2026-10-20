@@ -1232,16 +1232,16 @@
                 <div class="sim-tabs-row">
                     <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
-                        <span>⚛️</span> Chain Reaction
+                        <span>⚛️</span> <span class="tab-txt-full">Chain Reaction</span><span class="tab-txt-short">Fission</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
-                        <span>☢️</span> Particle Decay
+                        <span>☢️</span> <span class="tab-txt-full">Particle Decay</span><span class="tab-txt-short">Decay</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="molecule" onclick="switchSimTab('molecule')">
-                        <span>🧬</span> Molecule Physics
+                        <span>🧬</span> <span class="tab-txt-full">Molecule Physics</span><span class="tab-txt-short">Molecules</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
-                        <span>🌍</span> Extreme Phase Lab
+                        <span>🌍</span> <span class="tab-txt-full">Extreme Phase Lab</span><span class="tab-txt-short">Phase Lab</span>
                     </button>
                 </div>
 
@@ -1301,7 +1301,7 @@
                         </div>
                         <div class="sim-narrator-pill" id="sim-narrator-pill">
                             <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">Tap anywhere on the reactor grid or press "FIRE NEUTRON" to start!</span>
+                            <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                         </div>
                     </div>
 
@@ -1313,11 +1313,11 @@
                     <!-- Sleek Floating Drawer Toggle Pill Button -->
                     <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
                         <span class="drawer-btn-icon">⚙️</span>
-                        <span class="drawer-btn-text">Controls &amp; Missions</span>
+                        <span class="drawer-btn-text">Controls</span>
                         <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
                     </button>
                 </div>
-                <div class="sim-tuning-pane" id="sim-tuning-pane">
+                <div class="sim-tuning-pane sim-drawer-collapsed" id="sim-tuning-pane">
                     <!-- Dynamic Parameters populated by renderTuningPanel() -->
                 </div>
             </div>

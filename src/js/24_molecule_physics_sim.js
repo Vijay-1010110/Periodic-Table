@@ -186,6 +186,17 @@
             this.temperatureK = Math.max(1, Math.min(3000, Number(kelvin) || 300));
         }
 
+        applyImpulse(atomOrIndex = 0, fx = 0, fy = -320) {
+            const atom = (typeof atomOrIndex === 'number') ? this.atoms[atomOrIndex] : (atomOrIndex || this.atoms[0]);
+            if (atom) {
+                atom.vx += (fx || (Math.random() - 0.5) * 200) / (atom.mass || 12);
+                atom.vy += (fy || -320) / (atom.mass || 12);
+                if (window.physicsAudio) {
+                    window.physicsAudio.playBondReleaseSnap();
+                }
+            }
+        }
+
         startDrag(screenX, screenY) {
             for (const atom of this.atoms) {
                 const dx = screenX - atom.x;
