@@ -641,39 +641,130 @@ body.has-native-slider #temp-custom-slider {
     grid-row: 2;
     display: flex;
     justify-content: center !important;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 8px;
     padding: 0px;
     pointer-events: auto;
-    height: 0;
+    height: 100%;
     min-height: 0;
     overflow: visible;
     z-index: 5;
+    box-sizing: border-box;
     transform-origin: top center !important;
 }
 
 .legend-box {
-    background: rgba(10, 15, 30, 0.96) !important;
-    border: 1px solid rgba(0, 212, 255, 0.35) !important;
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: rgba(9, 14, 26, 0.96) !important;
+    border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+    border-radius: 6px;
+    padding: 6px 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), inset 0 0 15px rgba(0, 212, 255, 0.05);
     z-index: 20 !important;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 0;
 }
+
+.in-grid-legend .category-box {
+    flex: 1.6 !important;
+    min-width: 0 !important;
+}
+
+.in-grid-legend .hero-inspector-box {
+    flex: 1.1 !important;
+    min-width: 0 !important;
+    border-color: rgba(0, 212, 255, 0.45) !important;
+}
+
 .legend-box-title {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    font-weight: 800;
     color: var(--accent-cyan);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.25);
     padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
 }
+
+.legend-box-title .legend-title-help {
+    font-size: 0.55rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
 .legend-box-content {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
 }
+
+.legend-series-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-height: 0;
+    justify-content: space-around;
+}
+
+.legend-group-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-subheading {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 65px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.legend-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    flex: 1;
+}
+
+.legend-states-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 3px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend-states-label {
+    font-size: 0.52rem;
+    color: #94a3b8;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.legend-states-chips {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
 .legend-group {
     display: flex;
     flex-direction: column;
@@ -681,11 +772,11 @@ body.has-native-slider #temp-custom-slider {
     min-width: 100px;
 }
 .legend-group-title {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
     text-transform: uppercase;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     letter-spacing: 0.5px;
 }
 .interactive-super {
@@ -696,9 +787,166 @@ body.has-native-slider #temp-custom-slider {
     color: var(--accent-amber);
     text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
 }
-.legend-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: var(--transition-fast); margin-left: -4px; font-size: 0.7rem; }
-.legend-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
-.legend-color { width: 10px; height: 10px; border-radius: 3px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: var(--transition-fast);
+    font-size: 0.62rem;
+    line-height: 1.15;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.legend-item:hover {
+    filter: brightness(1.2);
+    transform: scale(1.04);
+}
+.legend-color { width: 9px; height: 9px; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); flex-shrink: 0; }
+
+/* Central Hero Inspector Card Styles */
+.hero-inspector-body {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+}
+
+.hero-card-tile {
+    width: 68px;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1.5px solid #00d4ff;
+    border-radius: 0px !important;
+    padding: 3px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-tile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    line-height: 1;
+}
+
+.hero-tile-z {
+    font-weight: 800;
+    color: #38bdf8;
+}
+
+.hero-tile-mass {
+    font-size: 0.46rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.hero-tile-sym {
+    font-size: 1.45rem;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1;
+    margin: 2px 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hero-tile-name {
+    font-size: 0.52rem;
+    text-align: center;
+    color: #f1f5f9;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-tile-config {
+    font-size: 0.42rem;
+    font-family: var(--font-mono);
+    text-align: center;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-anatomy-callouts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.55rem;
+    color: #cbd5e1;
+}
+
+.anatomy-callout-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.anatomy-callout-row .callout-tag {
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #38bdf8;
+    min-width: 32px;
+}
+
+.anatomy-callout-hint {
+    font-size: 0.48rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin-top: 3px;
+}
+
+.hero-live-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-prop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.52rem;
+    line-height: 1.2;
+}
+
+.hero-prop-lbl {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.hero-prop-val {
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.hero-cat-pill {
+    font-size: 0.46rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
 
 /* Highlight Logic */
 #main-grid.highlighting-active .element-cell:not(.highlighted),

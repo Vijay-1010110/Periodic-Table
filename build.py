@@ -5,7 +5,7 @@ import subprocess
 
 def build():
     print("========================================")
-    print("  Building Periodica Mobile App Bundle  ")
+    print("   Building Periodica Web App Bundle    ")
     print("========================================")
     
     if not os.path.exists('public'):
@@ -84,17 +84,7 @@ def build():
         shutil.copytree('assets', 'public/assets', dirs_exist_ok=True)
     
     print("Copied icons, manifest, and assets to public/")
-
-    # Capacitor sync
-    if os.path.exists('android') or os.path.exists('ios'):
-        print("Syncing with native Capacitor platforms...")
-        try:
-            subprocess.run('npx cap sync', shell=True, check=True)
-            print("Capacitor sync successful!")
-        except Exception as e:
-            print(f"Capacitor sync notice: {e}")
-    else:
-        print("Capacitor platforms not yet initialized. Run 'npx cap add android' to create the Android project.")
+    print("Web bundle ready for deployment.")
 
 if __name__ == '__main__':
     build()

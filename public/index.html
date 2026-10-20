@@ -10419,7 +10419,7 @@ body.is-pro-user .nav-pro-pill {
 /* 02_simulations.css */
 /**
  * PERIODICA 3D - Simulation Lab & Physics Suite Styles
- * High-tech glassmorphism, responsive layout, and game-level tactile controls.
+ * High-tech glassmorphism, full-bleed interactive canvas, and mobile-first thumb dock.
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
  */
 
@@ -10447,11 +10447,12 @@ body.is-pro-user .nav-pro-pill {
     padding: 6px 12px;
     background: rgba(15, 23, 42, 0.90);
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-bottom: 1.5px solid rgba(0, 212, 255, 0.25);
     z-index: 20;
     gap: 8px;
     flex-shrink: 0;
-    min-height: 46px;
+    min-height: 44px;
 }
 
 .sim-tabs-row {
@@ -10473,7 +10474,7 @@ body.is-pro-user .nav-pro-pill {
     font-size: 0.65rem;
     font-family: var(--font-mono);
     font-weight: 800;
-    padding: 4px 8px;
+    padding: 3px 7px;
     border-radius: 6px;
     background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.20));
     border: 1px solid rgba(0, 212, 255, 0.45);
@@ -10491,12 +10492,12 @@ body.is-pro-user .nav-pro-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 5px 11px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: #cbd5e1;
     border-radius: 8px;
-    font-size: 0.82rem;
+    font-size: 0.80rem;
     font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
@@ -10518,15 +10519,18 @@ body.is-pro-user .nav-pro-pill {
     box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
-/* Game-Level Playback Controls Bar */
-.sim-playback-deck {
+.tab-txt-short {
+    display: none;
+}
+.tab-txt-full {
+    display: inline;
+}
+
+/* Clean Top Action Strip */
+.sim-top-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: rgba(10, 16, 30, 0.92);
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    padding: 3px 6px;
-    border-radius: 9px;
+    gap: 6px;
     flex-shrink: 0;
 }
 
@@ -10534,13 +10538,13 @@ body.is-pro-user .nav-pro-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 7px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.16);
     color: #e2e8f0;
-    font-size: 0.90rem;
+    font-size: 0.86rem;
     cursor: pointer;
     transition: all 0.15s ease;
     touch-action: manipulation;
@@ -10556,20 +10560,19 @@ body.is-pro-user .nav-pro-pill {
     transform: scale(0.92);
 }
 
-.sim-speed-select {
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(0, 212, 255, 0.35);
+.sim-ctrl-btn.guide-btn {
+    width: auto;
+    padding: 0 9px;
+    gap: 4px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.16));
+    border: 1px solid rgba(0, 212, 255, 0.45);
     color: #00d4ff;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 5px 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
 }
 
-/* Two-Column Simulation Workspace */
+/* Simulation Workspace & 100% Unobstructed Canvas Stage */
 .sim-workspace {
     display: flex;
     flex: 1;
@@ -10579,10 +10582,10 @@ body.is-pro-user .nav-pro-pill {
     position: relative;
 }
 
-/* Left Canvas Stage */
 .sim-viewport-stage {
     flex: 1;
     position: relative;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -10599,596 +10602,406 @@ body.is-pro-user .nav-pro-pill {
     cursor: crosshair;
 }
 
-/* ==================== GAME REACTION PROCESS STEPPER & NARRATOR ==================== */
-.sim-reaction-stepper {
+/* ==================== FLOATING DYNAMIC STATUS NARRATOR PILL ==================== */
+.sim-narrator-pill {
     position: absolute;
     top: 8px;
-    left: 10px;
-    right: 10px;
-    z-index: 15;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    pointer-events: none;
-    max-width: calc(100% - 20px);
-}
-
-.stepper-track {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0 auto;
-    max-width: 100%;
-    gap: 5px;
-    background: rgba(10, 16, 30, 0.92);
-    backdrop-filter: blur(12px);
-    border: 1.5px solid rgba(0, 212, 255, 0.3);
-    border-radius: 10px;
-    padding: 4px 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-    overflow-x: auto;
-    scrollbar-width: none;
-    pointer-events: auto;
-}
-
-.stepper-track::-webkit-scrollbar {
-    display: none;
-}
-
-.step-card {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 8px;
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.step-card .step-icon {
-    font-size: 0.95rem;
-}
-
-.step-card .step-content {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-}
-
-.step-card .step-num {
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #64748b;
-    letter-spacing: 0.05em;
-}
-
-.step-card .step-label {
-    font-size: 0.74rem;
-    font-weight: 800;
-    color: #cbd5e1;
-}
-
-.stepper-connector {
-    color: rgba(0, 212, 255, 0.5);
-    font-weight: 800;
-    font-size: 0.82rem;
-    flex-shrink: 0;
-}
-
-/* Active Highlighted Reaction Step */
-.step-card.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(245, 158, 11, 0.25));
-    border-color: #00d4ff;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.45);
-    transform: scale(1.02);
-}
-
-.step-card.active .step-num {
-    color: #38bdf8;
-}
-
-.step-card.active .step-label {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
-}
-
-/* Live Reaction Process Narrator Pill */
-.sim-narrator-pill {
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    border-radius: 7px;
-    padding: 4px 10px;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    border-radius: 20px;
+    padding: 4px 14px;
     margin: 0 auto;
-    max-width: 95%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    pointer-events: auto;
+    max-width: 90%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.15);
+    pointer-events: none;
+    transition: all 0.2s ease;
 }
 
 .sim-narrator-pill .narrator-icon {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     flex-shrink: 0;
 }
 
 .sim-narrator-pill .narrator-msg {
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: #f1f5f9;
     line-height: 1.25;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
-.sim-tuning-pane {
-    width: 320px;
-    max-width: 100vw;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-left: 1.5px solid rgba(0, 212, 255, 0.25);
+/* ==================== FLOATING BOTTOM THUMB DECK ==================== */
+.sim-game-deck {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+    z-index: 30;
     display: flex;
-    flex-direction: column;
-    padding: 14px 16px;
-    gap: 12px;
-    overflow-y: auto;
-    flex-shrink: 0;
-    z-index: 50;
-    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0.25s ease,
-                padding 0.25s ease;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(10, 16, 30, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(0, 212, 255, 0.35);
+    border-radius: 12px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 212, 255, 0.18);
+    pointer-events: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Universal Collapsed State (Works everywhere) */
-.sim-tuning-pane.sim-drawer-collapsed {
-    width: 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    border-left: none !important;
-    border-top: none !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    overflow: hidden !important;
+.sim-game-deck::-webkit-scrollbar {
+    display: none;
 }
 
-/* Progressive Scenario Selector Pills */
-.sim-scenario-pills {
+.sim-deck-left {
     display: flex;
+    align-items: center;
     gap: 5px;
-    background: rgba(0, 0, 0, 0.45);
-    padding: 4px;
-    border-radius: 9px;
-    border: 1px solid rgba(0, 212, 255, 0.22);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
 }
 
-.sim-scenario-btn {
-    flex: 1;
-    padding: 6px 4px;
-    border-radius: 6px;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
+.sim-deck-left::-webkit-scrollbar {
+    display: none;
+}
+
+.sim-deck-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sim-deck-chip {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
     font-size: 0.76rem;
     font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
     white-space: nowrap;
-}
-
-.sim-scenario-btn:hover {
-    color: #e2e8f0;
-}
-
-.sim-scenario-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(168, 85, 247, 0.35));
-    border: 1px solid rgba(0, 212, 255, 0.6);
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
-}
-
-/* Sleek Floating Drawer Toggle Button */
-.sim-drawer-toggle-btn {
-    position: absolute;
-    bottom: 46px;
-    right: 14px;
-    z-index: 25;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 13px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(0, 212, 255, 0.4);
-    border-radius: 20px;
-    color: #e2e8f0;
-    font-size: 0.80rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.25);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease;
     touch-action: manipulation;
 }
 
-.sim-drawer-toggle-btn:hover {
-    background: rgba(0, 212, 255, 0.20);
+.sim-deck-chip:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: #ffffff;
+}
+
+.sim-deck-chip.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.32), rgba(168, 85, 247, 0.32));
     border-color: #00d4ff;
     color: #ffffff;
-    box-shadow: 0 0 16px rgba(0, 212, 255, 0.45);
-    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
 }
 
-.sim-drawer-toggle-btn:active {
-    transform: scale(0.95);
-}
-
-.drawer-arrow {
+.sim-deck-chip.small {
+    padding: 4px 8px;
     font-size: 0.70rem;
-    transition: transform 0.25s ease;
-    color: #00d4ff;
+    border-radius: 6px;
 }
 
-/* Game vs Controls Subdeck Toggle */
-.sim-subdeck-pills {
-    display: flex;
+/* Large glowing Hero Action Button */
+.sim-deck-hero-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     gap: 6px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 4px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+    touch-action: manipulation;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.sim-subdeck-btn {
-    flex: 1;
-    padding: 8px 10px;
+.sim-deck-hero-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-hero-btn.primary {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
+}
+
+.sim-deck-hero-btn.primary:hover {
+    background: linear-gradient(135deg, #0369a1, #38bdf8);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+}
+
+.sim-deck-hero-btn.danger {
+    background: linear-gradient(135deg, #dc2626, #f43f5e);
+    border: 1.5px solid #f87171;
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+}
+
+.sim-deck-hero-btn.warn {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    border: 1.5px solid #fbbf24;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+}
+
+.sim-deck-hero-btn.cool {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    border: 1.5px solid #7dd3fc;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+}
+
+.sim-deck-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 9px;
     border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #cbd5e1;
+    font-size: 0.74rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.sim-deck-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.sim-deck-tool-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-slider-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 3px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sim-deck-slider-label {
+    font-size: 0.70rem;
+    color: #94a3b8;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sim-deck-slider-label b {
+    color: #00d4ff;
+    font-family: var(--font-mono);
+}
+
+.sim-deck-slider {
+    width: 65px;
+    height: 4px;
+    accent-color: #00d4ff;
+    cursor: pointer;
+}
+
+.sim-deck-select {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    color: #00d4ff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    max-width: 130px;
+}
+
+.sim-deck-toggles {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==================== PEDAGOGICAL GUIDE MODAL ==================== */
+.sim-guide-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.sim-guide-modal-card {
+    background: #0b1120;
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 14px;
+    width: min(580px, 94vw);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2);
+    animation: simModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes simModalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.sim-guide-modal-header {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sim-guide-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.sim-guide-modal-title h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-family: var(--font-ui);
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.sim-guide-modal-close {
     background: transparent;
     border: none;
     color: #94a3b8;
-    font-size: 0.84rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
+    font-size: 1.4rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    white-space: nowrap;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.15s ease;
 }
 
-.sim-subdeck-btn.active {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
+.sim-guide-modal-close:hover {
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
 }
 
-/* Missions Cards List */
-.sim-missions-list {
+.sim-guide-modal-body {
+    padding: 14px 16px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-.sim-mission-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: border-color 0.2s ease;
-}
-
-.sim-mission-card.completed {
-    border-color: rgba(74, 222, 128, 0.5);
-    background: rgba(34, 197, 94, 0.05);
-}
-
-.mission-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-}
-
-.mission-title {
-    font-size: 0.90rem;
-    font-weight: 800;
-    color: #f1f5f9;
-}
-
-.mission-status-badge {
-    font-size: 0.70rem;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 5px;
-    font-family: var(--font-mono);
-}
-
-.mission-status-badge.active {
-    background: rgba(245, 158, 11, 0.18);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.35);
-}
-
-.mission-status-badge.done {
-    background: rgba(34, 197, 94, 0.2);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.4);
-}
-
-.mission-desc {
-    font-size: 0.78rem;
-    color: #94a3b8;
-    line-height: 1.35;
-}
-
-.mission-progress-bar-wrap {
-    width: 100%;
-    height: 7px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 2px;
-}
-
-.mission-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #00d4ff, #4ade80);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.mission-footer-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.74rem;
-    color: #94a3b8;
-    font-family: var(--font-mono);
-}
-
-.mission-reward-badge {
-    color: #f59e0b;
-    font-weight: 700;
-}
-
-/* Sections in Controls Deck */
-.sim-pane-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 12px;
-    padding: 14px;
-}
-
-.sim-pane-title {
-    font-size: 0.86rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #00d4ff;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sim-input-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.sim-input-row:last-child {
-    margin-bottom: 0;
-}
-
-.sim-input-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.86rem;
-    font-weight: 600;
+    font-size: 0.80rem;
     color: #cbd5e1;
-    font-family: var(--font-ui);
+    line-height: 1.45;
 }
 
-.large-sim-select {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 0.85rem;
-    border-radius: 8px;
+.sim-guide-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    padding: 9px 12px;
 }
 
-.sim-val-badge {
-    font-family: var(--font-mono);
+.sim-guide-card h4 {
+    margin: 0 0 4px;
     color: #38bdf8;
+    font-size: 0.84rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sim-guide-card p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.77rem;
+    line-height: 1.4;
+}
+
+.sim-guide-modal-footer {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sim-guide-confirm-btn {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
     font-weight: 800;
-    font-size: 0.95rem;
-}
-
-.sim-range-slider {
-    width: 100%;
-    height: 8px;
-    accent-color: #00d4ff;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.slider-hint-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.72rem;
-    color: #64748b;
-    font-weight: 600;
-    margin-top: 2px;
-}
-
-/* Big Tactile Arcade Action Buttons */
-.sim-arcade-actions-block {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 4px;
-}
-
-.sim-action-btn {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 0.90rem;
-    font-weight: 800;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    border: none;
-    touch-action: manipulation;
-}
-
-.large-arcade-btn {
-    min-height: 46px;
-    letter-spacing: 0.03em;
-    font-size: 0.92rem;
-}
-
-.sim-action-btn.primary {
-    background: linear-gradient(135deg, #00d4ff, #0284c7);
-    color: #000000;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
-}
-
-.sim-action-btn.danger {
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
-    color: #ffffff;
-    box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
-}
-
-.sim-action-btn:active {
-    transform: scale(0.97);
-}
-
-
-/* Drawer Header & Clean Close */
-.sim-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    margin-bottom: 2px;
-}
-
-.sim-drawer-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.90rem;
-    font-weight: 700;
-    color: #e2e8f0;
-    font-family: var(--font-ui);
-    letter-spacing: 0.3px;
-}
-
-.sim-drawer-close-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #f1f5f9;
-    width: 34px;
-    height: 34px;
+    font-size: 0.82rem;
+    padding: 7px 18px;
     border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    transition: all 0.15s ease;
 }
 
-.sim-drawer-close-btn:hover,
-.sim-drawer-close-btn:active {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #fca5a5;
+.sim-guide-confirm-btn:hover {
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
 }
 
-.tab-txt-short {
-    display: none;
-}
-.tab-txt-full {
-    display: inline;
+.sim-guide-confirm-btn:active {
+    transform: scale(0.95);
 }
 
-.sim-drawer-toggle-btn.drawer-open {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transform: scale(0.85) translateY(8px) !important;
-}
-/* ==================== RESPONSIVE RULES FOR MOBILE & TOUCH DEVICES ==================== */
-@media (max-width: 1024px), (max-height: 600px), (pointer: coarse) {
-    .sim-workspace {
-        position: relative;
-        flex-direction: row;
-        overflow: hidden;
-    }
-
-    .sim-viewport-stage {
-        width: 100% !important;
-        height: 100% !important;
-        flex: 1 1 100% !important;
-        position: relative;
-    }
-
-    /* 100% Screen Hero: Overlay Slide-In Drawer (Optimized for Mobile Landscape) */
-    .sim-tuning-pane {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: min(290px, 44vw) !important;
-        max-width: 100vw !important;
-        height: 100% !important;
-        max-height: 100% !important;
-        z-index: 150 !important;
-        background: rgba(9, 14, 28, 0.97) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-left: 1.5px solid rgba(0, 212, 255, 0.35) !important;
-        border-top: none !important;
-        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.90) !important;
-        transform: translateX(0) !important;
-        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        padding: 10px 12px 32px !important;
-        gap: 9px !important;
-    }
-
-    .sim-tuning-pane.sim-drawer-collapsed {
-        transform: translateX(105%) !important;
-        width: min(290px, 44vw) !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        overflow: hidden !important;
-    }
-
+/* ==================== MOBILE & TOUCHSCREEN RESPONSIVE RULES ==================== */
+@media (max-width: 900px), (max-height: 500px) {
     .tab-txt-short {
         display: inline;
     }
@@ -11199,18 +11012,18 @@ body.is-pro-user .nav-pro-pill {
     .sim-header-bar {
         padding: 4px 6px;
         gap: 5px;
-        min-height: 42px;
+        min-height: 40px;
     }
 
     .sim-tab-btn {
         padding: 4px 7px;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         gap: 4px;
     }
 
     .sim-beta-tag {
-        font-size: 0.65rem;
-        padding: 2px 6px;
+        font-size: 0.62rem;
+        padding: 2px 5px;
     }
 
     .sim-ctrl-btn {
@@ -11219,61 +11032,57 @@ body.is-pro-user .nav-pro-pill {
         font-size: 0.80rem;
     }
 
-    .sim-speed-select {
-        padding: 3px 4px;
+    .sim-ctrl-btn.guide-btn {
+        padding: 0 7px;
         font-size: 0.72rem;
-    }
-
-    /* Stepper & Live Narrator Compact Mobile Styling */
-    .sim-reaction-stepper {
-        top: 4px;
-        left: 6px;
-        right: 6px;
-        gap: 2px;
-        max-width: calc(100% - 12px);
-    }
-
-    .stepper-track {
-        padding: 2px 5px;
-        gap: 3px;
-        border-radius: 6px;
-    }
-
-    .step-card {
-        padding: 1px 4px;
-        gap: 2px;
-    }
-
-    .step-card .step-num {
-        display: none;
-    }
-
-    .step-card .step-label {
-        font-size: 0.66rem;
-        font-weight: 600;
-    }
-
-    .step-icon {
-        font-size: 0.72rem;
-    }
-
-    .stepper-connector {
-        font-size: 0.60rem;
-        opacity: 0.4;
     }
 
     .sim-narrator-pill {
-        padding: 2px 8px;
-        font-size: 0.70rem;
-        max-width: 92%;
+        top: 6px;
+        padding: 2px 10px;
+        max-width: 88%;
     }
 
-    .narrator-icon {
-        font-size: 0.72rem;
+    .sim-narrator-pill .narrator-icon {
+        font-size: 0.75rem;
     }
 
     .sim-narrator-pill .narrator-msg {
+        font-size: 0.68rem;
+    }
+
+    .sim-game-deck {
+        bottom: 6px;
+        left: 6px;
+        right: 6px;
+        padding: 4px 8px;
+        gap: 6px;
+        border-radius: 10px;
+    }
+
+    .sim-deck-chip {
+        padding: 4px 7px;
         font-size: 0.70rem;
+    }
+
+    .sim-deck-hero-btn {
+        padding: 5px 10px;
+        font-size: 0.74rem;
+    }
+
+    .sim-deck-tool-btn {
+        padding: 4px 7px;
+        font-size: 0.70rem;
+    }
+
+    .sim-deck-slider {
+        width: 50px;
+    }
+
+    .sim-deck-select {
+        font-size: 0.68rem;
+        padding: 3px 4px;
+        max-width: 105px;
     }
 }
 
@@ -107244,6 +107053,42 @@ window.OrbitalViewer = {
             this.notify();
         }
 
+        setElement(z) {
+            this.activeElementId = parseInt(z, 10) || 6;
+            this.notify();
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        heat(deltaK = 150) {
+            this.setTemperature(Math.min(35000, this.temperatureK + deltaK));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        cool(deltaK = 150) {
+            this.setTemperature(Math.max(1, this.temperatureK - deltaK));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        compress(factor = 2.0) {
+            this.setPressure(Math.min(1e11, this.pressureAtm * factor));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        decompress(factor = 2.0) {
+            this.setPressure(Math.max(1e-12, this.pressureAtm / factor));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
         quickJumpPhase(phaseType) {
             const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
             const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1000, boil: 2500 };
@@ -111344,12 +111189,6 @@ window.OrbitalViewer = {
             }
         });
 
-        // Reaction Stepper is ONLY visible for Nuclear Chain Reaction!
-        const stepper = document.getElementById('sim-reaction-stepper');
-        if (stepper) {
-            stepper.style.display = (tabName === 'chain_reaction') ? 'flex' : 'none';
-        }
-
         // Switch Visible Canvases
         const canvases = {
             'chain_reaction': document.getElementById('chain-sim-canvas'),
@@ -111362,7 +111201,26 @@ window.OrbitalViewer = {
             if (c) c.style.display = (key === tabName) ? 'block' : 'none';
         }
 
-        renderTuningPanel(tabName);
+        // Update dynamic status narrator pill for the active tab
+        const msgEl = document.getElementById('sim-narrator-msg');
+        if (msgEl) {
+            if (tabName === 'chain_reaction') {
+                const engine = window.chainReactionEngine;
+                if (engine && engine.reactionNarrative) {
+                    msgEl.textContent = engine.reactionNarrative;
+                } else {
+                    msgEl.textContent = '🎯 Aim neutron emitter & tap "FIRE NEUTRON" (or tap nucleus) to start!';
+                }
+            } else if (tabName === 'decay') {
+                msgEl.textContent = '☢️ Quantum tunneling triggers spontaneous transmutation! Tap TRANSMUTE or tap nucleus.';
+            } else if (tabName === 'molecule') {
+                msgEl.textContent = '🧬 Touch & drag atoms to stretch harmonic bonds; tap THERMAL JOLT to stimulate vibrations.';
+            } else if (tabName === 'environment') {
+                msgEl.textContent = '🌡️ Explore phase boundaries: Heat to melt/boil, cool to crystallize, or compress into dense metal.';
+            }
+        }
+
+        renderGameDeck(tabName);
     }
 
     function toggleSimPlayback() {
@@ -111394,11 +111252,13 @@ window.OrbitalViewer = {
         } else if (tab === 'decay' && window.nuclearDecayEngine) {
             window.nuclearDecayEngine.particles = [];
             window.nuclearDecayEngine.droplets = [];
+            window.nuclearDecayEngine.resetTransmutation();
         } else if (tab === 'molecule' && window.molecularDynamicsEngine) {
             window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey);
         } else if (tab === 'environment' && window.envSimulationEngine) {
             window.envSimulationEngine.setPreset('earth_stp');
         }
+        renderGameDeck(tab);
     }
 
     function toggleSimAudio() {
@@ -111408,453 +111268,362 @@ window.OrbitalViewer = {
         if (btn) btn.innerHTML = window.physicsAudio.muted ? '🔇' : '🔊';
     }
 
-    // Collapsible Drawer / Bottom Sheet Controller
-    function toggleSimDrawer(forceState) {
-        const pane = document.getElementById('sim-tuning-pane');
-        const toggleBtn = document.getElementById('sim-drawer-toggle');
-        const arrow = document.getElementById('sim-drawer-arrow');
-        if (!pane) return;
-
-        if (typeof forceState === 'boolean') {
-            if (forceState) {
-                pane.classList.remove('sim-drawer-collapsed');
-            } else {
-                pane.classList.add('sim-drawer-collapsed');
-            }
-        } else {
-            pane.classList.toggle('sim-drawer-collapsed');
-        }
-
-        const isCollapsed = pane.classList.contains('sim-drawer-collapsed');
-        if (arrow) {
-            arrow.textContent = isCollapsed ? '▲' : '▼';
-        }
-        if (toggleBtn) {
-            toggleBtn.classList.toggle('drawer-open', !isCollapsed);
-        }
-    }
-    window.toggleSimDrawer = toggleSimDrawer;
-
-    let activeChainSubdeck = 'missions'; // 'missions' | 'controls'
-    function setChainSubdeck(deck) {
-        activeChainSubdeck = deck;
-        renderTuningPanel('chain_reaction');
-    }
-    window.setChainSubdeck = setChainSubdeck;
-
     /**
-     * Render Contextual Parameter Deck for Active Simulation
+     * Render Bottom Game Controller Deck (PhET / Brilliant.org Mobile First)
      */
-    function renderTuningPanel(tabName) {
-        const pane = document.getElementById('sim-tuning-pane');
-        if (!pane) return;
+    function renderGameDeck(tabName) {
+        const deck = document.getElementById('sim-game-deck');
+        if (!deck) return;
 
         if (tabName === 'chain_reaction') {
             const engine = window.chainReactionEngine;
             const curScenario = engine ? engine.currentScenario : 'single_fission';
-            const missions = engine ? engine.gameMissions : [];
-            const completedCount = missions.filter(m => m.completed).length;
 
-            pane.innerHTML = `
-                <div class="sim-drawer-header">
-                    <div class="sim-drawer-title">
-                        <span>⚛️</span>
-                        <span>Fission &amp; Missions</span>
+            let rightControls = '';
+            if (curScenario === 'single_fission') {
+                rightControls = `
+                    <button class="sim-deck-hero-btn primary" onclick="window.chainReactionEngine.fireSingleAtomNeutron()">
+                        <span>🚀</span> FIRE NEUTRON
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.chainReactionEngine.initChamber()" title="Reset Nucleus">
+                        <span>🔄</span> Reset
+                    </button>
+                `;
+            } else if (curScenario === 'chain_sandbox') {
+                rightControls = `
+                    <div class="sim-deck-slider-group">
+                        <span class="sim-deck-slider-label">Atoms: <b id="deck-density-val">${engine ? engine.atomDensity : 45}</b></span>
+                        <input type="range" class="sim-deck-slider" min="15" max="85" value="${engine ? engine.atomDensity : 45}" oninput="document.getElementById('deck-density-val').textContent=this.value; window.chainReactionEngine.setAtomDensity(this.value);">
                     </div>
-                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
-                </div>
+                    <select class="sim-deck-select" onchange="window.chainReactionEngine.setFuel(this.value)">
+                        <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Enriched</option>
+                        <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Fast</option>
+                        <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Depleted</option>
+                    </select>
+                    <button class="sim-deck-hero-btn primary" onclick="window.chainReactionEngine.injectNeutron()">
+                        <span>🚀</span> FIRE
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.chainReactionEngine.initChamber()" title="Clear Cascade">
+                        <span>🔄</span> Clear
+                    </button>
+                `;
+            } else {
+                rightControls = `
+                    <div class="sim-deck-slider-group">
+                        <span class="sim-deck-slider-label">Rods: <b id="deck-rod-val">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</b></span>
+                        <input type="range" class="sim-deck-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('deck-rod-val').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
+                    </div>
+                    <select class="sim-deck-select" onchange="window.chainReactionEngine.setModerator(this.value)">
+                        <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O</option>
+                        <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O</option>
+                        <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Graphite C</option>
+                    </select>
+                    <button class="sim-deck-hero-btn danger" onclick="window.chainReactionEngine.triggerSCRAM()">
+                        <span>🚨</span> SCRAM
+                    </button>
+                    <button class="sim-deck-hero-btn primary" onclick="window.chainReactionEngine.injectNeutron()">
+                        <span>🚀</span> FIRE
+                    </button>
+                `;
+            }
 
-                <!-- Scenario Selector Pills (PhET / Brilliant.org Progression) -->
-                <div class="sim-scenario-pills">
-                    <button class="sim-scenario-btn ${curScenario === 'single_fission' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('single_fission')">
+            deck.innerHTML = `
+                <div class="sim-deck-left">
+                    <button class="sim-deck-chip ${curScenario === 'single_fission' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('single_fission')">
                         🎯 1. Single Atom
                     </button>
-                    <button class="sim-scenario-btn ${curScenario === 'chain_sandbox' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('chain_sandbox')">
+                    <button class="sim-deck-chip ${curScenario === 'chain_sandbox' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('chain_sandbox')">
                         ⚡ 2. Sandbox
                     </button>
-                    <button class="sim-scenario-btn ${curScenario === 'reactor_core' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('reactor_core')">
+                    <button class="sim-deck-chip ${curScenario === 'reactor_core' ? 'active' : ''}" onclick="window.chainReactionEngine.setScenario('reactor_core')">
                         🔋 3. Reactor Core
                     </button>
                 </div>
-
-                <!-- Thumb-Zone Fast Actions -->
-                <div class="sim-arcade-actions-block" style="margin-top: 2px; margin-bottom: 8px;">
-                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.chainReactionEngine.injectNeutron()">
-                        <span>🚀</span> ${curScenario === 'single_fission' ? 'FIRE THERMAL NEUTRON' : 'FIRE NEUTRON (LAUNCH)'}
-                    </button>
-                    ${curScenario === 'reactor_core' ? `
-                        <button class="sim-action-btn danger large-arcade-btn" onclick="window.chainReactionEngine.triggerSCRAM()">
-                            <span>🚨</span> EMERGENCY SCRAM (STOP)
-                        </button>
-                    ` : `
-                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.chainReactionEngine.initChamber()">
-                            <span>🔄</span> RESET ${curScenario === 'single_fission' ? 'NUCLEUS' : 'CORE'}
-                        </button>
-                    `}
+                <div class="sim-deck-right">
+                    ${rightControls}
                 </div>
-
-                ${curScenario === 'single_fission' ? `
-                    <!-- SCENARIO 1 TUTORIAL GUIDE -->
-                    <div class="sim-pane-section">
-                        <div class="sim-pane-title"><span>🔬</span> Fission Mechanics Guide</div>
-                        <p style="font-size:0.80rem; color:#cbd5e1; line-height:1.45; margin:0 0 10px;">
-                            <strong>Bohr-Wheeler Liquid Drop Model:</strong>
-                        </p>
-                        <ul style="font-size:0.77rem; color:#94a3b8; padding-left:18px; line-height:1.4; margin:0 0 10px;">
-                            <li><strong>Step 1:</strong> Incoming thermal neutron (+0.025 eV) absorbs into ²³⁵U.</li>
-                            <li><strong>Step 2:</strong> ²³⁶U* compound nucleus wobbles & elongates into a dumbbell.</li>
-                            <li><strong>Step 3:</strong> Coulomb repulsion overcomes strong force: scission split into ⁹²Kr + ¹⁴¹Ba.</li>
-                            <li><strong>Step 4:</strong> 3 prompt fast neutrons eject, ready to multiply!</li>
-                        </ul>
-                        <div style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); border-radius:8px; padding:8px 10px; font-size:0.76rem; color:#38bdf8;">
-                            🎯 <em>Tap "FIRE THERMAL NEUTRON" or tap the nucleus to watch automatic slow motion!</em>
-                        </div>
-                    </div>
-                ` : curScenario === 'chain_sandbox' ? `
-                    <!-- SCENARIO 2 SANDBOX & MISSIONS -->
-                    <div class="sim-subdeck-pills">
-                        <button class="sim-subdeck-btn ${activeChainSubdeck === 'missions' ? 'active' : ''}" onclick="setChainSubdeck('missions')">
-                            🎮 Missions (${completedCount}/${missions.length})
-                        </button>
-                        <button class="sim-subdeck-btn ${activeChainSubdeck === 'controls' ? 'active' : ''}" onclick="setChainSubdeck('controls')">
-                            ⚙️ Atom Density
-                        </button>
-                    </div>
-
-                    ${activeChainSubdeck === 'missions' ? `
-                        <div class="sim-missions-list">
-                            ${missions.map(m => {
-                                const pct = Math.min(100, Math.round((m.current / m.goal) * 100));
-                                return `
-                                    <div class="sim-mission-card ${m.completed ? 'completed' : ''}">
-                                        <div class="mission-header-row">
-                                            <span class="mission-title">${m.title}</span>
-                                            <span class="mission-status-badge ${m.completed ? 'done' : 'active'}">
-                                                ${m.completed ? 'COMPLETED ✅' : 'IN PROGRESS ⏳'}
-                                            </span>
-                                        </div>
-                                        <div class="mission-desc">${m.desc}</div>
-                                        <div class="mission-progress-bar-wrap">
-                                            <div class="mission-progress-bar" style="width: ${pct}%;"></div>
-                                        </div>
-                                        <div class="mission-footer-row">
-                                            <span class="mission-progress-text">${typeof m.current === 'number' && m.current % 1 !== 0 ? m.current.toFixed(1) : m.current} / ${m.goal}</span>
-                                            <span class="mission-reward-badge">${m.badge}</span>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    ` : `
-                        <div class="sim-pane-section">
-                            <div class="sim-pane-title"><span>⚛️</span> Fuel Cluster Density</div>
-                            <div class="sim-input-row">
-                                <div class="sim-input-label">
-                                    <span>Fuel Atom Count:</span>
-                                    <span id="density-val-display" class="sim-val-badge">${engine ? engine.atomDensity : 45}</span>
-                                </div>
-                                <input type="range" class="sim-range-slider" min="15" max="100" value="${engine ? engine.atomDensity : 45}" oninput="document.getElementById('density-val-display').textContent=this.value; window.chainReactionEngine.setAtomDensity(this.value);">
-                                <div class="slider-hint-row">
-                                    <span>Sparse (Controlled)</span>
-                                    <span>Dense (Critical Cascade)</span>
-                                </div>
-                            </div>
-                            <div class="sim-input-row">
-                                <label class="sim-input-label"><span>Fissile Fuel:</span></label>
-                                <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setFuel(this.value)">
-                                    <option value="U235" ${engine && engine.fuelType === 'U235' ? 'selected' : ''}>²³⁵U Uranium-235 (Enriched)</option>
-                                    <option value="PU239" ${engine && engine.fuelType === 'PU239' ? 'selected' : ''}>²³⁹Pu Plutonium-239 (Fast)</option>
-                                    <option value="U238" ${engine && engine.fuelType === 'U238' ? 'selected' : ''}>²³⁸U Depleted (Fertile)</option>
-                                </select>
-                            </div>
-                        </div>
-                    `}
-                ` : `
-                    <!-- SCENARIO 3 REACTOR CORE -->
-                    <div class="sim-pane-section">
-                        <div class="sim-pane-title"><span>🔋</span> Reactor Power Balancing</div>
-                        <div class="sim-input-row">
-                            <div class="sim-input-label">
-                                <span>Control Rods (Absorption):</span>
-                                <span id="rod-val-display" class="sim-val-badge">${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}%</span>
-                            </div>
-                            <input type="range" class="sim-range-slider" min="0" max="100" value="${((engine ? engine.controlRodInsertion : 0.35) * 100).toFixed(0)}" oninput="document.getElementById('rod-val-display').textContent=this.value+'%'; window.chainReactionEngine.setControlRods(this.value/100);">
-                            <div class="slider-hint-row">
-                                <span>⚡ Withdraw (More MW)</span>
-                                <span>⬇️ Insert (Cool Core)</span>
-                            </div>
-                        </div>
-                        <div class="sim-input-row">
-                            <label class="sim-input-label"><span>Moderator Medium:</span></label>
-                            <select class="sim-speed-select large-sim-select" onchange="window.chainReactionEngine.setModerator(this.value)">
-                                <option value="light_water" ${engine && engine.moderatorType === 'light_water' ? 'selected' : ''}>Light Water H₂O (Thermalizes)</option>
-                                <option value="heavy_water" ${engine && engine.moderatorType === 'heavy_water' ? 'selected' : ''}>Heavy Water D₂O (Low Loss)</option>
-                                <option value="graphite" ${engine && engine.moderatorType === 'graphite' ? 'selected' : ''}>Nuclear Graphite (Solid)</option>
-                                <option value="vacuum" ${engine && engine.moderatorType === 'vacuum' ? 'selected' : ''}>Vacuum (Fast Core)</option>
-                            </select>
-                        </div>
-                    </div>
-                `}
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
             const curMode = engine ? engine.currentMode : 'transmutation';
-            const curNuclide = (window.DECAY_NUCLIDES || []).find(n => n.id === (engine ? engine.currentPresetId : 'U238')) || (window.DECAY_NUCLIDES || [])[0];
+            const nuclides = window.DECAY_NUCLIDES || [];
             const bField = (engine && typeof engine.magneticFieldTesla === 'number') ? engine.magneticFieldTesla : 1.0;
-            const bVal = (bField * 10).toFixed(0);
 
-            pane.innerHTML = `
-                <div class="sim-drawer-header">
-                    <div class="sim-drawer-title">
-                        <span>☢️</span>
-                        <span>Decay &amp; Transmutation</span>
+            let rightControls = '';
+            if (curMode === 'transmutation') {
+                rightControls = `
+                    <select class="sim-deck-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                        ${nuclides.map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
+                    </select>
+                    <button class="sim-deck-hero-btn primary" onclick="window.nuclearDecayEngine.triggerTransmutation()">
+                        <span>💥</span> TRANSMUTE
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.nuclearDecayEngine.resetTransmutation()" title="Reset Parent Atom">
+                        <span>🔄</span> Reset
+                    </button>
+                `;
+            } else if (curMode === 'halflife') {
+                rightControls = `
+                    <select class="sim-deck-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
+                        ${nuclides.map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.halfLifeStr})</option>`).join('')}
+                    </select>
+                    <button class="sim-deck-hero-btn primary" onclick="window.nuclearDecayEngine.halfLifeRunning = !window.nuclearDecayEngine.halfLifeRunning; renderGameDeck('decay');">
+                        <span>${engine && engine.halfLifeRunning ? '⏸️ PAUSE' : '▶️ START'}</span> CLOCK
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.nuclearDecayEngine.initHalfLifePopulation()" title="Repopulate 100 Atoms">
+                        <span>🔄</span> 100 Atoms
+                    </button>
+                `;
+            } else if (curMode === 'shielding') {
+                rightControls = `
+                    <div class="sim-deck-toggles">
+                        <button class="sim-deck-chip small ${engine && engine.shieldingBarriers.paper ? 'active' : ''}" onclick="window.nuclearDecayEngine.toggleBarrier('paper'); renderGameDeck('decay');">
+                            📄 Paper ${engine && engine.shieldingBarriers.paper ? 'ON' : 'OFF'}
+                        </button>
+                        <button class="sim-deck-chip small ${engine && engine.shieldingBarriers.aluminum ? 'active' : ''}" onclick="window.nuclearDecayEngine.toggleBarrier('aluminum'); renderGameDeck('decay');">
+                            🛡️ Alum ${engine && engine.shieldingBarriers.aluminum ? 'ON' : 'OFF'}
+                        </button>
+                        <button class="sim-deck-chip small ${engine && engine.shieldingBarriers.lead ? 'active' : ''}" onclick="window.nuclearDecayEngine.toggleBarrier('lead'); renderGameDeck('decay');">
+                            🧱 Lead ${engine && engine.shieldingBarriers.lead ? 'ON' : 'OFF'}
+                        </button>
                     </div>
-                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
-                </div>
+                    <button class="sim-deck-hero-btn primary" onclick="window.nuclearDecayEngine.triggerTransmutation()">
+                        <span>⚡</span> FIRE BEAM
+                    </button>
+                `;
+            } else {
+                rightControls = `
+                    <div class="sim-deck-slider-group">
+                        <span class="sim-deck-slider-label">B: <b id="deck-b-val">${bField.toFixed(1)} T</b></span>
+                        <input type="range" class="sim-deck-slider" min="-30" max="30" value="${(bField * 10).toFixed(0)}" oninput="document.getElementById('deck-b-val').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
+                    </div>
+                    <button class="sim-deck-hero-btn primary" onclick="window.nuclearDecayEngine.triggerDecay()">
+                        <span>⚡</span> EMIT
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];" title="Clear Vapor Tracks">
+                        <span>🔄</span> Clear
+                    </button>
+                `;
+            }
 
-                <!-- 4 Interactive Lab Modes -->
-                <div class="sim-scenario-pills" style="margin-bottom: 8px;">
-                    <button class="sim-scenario-btn ${curMode === 'transmutation' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('transmutation')">
+            deck.innerHTML = `
+                <div class="sim-deck-left">
+                    <button class="sim-deck-chip ${curMode === 'transmutation' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('transmutation')">
                         💥 Transmute
                     </button>
-                    <button class="sim-scenario-btn ${curMode === 'halflife' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('halflife')">
+                    <button class="sim-deck-chip ${curMode === 'halflife' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('halflife')">
                         ⏱️ Half-Life
                     </button>
-                    <button class="sim-scenario-btn ${curMode === 'shielding' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('shielding')">
+                    <button class="sim-deck-chip ${curMode === 'shielding' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('shielding')">
                         🛡️ Shielding
                     </button>
-                    <button class="sim-scenario-btn ${curMode === 'chamber' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('chamber')">
+                    <button class="sim-deck-chip ${curMode === 'chamber' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('chamber')">
                         🧲 Cloud B
                     </button>
                 </div>
-
-                <!-- Contextual Thumb-Zone Actions & Game Explanations -->
-                ${curMode === 'transmutation' ? `
-                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerTransmutation()">
-                            <span>💥</span> TRIGGER DECAY (SPLIT)
-                        </button>
-                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.resetTransmutation()">
-                            <span>🔄</span> RESET PARENT ATOM
-                        </button>
-                    </div>
-                    <div style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#7dd3fc; margin-bottom:8px; line-height:1.4;">
-                        💡 <strong>How Transmutation Works:</strong> An unstable parent nucleus (${curNuclide ? curNuclide.name : ''}) quantum-tunnels a particle (${curNuclide ? curNuclide.particle : ''}), altering its proton count and transmuting into ${curNuclide ? curNuclide.daughter.name : ''}!
-                    </div>
-                ` : curMode === 'halflife' ? `
-                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.halfLifeRunning = !window.nuclearDecayEngine.halfLifeRunning; renderTuningPanel('decay');">
-                            <span>${engine && engine.halfLifeRunning ? '⏸️ PAUSE' : '▶️ RESUME'}</span> DECAY CLOCK
-                        </button>
-                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.initHalfLifePopulation()">
-                            <span>🔄</span> REPOPULATE 100 ATOMS
-                        </button>
-                    </div>
-                    <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#86efac; margin-bottom:8px; line-height:1.4;">
-                        ⏱️ <strong>How Half-Life Works:</strong> 100 atoms decay randomly. Exactly ~50% remain after one half-life (t½ = ${curNuclide ? curNuclide.halfLifeStr : ''}). Watch the green curve match N(t) = N₀(½)ᵗ!
-                    </div>
-                ` : curMode === 'shielding' ? `
-                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <div style="font-size:0.74rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
-                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.paper ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.paper ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.paper ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('paper')">
-                                📄 Paper ${engine && engine.shieldingBarriers.paper ? 'ON' : 'OFF'}
-                            </button>
-                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.aluminum ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.aluminum ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.aluminum ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('aluminum')">
-                                🛡️ Alum ${engine && engine.shieldingBarriers.aluminum ? 'ON' : 'OFF'}
-                            </button>
-                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.lead ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.lead ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.lead ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('lead')">
-                                🧱 Lead ${engine && engine.shieldingBarriers.lead ? 'ON' : 'OFF'}
-                            </button>
-                        </div>
-                    </div>
-                    <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#fde047; margin-bottom:8px; line-height:1.4;">
-                        🛡️ <strong>Shielding Penetration Rules:</strong><br>
-                        • <strong>Alpha (α):</strong> Heavy &amp; charged — stopped 100% by paper!<br>
-                        • <strong>Beta (β):</strong> Fast electron — passes paper, stopped by aluminum!<br>
-                        • <strong>Gamma (γ):</strong> Piercing photon — only dense lead stops it!
-                    </div>
-                ` : `
-                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
-                            <span>⚡</span> EMIT RADIATION PULSE
-                        </button>
-                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
-                            <span>🔄</span> CLEAR VAPOR TRACKS
-                        </button>
-                    </div>
-                    <div style="background:rgba(192,132,252,0.08); border:1px solid rgba(192,132,252,0.25); border-radius:8px; padding:7px 9px; font-size:0.75rem; color:#d8b4fe; margin-bottom:8px; line-height:1.4;">
-                        🧲 <strong>Lorentz Force F = q(v × B):</strong> Magnetic field curves tracks based on charge! Positives curve up, electrons curve down, gammas fly straight!
-                    </div>
-                `}
-
-                <!-- Radioactive Nuclide Selector -->
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>☢️</span> Radioactive Isotope</div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Nuclide Source:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
-                            ${(window.DECAY_NUCLIDES || []).map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
-                        </select>
-                    </div>
-                    <p style="font-size:0.76rem; color:#cbd5e1; line-height:1.4; margin:4px 0 0;">
-                        ${curNuclide ? curNuclide.desc : ''}
-                    </p>
-                    ${curMode === 'chamber' ? `
-                        <div class="sim-input-row" style="margin-top:10px;">
-                            <div class="sim-input-label">
-                                <span>Magnetic Field B:</span>
-                                <span id="b-field-display" class="sim-val-badge">${bField.toFixed(1)} T</span>
-                            </div>
-                            <input type="range" class="sim-range-slider" min="-30" max="30" value="${bVal}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
-                            <div class="slider-hint-row">
-                                <span>-3.0 T (Curves Down)</span>
-                                <span>+3.0 T (Curves Up)</span>
-                            </div>
-                        </div>
-                    ` : ''}
+                <div class="sim-deck-right">
+                    ${rightControls}
                 </div>
             `;
         } else if (tabName === 'molecule') {
             const engine = window.molecularDynamicsEngine;
+            const curKey = engine ? engine.currentKey : 'H2O';
             const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
 
-            pane.innerHTML = `
-                <div class="sim-drawer-header">
-                    <div class="sim-drawer-title">
-                        <span>🧬</span>
-                        <span>Molecule Dynamics</span>
-                    </div>
-                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
-                </div>
-
-                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)">
-                        <span>🔄</span> RESET REST GEOMETRY
+            deck.innerHTML = `
+                <div class="sim-deck-left">
+                    <button class="sim-deck-chip ${curKey === 'H2O' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('H2O')">
+                        💧 H₂O Water
                     </button>
-                    <button class="sim-action-btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4);" onclick="window.molecularDynamicsEngine.applyImpulse(0, 0, -320)">
-                        <span>💥</span> THERMAL IMPULSE
+                    <button class="sim-deck-chip ${curKey === 'CO2' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('CO2')">
+                        🫧 CO₂ Carbon
+                    </button>
+                    <button class="sim-deck-chip ${curKey === 'CH4' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('CH4')">
+                        🔥 CH₄ Methane
+                    </button>
+                    <button class="sim-deck-chip ${curKey === 'C6H6' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('C6H6')">
+                        ⬡ Benzene
                     </button>
                 </div>
-
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🧬</span> Molecular Geometry</div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Molecule Species:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.molecularDynamicsEngine.loadPreset(this.value)">
-                            <option value="H2O" ${engine && engine.currentKey === 'H2O' ? 'selected' : ''}>Water H₂O (Bent 104.5°)</option>
-                            <option value="CO2" ${engine && engine.currentKey === 'CO2' ? 'selected' : ''}>Carbon Dioxide CO₂ (Linear)</option>
-                            <option value="CH4" ${engine && engine.currentKey === 'CH4' ? 'selected' : ''}>Methane CH₄ (Tetrahedral)</option>
-                            <option value="C6H6" ${engine && engine.currentKey === 'C6H6' ? 'selected' : ''}>Benzene C₆H₆ (Aromatic Ring)</option>
-                        </select>
+                <div class="sim-deck-right">
+                    <div class="sim-deck-slider-group">
+                        <span class="sim-deck-slider-label">Temp: <b id="deck-temp-val">${temp.toFixed(0)} K</b></span>
+                        <input type="range" class="sim-deck-slider" min="10" max="1000" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
                     </div>
-                    <div class="sim-input-row">
-                        <div class="sim-input-label">
-                            <span>Thermal Temperature:</span>
-                            <span id="mol-temp-display" class="sim-val-badge">${temp.toFixed(0)} K</span>
-                        </div>
-                        <input type="range" class="sim-range-slider" min="10" max="1200" value="${temp}" oninput="document.getElementById('mol-temp-display').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
-                    </div>
+                    <button class="sim-deck-hero-btn warn" onclick="window.molecularDynamicsEngine.applyImpulse(0, 0, -320)">
+                        <span>💥</span> JOLT
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)" title="Reset Rest Shape">
+                        <span>🔄</span> Reset
+                    </button>
                 </div>
             `;
         } else if (tabName === 'environment') {
             const engine = window.envSimulationEngine;
-            const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const elData = allElements.find(e => e.atomicNumber === (engine ? engine.activeElementId : 6)) || { name: 'Carbon' };
-            const phase = engine ? engine.calculatePhase(elData) : { badge: '🧊 SOLID', color: '#00d4ff', details: 'Rigid crystalline lattice.' };
+            const activeZ = engine ? engine.activeElementId : 6;
 
-            pane.innerHTML = `
-                <div class="sim-drawer-header">
-                    <div class="sim-drawer-title">
-                        <span>🌍</span>
-                        <span>Extreme Thermodynamics</span>
-                    </div>
-                    <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
+            deck.innerHTML = `
+                <div class="sim-deck-left">
+                    <button class="sim-deck-chip ${activeZ === 6 ? 'active' : ''}" onclick="window.envSimulationEngine.setElement(6)">
+                        6 C Carbon
+                    </button>
+                    <button class="sim-deck-chip ${activeZ === 26 ? 'active' : ''}" onclick="window.envSimulationEngine.setElement(26)">
+                        26 Fe Iron
+                    </button>
+                    <button class="sim-deck-chip ${activeZ === 79 ? 'active' : ''}" onclick="window.envSimulationEngine.setElement(79)">
+                        79 Au Gold
+                    </button>
+                    <button class="sim-deck-chip ${activeZ === 1 ? 'active' : ''}" onclick="window.envSimulationEngine.setElement(1)">
+                        1 H Hydrogen
+                    </button>
+                    <button class="sim-deck-chip ${activeZ === 8 ? 'active' : ''}" onclick="window.envSimulationEngine.setElement(8)">
+                        8 O Oxygen
+                    </button>
                 </div>
-
-                <!-- Quick Phase Jump Thumb Buttons -->
-                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(0,212,255,0.18); border:1px solid rgba(0,212,255,0.4); color:#00d4ff;" onclick="window.envSimulationEngine.quickJumpPhase('solid'); renderTuningPanel('environment');">
-                            🧊 Solid (Freeze)
-                        </button>
-                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.4); color:#4ade80;" onclick="window.envSimulationEngine.quickJumpPhase('liquid'); renderTuningPanel('environment');">
-                            💧 Liquid (Melt)
-                        </button>
-                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(249,115,22,0.18); border:1px solid rgba(249,115,22,0.4); color:#fb923c;" onclick="window.envSimulationEngine.quickJumpPhase('gas'); renderTuningPanel('environment');">
-                            💨 Gas (Boil)
-                        </button>
-                        <button class="sim-action-btn" style="padding:7px 5px; font-size:0.75rem; background:rgba(244,63,94,0.18); border:1px solid rgba(244,63,94,0.4); color:#fda4af;" onclick="window.envSimulationEngine.quickJumpPhase('plasma'); renderTuningPanel('environment');">
-                            ⚡ Plasma (Ionize)
-                        </button>
+                <div class="sim-deck-right">
+                    <div class="sim-deck-toggles">
+                        <button class="sim-deck-chip small" onclick="window.envSimulationEngine.quickJumpPhase('solid'); renderGameDeck('environment');">🧊 Solid</button>
+                        <button class="sim-deck-chip small" onclick="window.envSimulationEngine.quickJumpPhase('liquid'); renderGameDeck('environment');">💧 Liquid</button>
+                        <button class="sim-deck-chip small" onclick="window.envSimulationEngine.quickJumpPhase('gas'); renderGameDeck('environment');">💨 Gas</button>
+                        <button class="sim-deck-chip small" onclick="window.envSimulationEngine.quickJumpPhase('plasma'); renderGameDeck('environment');">⚡ Plasma</button>
                     </div>
-                </div>
-
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>🌍</span> P-T Thermodynamics</div>
-                    <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Cosmic / Planetary Preset:</span></label>
-                        <select class="sim-speed-select large-sim-select" onchange="window.envSimulationEngine.setPreset(this.value); renderTuningPanel('environment');">
-                            ${window.ENVIRONMENT_PRESETS ? window.ENVIRONMENT_PRESETS.map(p => `<option value="${p.id}" ${engine && engine.currentPresetId === p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('') : ''}
-                        </select>
-                    </div>
-                    <div class="sim-input-row">
-                        <div class="sim-input-label">
-                            <span>Temperature:</span>
-                            <span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span>
-                        </div>
-                        <input type="range" class="sim-range-slider" min="0" max="6000" value="${engine ? Math.min(6000, engine.temperatureK) : 298}" oninput="document.getElementById('env-temp-display').textContent=this.value+' K'; window.envSimulationEngine.setTemperature(this.value);" onchange="renderTuningPanel('environment');">
-                    </div>
-                    <div class="sim-input-row">
-                        <div class="sim-input-label">
-                            <span>Pressure (Hydraulic Piston):</span>
-                            <span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span>
-                        </div>
-                        <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); document.getElementById('env-press-display').textContent=(p < 0.01 ? p.toExponential(2) : (p > 1e4 ? p.toExponential(2) : p.toFixed(2)))+' atm'; window.envSimulationEngine.setPressure(p);" onchange="renderTuningPanel('environment');">
-                    </div>
-                </div>
-
-                <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>📊</span> Phase State</div>
-                    <div style="display:inline-block; padding:5px 10px; border-radius:7px; font-weight:800; font-family:var(--font-mono); font-size:0.90rem; background:rgba(0,0,0,0.4); border:1px solid ${phase.color || '#00d4ff'}; color:${phase.color || '#00d4ff'}; margin-bottom:6px;">
-                        ${phase.badge || '🧊 SOLID'}
-                    </div>
-                    <p style="font-size:0.77rem; color:#cbd5e1; line-height:1.4; margin:0;">
-                        ${phase.details || 'Rigid crystalline lattice.'}
-                    </p>
+                    <button class="sim-deck-hero-btn warn" onclick="window.envSimulationEngine.heat(200); renderGameDeck('environment');">
+                        <span>🔥</span> +200K
+                    </button>
+                    <button class="sim-deck-hero-btn cool" onclick="window.envSimulationEngine.cool(200); renderGameDeck('environment');">
+                        <span>❄️</span> -200K
+                    </button>
+                    <button class="sim-deck-tool-btn" onclick="window.envSimulationEngine.setPreset('earth_stp'); renderGameDeck('environment');" title="Earth Standard STP">
+                        <span>🌍</span> STP
+                    </button>
                 </div>
             `;
         }
     }
 
+    function renderTuningPanel(tabName) {
+        renderGameDeck(tabName);
+    }
+
     /**
-     * Setup Interactive Pointer/Touch Listeners on Canvases (CSS Pixel Space)
+     * Pedagogical Educational Guide Modal Controller
      */
-    function setupCanvasInteractions() {
-        let drawerJustClosed = false;
-        // Tap stage/canvas outside drawer on mobile automatically closes drawer
-        const stage = document.querySelector('.sim-viewport-stage');
-        if (stage) {
-            stage.addEventListener('pointerdown', (e) => {
-                const pane = document.getElementById('sim-tuning-pane');
-                if (pane && !pane.classList.contains('sim-drawer-collapsed') && window.innerWidth <= 1024) {
-                    if (e.target.closest('#sim-drawer-toggle')) return;
-                    toggleSimDrawer(false);
-                    drawerJustClosed = true;
-                    setTimeout(() => { drawerJustClosed = false; }, 280);
-                }
-            });
+    function openSimGuideModal() {
+        const modal = document.getElementById('sim-guide-modal');
+        const iconEl = document.getElementById('sim-guide-modal-icon');
+        const headEl = document.getElementById('sim-guide-modal-heading');
+        const bodyEl = document.getElementById('sim-guide-modal-content');
+        if (!modal || !bodyEl) return;
+
+        const tab = window.simPlaybackController ? window.simPlaybackController.activeTab : 'chain_reaction';
+
+        if (tab === 'chain_reaction') {
+            if (iconEl) iconEl.textContent = '⚛️';
+            if (headEl) headEl.textContent = 'Nuclear Fission & Chain Reaction Lab';
+            bodyEl.innerHTML = `
+                <div class="sim-guide-card">
+                    <h4>🎯 1. What is Nuclear Fission?</h4>
+                    <p>When a slow (thermal) neutron enters a heavy, fissile nucleus like <strong>²³⁵U (Uranium-235)</strong>, the nucleus absorbs it, momentarily becoming excited <strong>²³⁶U*</strong>.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>💧 2. Bohr-Wheeler Liquid Drop Model</h4>
+                    <p>The absorbed neutron causes the nuclear liquid droplet to oscillate wildly. When surface tension is overcome by Coulomb repulsion between 92 protons, the nucleus pinches into a dumbbell and snaps into two smaller fragments (e.g. <strong>⁹²Kr</strong> and <strong>¹⁴¹Ba</strong>).</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>💥 3. Mass Defect & Energy (E = mc²)</h4>
+                    <p>The daughter fragments weigh slightly less than the starting parent. This missing mass converts directly into <strong>~200 MeV</strong> of raw kinetic energy and gamma rays!</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🔄 4. 3-Neutron Chain Cascade & Reactor Control</h4>
+                    <p>Each split ejects <strong>2 to 3 fast prompt neutrons</strong>. In dense fuel, these neutrons trigger secondary splits—an exponential chain reaction! In reactors, <strong>Boron Control Rods</strong> absorb excess neutrons to maintain steady critical balance.</p>
+                </div>
+            `;
+        } else if (tab === 'decay') {
+            if (iconEl) iconEl.textContent = '☢️';
+            if (headEl) headEl.textContent = 'Radioactivity, Transmutation & Half-Life Lab';
+            bodyEl.innerHTML = `
+                <div class="sim-guide-card">
+                    <h4>💥 1. Radioactive Transmutation</h4>
+                    <p>An unstable parent nucleus quantum-tunnels a particle out, altering its proton count and transforming into a completely new chemical element (e.g. ²³⁸U → ²³⁴Th + α or ¹⁴C → ¹⁴N + β⁻).</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>⏱️ 2. The Law of Radioactive Half-Life</h4>
+                    <p>Half-life (t½) is the time needed for 50% of parent atoms to decay. Following <strong>N(t) = N₀ · (½)^(t/t½)</strong>, 100 atoms decay to 50, then 25, then 12.5. Individual decays are quantum random, but large ensembles are mathematically exact!</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🛡️ 3. Shielding & Radiation Types</h4>
+                    <p>• <strong>Alpha (α):</strong> Heavy ⁴He nucleus (+2 charge). High ionization, stopped by a single sheet of paper!<br>
+                    • <strong>Beta (β):</strong> Fast electron/positron (-1 or +1). Passes paper, stopped by aluminum.<br>
+                    • <strong>Gamma (γ):</strong> Ultra-high-energy photon. Highly penetrating, requires dense lead!</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🧲 4. Lorentz Force in Cloud Chambers</h4>
+                    <p>In a magnetic field, the Lorentz force <strong>F = q(v × B)</strong> curves charged particles. Positives (alpha) curve up, electrons (beta) spiral down, and neutral gammas fly straight!</p>
+                </div>
+            `;
+        } else if (tab === 'molecule') {
+            if (iconEl) iconEl.textContent = '🧬';
+            if (headEl) headEl.textContent = 'Molecular Dynamics & Bond Physics';
+            bodyEl.innerHTML = `
+                <div class="sim-guide-card">
+                    <h4>🌊 1. Harmonic Chemical Bonds</h4>
+                    <p>Covalent bonds between atoms behave like quantum mechanical springs. Atoms constantly vibrate around their equilibrium bond lengths and bond angles.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🔥 2. Thermal Kinetic Motion (E ~ kBT)</h4>
+                    <p>Temperature is simply the average kinetic energy of molecular vibration and rotation. Higher temperatures cause atoms to jiggle faster and with larger amplitudes.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>👆 3. Interactive Touch Strain</h4>
+                    <p>Drag any atom with your finger to stretch or bend its bonds. When you let go, watch the restoring forces oscillate the molecule back to its lowest energy geometry!</p>
+                </div>
+            `;
+        } else if (tab === 'environment') {
+            if (iconEl) iconEl.textContent = '🌡️';
+            if (headEl) headEl.textContent = 'States of Matter & Thermodynamic Extremes';
+            bodyEl.innerHTML = `
+                <div class="sim-guide-card">
+                    <h4>🧊 1. Solid (Crystalline Lattice)</h4>
+                    <p>At low temperatures, interatomic bonds lock atoms into rigid, repeating crystal geometries. Atoms only vibrate around fixed lattice coordinates.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>💧 2. Liquid (Fluid Flow)</h4>
+                    <p>As temperature exceeds the melting point, thermal vibration breaks lattice rigidity. Atoms flow smoothly past one another while retaining cohesive intermolecular contact.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>💨 3. Gas & ⚡ Plasma</h4>
+                    <p>Above the boiling point, atoms break completely free, flying across the chamber and colliding with the piston to generate pressure. Above 10,000 K, electrons strip away, forming an ionized glowing plasma!</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🌍 4. Pressure Effects (Clausius-Clapeyron)</h4>
+                    <p>Extreme pressures force atoms closer together, raising melting points and compressing matter into high-pressure metallic phases (like metallic hydrogen in Jupiter's core).</p>
+                </div>
+            `;
         }
 
+        modal.style.display = 'flex';
+    }
+
+    function closeSimGuideModal() {
+        const modal = document.getElementById('sim-guide-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Attach Modal Functions Globally
+    window.openSimGuideModal = openSimGuideModal;
+    window.closeSimGuideModal = closeSimGuideModal;
+
+    /**
+     * Setup Direct Pointer/Touch Listeners on Canvases (Zero drawer obstruction)
+     */
+    function setupCanvasInteractions() {
         // 1. Chain Reaction Canvas
         const chainCanvas = document.getElementById('chain-sim-canvas');
         if (chainCanvas) {
             chainCanvas.addEventListener('pointerdown', (e) => {
-                if (drawerJustClosed) return;
                 const rect = chainCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-
                 if (window.chainReactionEngine) {
                     window.chainReactionEngine.aimAndFire(x, y);
                 }
@@ -111865,7 +111634,6 @@ window.OrbitalViewer = {
         const decayCanvas = document.getElementById('decay-sim-canvas');
         if (decayCanvas) {
             decayCanvas.addEventListener('pointerdown', (e) => {
-                if (drawerJustClosed) return;
                 const engine = window.nuclearDecayEngine;
                 if (!engine) return;
 
@@ -111873,7 +111641,7 @@ window.OrbitalViewer = {
                     engine.triggerTransmutation();
                 } else if (engine.currentMode === 'halflife') {
                     engine.halfLifeRunning = !engine.halfLifeRunning;
-                    renderTuningPanel('decay');
+                    renderGameDeck('decay');
                 } else if (engine.currentMode === 'shielding') {
                     const rect = decayCanvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -111881,6 +111649,7 @@ window.OrbitalViewer = {
                     if (Math.abs(x - w * 0.32) < 30) engine.toggleBarrier('paper');
                     else if (Math.abs(x - w * 0.52) < 30) engine.toggleBarrier('aluminum');
                     else if (Math.abs(x - w * 0.72) < 30) engine.toggleBarrier('lead');
+                    renderGameDeck('decay');
                 } else if (engine.currentMode === 'chamber') {
                     const rect = decayCanvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -111890,16 +111659,15 @@ window.OrbitalViewer = {
             });
         }
 
-        // 2. Environment Phase Chamber Canvas
+        // 3. Environment Phase Chamber Canvas
         const envCanvas = document.getElementById('env-phase-canvas');
         if (envCanvas) {
             envCanvas.addEventListener('pointerdown', (e) => {
-                if (drawerJustClosed) return;
                 const rect = envCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // Check view mode HUD switcher pills
+                // View mode HUD switcher pills at top left
                 if (y <= 38 && window.envSimulationEngine) {
                     if (x >= 14 && x <= 110) {
                         window.envSimulationEngine.setViewMode('split');
@@ -111915,11 +111683,10 @@ window.OrbitalViewer = {
             });
         }
 
-        // 3. Molecule Dynamics Canvas Drag/Touch
+        // 4. Molecule Dynamics Canvas Drag/Touch
         const molCanvas = document.getElementById('molecule-sim-canvas');
         if (molCanvas) {
             molCanvas.addEventListener('pointerdown', (e) => {
-                if (drawerJustClosed) return;
                 const rect = molCanvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -111948,7 +111715,7 @@ window.OrbitalViewer = {
     // Initialize UI on DOM Ready
     window.addEventListener('DOMContentLoaded', () => {
         setupCanvasInteractions();
-        renderTuningPanel('chain_reaction');
+        renderGameDeck('chain_reaction');
     });
 
     // Attach Functions Globally
@@ -111958,6 +111725,7 @@ window.OrbitalViewer = {
     window.changeSimSpeed = changeSimSpeed;
     window.resetActiveSim = resetActiveSim;
     window.toggleSimAudio = toggleSimAudio;
+    window.renderGameDeck = renderGameDeck;
     window.renderTuningPanel = renderTuningPanel;
 
     // Attach to Global Scope
@@ -113176,7 +112944,7 @@ window.OrbitalViewer = {
                 <div class="sim-tabs-row">
                     <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
-                        <span>⚛️</span> <span class="tab-txt-full">Chain Reaction</span><span class="tab-txt-short">Fission</span>
+                        <span>⚛️</span> <span class="tab-txt-full">Nuclear Fission</span><span class="tab-txt-short">Fission</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
                         <span>☢️</span> <span class="tab-txt-full">Particle Decay</span><span class="tab-txt-short">Decay</span>
@@ -113185,84 +112953,37 @@ window.OrbitalViewer = {
                         <span>🧬</span> <span class="tab-txt-full">Molecule Physics</span><span class="tab-txt-short">Molecules</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
-                        <span>🌍</span> <span class="tab-txt-full">Extreme Phase Lab</span><span class="tab-txt-short">Phase Lab</span>
+                        <span>🌡️</span> <span class="tab-txt-full">States of Matter</span><span class="tab-txt-short">States</span>
                     </button>
                 </div>
 
-                <!-- Game-Grade Simulation Controls -->
-                <div class="sim-playback-deck">
+                <!-- Clean Top Action Strip -->
+                <div class="sim-top-actions">
                     <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
-                    <button id="sim-btn-step" class="sim-ctrl-btn" onclick="stepSimFrame()" title="Step Forward 1 Frame">⏭️</button>
-                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Chamber / Geometry">🔄</button>
-                    <select id="sim-speed-select" class="sim-speed-select" onchange="changeSimSpeed(this.value)" title="Simulation Speed">
-                        <option value="0.1">0.1x</option>
-                        <option value="0.25">0.25x</option>
-                        <option value="0.5">0.5x</option>
-                        <option value="1.0" selected>1.0x</option>
-                        <option value="2.0">2.0x</option>
-                        <option value="5.0">5.0x</option>
-                    </select>
                     <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
+                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Simulation">🔄</button>
+                    <button id="sim-btn-guide" class="sim-ctrl-btn guide-btn" onclick="openSimGuideModal()" title="How it Works & Physics Guide">ℹ️ Guide</button>
                 </div>
             </div>
 
             <div class="sim-workspace">
                 <div class="sim-viewport-stage">
-                    <!-- Interactive Game Reaction Process Stepper & Live Narrator -->
-                    <div class="sim-reaction-stepper" id="sim-reaction-stepper">
-                        <div class="stepper-track">
-                            <div class="step-card active" id="rxn-step-1">
-                                <span class="step-icon">🎯</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 1</span>
-                                    <span class="step-label">Launch Neutron</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-2">
-                                <span class="step-icon">⚡</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 2</span>
-                                    <span class="step-label">Drop Elongation</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-3">
-                                <span class="step-icon">💥</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 3</span>
-                                    <span class="step-label">Split (+200 MeV)</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-4">
-                                <span class="step-icon">🔄</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 4</span>
-                                    <span class="step-label">3n Multiplier</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sim-narrator-pill" id="sim-narrator-pill">
-                            <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
-                        </div>
+                    <!-- Dynamic 1-Line Status Narrator Pill -->
+                    <div class="sim-narrator-pill" id="sim-narrator-pill">
+                        <span class="narrator-icon">💡</span>
+                        <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                     </div>
 
+                    <!-- Canvases (Full-bleed 100% unobstructed) -->
                     <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
 
-                    <!-- Sleek Floating Drawer Toggle Pill Button -->
-                    <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
-                        <span class="drawer-btn-icon">⚙️</span>
-                        <span class="drawer-btn-text">Controls</span>
-                        <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
-                    </button>
-                </div>
-                <div class="sim-tuning-pane sim-drawer-collapsed" id="sim-tuning-pane">
-                    <!-- Dynamic Parameters populated by renderTuningPanel() -->
+                    <!-- Bottom Floating Game Controller Deck -->
+                    <div class="sim-game-deck" id="sim-game-deck">
+                        <!-- Populated dynamically by renderGameDeck() -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -113270,6 +112991,27 @@ window.OrbitalViewer = {
     </main>
 
     <!-- JS_DATA_INJECT -->
+
+    <!-- Simulation Lab Educational Guide Modal -->
+    <div id="sim-guide-modal" class="sim-guide-modal-backdrop" style="display:none;" onclick="if(event.target===this){closeSimGuideModal();}">
+        <div class="sim-guide-modal-card">
+            <div class="sim-guide-modal-header">
+                <div class="sim-guide-modal-title" id="sim-guide-modal-title">
+                    <span id="sim-guide-modal-icon">⚛️</span>
+                    <h3 id="sim-guide-modal-heading">Nuclear Fission Guide</h3>
+                </div>
+                <button class="sim-guide-modal-close" onclick="closeSimGuideModal()">&times;</button>
+            </div>
+            <div class="sim-guide-modal-body" id="sim-guide-modal-content">
+                <!-- Injected dynamically based on active tab -->
+            </div>
+            <div class="sim-guide-modal-footer">
+                <button class="sim-guide-confirm-btn" onclick="closeSimGuideModal()">
+                    🚀 Got It! Let's Experiment
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Wikipedia Modal -->
     <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);" onclick="if(event.target===this){this.style.display='none';syncNativeSliderVisibility();}">

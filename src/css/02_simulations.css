@@ -1,6 +1,6 @@
 /**
  * PERIODICA 3D - Simulation Lab & Physics Suite Styles
- * High-tech glassmorphism, responsive layout, and game-level tactile controls.
+ * High-tech glassmorphism, full-bleed interactive canvas, and mobile-first thumb dock.
  * (c) 2026 Periodica 3D | Developer: Vijay-1010110
  */
 
@@ -28,11 +28,12 @@
     padding: 6px 12px;
     background: rgba(15, 23, 42, 0.90);
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-bottom: 1.5px solid rgba(0, 212, 255, 0.25);
     z-index: 20;
     gap: 8px;
     flex-shrink: 0;
-    min-height: 46px;
+    min-height: 44px;
 }
 
 .sim-tabs-row {
@@ -54,7 +55,7 @@
     font-size: 0.65rem;
     font-family: var(--font-mono);
     font-weight: 800;
-    padding: 4px 8px;
+    padding: 3px 7px;
     border-radius: 6px;
     background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.20));
     border: 1px solid rgba(0, 212, 255, 0.45);
@@ -72,12 +73,12 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 5px 11px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: #cbd5e1;
     border-radius: 8px;
-    font-size: 0.82rem;
+    font-size: 0.80rem;
     font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
@@ -99,15 +100,18 @@
     box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
 
-/* Game-Level Playback Controls Bar */
-.sim-playback-deck {
+.tab-txt-short {
+    display: none;
+}
+.tab-txt-full {
+    display: inline;
+}
+
+/* Clean Top Action Strip */
+.sim-top-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: rgba(10, 16, 30, 0.92);
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    padding: 3px 6px;
-    border-radius: 9px;
+    gap: 6px;
     flex-shrink: 0;
 }
 
@@ -115,13 +119,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 7px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.16);
     color: #e2e8f0;
-    font-size: 0.90rem;
+    font-size: 0.86rem;
     cursor: pointer;
     transition: all 0.15s ease;
     touch-action: manipulation;
@@ -137,20 +141,19 @@
     transform: scale(0.92);
 }
 
-.sim-speed-select {
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(0, 212, 255, 0.35);
+.sim-ctrl-btn.guide-btn {
+    width: auto;
+    padding: 0 9px;
+    gap: 4px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.16));
+    border: 1px solid rgba(0, 212, 255, 0.45);
     color: #00d4ff;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 5px 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
 }
 
-/* Two-Column Simulation Workspace */
+/* Simulation Workspace & 100% Unobstructed Canvas Stage */
 .sim-workspace {
     display: flex;
     flex: 1;
@@ -160,10 +163,10 @@
     position: relative;
 }
 
-/* Left Canvas Stage */
 .sim-viewport-stage {
     flex: 1;
     position: relative;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -180,596 +183,406 @@
     cursor: crosshair;
 }
 
-/* ==================== GAME REACTION PROCESS STEPPER & NARRATOR ==================== */
-.sim-reaction-stepper {
+/* ==================== FLOATING DYNAMIC STATUS NARRATOR PILL ==================== */
+.sim-narrator-pill {
     position: absolute;
     top: 8px;
-    left: 10px;
-    right: 10px;
-    z-index: 15;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    pointer-events: none;
-    max-width: calc(100% - 20px);
-}
-
-.stepper-track {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0 auto;
-    max-width: 100%;
-    gap: 5px;
-    background: rgba(10, 16, 30, 0.92);
-    backdrop-filter: blur(12px);
-    border: 1.5px solid rgba(0, 212, 255, 0.3);
-    border-radius: 10px;
-    padding: 4px 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-    overflow-x: auto;
-    scrollbar-width: none;
-    pointer-events: auto;
-}
-
-.stepper-track::-webkit-scrollbar {
-    display: none;
-}
-
-.step-card {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 8px;
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.step-card .step-icon {
-    font-size: 0.95rem;
-}
-
-.step-card .step-content {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-}
-
-.step-card .step-num {
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #64748b;
-    letter-spacing: 0.05em;
-}
-
-.step-card .step-label {
-    font-size: 0.74rem;
-    font-weight: 800;
-    color: #cbd5e1;
-}
-
-.stepper-connector {
-    color: rgba(0, 212, 255, 0.5);
-    font-weight: 800;
-    font-size: 0.82rem;
-    flex-shrink: 0;
-}
-
-/* Active Highlighted Reaction Step */
-.step-card.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(245, 158, 11, 0.25));
-    border-color: #00d4ff;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.45);
-    transform: scale(1.02);
-}
-
-.step-card.active .step-num {
-    color: #38bdf8;
-}
-
-.step-card.active .step-label {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
-}
-
-/* Live Reaction Process Narrator Pill */
-.sim-narrator-pill {
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    border-radius: 7px;
-    padding: 4px 10px;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    border-radius: 20px;
+    padding: 4px 14px;
     margin: 0 auto;
-    max-width: 95%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    pointer-events: auto;
+    max-width: 90%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.15);
+    pointer-events: none;
+    transition: all 0.2s ease;
 }
 
 .sim-narrator-pill .narrator-icon {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     flex-shrink: 0;
 }
 
 .sim-narrator-pill .narrator-msg {
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: #f1f5f9;
     line-height: 1.25;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* ==================== RIGHT PARAMETERS & GAME DECK ==================== */
-.sim-tuning-pane {
-    width: 320px;
-    max-width: 100vw;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-left: 1.5px solid rgba(0, 212, 255, 0.25);
+/* ==================== FLOATING BOTTOM THUMB DECK ==================== */
+.sim-game-deck {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+    z-index: 30;
     display: flex;
-    flex-direction: column;
-    padding: 14px 16px;
-    gap: 12px;
-    overflow-y: auto;
-    flex-shrink: 0;
-    z-index: 50;
-    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0.25s ease,
-                padding 0.25s ease;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(10, 16, 30, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(0, 212, 255, 0.35);
+    border-radius: 12px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 212, 255, 0.18);
+    pointer-events: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Universal Collapsed State (Works everywhere) */
-.sim-tuning-pane.sim-drawer-collapsed {
-    width: 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    border-left: none !important;
-    border-top: none !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    overflow: hidden !important;
+.sim-game-deck::-webkit-scrollbar {
+    display: none;
 }
 
-/* Progressive Scenario Selector Pills */
-.sim-scenario-pills {
+.sim-deck-left {
     display: flex;
+    align-items: center;
     gap: 5px;
-    background: rgba(0, 0, 0, 0.45);
-    padding: 4px;
-    border-radius: 9px;
-    border: 1px solid rgba(0, 212, 255, 0.22);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
 }
 
-.sim-scenario-btn {
-    flex: 1;
-    padding: 6px 4px;
-    border-radius: 6px;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
+.sim-deck-left::-webkit-scrollbar {
+    display: none;
+}
+
+.sim-deck-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sim-deck-chip {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
     font-size: 0.76rem;
     font-weight: 700;
     font-family: var(--font-ui);
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
     white-space: nowrap;
-}
-
-.sim-scenario-btn:hover {
-    color: #e2e8f0;
-}
-
-.sim-scenario-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(168, 85, 247, 0.35));
-    border: 1px solid rgba(0, 212, 255, 0.6);
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
-}
-
-/* Sleek Floating Drawer Toggle Button */
-.sim-drawer-toggle-btn {
-    position: absolute;
-    bottom: 46px;
-    right: 14px;
-    z-index: 25;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 13px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(0, 212, 255, 0.4);
-    border-radius: 20px;
-    color: #e2e8f0;
-    font-size: 0.80rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.25);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease;
     touch-action: manipulation;
 }
 
-.sim-drawer-toggle-btn:hover {
-    background: rgba(0, 212, 255, 0.20);
+.sim-deck-chip:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: #ffffff;
+}
+
+.sim-deck-chip.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.32), rgba(168, 85, 247, 0.32));
     border-color: #00d4ff;
     color: #ffffff;
-    box-shadow: 0 0 16px rgba(0, 212, 255, 0.45);
-    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
 }
 
-.sim-drawer-toggle-btn:active {
-    transform: scale(0.95);
-}
-
-.drawer-arrow {
+.sim-deck-chip.small {
+    padding: 4px 8px;
     font-size: 0.70rem;
-    transition: transform 0.25s ease;
-    color: #00d4ff;
+    border-radius: 6px;
 }
 
-/* Game vs Controls Subdeck Toggle */
-.sim-subdeck-pills {
-    display: flex;
+/* Large glowing Hero Action Button */
+.sim-deck-hero-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     gap: 6px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 4px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+    touch-action: manipulation;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.sim-subdeck-btn {
-    flex: 1;
-    padding: 8px 10px;
+.sim-deck-hero-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-hero-btn.primary {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
+}
+
+.sim-deck-hero-btn.primary:hover {
+    background: linear-gradient(135deg, #0369a1, #38bdf8);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+}
+
+.sim-deck-hero-btn.danger {
+    background: linear-gradient(135deg, #dc2626, #f43f5e);
+    border: 1.5px solid #f87171;
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+}
+
+.sim-deck-hero-btn.warn {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    border: 1.5px solid #fbbf24;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+}
+
+.sim-deck-hero-btn.cool {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    border: 1.5px solid #7dd3fc;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+}
+
+.sim-deck-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 9px;
     border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #cbd5e1;
+    font-size: 0.74rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.sim-deck-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.sim-deck-tool-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-slider-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 3px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sim-deck-slider-label {
+    font-size: 0.70rem;
+    color: #94a3b8;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sim-deck-slider-label b {
+    color: #00d4ff;
+    font-family: var(--font-mono);
+}
+
+.sim-deck-slider {
+    width: 65px;
+    height: 4px;
+    accent-color: #00d4ff;
+    cursor: pointer;
+}
+
+.sim-deck-select {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    color: #00d4ff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    max-width: 130px;
+}
+
+.sim-deck-toggles {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==================== PEDAGOGICAL GUIDE MODAL ==================== */
+.sim-guide-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.sim-guide-modal-card {
+    background: #0b1120;
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 14px;
+    width: min(580px, 94vw);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2);
+    animation: simModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes simModalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.sim-guide-modal-header {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sim-guide-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.sim-guide-modal-title h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-family: var(--font-ui);
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.sim-guide-modal-close {
     background: transparent;
     border: none;
     color: #94a3b8;
-    font-size: 0.84rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
+    font-size: 1.4rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    white-space: nowrap;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.15s ease;
 }
 
-.sim-subdeck-btn.active {
-    background: linear-gradient(135deg, #0284c7, #0369a1);
+.sim-guide-modal-close:hover {
     color: #ffffff;
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
 }
 
-/* Missions Cards List */
-.sim-missions-list {
+.sim-guide-modal-body {
+    padding: 14px 16px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-.sim-mission-card {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: border-color 0.2s ease;
-}
-
-.sim-mission-card.completed {
-    border-color: rgba(74, 222, 128, 0.5);
-    background: rgba(34, 197, 94, 0.05);
-}
-
-.mission-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-}
-
-.mission-title {
-    font-size: 0.90rem;
-    font-weight: 800;
-    color: #f1f5f9;
-}
-
-.mission-status-badge {
-    font-size: 0.70rem;
-    font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 5px;
-    font-family: var(--font-mono);
-}
-
-.mission-status-badge.active {
-    background: rgba(245, 158, 11, 0.18);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.35);
-}
-
-.mission-status-badge.done {
-    background: rgba(34, 197, 94, 0.2);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.4);
-}
-
-.mission-desc {
-    font-size: 0.78rem;
-    color: #94a3b8;
-    line-height: 1.35;
-}
-
-.mission-progress-bar-wrap {
-    width: 100%;
-    height: 7px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 2px;
-}
-
-.mission-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #00d4ff, #4ade80);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.mission-footer-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.74rem;
-    color: #94a3b8;
-    font-family: var(--font-mono);
-}
-
-.mission-reward-badge {
-    color: #f59e0b;
-    font-weight: 700;
-}
-
-/* Sections in Controls Deck */
-.sim-pane-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 12px;
-    padding: 14px;
-}
-
-.sim-pane-title {
-    font-size: 0.86rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #00d4ff;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sim-input-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.sim-input-row:last-child {
-    margin-bottom: 0;
-}
-
-.sim-input-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.86rem;
-    font-weight: 600;
+    font-size: 0.80rem;
     color: #cbd5e1;
-    font-family: var(--font-ui);
+    line-height: 1.45;
 }
 
-.large-sim-select {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 0.85rem;
-    border-radius: 8px;
+.sim-guide-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    padding: 9px 12px;
 }
 
-.sim-val-badge {
-    font-family: var(--font-mono);
+.sim-guide-card h4 {
+    margin: 0 0 4px;
     color: #38bdf8;
+    font-size: 0.84rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sim-guide-card p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.77rem;
+    line-height: 1.4;
+}
+
+.sim-guide-modal-footer {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sim-guide-confirm-btn {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
     font-weight: 800;
-    font-size: 0.95rem;
-}
-
-.sim-range-slider {
-    width: 100%;
-    height: 8px;
-    accent-color: #00d4ff;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.slider-hint-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.72rem;
-    color: #64748b;
-    font-weight: 600;
-    margin-top: 2px;
-}
-
-/* Big Tactile Arcade Action Buttons */
-.sim-arcade-actions-block {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 4px;
-}
-
-.sim-action-btn {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 0.90rem;
-    font-weight: 800;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    border: none;
-    touch-action: manipulation;
-}
-
-.large-arcade-btn {
-    min-height: 46px;
-    letter-spacing: 0.03em;
-    font-size: 0.92rem;
-}
-
-.sim-action-btn.primary {
-    background: linear-gradient(135deg, #00d4ff, #0284c7);
-    color: #000000;
-    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
-}
-
-.sim-action-btn.danger {
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
-    color: #ffffff;
-    box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
-}
-
-.sim-action-btn:active {
-    transform: scale(0.97);
-}
-
-
-/* Drawer Header & Clean Close */
-.sim-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    margin-bottom: 2px;
-}
-
-.sim-drawer-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.90rem;
-    font-weight: 700;
-    color: #e2e8f0;
-    font-family: var(--font-ui);
-    letter-spacing: 0.3px;
-}
-
-.sim-drawer-close-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #f1f5f9;
-    width: 34px;
-    height: 34px;
+    font-size: 0.82rem;
+    padding: 7px 18px;
     border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    transition: all 0.15s ease;
 }
 
-.sim-drawer-close-btn:hover,
-.sim-drawer-close-btn:active {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #fca5a5;
+.sim-guide-confirm-btn:hover {
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
 }
 
-.tab-txt-short {
-    display: none;
-}
-.tab-txt-full {
-    display: inline;
+.sim-guide-confirm-btn:active {
+    transform: scale(0.95);
 }
 
-.sim-drawer-toggle-btn.drawer-open {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transform: scale(0.85) translateY(8px) !important;
-}
-/* ==================== RESPONSIVE RULES FOR MOBILE & TOUCH DEVICES ==================== */
-@media (max-width: 1024px), (max-height: 600px), (pointer: coarse) {
-    .sim-workspace {
-        position: relative;
-        flex-direction: row;
-        overflow: hidden;
-    }
-
-    .sim-viewport-stage {
-        width: 100% !important;
-        height: 100% !important;
-        flex: 1 1 100% !important;
-        position: relative;
-    }
-
-    /* 100% Screen Hero: Overlay Slide-In Drawer (Optimized for Mobile Landscape) */
-    .sim-tuning-pane {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: min(290px, 44vw) !important;
-        max-width: 100vw !important;
-        height: 100% !important;
-        max-height: 100% !important;
-        z-index: 150 !important;
-        background: rgba(9, 14, 28, 0.97) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-left: 1.5px solid rgba(0, 212, 255, 0.35) !important;
-        border-top: none !important;
-        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.90) !important;
-        transform: translateX(0) !important;
-        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        padding: 10px 12px 32px !important;
-        gap: 9px !important;
-    }
-
-    .sim-tuning-pane.sim-drawer-collapsed {
-        transform: translateX(105%) !important;
-        width: min(290px, 44vw) !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        overflow: hidden !important;
-    }
-
+/* ==================== MOBILE & TOUCHSCREEN RESPONSIVE RULES ==================== */
+@media (max-width: 900px), (max-height: 500px) {
     .tab-txt-short {
         display: inline;
     }
@@ -780,18 +593,18 @@
     .sim-header-bar {
         padding: 4px 6px;
         gap: 5px;
-        min-height: 42px;
+        min-height: 40px;
     }
 
     .sim-tab-btn {
         padding: 4px 7px;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         gap: 4px;
     }
 
     .sim-beta-tag {
-        font-size: 0.65rem;
-        padding: 2px 6px;
+        font-size: 0.62rem;
+        padding: 2px 5px;
     }
 
     .sim-ctrl-btn {
@@ -800,60 +613,56 @@
         font-size: 0.80rem;
     }
 
-    .sim-speed-select {
-        padding: 3px 4px;
+    .sim-ctrl-btn.guide-btn {
+        padding: 0 7px;
         font-size: 0.72rem;
-    }
-
-    /* Stepper & Live Narrator Compact Mobile Styling */
-    .sim-reaction-stepper {
-        top: 4px;
-        left: 6px;
-        right: 6px;
-        gap: 2px;
-        max-width: calc(100% - 12px);
-    }
-
-    .stepper-track {
-        padding: 2px 5px;
-        gap: 3px;
-        border-radius: 6px;
-    }
-
-    .step-card {
-        padding: 1px 4px;
-        gap: 2px;
-    }
-
-    .step-card .step-num {
-        display: none;
-    }
-
-    .step-card .step-label {
-        font-size: 0.66rem;
-        font-weight: 600;
-    }
-
-    .step-icon {
-        font-size: 0.72rem;
-    }
-
-    .stepper-connector {
-        font-size: 0.60rem;
-        opacity: 0.4;
     }
 
     .sim-narrator-pill {
-        padding: 2px 8px;
-        font-size: 0.70rem;
-        max-width: 92%;
+        top: 6px;
+        padding: 2px 10px;
+        max-width: 88%;
     }
 
-    .narrator-icon {
-        font-size: 0.72rem;
+    .sim-narrator-pill .narrator-icon {
+        font-size: 0.75rem;
     }
 
     .sim-narrator-pill .narrator-msg {
+        font-size: 0.68rem;
+    }
+
+    .sim-game-deck {
+        bottom: 6px;
+        left: 6px;
+        right: 6px;
+        padding: 4px 8px;
+        gap: 6px;
+        border-radius: 10px;
+    }
+
+    .sim-deck-chip {
+        padding: 4px 7px;
         font-size: 0.70rem;
+    }
+
+    .sim-deck-hero-btn {
+        padding: 5px 10px;
+        font-size: 0.74rem;
+    }
+
+    .sim-deck-tool-btn {
+        padding: 4px 7px;
+        font-size: 0.70rem;
+    }
+
+    .sim-deck-slider {
+        width: 50px;
+    }
+
+    .sim-deck-select {
+        font-size: 0.68rem;
+        padding: 3px 4px;
+        max-width: 105px;
     }
 }

@@ -2971,58 +2971,41 @@ function renderLegend() {
 
     let html = `
         <div class="legend-box category-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">Element Series ℹ️</div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">
+                <span>⚛️ Element Series & States</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
             <div class="legend-box-content">
-                <!-- Column 1: Metals (70%) -->
-                <div class="legend-col-metals">
-                    <div class="legend-group-title interactive-super" data-group="Metals">Metals</div>
-                    <div class="metals-layout-grid">
-                        <div class="metals-top-row">
-                            <div class="metals-col-sblock">
-                                ${makeLegendItem('Alkali metal')}
-                                ${makeLegendItem('Alkaline earth metal')}
-                            </div>
-                            <div class="metals-col-dblock">
-                                ${makeLegendItem('Transition metal')}
-                            </div>
-                            <div class="metals-col-pblock">
-                                ${makeLegendItem('Post-transition metal')}
-                            </div>
-                        </div>
-                        <div class="metals-bottom-row">
+                <div class="legend-series-grid">
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metals">Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Alkali metal')}
+                            ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
+                            ${makeLegendItem('Transition metal', 'category', 'Transition')}
+                            ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
                             ${makeLegendItem('Lanthanide')}
-                        </div>
-                        <div class="metals-bottom-row">
                             ${makeLegendItem('Actinide')}
                         </div>
                     </div>
-                </div>
-
-                <!-- Column 2: Metalloids (10%) -->
-                <div class="legend-col-metalloids">
-                    <div class="legend-group-title interactive-super" data-group="Metalloids">Metalloids</div>
-                    <div class="metalloids-items">
-                        ${makeLegendItem('Metalloid')}
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metalloids">Metalloids</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Metalloid')}
+                        </div>
+                    </div>
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Non-Metals">Non-Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Reactive nonmetal', 'category', 'Reactive Nonmetal')}
+                            ${makeLegendItem('Noble gas', 'category', 'Noble Gas')}
+                        </div>
                     </div>
                 </div>
-
-                <!-- Column 3: Non-Metals (20%) -->
-                <div class="legend-col-nonmetals">
-                    <div class="legend-group-title interactive-super" data-group="Non-Metals">Non-Metals</div>
-                    <div class="nonmetals-items">
-                        ${makeLegendItem('Other nonmetal', 'category', 'Other Nonmetals')}
-                        ${makeLegendItem('Halogen', 'category', 'Halogens')}
-                        ${makeLegendItem('Noble gas', 'category', 'Noble Gases')}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="legend-box state-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State at Current Temp ℹ️</div>
-            <div class="legend-box-content">
-                <div class="legend-group legend-group-states">
-                    <div class="legend-group-items">
+                
+                <div class="legend-states-bar">
+                    <span class="legend-states-label">State at ${typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298} K (Symbol Color):</span>
+                    <div class="legend-states-chips">
                         ${makeLegendItem('Solid', 'state')}
                         ${makeLegendItem('Liquid', 'state')}
                         ${makeLegendItem('Gas', 'state')}
@@ -3031,10 +3014,17 @@ function renderLegend() {
                 </div>
             </div>
         </div>
+        
+        <div class="legend-box hero-inspector-box" id="central-hero-inspector">
+            <!-- Populated dynamically by updateCentralHeroInspector -->
+        </div>
     `;
     
     legendContainer.innerHTML = html;
     updateLegendIndicatorUI();
+    if (typeof updateCentralHeroInspector === 'function') {
+        updateCentralHeroInspector(null);
+    }
 
     // Interactions for individual items (Tap = highlight/toggle; Long-press = concept modal)
     document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
@@ -3089,6 +3079,111 @@ function renderLegend() {
     });
 }
 
+function updateCentralHeroInspector(z) {
+    const container = document.getElementById('central-hero-inspector');
+    if (!container) return;
+
+    const el = z ? getElementByNumber(z) : (selectedElement || null);
+
+    if (!el) {
+        // Default Key Guide (Carbon reference)
+        const refEl = getElementByNumber(6) || {
+            atomicNumber: 6,
+            symbol: 'C',
+            name: 'Carbon',
+            atomicMass: 12.011,
+            category: 'Reactive nonmetal',
+            electronConfigurationNoble: '[He] 2s² 2p²',
+            electronegativity: 2.55
+        };
+        const catColor = (typeof categoryColors !== 'undefined' && categoryColors['Reactive nonmetal']) ? categoryColors['Reactive nonmetal'] : '#059669';
+        container.innerHTML = `
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view full anatomy guide">
+                <span>🔍 Element Key / Anatomy</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
+            <div class="hero-inspector-body hero-anatomy-mode">
+                <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 14px rgba(5, 150, 105, 0.45);">
+                    <div class="hero-tile-top">
+                        <span class="hero-tile-z" title="Atomic Number (Z)">6</span>
+                        <span class="hero-tile-mass" title="Standard Atomic Weight">12.011 u</span>
+                    </div>
+                    <div class="hero-tile-sym" style="color: #ffffff;" title="Chemical Symbol (White = Solid at 298 K)">C</div>
+                    <div class="hero-tile-name">Carbon</div>
+                    <div class="hero-tile-config">[He] 2s² 2p²</div>
+                </div>
+                <div class="hero-anatomy-callouts">
+                    <div class="anatomy-callout-row"><span class="callout-tag">Z:</span> Atomic Number</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag" style="color: #00f0ff;">Sym:</span> State Color (298 K)</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag">u:</span> Atomic Mass</div>
+                    <div class="anatomy-callout-hint">Hover or tap any element to inspect</div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const zNum = el.atomicNumber;
+    const cat = getNormalizedCategory(el.category, zNum);
+    const catColor = (typeof categoryColors !== 'undefined' && categoryColors[cat]) ? categoryColors[cat] : '#00d4ff';
+
+    let state = 'Unknown';
+    if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
+        const curK = typeof currentTemp !== 'undefined' ? currentTemp : 298;
+        if (curK < el.meltingPoint) state = 'Solid';
+        else if (curK < el.boilingPoint) state = 'Liquid';
+        else state = 'Gas';
+    }
+    const stateColor = (typeof stateTextColors !== 'undefined' && stateTextColors[state]) ? stateTextColors[state] : '#ffffff';
+    const massStr = el.atomicMass ? (typeof el.atomicMass === 'number' ? el.atomicMass.toFixed(3) : el.atomicMass) : '-';
+    const enStr = el.electronegativity ? `${el.electronegativity}` : '-';
+    const cfgStr = el.electronConfigurationNoble || el.electronConfiguration || '-';
+    const densityStr = el.density ? `${el.density} g/cm³` : '-';
+    const mpStr = el.meltingPoint ? `${Math.round(el.meltingPoint)} K` : '-';
+    const bpStr = el.boilingPoint ? `${Math.round(el.boilingPoint)} K` : '-';
+
+    container.innerHTML = `
+        <div class="legend-box-title" style="border-color: ${catColor};">
+            <span style="color: ${catColor}; font-weight: 800;">${el.name.toUpperCase()} (#${zNum})</span>
+            <span class="hero-cat-pill" style="background: ${catColor}33; border: 1px solid ${catColor}; color: #ffffff;">${cat}</span>
+        </div>
+        <div class="hero-inspector-body hero-live-mode">
+            <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 16px ${catColor}66;">
+                <div class="hero-tile-top">
+                    <span class="hero-tile-z">${zNum}</span>
+                    <span class="hero-tile-mass">${massStr} u</span>
+                </div>
+                <div class="hero-tile-sym" style="color: ${stateColor}; text-shadow: 0 0 10px ${stateColor};">${el.symbol}</div>
+                <div class="hero-tile-name">${el.name}</div>
+                <div class="hero-tile-config">${cfgStr}</div>
+            </div>
+            <div class="hero-live-details">
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">State:</span>
+                    <span class="hero-prop-val" style="color: ${stateColor}; font-weight: 800;">${state}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Electroneg:</span>
+                    <span class="hero-prop-val">${enStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Melting Pt:</span>
+                    <span class="hero-prop-val">${mpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Boiling Pt:</span>
+                    <span class="hero-prop-val">${bpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Density:</span>
+                    <span class="hero-prop-val">${densityStr}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+window.updateCentralHeroInspector = updateCentralHeroInspector;
+
 // Select Element
 function selectElement(z, isUserClick = false, openSidebar = true) {
     const el = getElementByNumber(z);
@@ -3113,6 +3208,7 @@ function selectElement(z, isUserClick = false, openSidebar = true) {
     }
     
     selectedElement = el;
+    updateCentralHeroInspector(z);
     
     // Position sidebar immediately before updating DOM content
     const activeView = document.querySelector('.view-mode.active');

@@ -31,6 +31,9 @@ window.PeriodicCanvasGrid = (function() {
     let offsetY = 0;
     let isInitialized = false;
     let rafScheduled = false;
+    let groupHeaderH = 20;
+    let periodMarginLeft = 22;
+    let hoveredZ = null;
 
     // Dual Fit Mode ('horizontal' or 'whole')
     let currentFitMode = 'horizontal';
@@ -76,21 +79,83 @@ window.PeriodicCanvasGrid = (function() {
     };
 
     const CATEGORY_COLORS = {
-        'Alkali metal': '#ef4444',
-        'Alkaline earth metal': '#f97316',
-        'Transition metal': '#6366f1',
-        'Post-transition metal': '#0284c7',
-        'Metalloid': '#eab308',
-        'Other nonmetal': '#22c55e',
-        'Other Nonmetals': '#22c55e',
-        'Halogen': '#14b8a6',
-        'Halogens': '#14b8a6',
-        'Noble gas': '#06b6d4',
-        'Noble Gases': '#06b6d4',
-        'Lanthanide': '#ec4899',
-        'Actinide': '#a855f7',
-        'Unknown': '#64748b'
+        'Alkali metal': '#e11d48',          // Vivid Crimson Red
+        'Alkaline earth metal': '#ea580c',  // Warm Tangerine Orange
+        'Transition metal': '#2563eb',      // Royal Cobalt Blue
+        'Post-transition metal': '#0d9488', // Cool Jade Teal
+        'Metalloid': '#d97706',             // Radiant Amber Gold
+        'Reactive nonmetal': '#059669',     // Deep Emerald Green
+        'Other nonmetal': '#059669',        // Deep Emerald Green
+        'Other Nonmetals': '#059669',       // Deep Emerald Green
+        'Halogen': '#059669',               // Group 17 Reactive Nonmetal
+        'Halogens': '#059669',              // Group 17 Reactive Nonmetal
+        'Noble gas': '#7c3aed',             // Imperial Purple / Violet
+        'Noble Gases': '#7c3aed',           // Imperial Purple / Violet
+        'Lanthanide': '#0284c7',            // Electric Cerulean Cyan
+        'Actinide': '#c026d3',              // Vivid Deep Fuchsia Orchid
+        'Unknown': '#475569'                // Refined Slate Gray
     };
+
+    const GROUPS_DATA = [
+        { num: '1', iupac: 'IA' },
+        { num: '2', iupac: 'IIA' },
+        { num: '3', iupac: 'IIIB' },
+        { num: '4', iupac: 'IVB' },
+        { num: '5', iupac: 'VB' },
+        { num: '6', iupac: 'VIB' },
+        { num: '7', iupac: 'VIIB' },
+        { num: '8', iupac: 'VIII' },
+        { num: '9', iupac: 'VIII' },
+        { num: '10', iupac: 'VIII' },
+        { num: '11', iupac: 'IB' },
+        { num: '12', iupac: 'IIB' },
+        { num: '13', iupac: 'IIIA' },
+        { num: '14', iupac: 'IVA' },
+        { num: '15', iupac: 'VA' },
+        { num: '16', iupac: 'VIA' },
+        { num: '17', iupac: 'VIIA' },
+        { num: '18', iupac: 'VIIIA' }
+    ];
+
+    const PERIODS_DATA = [
+        { num: '1', row: 1 },
+        { num: '2', row: 2 },
+        { num: '3', row: 3 },
+        { num: '4', row: 4 },
+        { num: '5', row: 5 },
+        { num: '6', row: 6 },
+        { num: '7', row: 7 }
+    ];
+
+    function hexToRgbComponents(hex) {
+        if (!hex) return [100, 116, 139];
+        let c = hex.replace('#', '');
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        if (isNaN(num)) return [100, 116, 139];
+        return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+    }
+
+    function createCellGradient(ctx, x, y, w, h, hexColor, isSelected, isHovered) {
+        const [r, g, b] = hexToRgbComponents(hexColor);
+        const highlightFactor = isSelected ? 0.40 : (isHovered ? 0.35 : 0.25);
+        const shadowFactor = isSelected ? 0.82 : (isHovered ? 0.72 : 0.62);
+
+        const highlightR = Math.min(255, Math.round(r + (255 - r) * highlightFactor));
+        const highlightG = Math.min(255, Math.round(g + (255 - g) * highlightFactor));
+        const highlightB = Math.min(255, Math.round(b + (255 - b) * highlightFactor));
+
+        const shadowR = Math.max(0, Math.round(r * shadowFactor));
+        const shadowG = Math.max(0, Math.round(g * shadowFactor));
+        const shadowB = Math.max(0, Math.round(b * shadowFactor));
+
+        const alpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.92);
+        const grad = ctx.createLinearGradient(x, y, x + w * 0.85, y + h);
+        grad.addColorStop(0, `rgba(${highlightR}, ${highlightG}, ${highlightB}, ${alpha})`);
+        grad.addColorStop(0.48, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+        grad.addColorStop(1, `rgba(${shadowR}, ${shadowG}, ${shadowB}, ${alpha})`);
+        return grad;
+    }
 
     function hexToRgba(color, alpha) {
         if (!color) return `rgba(100,116,139,${alpha})`;
@@ -146,16 +211,17 @@ window.PeriodicCanvasGrid = (function() {
 
     function normalizeCategory(cat, z = null) {
         if (z) {
-            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 85 || z === 117) return 'Halogen';
+            if (z === 117) return 'Reactive nonmetal';
+            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 85) return 'Reactive nonmetal';
             if (z === 2 || z === 10 || z === 18 || z === 36 || z === 54 || z === 86 || z === 118) return 'Noble gas';
-            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Other nonmetal';
+            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Reactive nonmetal';
             if (z === 5 || z === 14 || z === 32 || z === 33 || z === 51 || z === 52) return 'Metalloid';
         }
         if (!cat) return 'Unknown';
         const lowerCat = cat.toLowerCase();
-        if (lowerCat.includes('halogen')) return 'Halogen';
+        if (lowerCat.includes('halogen')) return 'Reactive nonmetal';
         if (lowerCat.includes('noble gas')) return 'Noble gas';
-        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Other nonmetal';
+        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Reactive nonmetal';
         if (lowerCat.includes('transition metal') && !lowerCat.includes('post')) return 'Transition metal';
         if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
         if (lowerCat.includes('metalloid')) return 'Metalloid';
@@ -232,65 +298,105 @@ window.PeriodicCanvasGrid = (function() {
                 touch-action: auto !important;
             }
             .in-grid-legend .legend-box {
-                background: rgba(9, 14, 26, 0.98) !important;
-                border: 1px solid rgba(0, 212, 255, 0.35) !important;
+                background: rgba(9, 14, 26, 0.96) !important;
+                border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
-                padding: 2px 4px !important;
+                padding: 4px 8px !important;
                 border-radius: 6px !important;
                 height: 100% !important;
                 box-sizing: border-box !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: flex-start !important;
+                min-height: 0 !important;
             }
-            .in-grid-legend .category-box { flex: 3 !important; min-width: 0 !important; }
-            .in-grid-legend .state-box { flex: 1 !important; min-width: 0 !important; }
+            .in-grid-legend .category-box { flex: 1.6 !important; min-width: 0 !important; }
+            .in-grid-legend .hero-inspector-box { flex: 1.1 !important; min-width: 0 !important; border-color: rgba(0, 212, 255, 0.45) !important; }
             .in-grid-legend .legend-box-title {
-                font-size: 0.44rem !important;
+                font-size: 0.62rem !important;
                 font-weight: 800 !important;
-                margin-bottom: 2px !important;
-                text-align: center !important;
+                margin-bottom: 3px !important;
+                padding-bottom: 2px !important;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
                 color: #00d4ff !important;
                 letter-spacing: 0.5px !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
             }
-            .in-grid-legend .legend-group-title {
-                font-size: 0.40rem !important;
-                font-weight: 700 !important;
-                margin-bottom: 2px !important;
-                text-align: center !important;
+            .in-grid-legend .legend-series-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 3px !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+                justify-content: space-around !important;
+            }
+            .in-grid-legend .legend-group-row {
+                display: flex !important;
+                align-items: center !important;
+                gap: 5px !important;
+            }
+            .in-grid-legend .legend-subheading {
+                font-size: 0.52rem !important;
+                font-weight: 800 !important;
                 color: rgba(255, 255, 255, 0.85) !important;
                 text-transform: uppercase !important;
-                white-space: nowrap !important;
+                letter-spacing: 0.5px !important;
+                min-width: 60px !important;
+                flex-shrink: 0 !important;
                 cursor: pointer !important;
-                transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease !important;
+            }
+            .in-grid-legend .legend-chips-wrap {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 2.5px !important;
+                flex: 1 !important;
+            }
+            .in-grid-legend .legend-states-bar {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 5px !important;
+                margin-top: 2px !important;
+                padding-top: 2px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            .in-grid-legend .legend-states-label {
+                font-size: 0.48rem !important;
+                color: #94a3b8 !important;
+                font-weight: 700 !important;
+                white-space: nowrap !important;
+            }
+            .in-grid-legend .legend-states-chips {
+                display: flex !important;
+                gap: 3px !important;
+                align-items: center !important;
             }
             .in-grid-legend .legend-item {
                 border-radius: 3px !important;
-                padding: 0 2px !important;
-                display: flex !important;
+                padding: 1.5px 5px !important;
+                display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 cursor: pointer !important;
-                line-height: 1.05 !important;
+                line-height: 1.15 !important;
                 box-sizing: border-box !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-                font-size: 0.38rem !important;
+                font-size: 0.58rem !important;
                 margin: 0 !important;
                 text-align: center !important;
-                white-space: normal !important;
+                white-space: nowrap !important;
                 transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, filter 0.15s ease !important;
             }
             .in-grid-legend .legend-item span {
-                font-size: 0.38rem !important;
+                font-size: 0.56rem !important;
                 font-family: var(--font-ui) !important;
                 font-weight: 700 !important;
-                white-space: normal !important;
-                line-height: 1.05 !important;
+                white-space: nowrap !important;
+                line-height: 1.15 !important;
                 text-align: center !important;
-                letter-spacing: -0.2px !important;
             }
             .in-grid-legend .legend-item[data-type="category"] span {
                 color: #ffffff !important;
@@ -299,20 +405,24 @@ window.PeriodicCanvasGrid = (function() {
                 color: inherit !important;
             }
             .in-grid-legend .legend-item[data-key="Solid"][data-type="state"] {
-                color: #ffffff !important;
+                color: #0f172a !important;
+                background: #ffffff !important;
+                border: 1px solid #ffffff !important;
             }
             .in-grid-legend .legend-item[data-key="Liquid"][data-type="state"] {
                 color: #00f0ff !important;
+                border: 1px solid #00f0ff !important;
             }
             .in-grid-legend .legend-item[data-key="Gas"][data-type="state"] {
                 color: #ff0055 !important;
+                border: 1px solid #ff0055 !important;
             }
             .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
-                color: #a1a1aa !important;
+                color: #94a3b8 !important;
+                border: 1px dashed rgba(148, 163, 184, 0.7) !important;
             }
-            
             .in-grid-legend .legend-item:hover, .in-grid-legend .legend-item:active {
-                border-color: #ffffff !important;
+                filter: brightness(1.2) !important;
                 box-shadow: 0 0 8px rgba(0, 212, 255, 0.8) !important;
             }
             .in-grid-legend .legend-item-active {
@@ -321,94 +431,6 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .legend-item-dimmed {
                 opacity: 0.35 !important;
                 filter: brightness(0.65) !important;
-            }
-            
-            .in-grid-legend .legend-col-metals {
-                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
-            }
-            .in-grid-legend .legend-col-metalloids {
-                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
-            }
-            .in-grid-legend .metals-layout-grid {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metals-top-row {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 1.5px !important;
-                flex: 2 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metals-col-sblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-col-dblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1.2 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-col-pblock {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                flex: 1 !important;
-                min-width: 0 !important;
-            }
-            .in-grid-legend .metals-bottom-row {
-                display: flex !important;
-                flex-direction: row !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .metalloids-items {
-                flex-direction: column !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-col-nonmetals {
-                flex: 2 !important;
-                min-width: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-            }
-            .in-grid-legend .nonmetals-items {
-                flex: 1 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .state-box .legend-box-content {
-                display: flex !important;
-                flex-direction: column !important;
-                flex: 1 !important;
-                justify-content: space-between !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-group-states {
-                flex: 1 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                min-height: 0 !important;
-            }
-            .in-grid-legend .legend-group-states .legend-group-items {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 1.5px !important;
-                justify-content: space-between !important;
-                flex: 1 !important;
             }
             
             .in-grid-legend .heatmap-controller {
@@ -437,6 +459,24 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .heatmap-scale { display: flex !important; flex-direction: column !important; gap: 2px !important; }
             .in-grid-legend .scale-btn { display: flex !important; align-items: center !important; gap: 2px !important; padding: 1px 3px !important; font-size: 0.40rem !important; border-radius: 2px !important; }
             .in-grid-legend .scale-btn svg { width: 10px !important; height: 10px !important; }
+
+            .hero-inspector-body { display: flex !important; gap: 6px !important; flex: 1 !important; min-height: 0 !important; align-items: stretch !important; }
+            .hero-card-tile { width: 66px !important; flex-shrink: 0 !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.5px solid #00d4ff !important; border-radius: 0px !important; padding: 2px 4px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; box-sizing: border-box !important; position: relative !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7) !important; }
+            .hero-tile-top { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; font-family: monospace !important; font-size: 0.52rem !important; line-height: 1 !important; }
+            .hero-tile-z { font-weight: 800 !important; color: #38bdf8 !important; }
+            .hero-tile-mass { font-size: 0.44rem !important; color: rgba(255, 255, 255, 0.75) !important; }
+            .hero-tile-sym { font-size: 1.40rem !important; font-weight: 900 !important; text-align: center !important; line-height: 1 !important; margin: 1px 0 !important; font-family: system-ui, sans-serif !important; }
+            .hero-tile-name { font-size: 0.50rem !important; text-align: center !important; color: #f1f5f9 !important; font-weight: 700 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .hero-tile-config { font-size: 0.40rem !important; font-family: monospace !important; text-align: center !important; color: #94a3b8 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .hero-anatomy-callouts { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 2.5px !important; flex: 1 !important; min-width: 0 !important; font-size: 0.52rem !important; color: #cbd5e1 !important; }
+            .anatomy-callout-row { display: flex !important; align-items: center !important; gap: 3.5px !important; white-space: nowrap !important; }
+            .anatomy-callout-row .callout-tag { font-weight: 800 !important; font-family: monospace !important; color: #38bdf8 !important; min-width: 30px !important; }
+            .anatomy-callout-hint { font-size: 0.46rem !important; color: #94a3b8 !important; font-style: italic !important; margin-top: 2px !important; }
+            .hero-live-details { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 1.5px !important; flex: 1 !important; min-width: 0 !important; }
+            .hero-prop-row { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; font-size: 0.48rem !important; line-height: 1.15 !important; }
+            .hero-prop-lbl { color: #94a3b8 !important; font-weight: 600 !important; }
+            .hero-prop-val { color: #f1f5f9 !important; font-family: monospace !important; font-weight: 700 !important; text-align: right !important; }
+            .hero-cat-pill { font-size: 0.46rem !important; font-weight: 700 !important; padding: 1px 4px !important; border-radius: 2px !important; text-transform: uppercase !important; }
             
             #view-main .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
         `;
@@ -503,15 +543,15 @@ window.PeriodicCanvasGrid = (function() {
 
     function clampPan() {
         const margin = 8;
-        const tableLeft = offsetX;
+        const tableLeft = offsetX - periodMarginLeft;
         const tableRight = offsetX + totalW;
-        const tableTop = offsetY;
+        const tableTop = offsetY - groupHeaderH;
         const tableBottom = offsetY + totalH;
 
         // Scaled bounds on screen:
         // Point X_world maps to (X_world - width/2)*zoomScale + width/2 + panX
-        const scaledW = totalW * zoomScale;
-        const scaledH = totalH * zoomScale;
+        const scaledW = (totalW + periodMarginLeft) * zoomScale;
+        const scaledH = (totalH + groupHeaderH) * zoomScale;
 
         // 1. Horizontal Clamping
         if (scaledW <= width - 2 * margin) {
@@ -581,6 +621,10 @@ window.PeriodicCanvasGrid = (function() {
         // Pointer Click / Tap
         canvas.addEventListener('click', handlePointerClick, { passive: true });
 
+        // Mouse Hover Tracking for Desktop
+        canvas.addEventListener('mousemove', onMouseMove, { passive: true });
+        canvas.addEventListener('mouseleave', onMouseLeave, { passive: true });
+
         // Multi-touch Pinch-to-Zoom & Pan / Vertical Scroll
         canvas.addEventListener('touchstart', onTouchStart, { passive: false });
         canvas.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -603,6 +647,59 @@ window.PeriodicCanvasGrid = (function() {
                 requestRender();
             }
         }, { passive: false });
+    }
+
+    function onMouseMove(e) {
+        if (isPanning || isPinching || !canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const rawX = e.clientX - rect.left;
+        const rawY = e.clientY - rect.top;
+        let clientX = rawX;
+        let clientY = rawY;
+        if (zoomScale !== 1.0 || panX !== 0 || panY !== 0) {
+            clientX = (clientX - (width / 2 + panX)) / zoomScale + width / 2;
+            clientY = (clientY - (height / 2 + panY)) / zoomScale + height / 2;
+        }
+
+        let foundZ = null;
+        for (let i = 1; i <= 118; i++) {
+            const item = elementPositions[i];
+            if (!item) continue;
+            const b = getElementBounds(item.col, item.row);
+            if (clientX >= b.x && clientX <= b.x + b.w && clientY >= b.y && clientY <= b.y + b.h) {
+                foundZ = item.z;
+                break;
+            }
+        }
+
+        if (foundZ !== hoveredZ) {
+            hoveredZ = foundZ;
+            if (hoveredZ) {
+                canvas.style.cursor = 'pointer';
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(hoveredZ);
+                }
+            } else {
+                canvas.style.cursor = 'default';
+                const selZ = (typeof selectedElement !== 'undefined' && selectedElement) ? selectedElement.atomicNumber : null;
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(selZ);
+                }
+            }
+            requestRender();
+        }
+    }
+
+    function onMouseLeave() {
+        if (hoveredZ !== null) {
+            hoveredZ = null;
+            if (canvas) canvas.style.cursor = 'default';
+            const selZ = (typeof selectedElement !== 'undefined' && selectedElement) ? selectedElement.atomicNumber : null;
+            if (typeof window.updateCentralHeroInspector === 'function') {
+                window.updateCentralHeroInspector(selZ);
+            }
+            requestRender();
+        }
     }
 
     let touchStartX = 0;
@@ -722,12 +819,15 @@ window.PeriodicCanvasGrid = (function() {
         gap = Math.max(2, Math.min(4, width / 340));
         const topBarH = 24; // Compact clearance for top bar slider and temp readout
         
+        groupHeaderH = Math.max(16, Math.min(22, Math.round(height * 0.038)));
+        periodMarginLeft = Math.max(18, Math.min(26, Math.round(width * 0.024)));
+
         // Explicit table margins so table doesn't touch screen edges
         const marginX = 6;
         const marginTop = 2;
         const marginBottom = 4;
-        const tableAvailW = Math.max(100, width - 2 * marginX);
-        const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom);
+        const tableAvailW = Math.max(100, width - 2 * marginX - periodMarginLeft);
+        const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom - groupHeaderH);
         
         // Ensure maxCellH never allows the table to exceed available vertical height
         const maxCellHByHeight = Math.floor(((tableAvailH - gap * 10.5) / 9) * 10) / 10;
@@ -768,12 +868,12 @@ window.PeriodicCanvasGrid = (function() {
         totalH = 9 * cellH + 8 * gap + gap * 2.5;
 
         // Position: if smaller than available space, center it; if overflowing, align to margin
-        offsetX = (totalW <= tableAvailW)
-            ? (marginX + Math.max(0, Math.floor((tableAvailW - totalW) / 2)))
-            : marginX;
-        offsetY = (totalH <= tableAvailH)
-            ? (topBarH + marginTop + Math.max(0, Math.floor((tableAvailH - totalH) / 2)))
-            : (topBarH + marginTop);
+        offsetX = (totalW + periodMarginLeft <= width - 2 * marginX)
+            ? (marginX + periodMarginLeft + Math.max(0, Math.floor((width - 2 * marginX - periodMarginLeft - totalW) / 2)))
+            : (marginX + periodMarginLeft);
+        offsetY = (totalH + groupHeaderH <= height - topBarH - marginTop - marginBottom)
+            ? (topBarH + marginTop + groupHeaderH + Math.max(0, Math.floor((height - topBarH - marginTop - marginBottom - groupHeaderH - totalH) / 2)))
+            : (topBarH + marginTop + groupHeaderH);
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
         const legendMarginX = Math.min(14, cellW * 0.3);
@@ -939,6 +1039,8 @@ window.PeriodicCanvasGrid = (function() {
                     dualCat = cat === 'Metalloid' ? 'Halogen' : 'Metalloid';
                 } else if (el.atomicNumber === 84) {
                     dualCat = cat === 'Metalloid' ? 'Post-transition metal' : 'Metalloid';
+                } else if (el.atomicNumber === 117) {
+                    dualCat = 'Metalloid';
                 }
                 const stateNames = ['Solid', 'Liquid', 'Gas', 'Unknown'];
                 const curStateName = stateNames[stateCode] || 'Solid';
@@ -997,39 +1099,54 @@ window.PeriodicCanvasGrid = (function() {
             const stateColor = STATE_COLORS[stateCode] || '#ffffff';
             const isSelected = (selZ === i);
 
+            const isHovered = (hoveredZ === i);
+            const isStateSolid = (activeProp === 'state' && stateCode === 0);
+
             // Dynamic opacity based on highlighting and selection
             let baseAlpha, borderAlpha;
             if (activeHighlight || (activeProp === 'discoveryYear' && typeof window.currentTimelineYear !== 'undefined')) {
                 if (isHighlighted) {
-                    baseAlpha = isSelected ? 0.90 : 0.65;
+                    baseAlpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.88);
                     borderAlpha = 1.0;
                 } else {
-                    baseAlpha = 0.06;
-                    borderAlpha = 0.12;
+                    baseAlpha = 0.08;
+                    borderAlpha = 0.15;
                 }
             } else {
-                baseAlpha = isSelected ? 0.75 : 0.40;
-                borderAlpha = isSelected ? 1.0 : 0.65;
+                baseAlpha = isSelected ? 0.98 : (isHovered ? 0.95 : 0.90);
+                borderAlpha = isSelected ? 1.0 : (isHovered ? 0.95 : 0.75);
             }
 
-            const r = 4;
+            // Sharp rectangular card (r = 0)
             ctx.beginPath();
-            ctx.roundRect(x, y, w, h, r);
-            const isStateSolid = (activeProp === 'state' && stateCode === 0);
+            ctx.rect(x, y, w, h);
 
-            // Seamless Full-Height Card Gradient
-            const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
-            if (isStateSolid) {
-                cardGrad.addColorStop(0, isSelected ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.92)');
-                cardGrad.addColorStop(0.45, isSelected ? 'rgba(241, 245, 249, 0.92)' : 'rgba(226, 232, 240, 0.82)');
-                cardGrad.addColorStop(1, isSelected ? 'rgba(203, 213, 225, 0.85)' : 'rgba(203, 213, 225, 0.70)');
+            let cardGrad;
+            if (activeHighlight && !isHighlighted) {
+                // Dimmed element card
+                cardGrad = ctx.createLinearGradient(x, y, x, y + h);
+                cardGrad.addColorStop(0, hexToRgba(cardHex, 0.08));
+                cardGrad.addColorStop(1, hexToRgba(cardHex, 0.03));
+            } else if (isStateSolid) {
+                cardGrad = ctx.createLinearGradient(x, y, x + w * 0.85, y + h);
+                cardGrad.addColorStop(0, isSelected ? 'rgba(255, 255, 255, 0.98)' : (isHovered ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.92)'));
+                cardGrad.addColorStop(0.5, isSelected ? 'rgba(241, 245, 249, 0.95)' : (isHovered ? 'rgba(241, 245, 249, 0.90)' : 'rgba(226, 232, 240, 0.85)'));
+                cardGrad.addColorStop(1, isSelected ? 'rgba(203, 213, 225, 0.90)' : (isHovered ? 'rgba(203, 213, 225, 0.82)' : 'rgba(148, 163, 184, 0.78)'));
             } else {
-                cardGrad.addColorStop(0, hexToRgba(cardHex, isSelected ? 0.88 : (baseAlpha + 0.14)));
-                cardGrad.addColorStop(0.4, hexToRgba(cardHex, isSelected ? 0.72 : baseAlpha));
-                cardGrad.addColorStop(1, hexToRgba(cardHex, isSelected ? 0.55 : Math.max(0.03, baseAlpha - 0.06)));
+                cardGrad = createCellGradient(ctx, x, y, w, h, cardHex, isSelected, isHovered);
             }
             ctx.fillStyle = cardGrad;
             ctx.fill();
+
+            // 2.5D Tactile Depth: Specular top highlight bevel line
+            if (!activeHighlight || isHighlighted) {
+                ctx.fillStyle = isSelected ? 'rgba(255, 255, 255, 0.75)' : (isHovered ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.35)');
+                ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+                // 2.5D Tactile Depth: Bottom shadow lip
+                ctx.fillStyle = isSelected ? 'rgba(0, 240, 255, 0.90)' : (isHovered ? 'rgba(0, 0, 0, 0.75)' : 'rgba(0, 0, 0, 0.55)');
+                ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
+            }
 
             const isUnknownState = (activeProp === 'state' && stateCode === 3);
             if (isUnknownState) {
@@ -1038,17 +1155,30 @@ window.PeriodicCanvasGrid = (function() {
                 ctx.setLineDash([]);
             }
 
-            ctx.strokeStyle = isSelected ? '#00f0ff' : (isStateSolid ? 'rgba(255, 255, 255, 0.95)' : hexToRgba(cardHex, borderAlpha));
-            ctx.lineWidth = isSelected ? 2.5 : (activeHighlight && isHighlighted ? 1.8 : 1);
+            ctx.strokeStyle = isSelected 
+                ? '#00f0ff' 
+                : (isHovered 
+                    ? 'rgba(255, 255, 255, 0.95)' 
+                    : (isStateSolid 
+                        ? 'rgba(255, 255, 255, 0.95)' 
+                        : hexToRgba(cardHex, borderAlpha)));
+            ctx.lineWidth = isSelected ? 2.5 : (isHovered ? 2.0 : (activeHighlight && isHighlighted ? 1.8 : 1.0));
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Selected or Active Elements Glowing Outline
+            // Selected or Hovered or Active Elements Glowing Outline
             if (isSelected) {
                 ctx.shadowColor = '#00f0ff';
                 ctx.shadowBlur = 12;
                 ctx.strokeStyle = '#00f0ff';
                 ctx.lineWidth = 2.5;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            } else if (isHovered) {
+                ctx.shadowColor = cardHex;
+                ctx.shadowBlur = 10;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2.0;
                 ctx.stroke();
                 ctx.shadowBlur = 0;
             } else if (activeHighlight && isHighlighted) {
@@ -1065,15 +1195,15 @@ window.PeriodicCanvasGrid = (function() {
             let numColor, symColorDirect, nameColor, massColor;
 
             if (isStateSolid) {
-                numColor = textDim ? 'rgba(15, 23, 42, 0.25)' : (isSelected ? '#0f172a' : 'rgba(15, 23, 42, 0.85)');
+                numColor = textDim ? 'rgba(15, 23, 42, 0.25)' : (isSelected ? '#0f172a' : 'rgba(15, 23, 42, 0.90)');
                 symColorDirect = textDim ? 'rgba(15, 23, 42, 0.25)' : '#0f172a';
-                nameColor = textDim ? 'rgba(30, 41, 59, 0.20)' : (isSelected ? '#0f172a' : 'rgba(30, 41, 59, 0.90)');
-                massColor = textDim ? 'rgba(51, 65, 85, 0.15)' : (isSelected ? '#1e293b' : 'rgba(51, 65, 85, 0.80)');
+                nameColor = textDim ? 'rgba(30, 41, 59, 0.20)' : (isSelected ? '#0f172a' : 'rgba(30, 41, 59, 0.95)');
+                massColor = textDim ? 'rgba(51, 65, 85, 0.15)' : (isSelected ? '#1e293b' : 'rgba(51, 65, 85, 0.85)');
             } else {
-                numColor = `rgba(255, 255, 255, ${textDim ? 0.20 : (isSelected ? 1.0 : 0.85)})`;
+                numColor = `rgba(255, 255, 255, ${textDim ? 0.20 : (isSelected || isHovered ? 1.0 : 0.90)})`;
                 symColorDirect = textDim ? hexToRgba(stateColor, 0.25) : (isSelected ? (stateCode === 0 ? '#ffffff' : stateColor) : stateColor);
-                nameColor = `rgba(255, 255, 255, ${textDim ? 0.18 : (isSelected ? 1.0 : 0.95)})`;
-                massColor = `rgba(255, 255, 255, ${textDim ? 0.12 : (isSelected ? 0.95 : 0.75)})`;
+                nameColor = `rgba(255, 255, 255, ${textDim ? 0.18 : (isSelected || isHovered ? 1.0 : 0.95)})`;
+                massColor = `rgba(255, 255, 255, ${textDim ? 0.12 : (isSelected || isHovered ? 0.98 : 0.85)})`;
             }
 
             const maxTextW = Math.max(8, w - 4);
@@ -1130,6 +1260,7 @@ window.PeriodicCanvasGrid = (function() {
             ctx.fillText(displayVal, x + w / 2, y + h - 1, maxTextW);
         }
 
+        drawIndicators(groupHeaderH, periodMarginLeft);
         drawPlaceholders();
         drawTableTypeElementBox();
         drawFitModeElementBox();
@@ -1143,6 +1274,108 @@ window.PeriodicCanvasGrid = (function() {
         drawScreenEdgeGlow();
 
         ctx.restore(); // Restore Canvas scale
+    }
+
+    function drawIndicators(gh, pw) {
+        ctx.save();
+        // 1. Group Headers (Columns 1 to 18)
+        for (let col = 1; col <= 18; col++) {
+            const gx = offsetX + (col - 1) * (cellW + gap);
+            const gy = offsetY - gh;
+            const gw = cellW;
+            const gData = GROUPS_DATA[col - 1];
+            if (!gData) continue;
+
+            // Subtle indicator tick at bottom of group header
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+            ctx.fillRect(gx + gw * 0.15, gy + gh - 1.5, gw * 0.7, 1.5);
+
+            // Group Number (1-18)
+            const numFontSize = Math.max(8, Math.min(11, gh * 0.50));
+            ctx.font = `800 ${numFontSize}px monospace, sans-serif`;
+            ctx.fillStyle = '#38bdf8';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = cellW >= 42 ? 'top' : 'middle';
+            
+            if (cellW >= 42) {
+                ctx.fillText(gData.num, gx + gw / 2, gy + 1);
+                // IUPAC Roman numeral label (e.g. IA, IIA, etc.)
+                const iupacFontSize = Math.max(6, Math.min(8.5, gh * 0.36));
+                ctx.font = `600 ${iupacFontSize}px 'IBM Plex Mono', monospace, sans-serif`;
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.85)';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(gData.iupac, gx + gw / 2, gy + gh - 2.5);
+            } else {
+                ctx.fillText(gData.num, gx + gw / 2, gy + gh / 2);
+            }
+        }
+
+        // 2. Period Headers (Periods 1 to 7)
+        for (let p = 0; p < PERIODS_DATA.length; p++) {
+            const pData = PERIODS_DATA[p];
+            const row = pData.row;
+            const py = offsetY + (row - 1) * (cellH + gap);
+            const px = offsetX - pw;
+            const ph = cellH;
+
+            // Subtle indicator pip on right side
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+            ctx.fillRect(px + pw - 2, py + ph * 0.3, 2, ph * 0.4);
+
+            // Period Number (1-7)
+            const pFontSize = Math.max(9, Math.min(12, cellH * 0.28));
+            ctx.font = `800 ${pFontSize}px monospace, sans-serif`;
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(pData.num, px + (pw - 2) / 2, py + ph / 2);
+        }
+
+        // 3. Lanthanides & Actinides Period Indicators (Rows 9 & 10)
+        const py9 = offsetY + (9 - 2) * (cellH + gap) + gap * 2.5;
+        const px9 = offsetX - pw;
+        ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+        ctx.fillRect(px9 + pw - 2, py9 + cellH * 0.3, 2, cellH * 0.4);
+        ctx.font = `800 ${Math.max(8.5, Math.min(11, cellH * 0.25))}px monospace, sans-serif`;
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('6*', px9 + (pw - 2) / 2, py9 + cellH / 2);
+
+        const py10 = offsetY + (10 - 2) * (cellH + gap) + gap * 2.5;
+        ctx.fillStyle = 'rgba(192, 38, 211, 0.45)';
+        ctx.fillRect(px9 + pw - 2, py10 + cellH * 0.3, 2, cellH * 0.4);
+        ctx.font = `800 ${Math.max(8.5, Math.min(11, cellH * 0.25))}px monospace, sans-serif`;
+        ctx.fillStyle = '#e879f9';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('7*', px9 + (pw - 2) / 2, py10 + cellH / 2);
+
+        // 4. Dashed Connector Lines from Row 6/7 Col 3 to Row 9/10 Col 4
+        const bP6 = getElementBounds(3, 6);
+        const bLa = getElementBounds(4, 9);
+        const bP7 = getElementBounds(3, 7);
+        const bAc = getElementBounds(4, 10);
+
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([3, 3]);
+
+        // Lanthanide connector
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(bP6.x + bP6.w, bP6.y + bP6.h * 0.5);
+        ctx.lineTo(bLa.x - 2, bLa.y + bLa.h * 0.5);
+        ctx.stroke();
+
+        // Actinide connector
+        ctx.strokeStyle = 'rgba(232, 121, 249, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(bP7.x + bP7.w, bP7.y + bP7.h * 0.5);
+        ctx.lineTo(bAc.x - 2, bAc.y + bAc.h * 0.5);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.restore();
     }
 
     function drawPlaceholders() {
@@ -1159,9 +1392,18 @@ window.PeriodicCanvasGrid = (function() {
             const h = b.h;
 
             ctx.beginPath();
-            ctx.roundRect(x, y, w, h, 4);
+            ctx.rect(x, y, w, h);
             ctx.fillStyle = hexToRgba(p.color, 0.22);
             ctx.fill();
+
+            // 2.5D Tactile Depth: Specular top highlight bevel line
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+            // 2.5D Tactile Depth: Bottom shadow lip
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
+
             ctx.strokeStyle = hexToRgba(p.color, 1.0);
             ctx.lineWidth = 1;
             ctx.setLineDash([2, 2]);
@@ -1230,7 +1472,7 @@ window.PeriodicCanvasGrid = (function() {
 
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
+        ctx.rect(x, y, w, h);
 
         // Premium obsidian glass background with subtle cyan / purple gradient
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
@@ -1239,6 +1481,14 @@ window.PeriodicCanvasGrid = (function() {
         cardGrad.addColorStop(1, 'rgba(9, 14, 28, 0.96)');
         ctx.fillStyle = cardGrad;
         ctx.fill();
+
+        // 2.5D Tactile Depth: Specular top highlight bevel line
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+        ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+        // 2.5D Tactile Depth: Bottom shadow lip
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.60)';
+        ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
 
         // Neon Glowing Border
         ctx.strokeStyle = 'rgba(0, 212, 255, 0.85)';
@@ -1308,13 +1558,21 @@ window.PeriodicCanvasGrid = (function() {
 
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
+        ctx.rect(x, y, w, h);
 
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
         cardGrad.addColorStop(0, isFit ? 'rgba(16, 36, 56, 0.90)' : 'rgba(15, 23, 42, 0.75)');
         cardGrad.addColorStop(1, isFit ? 'rgba(8, 18, 32, 0.90)' : 'rgba(9, 14, 26, 0.75)');
         ctx.fillStyle = cardGrad;
         ctx.fill();
+
+        // 2.5D Tactile Depth: Specular top highlight bevel line
+        ctx.fillStyle = isFit ? 'rgba(56, 189, 248, 0.40)' : 'rgba(255, 255, 255, 0.25)';
+        ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
+
+        // 2.5D Tactile Depth: Bottom shadow lip
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
 
         ctx.strokeStyle = isFit ? 'rgba(56, 189, 248, 0.85)' : 'rgba(255, 255, 255, 0.25)';
         ctx.lineWidth = isFit ? 1.1 : 1;
@@ -1478,6 +1736,9 @@ window.PeriodicCanvasGrid = (function() {
                 if (typeof selectElement === 'function') {
                     selectElement(item.z, true, true);
                 }
+                if (typeof window.updateCentralHeroInspector === 'function') {
+                    window.updateCentralHeroInspector(item.z);
+                }
                 render();
                 return;
             }
@@ -1496,6 +1757,9 @@ window.PeriodicCanvasGrid = (function() {
             }
             if (typeof selectedElement !== 'undefined') {
                 selectedElement = null;
+            }
+            if (typeof window.updateCentralHeroInspector === 'function') {
+                window.updateCentralHeroInspector(null);
             }
             render();
         }

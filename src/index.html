@@ -1232,7 +1232,7 @@
                 <div class="sim-tabs-row">
                     <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
                     <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
-                        <span>⚛️</span> <span class="tab-txt-full">Chain Reaction</span><span class="tab-txt-short">Fission</span>
+                        <span>⚛️</span> <span class="tab-txt-full">Nuclear Fission</span><span class="tab-txt-short">Fission</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
                         <span>☢️</span> <span class="tab-txt-full">Particle Decay</span><span class="tab-txt-short">Decay</span>
@@ -1241,84 +1241,37 @@
                         <span>🧬</span> <span class="tab-txt-full">Molecule Physics</span><span class="tab-txt-short">Molecules</span>
                     </button>
                     <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
-                        <span>🌍</span> <span class="tab-txt-full">Extreme Phase Lab</span><span class="tab-txt-short">Phase Lab</span>
+                        <span>🌡️</span> <span class="tab-txt-full">States of Matter</span><span class="tab-txt-short">States</span>
                     </button>
                 </div>
 
-                <!-- Game-Grade Simulation Controls -->
-                <div class="sim-playback-deck">
+                <!-- Clean Top Action Strip -->
+                <div class="sim-top-actions">
                     <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
-                    <button id="sim-btn-step" class="sim-ctrl-btn" onclick="stepSimFrame()" title="Step Forward 1 Frame">⏭️</button>
-                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Chamber / Geometry">🔄</button>
-                    <select id="sim-speed-select" class="sim-speed-select" onchange="changeSimSpeed(this.value)" title="Simulation Speed">
-                        <option value="0.1">0.1x</option>
-                        <option value="0.25">0.25x</option>
-                        <option value="0.5">0.5x</option>
-                        <option value="1.0" selected>1.0x</option>
-                        <option value="2.0">2.0x</option>
-                        <option value="5.0">5.0x</option>
-                    </select>
                     <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
+                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Simulation">🔄</button>
+                    <button id="sim-btn-guide" class="sim-ctrl-btn guide-btn" onclick="openSimGuideModal()" title="How it Works & Physics Guide">ℹ️ Guide</button>
                 </div>
             </div>
 
             <div class="sim-workspace">
                 <div class="sim-viewport-stage">
-                    <!-- Interactive Game Reaction Process Stepper & Live Narrator -->
-                    <div class="sim-reaction-stepper" id="sim-reaction-stepper">
-                        <div class="stepper-track">
-                            <div class="step-card active" id="rxn-step-1">
-                                <span class="step-icon">🎯</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 1</span>
-                                    <span class="step-label">Launch Neutron</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-2">
-                                <span class="step-icon">⚡</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 2</span>
-                                    <span class="step-label">Drop Elongation</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-3">
-                                <span class="step-icon">💥</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 3</span>
-                                    <span class="step-label">Split (+200 MeV)</span>
-                                </div>
-                            </div>
-                            <div class="stepper-connector">➔</div>
-                            <div class="step-card" id="rxn-step-4">
-                                <span class="step-icon">🔄</span>
-                                <div class="step-content">
-                                    <span class="step-num">Step 4</span>
-                                    <span class="step-label">3n Multiplier</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sim-narrator-pill" id="sim-narrator-pill">
-                            <span class="narrator-icon">💡</span>
-                            <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
-                        </div>
+                    <!-- Dynamic 1-Line Status Narrator Pill -->
+                    <div class="sim-narrator-pill" id="sim-narrator-pill">
+                        <span class="narrator-icon">💡</span>
+                        <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                     </div>
 
+                    <!-- Canvases (Full-bleed 100% unobstructed) -->
                     <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
 
-                    <!-- Sleek Floating Drawer Toggle Pill Button -->
-                    <button id="sim-drawer-toggle" class="sim-drawer-toggle-btn" onclick="toggleSimDrawer()" title="Toggle Controls & Parameters">
-                        <span class="drawer-btn-icon">⚙️</span>
-                        <span class="drawer-btn-text">Controls</span>
-                        <span id="sim-drawer-arrow" class="drawer-arrow">▲</span>
-                    </button>
-                </div>
-                <div class="sim-tuning-pane sim-drawer-collapsed" id="sim-tuning-pane">
-                    <!-- Dynamic Parameters populated by renderTuningPanel() -->
+                    <!-- Bottom Floating Game Controller Deck -->
+                    <div class="sim-game-deck" id="sim-game-deck">
+                        <!-- Populated dynamically by renderGameDeck() -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -1326,6 +1279,27 @@
     </main>
 
     <!-- JS_DATA_INJECT -->
+
+    <!-- Simulation Lab Educational Guide Modal -->
+    <div id="sim-guide-modal" class="sim-guide-modal-backdrop" style="display:none;" onclick="if(event.target===this){closeSimGuideModal();}">
+        <div class="sim-guide-modal-card">
+            <div class="sim-guide-modal-header">
+                <div class="sim-guide-modal-title" id="sim-guide-modal-title">
+                    <span id="sim-guide-modal-icon">⚛️</span>
+                    <h3 id="sim-guide-modal-heading">Nuclear Fission Guide</h3>
+                </div>
+                <button class="sim-guide-modal-close" onclick="closeSimGuideModal()">&times;</button>
+            </div>
+            <div class="sim-guide-modal-body" id="sim-guide-modal-content">
+                <!-- Injected dynamically based on active tab -->
+            </div>
+            <div class="sim-guide-modal-footer">
+                <button class="sim-guide-confirm-btn" onclick="closeSimGuideModal()">
+                    🚀 Got It! Let's Experiment
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Wikipedia Modal -->
     <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);" onclick="if(event.target===this){this.style.display='none';syncNativeSliderVisibility();}">

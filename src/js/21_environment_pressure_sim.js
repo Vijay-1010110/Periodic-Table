@@ -259,6 +259,42 @@
             this.notify();
         }
 
+        setElement(z) {
+            this.activeElementId = parseInt(z, 10) || 6;
+            this.notify();
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        heat(deltaK = 150) {
+            this.setTemperature(Math.min(35000, this.temperatureK + deltaK));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        cool(deltaK = 150) {
+            this.setTemperature(Math.max(1, this.temperatureK - deltaK));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        compress(factor = 2.0) {
+            this.setPressure(Math.min(1e11, this.pressureAtm * factor));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
+        decompress(factor = 2.0) {
+            this.setPressure(Math.max(1e-12, this.pressureAtm / factor));
+            if (typeof window.renderGameDeck === 'function') {
+                window.renderGameDeck('environment');
+            }
+        }
+
         quickJumpPhase(phaseType) {
             const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
             const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1000, boil: 2500 };
