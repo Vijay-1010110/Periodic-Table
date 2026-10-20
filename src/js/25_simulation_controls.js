@@ -727,46 +727,106 @@
             `;
         } else if (tabName === 'decay') {
             const engine = window.nuclearDecayEngine;
-            const bField = (engine && typeof engine.magneticFieldTesla === 'number') ? engine.magneticFieldTesla : (engine && typeof engine.bFieldTesla === 'number' ? engine.bFieldTesla : 1.0);
+            const curMode = engine ? engine.currentMode : 'transmutation';
+            const curNuclide = (window.DECAY_NUCLIDES || []).find(n => n.id === (engine ? engine.currentPresetId : 'U238')) || (window.DECAY_NUCLIDES || [])[0];
+            const bField = (engine && typeof engine.magneticFieldTesla === 'number') ? engine.magneticFieldTesla : 1.0;
             const bVal = (bField * 10).toFixed(0);
 
             pane.innerHTML = `
                 <div class="sim-drawer-header">
                     <div class="sim-drawer-title">
                         <span>☢️</span>
-                        <span>Particle Decay Chamber</span>
+                        <span>Decay &amp; Transmutation</span>
                     </div>
                     <button class="sim-drawer-close-btn" onclick="toggleSimDrawer(false)" title="Close controls">✕</button>
                 </div>
 
-                <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
-                    <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
-                        <span>⚡</span> EMIT RADIATION PULSE
+                <!-- 4 Interactive Lab Modes -->
+                <div class="sim-scenario-pills" style="margin-bottom: 8px;">
+                    <button class="sim-scenario-btn ${curMode === 'transmutation' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('transmutation')">
+                        💥 Transmute
                     </button>
-                    <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
-                        <span>🔄</span> CLEAR VAPOR TRACKS
+                    <button class="sim-scenario-btn ${curMode === 'halflife' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('halflife')">
+                        ⏱️ Half-Life
+                    </button>
+                    <button class="sim-scenario-btn ${curMode === 'shielding' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('shielding')">
+                        🛡️ Shielding
+                    </button>
+                    <button class="sim-scenario-btn ${curMode === 'chamber' ? 'active' : ''}" onclick="window.nuclearDecayEngine.setMode('chamber')">
+                        🧲 Cloud B
                     </button>
                 </div>
 
+                <!-- Contextual Thumb-Zone Actions -->
+                ${curMode === 'transmutation' ? `
+                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
+                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerTransmutation()">
+                            <span>💥</span> TRIGGER DECAY (SPLIT)
+                        </button>
+                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.resetTransmutation()">
+                            <span>🔄</span> RESET PARENT ATOM
+                        </button>
+                    </div>
+                ` : curMode === 'halflife' ? `
+                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
+                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.halfLifeRunning = !window.nuclearDecayEngine.halfLifeRunning; renderTuningPanel('decay');">
+                            <span>${engine && engine.halfLifeRunning ? '⏸️ PAUSE' : '▶️ RESUME'}</span> DECAY CLOCK
+                        </button>
+                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.initHalfLifePopulation()">
+                            <span>🔄</span> REPOPULATE 100 ATOMS
+                        </button>
+                    </div>
+                ` : curMode === 'shielding' ? `
+                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
+                        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; font-weight:700;">TOGGLE BARRIER SHIELDING:</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
+                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.paper ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.paper ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.paper ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('paper')">
+                                📄 Paper ${engine && engine.shieldingBarriers.paper ? 'ON' : 'OFF'}
+                            </button>
+                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.aluminum ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.aluminum ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.aluminum ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('aluminum')">
+                                🛡️ Alum ${engine && engine.shieldingBarriers.aluminum ? 'ON' : 'OFF'}
+                            </button>
+                            <button class="sim-action-btn" style="padding:6px 2px; font-size:0.72rem; background:${engine && engine.shieldingBarriers.lead ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.05)'}; border:1px solid ${engine && engine.shieldingBarriers.lead ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; color:${engine && engine.shieldingBarriers.lead ? '#38bdf8' : '#94a3b8'};" onclick="window.nuclearDecayEngine.toggleBarrier('lead')">
+                                🧱 Lead ${engine && engine.shieldingBarriers.lead ? 'ON' : 'OFF'}
+                            </button>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="sim-arcade-actions-block" style="margin-bottom: 8px;">
+                        <button class="sim-action-btn primary large-arcade-btn" onclick="window.nuclearDecayEngine.triggerDecay()">
+                            <span>⚡</span> EMIT RADIATION PULSE
+                        </button>
+                        <button class="sim-action-btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18);" onclick="window.nuclearDecayEngine.droplets=[]; window.nuclearDecayEngine.particles=[];">
+                            <span>🔄</span> CLEAR VAPOR TRACKS
+                        </button>
+                    </div>
+                `}
+
+                <!-- Radioactive Nuclide Selector -->
                 <div class="sim-pane-section">
-                    <div class="sim-pane-title"><span>☢️</span> Radioactive Source</div>
+                    <div class="sim-pane-title"><span>☢️</span> Radioactive Isotope</div>
                     <div class="sim-input-row">
-                        <label class="sim-input-label"><span>Radioactive Isotope:</span></label>
+                        <label class="sim-input-label"><span>Nuclide Source:</span></label>
                         <select class="sim-speed-select large-sim-select" onchange="window.nuclearDecayEngine.setPreset(this.value)">
-                            ${(window.DECAY_PRESETS || []).map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
+                            ${(window.DECAY_NUCLIDES || []).map(d => `<option value="${d.id}" ${engine && engine.currentPresetId === d.id ? 'selected' : ''}>${d.name} (${d.particle})</option>`).join('')}
                         </select>
                     </div>
-                    <div class="sim-input-row">
-                        <div class="sim-input-label">
-                            <span>Magnetic Field B:</span>
-                            <span id="b-field-display" class="sim-val-badge">${bField.toFixed(1)} T</span>
+                    <p style="font-size:0.76rem; color:#cbd5e1; line-height:1.4; margin:4px 0 0;">
+                        ${curNuclide ? curNuclide.desc : ''}
+                    </p>
+                    ${curMode === 'chamber' ? `
+                        <div class="sim-input-row" style="margin-top:10px;">
+                            <div class="sim-input-label">
+                                <span>Magnetic Field B:</span>
+                                <span id="b-field-display" class="sim-val-badge">${bField.toFixed(1)} T</span>
+                            </div>
+                            <input type="range" class="sim-range-slider" min="-30" max="30" value="${bVal}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
+                            <div class="slider-hint-row">
+                                <span>-3.0 T (Curves Down)</span>
+                                <span>+3.0 T (Curves Up)</span>
+                            </div>
                         </div>
-                        <input type="range" class="sim-range-slider" min="-30" max="30" value="${bVal}" oninput="document.getElementById('b-field-display').textContent=(this.value/10).toFixed(1)+' T'; window.nuclearDecayEngine.setMagneticField(this.value/10);">
-                        <div class="slider-hint-row">
-                            <span>-3.0 T (Left Curve)</span>
-                            <span>+3.0 T (Right Curve)</span>
-                        </div>
-                    </div>
+                    ` : ''}
                 </div>
             `;
         } else if (tabName === 'molecule') {
@@ -857,14 +917,14 @@
                             <span>Temperature:</span>
                             <span id="env-temp-display" class="sim-val-badge">${engine ? (engine.temperatureK < 10 ? engine.temperatureK.toFixed(2) : engine.temperatureK.toFixed(0)) : '298'} K</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="0" max="6000" value="${engine ? Math.min(6000, engine.temperatureK) : 298}" oninput="document.getElementById('env-temp-display').textContent=this.value+' K'; window.envSimulationEngine.setTemperature(this.value); renderTuningPanel('environment');">
+                        <input type="range" class="sim-range-slider" min="0" max="6000" value="${engine ? Math.min(6000, engine.temperatureK) : 298}" oninput="document.getElementById('env-temp-display').textContent=this.value+' K'; window.envSimulationEngine.setTemperature(this.value);" onchange="renderTuningPanel('environment');">
                     </div>
                     <div class="sim-input-row">
                         <div class="sim-input-label">
                             <span>Pressure (Hydraulic Piston):</span>
                             <span id="env-press-display" class="sim-val-badge">${engine ? (engine.pressureAtm < 0.01 ? engine.pressureAtm.toExponential(2) : (engine.pressureAtm > 1e4 ? engine.pressureAtm.toExponential(2) : engine.pressureAtm.toFixed(2))) : '1.0'} atm</span>
                         </div>
-                        <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); window.envSimulationEngine.setPressure(p); renderTuningPanel('environment');">
+                        <input type="range" class="sim-range-slider" min="-12" max="9" step="0.2" value="${engine ? Math.log10(Math.max(1e-12, engine.pressureAtm)) : 0}" oninput="const p=Math.pow(10, parseFloat(this.value)); document.getElementById('env-press-display').textContent=(p < 0.01 ? p.toExponential(2) : (p > 1e4 ? p.toExponential(2) : p.toFixed(2)))+' atm'; window.envSimulationEngine.setPressure(p);" onchange="renderTuningPanel('environment');">
                     </div>
                 </div>
 
@@ -907,6 +967,34 @@
 
                 if (window.chainReactionEngine) {
                     window.chainReactionEngine.aimAndFire(x, y);
+                }
+            });
+        }
+
+        // 2. Radioactive Decay Lab Canvas
+        const decayCanvas = document.getElementById('decay-sim-canvas');
+        if (decayCanvas) {
+            decayCanvas.addEventListener('pointerdown', (e) => {
+                const engine = window.nuclearDecayEngine;
+                if (!engine) return;
+
+                if (engine.currentMode === 'transmutation') {
+                    engine.triggerTransmutation();
+                } else if (engine.currentMode === 'halflife') {
+                    engine.halfLifeRunning = !engine.halfLifeRunning;
+                    renderTuningPanel('decay');
+                } else if (engine.currentMode === 'shielding') {
+                    const rect = decayCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const w = rect.width;
+                    if (Math.abs(x - w * 0.32) < 30) engine.toggleBarrier('paper');
+                    else if (Math.abs(x - w * 0.52) < 30) engine.toggleBarrier('aluminum');
+                    else if (Math.abs(x - w * 0.72) < 30) engine.toggleBarrier('lead');
+                } else if (engine.currentMode === 'chamber') {
+                    const rect = decayCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    engine.triggerDecay(x, y);
                 }
             });
         }
