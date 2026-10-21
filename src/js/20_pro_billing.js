@@ -1,5 +1,5 @@
 /**
- * Periodica 3D - Pro Billing, Gating & Engagement Engine (v4.3.2)
+ * Periodica 3D - Pro Billing, Gating & Engagement Engine (v4.4.0)
  * Handles:
  * 1. Google Play In-App Billing (Play Billing Library v7) Integration
  * 2. Feature Gating (Free: Properties View, Pro: Orbitals, Isotopes, Compounds, Reactions, Crystals, Compare, Quiz, Heatmaps)

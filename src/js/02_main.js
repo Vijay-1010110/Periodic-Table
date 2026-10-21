@@ -5336,7 +5336,7 @@ window.dismissRateUsLater = dismissRateUsLater;
 /* ==========================================================================
    App Update Manager (Mandatory & Optional In-App Updates + Push Alerts)
    ========================================================================== */
-const APP_CURRENT_VERSION = window.AppConfig?.app?.version || '4.3.2';
+const APP_CURRENT_VERSION = window.AppConfig?.app?.version || '4.4.0';
 const APP_VERSION_CODE = 4305;
 window.isAppUpdateMandatory = false;
 window.isAppUpdateActive = false;
