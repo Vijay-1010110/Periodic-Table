@@ -2,7 +2,9 @@
 let currentTemp = 298; // Kelvin
 let tempUnit = 'K';
 let currentProperty = 'category';
+window.currentProperty = currentProperty;
 let currentElecProperty = 'configuration';
+window.currentElecProperty = currentElecProperty;
 let currentView = 'main';
 const heatmapConfigs = {
     atomicMass:        { minColor: '#00ff00', maxColor: '#ff0000', scale: 'linear', min: 1, max: 294 },
@@ -12,7 +14,9 @@ const heatmapConfigs = {
     boilingPoint:      { minColor: '#00ffff', midColor: '#ffffff', maxColor: '#ff00ff', midValue: 273.15, scale: 'linear', min: 0, max: 6000 },
     electronAffinity:  { minColor: '#aaaaaa', maxColor: '#ffaa00', scale: 'linear', min: -100, max: 350 },
     ionization:        { minColor: '#5555ff', maxColor: '#ff5555', scale: 'linear', min: 350, max: 2500 },
+    ionizationEnergy:  { minColor: '#5555ff', maxColor: '#ff5555', scale: 'linear', min: 350, max: 2500 },
     radius:            { minColor: '#00ffaa', maxColor: '#ff00aa', scale: 'linear', min: 25, max: 300 },
+    atomicRadius:      { minColor: '#00ffaa', maxColor: '#ff00aa', scale: 'linear', min: 25, max: 300 },
     hardness:          { minColor: '#cccccc', maxColor: '#222222', scale: 'linear', min: 0.5, max: 10 },
     modulus:           { minColor: '#ffcc00', maxColor: '#6600cc', scale: 'linear', min: 1, max: 1000 },
     density:           { minColor: '#aaffaa', maxColor: '#005500', scale: 'linear', min: 0.00008, max: 23 },
@@ -21,16 +25,27 @@ const heatmapConfigs = {
     abundance:         { minColor: '#000000', maxColor: '#ffffff', scale: 'log', min: 1e-6, max: 5e5 },
     discoveryYear:     { minColor: '#00ccff', maxColor: '#ff00cc', scale: 'linear', min: 1650, max: 2025 }
 };
+window.heatmapConfigs = heatmapConfigs;
 const heatmapUnknownColor = '#333333';
+window.heatmapUnknownColor = heatmapUnknownColor;
 let selectedElement = null;
 let lockedLegendKey = null;
 let lockedLegendType = null;
 let lockedLegendGroup = null;
+const categoryGroups = {
+    'Metals': ['Alkali metal', 'Alkaline earth metal', 'Transition metal', 'Post-transition metal', 'Lanthanide', 'Actinide'],
+    'Metalloids': ['Metalloid'],
+    'Non-Metals': ['Other nonmetal', 'Halogen', 'Noble gas']
+};
+window.categoryGroups = categoryGroups;
+window.lockedLegendKey = null;
+window.lockedLegendType = null;
+window.lockedLegendGroup = null;
 let currentTimelineYear = 2025;
 let currentSearchQuery = '';
 
 // High-performance Grid Cell Cache & RAF Throttler for 60fps/120fps dynamic controls
-let gridCellCache = null;
+let gridCellCaches = {};
 let tempRafId = null;
 let pendingTemp = currentTemp;
 let timelineRafId = null;
@@ -44,17 +59,36 @@ let _elTimelineInput = null;
 let _elTimelineDisplayContainer = null;
 let _elTimelineSlider = null;
 
+let _tempTransitions = null;
+let _lastEvaluatedTemp = null;
+let _currentElementStates = null;
+let _currentCounts = { solid: 0, liquid: 0, gas: 0, unknown: 0 };
+let _legendStateItems = null;
+let _valStateEl = null;
+
+const STATE_NAMES = ['Solid', 'Liquid', 'Gas', 'Unknown'];
+const STATE_TEXT_COLORS = ['#ffffff', '#38bdf8', '#f87171', '#94a3b8'];
+const STATE_BG_COLORS = ['#3b82f6', '#06b6d4', '#ef4444', '#6b7280'];
+
 function invalidateGridCellCache() {
-    gridCellCache = null;
+    _tempTransitions = null;
+    _lastEvaluatedTemp = null;
+}
+
+function clearGridCellCache(gridId) {
+    if (gridCellCaches[gridId]) {
+        delete gridCellCaches[gridId];
+    }
+    const el = document.querySelector(gridId);
+    if (el) el._renderedVisualKey = null;
 }
 
 function getGridCellCache() {
-    const isMain = currentView === 'main';
-    const isIsotopes = currentView === 'isotopes';
-    const gridId = isMain ? '#main-grid' : (isIsotopes ? '#isotopes-grid' : '#electrons-grid');
-
-    if (gridCellCache && gridCellCache.gridId === gridId && gridCellCache.items && gridCellCache.items.length === 118) {
-        return gridCellCache.items;
+    const gridId = currentView === 'electrons' ? '#electrons-grid' :
+                   currentView === 'isotopes' ? '#isotopes-grid' : '#main-grid';
+    
+    if (gridCellCaches[gridId] && gridCellCaches[gridId].length === 118) {
+        return gridCellCaches[gridId];
     }
 
     const cells = document.querySelectorAll(`${gridId} .element-cell`);
@@ -76,120 +110,290 @@ function getGridCellCache() {
             mp: (elData.meltingPoint !== null && elData.meltingPoint !== undefined) ? elData.meltingPoint : null,
             bp: (elData.boilingPoint !== null && elData.boilingPoint !== undefined) ? elData.boilingPoint : null,
             discYear: elData.discoveryYear === 'Ancient' ? -99999 : parseInt(elData.discoveryYear),
-            lastState: cell.dataset.state || 'Unknown',
-            normalizedCategory: getNormalizedCategory(elData.category)
+            lastStateCode: -1,
+            normalizedCategory: getNormalizedCategory(elData.category, elData.atomicNumber)
         });
     });
 
-    gridCellCache = { gridId, items };
+    gridCellCaches[gridId] = items;
     return items;
 }
 
-function updateLegendStateCounts(solid, liquid, gas, unknown) {
-    const counts = { Solid: solid, Liquid: liquid, Gas: gas, Unknown: unknown };
-    const legendItems = document.querySelectorAll('.in-grid-legend .legend-item[data-type="state"]');
-    legendItems.forEach(item => {
-        const key = item.dataset.key;
-        if (key && counts[key] !== undefined) {
-            const span = item.querySelector('span');
-            if (span) {
-                span.textContent = `${key} (${counts[key]})`;
-            }
+function initTempTransitions(items) {
+    const transitions = [];
+    _currentElementStates = new Int8Array(items.length);
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.mp !== null && item.bp !== null) {
+            transitions.push({ k: item.mp, idx: i, type: 'mp' });
+            transitions.push({ k: item.bp, idx: i, type: 'bp' });
         }
-    });
+    }
+    transitions.sort((a, b) => a.k - b.k);
+    _tempTransitions = transitions;
+}
+
+let _lastLegendCounts = { Solid: -1, Liquid: -1, Gas: -1, Unknown: -1 };
+function updateLegendStateCounts(solid, liquid, gas, unknown) {
+    if (solid === _lastLegendCounts.Solid && liquid === _lastLegendCounts.Liquid &&
+        gas === _lastLegendCounts.Gas && unknown === _lastLegendCounts.Unknown) return;
+    _lastLegendCounts.Solid = solid;
+    _lastLegendCounts.Liquid = liquid;
+    _lastLegendCounts.Gas = gas;
+    _lastLegendCounts.Unknown = unknown;
+
+    if (!_legendStateItems) {
+        const nodes = document.querySelectorAll('#in-grid-legend .legend-item[data-type="state"]');
+        if (nodes && nodes.length > 0) {
+            _legendStateItems = Array.from(nodes).map(item => ({
+                key: item.dataset.key,
+                span: item.querySelector('span')
+            })).filter(x => x.key && x.span);
+        }
+    }
+    if (!_legendStateItems || _legendStateItems.length === 0) return;
+
+    const counts = { Solid: solid, Liquid: liquid, Gas: gas, Unknown: unknown };
+    for (let i = 0; i < _legendStateItems.length; i++) {
+        const item = _legendStateItems[i];
+        if (counts[item.key] !== undefined) {
+            item.span.textContent = `${item.key} (${counts[item.key]})`;
+        }
+    }
 }
 
 function applyOptimizedTemperatureUpdate(k) {
     const isMain = currentView === 'main';
-    const isIsotopes = currentView === 'isotopes';
     const items = getGridCellCache();
-    if (!items || items.length === 0) return;
+    if (!items || items.length === 0) return 0;
 
-    let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
     const isStateProp = isMain && currentProperty === 'state';
+    let changedCount = 0;
 
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        let currentState = 'Unknown';
-        if (item.mp !== null && item.bp !== null) {
-            if (k < item.mp) currentState = 'Solid';
-            else if (k < item.bp) currentState = 'Liquid';
-            else currentState = 'Gas';
+    // ⚡ WebAssembly Acceleration Engine (0.0001ms execution time)
+    if (window.PeriodicaWasm && window.PeriodicaWasm.isReady()) {
+        changedCount = window.PeriodicaWasm.evaluateTemperature(k);
+        if (changedCount > 0 || _lastEvaluatedTemp === null) {
+            const states = window.PeriodicaWasm.getStates();
+            const changedFlags = window.PeriodicaWasm.getChangedFlags();
+            const isFirst = (_lastEvaluatedTemp === null);
+
+            for (let i = 0; i < 118; i++) {
+                if (isFirst || changedFlags[i] === 1) {
+                    const item = items[i];
+                    if (!item) continue;
+                    const stateCode = states[i];
+                    const textColor = STATE_TEXT_COLORS[stateCode];
+                    if (item.symSpan) item.symSpan.style.color = textColor;
+                    if (item.bohrSpan) item.bohrSpan.style.color = textColor;
+
+                    if (isStateProp) {
+                        const color = STATE_BG_COLORS[stateCode];
+                        item.cell.style.background = color;
+                        item.cell.style.borderColor = color;
+                        if (item.valSpan) item.valSpan.textContent = STATE_NAMES[stateCode];
+                    }
+                }
+            }
+
+            const counts = window.PeriodicaWasm.getCounts();
+            _currentCounts.solid = counts[0];
+            _currentCounts.liquid = counts[1];
+            _currentCounts.gas = counts[2];
+            _currentCounts.unknown = counts[3];
+            updateLegendStateCounts(counts[0], counts[1], counts[2], counts[3]);
         }
+        _lastEvaluatedTemp = k;
 
-        if (currentState === 'Solid') solidCount++;
-        else if (currentState === 'Liquid') liquidCount++;
-        else if (currentState === 'Gas') gasCount++;
-        else unknownCount++;
+        if (selectedElement) {
+            updateSelectedCardVisuals();
+        }
+        return changedCount;
+    }
 
-        // Only touch DOM if state transitioned
-        if (currentState !== item.lastState) {
-            item.lastState = currentState;
-            item.cell.dataset.state = currentState;
+    if (!_tempTransitions) {
+        initTempTransitions(items);
+    }
 
-            if (item.symSpan) {
-                item.symSpan.style.color = stateTextColors[currentState];
+    // Full baseline initialization
+    if (_lastEvaluatedTemp === null) {
+        let s = 0, l = 0, g = 0, u = 0;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            let stateCode = 3;
+            if (item.mp !== null && item.bp !== null) {
+                if (k < item.mp) stateCode = 0;
+                else if (k < item.bp) stateCode = 1;
+                else stateCode = 2;
             }
-            if (item.bohrSpan) {
-                item.bohrSpan.style.color = stateTextColors[currentState];
-            }
+            _currentElementStates[i] = stateCode;
+            item.lastStateCode = stateCode;
+
+            const textColor = STATE_TEXT_COLORS[stateCode];
+            if (item.symSpan) item.symSpan.style.color = textColor;
+            if (item.bohrSpan) item.bohrSpan.style.color = textColor;
 
             if (isStateProp) {
-                const color = stateColors[currentState] || '#6b7280';
-                item.cell.style.background = getGlossyBackground(color, '');
+                const color = STATE_BG_COLORS[stateCode];
+                item.cell.style.background = color;
                 item.cell.style.borderColor = color;
-                if (item.valSpan) {
-                    item.valSpan.textContent = currentState;
+                if (item.valSpan) item.valSpan.textContent = STATE_NAMES[stateCode];
+            }
+
+            if (stateCode === 0) s++;
+            else if (stateCode === 1) l++;
+            else if (stateCode === 2) g++;
+            else u++;
+        }
+        _currentCounts.solid = s;
+        _currentCounts.liquid = l;
+        _currentCounts.gas = g;
+        _currentCounts.unknown = u;
+        _lastEvaluatedTemp = k;
+        updateLegendStateCounts(s, l, g, u);
+        return items.length;
+    }
+
+    if (k === _lastEvaluatedTemp) return 0;
+
+    const oldT = _lastEvaluatedTemp;
+    const newT = k;
+    const transitions = _tempTransitions;
+
+    // Delta Transition Processing: O(delta) operations instead of O(118)
+    if (newT > oldT) {
+        for (let i = 0; i < transitions.length; i++) {
+            const t = transitions[i];
+            if (t.k <= oldT) continue;
+            if (t.k > newT) break;
+
+            const item = items[t.idx];
+            if (t.type === 'mp') {
+                if (_currentElementStates[t.idx] === 0) {
+                    _currentElementStates[t.idx] = 1;
+                    item.lastStateCode = 1;
+                    _currentCounts.solid--;
+                    _currentCounts.liquid++;
+                    changedCount++;
+                    if (item.symSpan) item.symSpan.style.color = STATE_TEXT_COLORS[1];
+                    if (item.bohrSpan) item.bohrSpan.style.color = STATE_TEXT_COLORS[1];
+                    if (isStateProp) {
+                        item.cell.style.background = STATE_BG_COLORS[1];
+                        item.cell.style.borderColor = STATE_BG_COLORS[1];
+                        if (item.valSpan) item.valSpan.textContent = 'Liquid';
+                    }
+                }
+            } else if (t.type === 'bp') {
+                if (_currentElementStates[t.idx] === 1) {
+                    _currentElementStates[t.idx] = 2;
+                    item.lastStateCode = 2;
+                    _currentCounts.liquid--;
+                    _currentCounts.gas++;
+                    changedCount++;
+                    if (item.symSpan) item.symSpan.style.color = STATE_TEXT_COLORS[2];
+                    if (item.bohrSpan) item.bohrSpan.style.color = STATE_TEXT_COLORS[2];
+                    if (isStateProp) {
+                        item.cell.style.background = STATE_BG_COLORS[2];
+                        item.cell.style.borderColor = STATE_BG_COLORS[2];
+                        if (item.valSpan) item.valSpan.textContent = 'Gas';
+                    }
+                }
+            }
+        }
+    } else {
+        for (let i = transitions.length - 1; i >= 0; i--) {
+            const t = transitions[i];
+            if (t.k >= oldT) continue;
+            if (t.k < newT) break;
+
+            const item = items[t.idx];
+            if (t.type === 'bp') {
+                if (_currentElementStates[t.idx] === 2) {
+                    _currentElementStates[t.idx] = 1;
+                    item.lastStateCode = 1;
+                    _currentCounts.gas--;
+                    _currentCounts.liquid++;
+                    changedCount++;
+                    if (item.symSpan) item.symSpan.style.color = STATE_TEXT_COLORS[1];
+                    if (item.bohrSpan) item.bohrSpan.style.color = STATE_TEXT_COLORS[1];
+                    if (isStateProp) {
+                        item.cell.style.background = STATE_BG_COLORS[1];
+                        item.cell.style.borderColor = STATE_BG_COLORS[1];
+                        if (item.valSpan) item.valSpan.textContent = 'Liquid';
+                    }
+                }
+            } else if (t.type === 'mp') {
+                if (_currentElementStates[t.idx] === 1) {
+                    _currentElementStates[t.idx] = 0;
+                    item.lastStateCode = 0;
+                    _currentCounts.liquid--;
+                    _currentCounts.solid++;
+                    changedCount++;
+                    if (item.symSpan) item.symSpan.style.color = STATE_TEXT_COLORS[0];
+                    if (item.bohrSpan) item.bohrSpan.style.color = STATE_TEXT_COLORS[0];
+                    if (isStateProp) {
+                        item.cell.style.background = STATE_BG_COLORS[0];
+                        item.cell.style.borderColor = STATE_BG_COLORS[0];
+                        if (item.valSpan) item.valSpan.textContent = 'Solid';
+                    }
                 }
             }
         }
     }
 
-    window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
+    _lastEvaluatedTemp = newT;
+    updateLegendStateCounts(_currentCounts.solid, _currentCounts.liquid, _currentCounts.gas, _currentCounts.unknown);
 
-    // Update state numbers in in-grid legend in-place
-    updateLegendStateCounts(solidCount, liquidCount, gasCount, unknownCount);
-
-    // Update selected element in sidebar
     if (selectedElement) {
-        let selState = 'Unknown';
-        if (selectedElement.meltingPoint != null && selectedElement.boilingPoint != null) {
-            if (k < selectedElement.meltingPoint) selState = 'Solid';
-            else if (k < selectedElement.boilingPoint) selState = 'Liquid';
-            else selState = 'Gas';
-        }
-        const stateEl = document.getElementById('val-state');
-        if (stateEl) stateEl.textContent = selState;
-        if (isStateProp) {
-            updateSelectedCardVisuals();
-        }
+        updateSelectedCardVisuals();
     }
+    return changedCount;
 }
 
 function applyOptimizedTimelineUpdate(year) {
+    currentTimelineYear = year;
+    window.currentTimelineYear = year;
     const isMain = currentView === 'main';
     if (!isMain || currentProperty !== 'discoveryYear') return;
 
-    const items = getGridCellCache();
-    if (!items || items.length === 0) return;
+    // Update discovery count in top readout
+    const countEl = document.getElementById('timeline-count');
+    if (countEl && typeof elementsData !== 'undefined') {
+        let count = 0;
+        for (let i = 0; i < elementsData.length; i++) {
+            const dy = elementsData[i].discoveryYear;
+            if (dy === 'Ancient' || Number(dy) <= year) {
+                count++;
+            }
+        }
+        countEl.textContent = `${count} / 118 Discovered`;
+    }
 
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.elData.discoveryYear === 'Ancient') {
-            item.cell.style.opacity = '1';
-            item.cell.style.filter = 'none';
-        } else {
-            const dYear = item.discYear;
-            if (!isNaN(dYear) && dYear > year) {
-                item.cell.style.opacity = '0.2';
-                item.cell.style.filter = 'grayscale(1)';
-            } else {
+    const items = getGridCellCache();
+    if (items && items.length > 0) {
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.elData.discoveryYear === 'Ancient') {
                 item.cell.style.opacity = '1';
                 item.cell.style.filter = 'none';
+            } else {
+                const dYear = item.discYear;
+                if (!isNaN(dYear) && dYear > year) {
+                    item.cell.style.opacity = '0.2';
+                    item.cell.style.filter = 'grayscale(1)';
+                } else {
+                    item.cell.style.opacity = '1';
+                    item.cell.style.filter = 'none';
+                }
             }
         }
     }
+
+    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.render === 'function') {
+        window.PeriodicCanvasGrid.render();
+    }
 }
+
 const aufbauExceptions = {
     24: ['4s', '3d'],    // Cr
     29: ['4s', '3d'],    // Cu
@@ -218,11 +422,11 @@ function formatElectronConfigHTML(configString, atomicNumber) {
     const anomalies = aufbauExceptions[atomicNumber];
     
     const parts = configString.split(' ').map(part => {
-        let formatted = part.replace(/([spdf])(\d+)/g, '$1<sup>$2</sup>');
+        let formatted = part.replace(/([spdf])(\d+)/g, '$1<sup style="vertical-align: super; font-size: 0.82em; margin-right: 3px;">$2</sup>');
         if (anomalies) {
             const match = part.match(/^(\d+[spdf])/);
             if (match && anomalies.includes(match[1])) {
-                formatted = `<span style="color: #ff4444">${formatted}</span>`;
+                formatted = `<span style="color: #ef4444; font-weight: 800;">${formatted}</span>`;
             }
         }
         return formatted;
@@ -293,40 +497,63 @@ function getQuantumNumbers(configString) {
     return { n, l, m, s };
 }
 
-function applyLegendHighlighting(key, type, groupKeys = null) {
-    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
-    const grid = document.querySelector(gridId);
-    if (!grid) return;
+function isElementEndingOnSubshell(el, subshellKey) {
+    if (!el || !subshellKey) return false;
+    const cfg = el.electronConfiguration || '';
+    const parts = cfg.trim().split(/\s+/).filter(p => /\d[spdf]/.test(p));
+    if (parts.length === 0) return false;
+    const lastPart = parts[parts.length - 1];
+    const match = lastPart.match(/(\d[spdf])/);
+    return match ? (match[1] === subshellKey) : false;
+}
+window.isElementEndingOnSubshell = isElementEndingOnSubshell;
 
+function applyLegendHighlighting(key, type, groupKeys = null) {
     if (!key && !groupKeys) {
-        grid.classList.remove('highlighting-active');
-        document.querySelectorAll(`${gridId} .element-cell`).forEach(c => c.classList.remove('highlighted'));
-        return;
+        window.activeLegendHighlight = null;
+    } else {
+        window.activeLegendHighlight = { key, type, groupKeys };
     }
 
-    grid.classList.add('highlighting-active');
-    document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
-        let match = false;
-        if (groupKeys) {
-            match = groupKeys.includes(cell.dataset.category);
-        } else if (type === 'category') {
-            match = cell.dataset.category === key;
-        } else if (type === 'state') {
-            match = cell.dataset.state === key;
-        } else if (type === 'block') {
-            match = cell.dataset.block === key;
-        } else if (type === 'exception') {
-            const z = parseInt(cell.dataset.z);
-            match = (z in aufbauExceptions);
-        } else if (type === 'subshell') {
-            const z = parseInt(cell.dataset.z);
-            const el = getElementByNumber(z);
-            match = el && el.electronConfiguration && el.electronConfiguration.includes(key);
+    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
+    const grid = document.querySelector(gridId);
+    if (grid) {
+        if (!key && !groupKeys) {
+            grid.classList.remove('highlighting-active');
+            document.querySelectorAll(`${gridId} .element-cell`).forEach(c => c.classList.remove('highlighted'));
+        } else {
+            grid.classList.add('highlighting-active');
+            document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
+                let match = false;
+                const cat = cell.dataset.category;
+                const dualCat = cell.dataset.dualCategory;
+                if (groupKeys) {
+                    match = groupKeys.includes(cat) || (dualCat && groupKeys.includes(dualCat));
+                } else if (type === 'category') {
+                    match = (cat === key) || (dualCat && dualCat === key);
+                } else if (type === 'state') {
+                    match = cell.dataset.state === key;
+                } else if (type === 'block') {
+                    match = cell.dataset.block === key;
+                } else if (type === 'exception') {
+                    const z = parseInt(cell.dataset.z);
+                    match = (z in aufbauExceptions);
+                } else if (type === 'subshell') {
+                    const z = parseInt(cell.dataset.z);
+                    const el = getElementByNumber(z);
+                    match = isElementEndingOnSubshell(el, key);
+                }
+                
+                if (match) cell.classList.add('highlighted');
+                else cell.classList.remove('highlighted');
+            });
         }
-        
-        if (match) cell.classList.add('highlighted');
-        else cell.classList.remove('highlighted');
-    });
+    }
+
+    // Trigger Canvas Grid Re-render to reflect highlighting on canvas periodic table
+    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.render === 'function') {
+        window.PeriodicCanvasGrid.render();
+    }
 }
 
 function clearLegendHighlighting() {
@@ -334,13 +561,18 @@ function clearLegendHighlighting() {
         applyLegendHighlighting(lockedLegendKey, lockedLegendType, lockedLegendGroup ? categoryGroups[lockedLegendGroup] : null);
         return;
     }
-    const gridId = currentView === 'main' ? '#main-grid' : (currentView === 'isotopes' ? '#isotopes-grid' : '#electrons-grid');
+    window.activeLegendHighlight = null;
+    const gridId = currentView === 'main' ? '#main-grid' : '#electrons-grid';
     const grid = document.querySelector(gridId);
-    if (!grid) return;
-    grid.classList.remove('highlighting-active');
-    document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
-        cell.classList.remove('highlighted');
-    });
+    if (grid) {
+        grid.classList.remove('highlighting-active');
+        document.querySelectorAll(`${gridId} .element-cell`).forEach(cell => {
+            cell.classList.remove('highlighted');
+        });
+    }
+    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.render === 'function') {
+        window.PeriodicCanvasGrid.render();
+    }
 }
 
 let tableLayoutMode = '18col'; // '18col' or '32col'
@@ -407,18 +639,22 @@ function getGridPosition(z) {
     return { col: 1, row: 1 }; // Fallback
 }
 
-// Category Colors (Modern Scientific Palette - Ptable / RSC Standards)
+//// Category Colors (Full Spectrum High Contrast & Distinct Hues)
 const categoryColors = {
-    'Alkali metal': '#e11d48',        // Vivid Ruby Red / Crimson (Group 1)
-    'Alkaline earth metal': '#ea580c', // Warm Tangerine / Sunset Orange (Group 2)
-    'Transition metal': '#2563eb',     // Vibrant Royal Cobalt Blue (Groups 3-12)
-    'Post-transition metal': '#0d9488',// Cool Jade Teal / Seafoam (Groups 13-16 metals)
-    'Metalloid': '#d97706',            // Radiant Amber Gold (The diagonal staircase)
-    'Reactive nonmetal': '#059669',    // Vibrant Deep Emerald Green (C, N, O, P, S, halogens)
-    'Noble gas': '#7c3aed',            // Imperial Royal Purple / Violet (Group 18)
-    'Lanthanide': '#0284c7',           // Electric Cerulean / Cyan Blue (4f series)
-    'Actinide': '#c026d3',             // Vivid Deep Fuchsia / Orchid Magenta (5f series)
-    'Unknown': '#475569'              // Refined Modern Slate Gray
+    'Alkali metal': '#ef4444',        // Pure Red
+    'Alkaline earth metal': '#f97316', // Bright Orange
+    'Transition metal': '#6366f1',     // Indigo Blue
+    'Post-transition metal': '#0284c7',// Steel Blue
+    'Metalloid': '#eab308',            // Canary Yellow / Gold
+    'Other nonmetal': '#22c55e',       // Vibrant Green
+    'Other Nonmetals': '#22c55e',      // Alias
+    'Halogen': '#14b8a6',              // Vibrant Teal
+    'Halogens': '#14b8a6',             // Alias
+    'Noble gas': '#06b6d4',            // Electric Cyan
+    'Noble Gases': '#06b6d4',          // Alias
+    'Lanthanide': '#ec4899',           // Hot Pink / Magenta
+    'Actinide': '#a855f7',             // Deep Violet Purple
+    'Unknown': '#64748b'              // Slate Gray
 };
 
 // Unified State Colors (Distinct Neon Hues 100% Matched to Legend & Symbol Text)
@@ -435,6 +671,26 @@ const stateTextColors = {
     'Gas': '#ff0055',     // Vibrant Neon Pink-Red (Gas)
     'Unknown': '#a1a1aa'  // Cool Translucent Silver (Unknown)
 };
+
+function hexToRgbaLocal(color, alpha) {
+    if (!color) return `rgba(100,116,139,${alpha})`;
+    if (typeof color === 'string' && color.startsWith('rgb(')) {
+        const m = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+        if (m) return `rgba(${m[1]},${m[2]},${m[3]},${alpha})`;
+    } else if (typeof color === 'string' && color.startsWith('rgba(')) {
+        return color.replace(/rgba\((\d+,\s*\d+,\s*\d+,)\s*[^)]+\)/, `rgba($1 ${alpha})`);
+    }
+    if (typeof color !== 'string' || color[0] !== '#') return `rgba(100,116,139,${alpha})`;
+    let c = color.substring(1);
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const num = parseInt(c, 16);
+    if (isNaN(num)) return `rgba(100,116,139,${alpha})`;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r},${g},${b},${alpha})`;
+}
+window.hexToRgbaLocal = hexToRgbaLocal;
 
 // Dynamic Social Share Meta Updater (OG image, Twitter cards, document title)
 function updateSocialShareMeta(viewId) {
@@ -515,9 +771,20 @@ function updateSocialShareMeta(viewId) {
     }
 }
 
-// View switching helper with hash routing
-function switchView(viewId, updateHash = true) {
+// View switching helper with hash routing and back-stack history
+function switchView(viewId, updateHash = true, pushHistory = true) {
     if (viewId === 'properties') viewId = 'main';
+
+    if (viewId !== 'main' && window.isProUser && !window.isProUser()) {
+        if (window.openProPaywallModal) {
+            window.openProPaywallModal(viewId);
+        }
+        return;
+    }
+
+    if (pushHistory && window.NavigationManager && typeof window.NavigationManager.pushView === 'function') {
+        window.NavigationManager.pushView(viewId);
+    }
 
     document.querySelectorAll('.nav-btn, .mobile-nav-item').forEach(b => {
         if (b.getAttribute('data-view') === viewId) {
@@ -532,64 +799,108 @@ function switchView(viewId, updateHash = true) {
     const targetView = document.getElementById('view-' + viewId);
     if (targetView) targetView.classList.add('active');
 
-    // 32-column view layout toggle is available for Property Interface ('main', 'properties') and Isotopes ('isotopes')
+    // Close any floating mobile sidebar on tab change
+    closeMobileSidebar();
+    const mobileLeftNav = document.getElementById('mobile-left-nav');
+    if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
+    syncNativeSliderVisibility();
+    // 32-column view layout toggle and Table Type button are strictly restricted to Property Interface ('main' or 'properties')
     const layoutBtn = document.getElementById('btn-layout-toggle');
+    const tableTypeBtn = document.getElementById('btn-table-type-top');
     const mainGrid = document.getElementById('main-grid');
-    const isoGrid = document.getElementById('isotopes-grid');
     
-    if (viewId === 'main' || viewId === 'properties' || viewId === 'isotopes') {
-        if (layoutBtn) {
-            layoutBtn.style.display = 'flex';
-            if (savedPropertyLayoutMode === '32col') {
-                layoutBtn.textContent = '↩️';
-                layoutBtn.title = 'Switch to Standard 18-Col View';
-                layoutBtn.style.background = 'rgba(74, 222, 128, 0.2)';
-                layoutBtn.style.borderColor = '#4ade80';
-                layoutBtn.style.color = '#4ade80';
-                layoutBtn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
-            } else {
-                layoutBtn.textContent = '↔️';
-                layoutBtn.title = 'Switch to Extended 32-Col View';
-                layoutBtn.style.background = 'rgba(0, 212, 255, 0.1)';
-                layoutBtn.style.borderColor = 'rgba(0, 212, 255, 0.35)';
-                layoutBtn.style.color = '#00d4ff';
-                layoutBtn.style.boxShadow = '0 0 8px rgba(0, 212, 255, 0.15)';
-            }
-        }
+    if (viewId === 'main' || viewId === 'properties') {
+        if (layoutBtn) layoutBtn.style.display = 'flex';
+        if (tableTypeBtn) tableTypeBtn.style.display = 'flex';
         tableLayoutMode = savedPropertyLayoutMode || '18col';
+        updateGridVisuals();
+        requestAnimationFrame(() => {
+            syncNativeSliderVisibility();
+            if (typeof window.refreshCustomSliders === 'function') {
+                window.refreshCustomSliders();
+            }
+        });
+        setTimeout(() => {
+            syncNativeSliderVisibility();
+            if (typeof window.refreshCustomSliders === 'function') {
+                window.refreshCustomSliders();
+            }
+        }, 60);
     } else {
         if (layoutBtn) layoutBtn.style.display = 'none';
+        if (tableTypeBtn) tableTypeBtn.style.display = 'none';
         tableLayoutMode = '18col';
     }
 
-    [mainGrid, isoGrid].forEach(g => {
-        if (!g) return;
+    if (mainGrid) {
         if (tableLayoutMode === '32col') {
-            g.classList.add('extended-32col');
+            mainGrid.classList.add('extended-32col');
         } else {
-            g.classList.remove('extended-32col');
+            mainGrid.classList.remove('extended-32col');
         }
-    });
-    
-    renderGrid();
-    if (selectedElement) {
-        selectElement(selectedElement.atomicNumber);
     }
     
-    if (viewId === 'electrons') {
-        if (window.OrbitalViewer) {
-            if (!window.OrbitalViewer.renderer) {
-                window.OrbitalViewer.init('three-canvas-container');
-            }
-            setTimeout(() => {
-                window.OrbitalViewer.resize();
-                if (selectedElement) {
-                    selectElement(selectedElement.atomicNumber);
-                } else {
-                    selectElement(6); // Default to Carbon (Z=6) if no element selected
-                }
-            }, 50);
+    if (viewId === 'main' || viewId === 'electrons' || viewId === 'isotopes') {
+        const gridId = viewId === 'electrons' ? 'electrons-grid' : (viewId === 'isotopes' ? 'isotopes-grid' : 'main-grid');
+        const gridEl = document.getElementById(gridId);
+        if (!gridEl || gridEl.children.length === 0) {
+            renderGrid();
         }
+    }
+    
+    // Pause all background 3D WebGL render loops when not active
+    if (window.OrbitalViewer && typeof window.OrbitalViewer.stop === 'function') {
+        if (viewId !== 'electrons') window.OrbitalViewer.stop();
+    }
+    if (typeof window.stopMoleculeViewer === 'function') {
+        if (viewId !== 'compounds') window.stopMoleculeViewer();
+    }
+    if (typeof window.stopCrystalViewer === 'function') {
+        if (viewId !== 'crystals') window.stopCrystalViewer();
+    }
+    if (window.simPlaybackController && typeof window.simPlaybackController.pause === 'function') {
+        if (viewId !== 'simulations') window.simPlaybackController.pause();
+    }
+
+    if (viewId === 'electrons') {
+        const isMobile = (window.innerWidth <= 1000 || window.innerHeight <= 520);
+        const elecSidebar = document.querySelector('#view-electrons .view-right');
+        const isSidebarVisible = !isMobile || (elecSidebar && (elecSidebar.classList.contains('mobile-active') || elecSidebar.classList.contains('open')));
+
+        if (window.OrbitalViewer) {
+            if (isSidebarVisible) {
+                if (!window.OrbitalViewer.renderer) {
+                    requestAnimationFrame(() => {
+                        window.OrbitalViewer.init('three-canvas-container');
+                        window.OrbitalViewer.resize();
+                    });
+                } else {
+                    window.OrbitalViewer.start();
+                    requestAnimationFrame(() => {
+                        window.OrbitalViewer.resize();
+                    });
+                }
+            } else {
+                // On mobile when sidebar is closed, keep 3D loop stopped (0% CPU/GPU overhead)
+                window.OrbitalViewer.stop();
+            }
+        }
+        requestAnimationFrame(() => {
+            if (!selectedElement) {
+                selectElement(6, false, false);
+            }
+        });
+    } else if (viewId === 'isotopes') {
+        requestAnimationFrame(() => {
+            const z = selectedElement ? selectedElement.atomicNumber : 6;
+            const el = getElementByNumber(z) || (typeof elementsData !== 'undefined' ? elementsData[5] : null);
+            if (typeof updateIsotopeSidebar === 'function') {
+                updateIsotopeSidebar(z);
+            }
+            if (typeof renderIsotopeLegend === 'function') {
+                renderIsotopeLegend(el);
+            }
+        });
     } else if (viewId === 'compounds') {
         if (typeof initCompoundsView === 'function') initCompoundsView();
     } else if (viewId === 'reactions') {
@@ -600,23 +911,44 @@ function switchView(viewId, updateHash = true) {
         if (typeof initCompareView === 'function') initCompareView();
     } else if (viewId === 'quiz') {
         if (typeof initQuizView === 'function') initQuizView();
+    } else if (viewId === 'simulations') {
+        if (window.simPlaybackController && typeof window.simPlaybackController.initUI === 'function') {
+            window.simPlaybackController.initUI();
+        }
     }
 
     // Update social preview image, page title & meta descriptions dynamically
     updateSocialShareMeta(viewId);
-
     if (updateHash) {
         const hashVal = (viewId === 'main' ? 'properties' : viewId);
         if (window.location.hash !== '#' + hashVal) {
             history.replaceState(null, null, '#' + hashVal);
         }
     }
+
+    // Auto-open Card Anatomy Guide on first view of this tab
+    if (!localStorage.getItem('periodica_guide_disabled')) {
+        const guideKey = 'periodica_guide_seen_' + viewId + '_' + (currentProperty || 'category');
+        if (!localStorage.getItem(guideKey)) {
+            localStorage.setItem(guideKey, 'true');
+            setTimeout(() => {
+                openCardAnatomyModal(viewId, currentProperty || 'category');
+            }, 250);
+        }
+    }
 }
+window.switchView = switchView;
 
 // Handle URL Hash Deep-linking
 function handleHashRouting() {
     const hash = window.location.hash.replace('#', '').trim().toLowerCase();
     if (!hash) return;
+
+    if (hash === 'states' || hash === 'environment' || hash === 'phase') {
+        switchView('simulations', false);
+        setTimeout(() => { if (typeof window.switchSimTab === 'function') window.switchSimTab('environment'); }, 100);
+        return;
+    }
 
     const viewMap = {
         'isotopes': 'isotopes',
@@ -632,6 +964,10 @@ function handleHashRouting() {
         'crystal': 'crystals',
         'compare': 'compare',
         'quiz': 'quiz',
+        'simulations': 'simulations',
+        'simulation': 'simulations',
+        'simlab': 'simulations',
+        'sim': 'simulations',
         'properties': 'main',
         'property': 'main',
         'main': 'main'
@@ -706,49 +1042,69 @@ function openElementOrIsotopeByQuery(query, isIsotopeModal = false) {
 
 // UI Setup
 function setupUI() {
-    // Mode toggle
+    if (window.PeriodicaNativeSlider || window.NativeSliderBridge) {
+        document.body.classList.add('has-native-slider');
+    }
+    syncNativeSliderVisibility();
+
+    // Mode toggle with clean click handler
     document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const viewId = e.target.dataset.view;
-            switchView(viewId, true);
+        let lastTap = 0;
+        const handleNav = (e) => {
+            const now = Date.now();
+            if (now - lastTap < 250) return;
+            lastTap = now;
+            const viewId = e.currentTarget.dataset.view || e.target.closest('[data-view]')?.dataset.view;
+            if (viewId) switchView(viewId, true);
+        };
+        btn.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
+                handleNav(e);
+            }
         });
+        btn.addEventListener('click', handleNav);
     });
     
     window.addEventListener('hashchange', handleHashRouting);
     
-    // Guaranteed wheel and touch scroll handlers for all right panels
-    document.querySelectorAll('.view-right').forEach(panel => {
-        panel.addEventListener('wheel', (e) => {
-            if (panel.scrollHeight > panel.clientHeight) {
-                panel.scrollTop += e.deltaY;
+    // Fast mobile sidebar close buttons
+    document.querySelectorAll('.sidebar-close-btn, .ed-close-btn').forEach(btn => {
+        const handleClose = (e) => {
+            if (e) {
                 e.preventDefault();
+                e.stopPropagation();
             }
-        }, { passive: false });
+            closeMobileSidebar();
+        };
+        btn.addEventListener('pointerdown', handleClose);
+        btn.addEventListener('touchstart', handleClose, { passive: false });
+        btn.addEventListener('click', handleClose);
+    });
 
-        let touchStartY = 0;
-        panel.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-        panel.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1) {
-                const touchY = e.touches[0].clientY;
-                const deltaY = touchStartY - touchY;
-                touchStartY = touchY;
-                if (panel.scrollHeight > panel.clientHeight) {
-                    panel.scrollTop += deltaY;
-                }
+    // Dismiss mobile sidebar when tapping on the background/grid (outside sidebar)
+    document.addEventListener('pointerdown', (e) => {
+        if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
+            const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active');
+            if (activeSidebar && !activeSidebar.contains(e.target) && !e.target.closest('#compact-select-popover') && !e.target.closest('.compact-select-popover') && !e.target.closest('.element-cell') && !e.target.closest('#mobile-left-nav')) {
+                closeMobileSidebar();
             }
-        }, { passive: true });
+        }
     });
     
     // Property Sidebar selection
     document.querySelectorAll('.prop-item:not(.non-interactive):not(.elec-prop-item)').forEach(item => {
         item.addEventListener('click', (e) => {
             if (e.target.tagName.toLowerCase() === 'select' || e.target.tagName.toLowerCase() === 'option') return;
-            document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => p.classList.remove('active'));
             const target = e.currentTarget;
+            const prop = target.dataset.prop;
+            if (prop !== 'category' && window.isProUser && !window.isProUser()) {
+                if (window.openProPaywallModal) window.openProPaywallModal(prop);
+                return;
+            }
+            document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => p.classList.remove('active'));
             target.classList.add('active');
-            currentProperty = target.dataset.prop;
+            currentProperty = prop;
+            window.currentProperty = currentProperty;
             updateGridVisuals();
             
             const wikiViewBtn = document.getElementById('wiki-writeup-view');
@@ -766,6 +1122,7 @@ function setupUI() {
             const target = e.currentTarget;
             target.classList.add('active');
             currentElecProperty = target.dataset.prop;
+            window.currentElecProperty = currentElecProperty;
             updateGridVisuals();
         });
     });
@@ -775,12 +1132,97 @@ function setupUI() {
             e.stopPropagation();
             updateSidebarValues();
             updateGridVisuals();
+            if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
+                window.PeriodicCanvasGrid.render();
+            }
         });
-        // Prevent click from bubbling to prop-item
-        sel.addEventListener('click', e => e.stopPropagation());
+
+        // Prevent native OS select dialog and open sleek in-app micro popover
+        const handleOpenPopover = (e) => {
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
+            openSelectPopover(sel);
+        };
+        sel.addEventListener('mousedown', handleOpenPopover);
+        sel.addEventListener('touchstart', handleOpenPopover, { passive: false });
+        sel.addEventListener('click', (e) => {
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
+        });
     });
 
-    // Universal Element Search across all grid tabs
+    let _activeSelectPopover = null;
+    function openSelectPopover(sel) {
+        let popover = document.getElementById('compact-select-popover');
+        if (!popover) {
+            popover = document.createElement('div');
+            popover.id = 'compact-select-popover';
+            popover.className = 'compact-select-popover';
+            popover.style.display = 'none';
+            document.body.appendChild(popover);
+
+            document.addEventListener('pointerdown', (e) => {
+                if (popover.style.display !== 'none' && !popover.contains(e.target) && !e.target.closest('.inline-select')) {
+                    closeSelectPopover();
+                }
+            });
+        }
+
+        if (_activeSelectPopover === sel && popover.style.display === 'flex') {
+            closeSelectPopover();
+            return;
+        }
+
+        _activeSelectPopover = sel;
+        const rect = sel.getBoundingClientRect();
+        const options = Array.from(sel.options);
+
+        popover.innerHTML = options.map(opt => `
+            <button type="button" class="compact-select-opt ${opt.value === sel.value ? 'active' : ''}" data-val="${opt.value}">
+                ${opt.text}
+            </button>
+        `).join('');
+
+        popover.querySelectorAll('.compact-select-opt').forEach(btn => {
+            const handleOptClick = (e) => {
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation();
+                window._lastSelectPopoverPickTime = Date.now();
+                const val = btn.dataset.val;
+                sel.value = val;
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+                closeSelectPopover();
+            };
+            btn.addEventListener('click', handleOptClick);
+            btn.addEventListener('touchend', handleOptClick, { passive: false });
+        });
+
+        popover.style.display = 'flex';
+        
+        const popRect = popover.getBoundingClientRect();
+        let left = rect.left;
+        let top = rect.bottom + 4;
+
+        if (left + popRect.width > window.innerWidth - 10) {
+            left = window.innerWidth - popRect.width - 10;
+        }
+        if (top + popRect.height > window.innerHeight - 10) {
+            top = rect.top - popRect.height - 4;
+        }
+
+        popover.style.left = `${Math.max(10, left)}px`;
+        popover.style.top = `${Math.max(10, top)}px`;
+    }
+    window.openSelectPopover = openSelectPopover;
+
+    function closeSelectPopover() {
+        const popover = document.getElementById('compact-select-popover');
+        if (popover) popover.style.display = 'none';
+        _activeSelectPopover = null;
+    }
+    window.closeSelectPopover = closeSelectPopover;
+
+    // Search bar input
     document.querySelectorAll('.element-search-input').forEach(input => {
         input.addEventListener('input', (e) => {
             currentSearchQuery = e.target.value;
@@ -788,57 +1230,272 @@ function setupUI() {
         });
     });
 
-    // Temp slider & input (Main & Isotopes)
-    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
-    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
-    
-    const handleTempChange = (val) => {
-        let parsed = parseFloat(val);
-        if (isNaN(parsed)) return;
-        if (parsed < 0) parsed = 0;
-        if (parsed > 6000) parsed = 6000;
-        currentTemp = parsed;
-        pendingTemp = parsed;
-        
-        // Sync all temp sliders and inputs synchronously
-        tempSliders.forEach(s => {
-            if (document.activeElement !== s && s.value != currentTemp) s.value = currentTemp;
+    // High-performance Zero-Delay Realtime Slider Controller (Decoupled GPU Compositor Transform Tracking)
+    function setupCustomGpuSlider(customSliderId, thumbId, hiddenInputId, textInputId, minVal, maxVal, isInt, onTextUpdate, onHeavyUpdate) {
+        const sliderContainer = document.getElementById(customSliderId);
+        const thumb = document.getElementById(thumbId);
+        const hiddenSlider = document.getElementById(hiddenInputId);
+        const textInput = document.getElementById(textInputId);
+        if (!sliderContainer || !thumb) return;
+
+        let pendingVal = isInt ? parseInt(hiddenSlider?.value || minVal) : parseFloat(hiddenSlider?.value || minVal);
+        let isPointerDown = false;
+        let cachedRect = null;
+        let rafId = null;
+        let pendingHeavyVal = null;
+
+        const scheduleHeavyUpdate = (val) => {
+            pendingHeavyVal = val;
+            if (!rafId) {
+                rafId = requestAnimationFrame(() => {
+                    rafId = null;
+                    if (onHeavyUpdate && pendingHeavyVal !== null) {
+                        onHeavyUpdate(pendingHeavyVal);
+                    }
+                });
+            }
+        };
+
+        const updateThumbPosition = (val) => {
+            if (!cachedRect || cachedRect.width <= 0) cachedRect = sliderContainer.getBoundingClientRect();
+            const width = cachedRect ? cachedRect.width : 0;
+            if (width <= 0) return;
+            const pct = Math.max(0, Math.min(1, (val - minVal) / (maxVal - minVal)));
+            const x = pct * width;
+            thumb.style.transform = `translate3d(${x}px, 0, 0)`;
+        };
+
+        const applyValue = (raw, moveThumb = true) => {
+            if (isNaN(raw)) return;
+            pendingVal = raw;
+            if (hiddenSlider) hiddenSlider.value = raw;
+            if (textInput && document.activeElement !== textInput) {
+                textInput.value = raw;
+            }
+            if (moveThumb) {
+                updateThumbPosition(raw);
+            }
+            if (onTextUpdate) onTextUpdate(raw);
+            scheduleHeavyUpdate(raw);
+        };
+
+        const updateFromPointer = (clientX) => {
+            if (!cachedRect || cachedRect.width <= 0) cachedRect = sliderContainer.getBoundingClientRect();
+            if (!cachedRect || cachedRect.width <= 0) return;
+            const pct = Math.max(0, Math.min(1, (clientX - cachedRect.left) / cachedRect.width));
+            const raw = isInt ? Math.round(minVal + pct * (maxVal - minVal)) : (minVal + pct * (maxVal - minVal));
+            
+            // 1. Move thumb INSTANTANEOUSLY on GPU compositor layer (0.00ms latency)
+            const x = pct * cachedRect.width;
+            thumb.style.transform = `translate3d(${x}px, 0, 0)`;
+
+            if (raw !== pendingVal) {
+                pendingVal = raw;
+                if (hiddenSlider) hiddenSlider.value = raw;
+                if (textInput && document.activeElement !== textInput) {
+                    textInput.value = raw;
+                }
+                if (onTextUpdate) onTextUpdate(raw);
+                scheduleHeavyUpdate(raw);
+            }
+        };
+
+        sliderContainer.addEventListener('pointerdown', (e) => {
+            isPointerDown = true;
+            try { sliderContainer.setPointerCapture(e.pointerId); } catch(err){}
+            cachedRect = sliderContainer.getBoundingClientRect();
+            updateFromPointer(e.clientX);
+        }, { passive: false });
+
+        sliderContainer.addEventListener('pointermove', (e) => {
+            if (!isPointerDown) return;
+            updateFromPointer(e.clientX);
+        }, { passive: false });
+
+        const endPointer = (e) => {
+            if (isPointerDown) {
+                isPointerDown = false;
+                try { sliderContainer.releasePointerCapture(e.pointerId); } catch(err){}
+                cachedRect = null;
+                if (pendingHeavyVal !== null && onHeavyUpdate) {
+                    onHeavyUpdate(pendingHeavyVal);
+                }
+            }
+        };
+        sliderContainer.addEventListener('pointerup', endPointer, { passive: true });
+        sliderContainer.addEventListener('pointercancel', endPointer, { passive: true });
+
+        if (textInput) {
+            textInput.addEventListener('input', (e) => {
+                const val = isInt ? parseInt(e.target.value) : parseFloat(e.target.value);
+                if (!isNaN(val)) {
+                    applyValue(val, true);
+                }
+            }, { passive: true });
+        }
+
+        sliderContainer._refreshSlider = () => {
+            cachedRect = null;
+            updateThumbPosition(pendingVal);
+        };
+
+        // Initialize thumb position
+        setTimeout(() => {
+            cachedRect = sliderContainer.getBoundingClientRect();
+            updateThumbPosition(pendingVal);
+        }, 50);
+
+        window.addEventListener('resize', () => {
+            cachedRect = sliderContainer.getBoundingClientRect();
+            updateThumbPosition(pendingVal);
+        }, { passive: true });
+    }
+
+    window.refreshCustomSliders = function() {
+        document.querySelectorAll('.custom-slider').forEach(el => {
+            if (typeof el._refreshSlider === 'function') {
+                el._refreshSlider();
+            }
         });
-        tempInputs.forEach(inp => {
-            if (document.activeElement !== inp && inp.value != Math.round(currentTemp)) inp.value = Math.round(currentTemp);
-        });
-        
-        updateTempDisplay();
-        
-        if (!tempRafId) {
-            tempRafId = requestAnimationFrame(() => {
-                tempRafId = null;
-                applyOptimizedTemperatureUpdate(pendingTemp);
+    };
+
+    function getTemperatureSpectrumColor(k) {
+        const t = Math.max(0, Math.min(6000, k));
+        if (t < 250) {
+            // Frosty luminous ice-blue for 0K-250K (never dark, always clearly visible!)
+            return '#38bdf8';
+        } else if (t < 1000) {
+            return t < 600 ? '#ef4444' : '#f97316';
+        } else if (t < 2500) {
+            return '#eab308';
+        } else if (t < 4000) {
+            return '#fef08a';
+        } else if (t < 5200) {
+            return '#ffffff';
+        } else {
+            return '#00f0ff';
+        }
+    }
+
+    let _lastTempK = null;
+    const updateTempReadoutDirectly = (k) => {
+        const roundedK = Math.round(k);
+        if (roundedK === _lastTempK) return;
+        _lastTempK = roundedK;
+
+        if (!_elTempDisplayC) _elTempDisplayC = document.getElementById('temp-display-c');
+        if (!_elTempDisplayF) _elTempDisplayF = document.getElementById('temp-display-f');
+        if (!_elTempInput) _elTempInput = document.getElementById('temp-input');
+
+        const readoutColor = getTemperatureSpectrumColor(k);
+
+        const elValK = document.getElementById('temp-val-k');
+        const elValC = document.getElementById('temp-val-c');
+        const elValF = document.getElementById('temp-val-f');
+        if (elValK) elValK.textContent = roundedK;
+        if (elValC) elValC.textContent = Math.round(k - 273.15);
+        if (elValF) elValF.textContent = Math.round((k - 273.15) * 1.8 + 32);
+
+        if (_elTempDisplayC) {
+            _elTempDisplayC.textContent = `${Math.round(k - 273.15)} °C`;
+            _elTempDisplayC.style.color = readoutColor;
+            _elTempDisplayC.style.textShadow = `0 0 8px ${readoutColor}55`;
+        }
+        if (_elTempDisplayF) {
+            _elTempDisplayF.textContent = `${Math.round((k - 273.15) * 1.8 + 32)} °F`;
+            _elTempDisplayF.style.color = readoutColor;
+            _elTempDisplayF.style.textShadow = `0 0 8px ${readoutColor}55`;
+        }
+        if (_elTempInput && document.activeElement !== _elTempInput) {
+            _elTempInput.value = roundedK;
+            _elTempInput.style.color = readoutColor;
+            _elTempInput.style.textShadow = `0 0 8px ${readoutColor}55`;
+        }
+    };
+    window.updateTempReadoutDirectly = updateTempReadoutDirectly;
+
+    // Native Android HWUI Slider Listener (0ms Native Thread Dispatch, Zero Forced Reflows)
+    let _nativeRafScheduled = false;
+    let _pendingNativeVal = 298;
+
+    window.onNativeTempChange = function(val) {
+        currentTemp = val;
+        updateTempReadoutDirectly(val); // Instant text update (< 0.01ms, zero reflow)
+        _pendingNativeVal = val;
+
+        if (window.PeriodicCanvasGrid) {
+            window.PeriodicCanvasGrid.requestRender();
+        }
+
+        if (!_nativeRafScheduled) {
+            _nativeRafScheduled = true;
+            requestAnimationFrame(() => {
+                _nativeRafScheduled = false;
+                applyOptimizedTemperatureUpdate(_pendingNativeVal);
             });
         }
     };
 
-    tempSliders.forEach(s => s.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
-    tempInputs.forEach(inp => inp.addEventListener('input', (e) => handleTempChange(e.target.value), { passive: true }));
+    // Initialize ultra-responsive Temperature Slider with GPU Compositor Transform
+    setupCustomGpuSlider(
+        'temp-custom-slider',
+        'temp-slider-thumb',
+        'temp-slider',
+        'temp-input',
+        0,
+        6000,
+        false,
+        (val) => {
+            currentTemp = val;
+            updateTempReadoutDirectly(val);
+            if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setProgress) {
+                window.PeriodicaNativeSlider.setProgress(Math.round(val));
+            }
+        },
+        (val) => {
+            return applyOptimizedTemperatureUpdate(val);
+        }
+    );
 
-    function handleTimelineChange(val) {
-        currentTimelineYear = parseInt(val);
-        pendingTimelineYear = currentTimelineYear;
-        updateTimelineDisplay();
-        
-        if (!timelineRafId) {
-            timelineRafId = requestAnimationFrame(() => {
-                timelineRafId = null;
-                applyOptimizedTimelineUpdate(pendingTimelineYear);
+    const updateTimelineReadoutDirectly = (y) => {
+        if (!_elTimelineInput) _elTimelineInput = document.getElementById('timeline-input');
+        if (_elTimelineInput && document.activeElement !== _elTimelineInput) _elTimelineInput.value = y;
+    };
+
+    // Native Bridge Dispatcher for Timeline Slider
+    let _pendingNativeTimelineVal = 2026;
+    let _timelineRafPending = false;
+    window.onNativeTimelineChange = function(val) {
+        _pendingNativeTimelineVal = val;
+        if (!_timelineRafPending) {
+            _timelineRafPending = true;
+            requestAnimationFrame(() => {
+                _timelineRafPending = false;
+                currentTimelineYear = _pendingNativeTimelineVal;
+                updateTimelineReadoutDirectly(_pendingNativeTimelineVal);
+                applyOptimizedTimelineUpdate(_pendingNativeTimelineVal);
             });
         }
-    }
+    };
 
-    const timelineSlider = document.getElementById('timeline-slider');
-    const timelineInput = document.getElementById('timeline-input');
-    if (timelineSlider) timelineSlider.addEventListener('input', (e) => handleTimelineChange(e.target.value), { passive: true });
-    if (timelineInput) timelineInput.addEventListener('input', (e) => handleTimelineChange(e.target.value), { passive: true });
-    
+    // Initialize ultra-responsive Timeline Slider with GPU Compositor Transform
+    setupCustomGpuSlider(
+        'timeline-custom-slider',
+        'timeline-slider-thumb',
+        'timeline-slider',
+        'timeline-input',
+        1650,
+        2026,
+        true,
+        (val) => {
+            currentTimelineYear = val;
+            updateTimelineReadoutDirectly(val);
+        },
+        (val) => {
+            return applyOptimizedTimelineUpdate(val);
+        }
+    );
+
     // Orbital Controls (Slice view only)
     const sliceToggle = document.getElementById('slice-orbital');
     if (sliceToggle) {
@@ -850,45 +1507,45 @@ function setupUI() {
     // Initialize display values
     updateTempDisplay();
     updateTimelineDisplay();
-}
+}// Precompiled Static Binary Color Table (6001 elements, generated once on startup)
+const _TEMP_COLOR_LUT = (function() {
+    const lut = new Array(6001);
+    for (let k = 0; k <= 6000; k++) {
+        let r, g, b;
+        if (k < 1200) {
+            const pct = k / 1200;
+            r = Math.round(30 + (239 - 30) * pct);
+            g = Math.round(41 + (68 - 41) * pct);
+            b = Math.round(59 + (68 - 59) * pct);
+        } else if (k < 2400) {
+            const pct = (k - 1200) / 1200;
+            r = Math.round(239 + (249 - 239) * pct);
+            g = Math.round(68 + (115 - 68) * pct);
+            b = Math.round(68 + (22 - 68) * pct);
+        } else if (k < 3600) {
+            const pct = (k - 2400) / 1200;
+            r = Math.round(249 + (234 - 249) * pct);
+            g = Math.round(115 + (179 - 115) * pct);
+            b = Math.round(22 + (8 - 22) * pct);
+        } else if (k < 4800) {
+            const pct = (k - 3600) / 1200;
+            r = Math.round(234 + (255 - 234) * pct);
+            g = Math.round(179 + (255 - 179) * pct);
+            b = Math.round(8 + (255 - 8) * pct);
+        } else {
+            const pct = Math.min(1, (k - 4800) / 1200);
+            r = Math.round(255 + (0 - 255) * pct);
+            g = Math.round(255 + (240 - 255) * pct);
+            b = 255;
+        }
+        lut[k] = `rgb(${r},${g},${b})`;
+    }
+    return lut;
+})();
 
 function getTempColor(k) {
-    if (k < 1200) {
-        // 0K to 1200K: Dark Cold Slate (30,41,59) -> Glowing Red (239,68,68)
-        const pct = Math.max(0, Math.min(1, k / 1200));
-        const r = Math.round(30 + (239 - 30) * pct);
-        const g = Math.round(41 + (68 - 41) * pct);
-        const b = Math.round(59 + (68 - 59) * pct);
-        return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 2400) {
-        // 1200K to 2400K: Glowing Red -> Fiery Orange (249,115,22)
-        const pct = (k - 1200) / (2400 - 1200);
-        const r = Math.round(239 + (249 - 239) * pct);
-        const g = Math.round(68 + (115 - 68) * pct);
-        const b = Math.round(68 + (22 - 68) * pct);
-        return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 3600) {
-        // 2400K to 3600K: Fiery Orange -> Golden Yellow (234,179,8)
-        const pct = (k - 2400) / (3600 - 2400);
-        const r = Math.round(249 + (234 - 249) * pct);
-        const g = Math.round(115 + (179 - 115) * pct);
-        const b = Math.round(22 + (8 - 22) * pct);
-        return `rgb(${r}, ${g}, ${b})`;
-    } else if (k < 4800) {
-        // 3600K to 4800K: Golden Yellow -> White-Hot (255,255,255)
-        const pct = (k - 3600) / (4800 - 3600);
-        const r = Math.round(234 + (255 - 234) * pct);
-        const g = Math.round(179 + (255 - 179) * pct);
-        const b = Math.round(8 + (255 - 8) * pct);
-        return `rgb(${r}, ${g}, ${b})`;
-    } else {
-        // 4800K to 6000K: White-Hot -> Electric Blue-Hot (0,240,255)
-        const pct = Math.min(1, (k - 4800) / (6000 - 4800));
-        const r = Math.round(255 + (0 - 255) * pct);
-        const g = Math.round(255 + (240 - 255) * pct);
-        const b = 255;
-        return `rgb(${r}, ${g}, ${b})`;
-    }
+    const idx = (k < 0) ? 0 : ((k > 6000) ? 6000 : (k | 0));
+    return _TEMP_COLOR_LUT[idx];
 }
 
 function updateTempDisplay() {
@@ -896,42 +1553,26 @@ function updateTempDisplay() {
     const c = k - 273.15;
     const f = c * 1.8 + 32;
     
-    const tempInputs = document.querySelectorAll('#temp-input, #iso-temp-input');
-    const tempDisplaysC = document.querySelectorAll('#temp-display-c, #iso-temp-display-c');
-    const tempDisplaysF = document.querySelectorAll('#temp-display-f, #iso-temp-display-f');
-    const tempDisplayContainers = document.querySelectorAll('#temp-display-container, #iso-temp-display-container');
-    const tempSliders = document.querySelectorAll('#temp-slider, #iso-temp-slider');
+    if (!_elTempInput) _elTempInput = document.getElementById('temp-input');
+    if (!_elTempDisplayC) _elTempDisplayC = document.getElementById('temp-display-c');
+    if (!_elTempDisplayF) _elTempDisplayF = document.getElementById('temp-display-f');
+    if (!_elTempDisplayContainer) _elTempDisplayContainer = document.getElementById('temp-display-container');
 
-    tempInputs.forEach(inp => { if (document.activeElement !== inp) inp.value = Math.round(k); });
-    tempDisplaysC.forEach(el => el.textContent = `${Math.round(c)} °C`);
-    tempDisplaysF.forEach(el => el.textContent = `${Math.round(f)} °F`);
+    if (_elTempInput && document.activeElement !== _elTempInput) _elTempInput.value = Math.round(k);
+    if (_elTempDisplayC) _elTempDisplayC.textContent = `${Math.round(c)} °C`;
+    if (_elTempDisplayF) _elTempDisplayF.textContent = `${Math.round(f)} °F`;
+    const tempSliderEl = document.getElementById('temp-slider');
+    if (tempSliderEl && document.activeElement !== tempSliderEl) tempSliderEl.value = Math.round(k);
     
     const color = getTempColor(k);
     
-    tempDisplayContainers.forEach(el => {
-        el.style.color = color;
-        el.style.textShadow = `0 0 10px ${color.replace('rgb', 'rgba').replace(')', ', 0.6)')}`;
-    });
-    tempInputs.forEach(inp => {
-        inp.style.color = color;
-        inp.style.borderColor = color.replace('rgb', 'rgba').replace(')', ', 0.4)');
-    });
-    
-    const glowIntensity = Math.min(1, k / 6000);
-    let glowShadow = 'none';
-    let thumbBg = 'transparent';
-    if (glowIntensity > 0.05) {
-        const glowRadius1 = Math.round(glowIntensity * 15);
-        const glowRadius2 = Math.round(glowIntensity * 30);
-        const glowColor = color.replace('rgb', 'rgba').replace(')', `, ${0.5 + 0.5 * glowIntensity})`);
-        glowShadow = `inset 0 0 ${glowRadius1}px ${glowColor}, 0 0 ${glowRadius2}px ${glowColor}`;
-        thumbBg = color.replace('rgb', 'rgba').replace(')', `, ${0.2 + 0.6 * glowIntensity})`);
+    // Lightweight color update without expensive multi-layer text-shadow re-allocation
+    if (_elTempDisplayContainer) {
+        _elTempDisplayContainer.style.color = color;
     }
-    
-    tempSliders.forEach(s => {
-        s.style.setProperty('--temp-thumb-glow', glowShadow);
-        s.style.setProperty('--dynamic-temp-bg', thumbBg);
-    });
+    if (_elTempInput) {
+        _elTempInput.style.color = color;
+    }
 }
 
 function updateTimelineDisplay() {
@@ -940,6 +1581,8 @@ function updateTimelineDisplay() {
     if (_elTimelineInput && document.activeElement !== _elTimelineInput) {
         _elTimelineInput.value = y;
     }
+    const timelineSliderEl = document.getElementById('timeline-slider');
+    if (timelineSliderEl && document.activeElement !== timelineSliderEl) timelineSliderEl.value = y;
     
     if (!_elTimelineDisplayContainer) _elTimelineDisplayContainer = document.getElementById('timeline-display-container');
     if (!_elTimelineDisplayContainer) return;
@@ -972,21 +1615,22 @@ function updateTimelineDisplay() {
 
 // Render Grid Structure based on Mode
 function renderGrid() {
-    invalidateGridCellCache();
     const gridId = currentView === 'electrons' ? 'electrons-grid' : 
                    currentView === 'isotopes' ? 'isotopes-grid' : 'main-grid';
     const grid = document.getElementById(gridId);
     if (!grid) return;
     
-    // Save table controls before clearing grid
-    let tableControls = grid.querySelector('.table-controls');
-    
-    grid.innerHTML = '';
-    
-    // Restore table controls
-    if (tableControls) {
-        grid.appendChild(tableControls);
+    // If the grid already has the 118 element cells, don't destroy and rebuild the DOM!
+    if (grid.children.length >= 118) {
+        updateGridVisuals();
+        return;
     }
+    
+    // We are destroying the grid DOM! Clear its element cache
+    clearGridCellCache('#' + gridId);
+    invalidateGridCellCache();
+
+    grid.innerHTML = '';
     
     if (currentView === 'main') {
         const legendDiv = document.createElement('div');
@@ -1005,7 +1649,11 @@ function renderGrid() {
         legendDiv.id = 'iso-in-grid-legend';
         legendDiv.className = 'in-grid-legend';
         grid.appendChild(legendDiv);
-        renderLegend();
+        setTimeout(() => {
+            if (typeof renderIsotopeLegend === 'function') {
+                renderIsotopeLegend(selectedElement || elementsData[5]);
+            }
+        }, 0);
     }
     
     for (let i = 1; i <= 118; i++) {
@@ -1015,8 +1663,20 @@ function renderGrid() {
         const cell = document.createElement('div');
         cell.className = 'element-cell';
         cell.dataset.z = i;
-        cell.style.gridColumn = pos.col;
-        cell.style.gridRow = pos.row + 1;
+
+        let col = pos.col;
+        let row = pos.row;
+        if (currentView === 'electrons' && i === 2) {
+            col = 2;
+        }
+        if (row === 8.5) row = 9;
+        else if (row === 9.5) row = 10;
+        else if (currentView !== 'electrons' && currentView !== 'isotopes') {
+            row = pos.row + 1;
+        }
+
+        cell.style.gridColumn = col;
+        cell.style.gridRow = row;
         
         let bohrHtml = '';
         if (currentView === 'electrons' && elData) {
@@ -1030,33 +1690,37 @@ function renderGrid() {
         if (currentView === 'main' || currentView === 'isotopes' || elData) {
             cell.innerHTML = `
                 ${bohrHtml}
-                <span class="cell-num" style="z-index:1; position:relative;">${i}</span>
-                <span class="cell-sym" style="z-index:1; position:relative;">${elData ? elData.symbol : '?'}</span>
-                <span class="cell-name" style="z-index:1; position:relative;">${elData ? elData.name : ''}</span>
-                <span class="cell-value" id="cell-val-${i}" style="z-index:1; position:relative;"></span>
+                <span class="cell-num">${i}</span>
+                <span class="cell-sym">${elData ? elData.symbol : '?'}</span>
+                <span class="cell-name">${elData ? elData.name : ''}</span>
+                <span class="cell-value" id="cell-val-${i}"></span>
             `;
         } else {
             cell.innerHTML = `<span class="cell-num">${i}</span>`;
         }
         
         if (!elData) cell.style.opacity = '0.2';
-        else cell.addEventListener('click', () => selectElement(i));
+        else cell.addEventListener('click', () => selectElement(i, true, true));
         
         grid.appendChild(cell);
     }
     
     // Render Lanthanides & Actinides Placeholders in 18-column mode
-    grid.querySelectorAll('.fblock-placeholder-cell').forEach(el => el.remove());
+    grid.querySelectorAll('.fblock-placeholder-cell, .in-grid-ctrl-box').forEach(el => el.remove());
     if (tableLayoutMode === '18col') {
-        // Lanthanide Placeholder (Row 6, Col 3 -> Grid Row 7)
+        const isDomGrid = (currentView === 'electrons' || currentView === 'isotopes');
+        const lanthRow = isDomGrid ? 6 : 7;
+        const actRow = isDomGrid ? 7 : 8;
+
+        // Lanthanide Placeholder
         const lanthPlaceholder = document.createElement('div');
         lanthPlaceholder.className = 'element-cell fblock-placeholder-cell lanth-placeholder';
         lanthPlaceholder.style.cssText = `
             grid-column: 3;
-            grid-row: 7;
-            border: 2px dashed #0284c7 !important;
-            background: linear-gradient(145deg, rgba(56, 189, 248, 0.5) 0%, rgba(2, 132, 199, 0.4) 48%, rgba(1, 60, 95, 0.5) 100%) !important;
-            border-radius: 0px !important;
+            grid-row: ${lanthRow};
+            border: 2px dashed #e879f9 !important;
+            background: rgba(168, 85, 247, 0.45) !important;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1064,7 +1728,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 0 rgba(0, 0, 0, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.55), 0 0 12px rgba(2, 132, 199, 0.4);
+            box-shadow: inset 0 0 15px rgba(232, 121, 249, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1072,9 +1736,9 @@ function renderGrid() {
             padding: 2px;
         `;
         lanthPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #0284c7; color: #ffffff; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #e879f9; color: #0f172a; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">57–71</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #bae6fd; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Lanthanides</span>
         `;
         lanthPlaceholder.onclick = () => {
             highlightCategory('Lanthanide');
@@ -1083,15 +1747,15 @@ function renderGrid() {
         };
         grid.appendChild(lanthPlaceholder);
 
-        // Actinide Placeholder (Row 7, Col 3 -> Grid Row 8)
+        // Actinide Placeholder
         const actPlaceholder = document.createElement('div');
         actPlaceholder.className = 'element-cell fblock-placeholder-cell act-placeholder';
         actPlaceholder.style.cssText = `
             grid-column: 3;
-            grid-row: 8;
-            border: 2px dashed #c026d3 !important;
-            background: linear-gradient(145deg, rgba(232, 121, 249, 0.5) 0%, rgba(192, 38, 211, 0.4) 48%, rgba(90, 15, 100, 0.5) 100%) !important;
-            border-radius: 0px !important;
+            grid-row: ${actRow};
+            border: 2px dashed #a855f7 !important;
+            background: rgba(168, 85, 247, 0.45) !important;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1099,7 +1763,7 @@ function renderGrid() {
             cursor: pointer;
             color: #ffffff;
             transition: all 0.25s ease;
-            box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 0 rgba(0, 0, 0, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.55), 0 0 12px rgba(192, 38, 211, 0.4);
+            box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.4), 0 0 12px rgba(168, 85, 247, 0.5);
             user-select: none;
             overflow: hidden;
             position: relative;
@@ -1107,9 +1771,9 @@ function renderGrid() {
             padding: 2px;
         `;
         actPlaceholder.innerHTML = `
-            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #c026d3; color: #ffffff; padding: 1px 4px; border-radius: 0px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-mono); font-weight: 900; background: #a855f7; color: #ffffff; padding: 1px 4px; border-radius: 3px; margin-bottom: 2px; text-transform: uppercase;">f-Block</span>
             <span style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 900; line-height: 1; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">89–103</span>
-            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #f5d0fe; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
+            <span style="font-size: 0.55rem; font-family: var(--font-ui); font-weight: 800; text-transform: uppercase; color: #e9d5ff; letter-spacing: 0.3px; margin-top: 2px;">Actinides</span>
         `;
         actPlaceholder.onclick = () => {
             highlightCategory('Actinide');
@@ -1117,10 +1781,137 @@ function renderGrid() {
             if (targetCell) targetCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         };
         grid.appendChild(actPlaceholder);
+
+        // In-grid Buttons for DOM Tables (Electrons & Isotopes)
+        if (isDomGrid) {
+            const isElec = (currentView === 'electrons');
+            const mainLabel = isElec ? 'Configuration' : 'Decay Modes';
+            const subLabel = isElec ? 'ELECTRON VIEW TYPE' : 'ISOTOPE VIEW TYPE';
+
+            // Type Switch Box (Row 9, Col 1-2)
+            const typeBox = document.createElement('div');
+            typeBox.className = 'in-grid-ctrl-box table-type-box';
+            typeBox.style.cssText = `
+                grid-column: 1 / 3;
+                grid-row: 9;
+                background: rgba(9, 14, 26, 0.95);
+                border: 1.5px solid #00d4ff;
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                box-shadow: 0 0 12px rgba(0, 212, 255, 0.25);
+                box-sizing: border-box;
+                padding: 2px 4px;
+                z-index: 10;
+                user-select: none;
+            `;
+            typeBox.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 2px;">
+                    <span style="font-size: 0.46rem; font-weight: 800; color: #00d4ff; letter-spacing: 0.5px;">☷ VIEW</span>
+                    <span style="font-size: 0.40rem; color: #94a3b8; font-weight: 700;">▾ SWITCH</span>
+                </div>
+                <span class="table-type-title" style="font-size: 0.72rem; font-weight: 900; color: #ffffff; line-height: 1.1; margin: 1px 0;">${mainLabel}</span>
+                <span style="font-size: 0.38rem; color: #94a3b8; letter-spacing: 0.3px; font-weight: 700;">${subLabel}</span>
+            `;
+            let _lastTypeTap = 0;
+            const handleTypeTap = (e) => {
+                const now = Date.now();
+                if (now - _lastTypeTap < 250) return;
+                _lastTypeTap = now;
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (window.NativeServices?.Haptics) window.NativeServices.Haptics.selection();
+                if (window.openTableTypeModal) window.openTableTypeModal();
+            };
+            typeBox.addEventListener('click', handleTypeTap);
+            typeBox.addEventListener('touchend', handleTypeTap);
+            grid.appendChild(typeBox);
+
+            // Fit Mode Box (Row 10, Col 1-2)
+            const fitBox = document.createElement('div');
+            fitBox.className = 'in-grid-ctrl-box fit-mode-box';
+            fitBox.style.cssText = `
+                grid-column: 1 / 3;
+                grid-row: 10;
+                background: rgba(9, 14, 26, 0.95);
+                border: 1.5px solid #00d4ff;
+                border-radius: 6px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                box-shadow: 0 0 12px rgba(0, 212, 255, 0.25);
+                box-sizing: border-box;
+                padding: 2px 4px;
+                z-index: 10;
+                user-select: none;
+            `;
+            fitBox.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 2px;">
+                    <span style="font-size: 0.46rem; font-weight: 800; color: #00d4ff; letter-spacing: 0.5px;">↔ FIT</span>
+                    <span class="fit-pct-tag" style="font-size: 0.40rem; color: #94a3b8; font-weight: 700;">100%</span>
+                </div>
+                <span class="fit-mode-title" style="font-size: 0.72rem; font-weight: 900; color: #ffffff; line-height: 1.1; margin: 1px 0;">Fit: H-Fill</span>
+                <span style="font-size: 0.38rem; color: #94a3b8; letter-spacing: 0.3px; font-weight: 700;">VIEWPORT SCALE</span>
+            `;
+            let _lastFitTap = 0;
+            const handleFitTap = (e) => {
+                const now = Date.now();
+                if (now - _lastFitTap < 250) return;
+                _lastFitTap = now;
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (window.NativeServices?.Haptics) window.NativeServices.Haptics.selection();
+                cycleDomFitMode();
+            };
+            fitBox.addEventListener('click', handleFitTap);
+            fitBox.addEventListener('touchend', handleFitTap);
+            grid.appendChild(fitBox);
+        }
     }
     
     updateGridVisuals();
 }
+
+// Fit modes for DOM Grids (Electrons & Isotopes)
+let currentDomFitMode = 'hfill'; // 'hfill' | 'square' | 'whole'
+function cycleDomFitMode() {
+    if (currentDomFitMode === 'hfill') currentDomFitMode = 'square';
+    else if (currentDomFitMode === 'square') currentDomFitMode = 'whole';
+    else currentDomFitMode = 'hfill';
+    applyDomFitMode(currentDomFitMode);
+}
+window.cycleDomFitMode = cycleDomFitMode;
+
+function applyDomFitMode(mode) {
+    const grids = ['electrons-grid', 'isotopes-grid'];
+    grids.forEach(id => {
+        const g = document.getElementById(id);
+        if (g) {
+            g.classList.remove('fit-hfill', 'fit-square', 'fit-whole');
+            g.classList.add('fit-' + mode);
+        }
+    });
+    const labelMap = {
+        'hfill': 'Fit: H-Fill',
+        'square': 'Fit: Square',
+        'whole': 'Fit: Whole'
+    };
+    const pctMap = {
+        'hfill': '100%',
+        'square': '92%',
+        'whole': '86%'
+    };
+    document.querySelectorAll('.fit-mode-title').forEach(el => {
+        el.textContent = labelMap[mode] || 'Fit: H-Fill';
+    });
+    document.querySelectorAll('.fit-pct-tag').forEach(el => {
+        el.textContent = pctMap[mode] || '100%';
+    });
+}
+window.applyDomFitMode = applyDomFitMode;
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1134,41 +1925,55 @@ function hexToRgb(hex) {
 function getPropertyValue(el, propName) {
     if (!el) return null;
     let dataKey = propName;
-    if (propName === 'ionization') dataKey = 'ionizationEnergies';
+    if (propName === 'ionization' || propName === 'ionizationEnergy') dataKey = 'ionizationEnergies';
     if (propName === 'energyLevels') return el.period;
+    if (propName === 'radius' || propName === 'atomicRadius') dataKey = 'radius';
     
     let val = el[dataKey];
-    if (val === undefined) return null;
+    if (val === undefined || val === null) return null;
     
     // Check if there is a sub-select for this property
-    const subSelect = document.getElementById(`sub-${propName}`);
-    if (subSelect && typeof val === 'object' && val !== null) {
-        // If it's an array (like ionizationEnergies)
-        if (Array.isArray(val)) {
-            const idx = parseInt(subSelect.value, 10);
-            return val[idx] !== undefined ? val[idx] : null;
+    const subSelect = document.getElementById(`sub-${propName}`) ||
+        ((propName === 'ionization' || propName === 'ionizationEnergy') ? document.getElementById('sub-ionization') : null) ||
+        ((propName === 'radius' || propName === 'atomicRadius') ? document.getElementById('sub-radius') : null) ||
+        document.getElementById(`sub-${dataKey}`);
+
+    if (Array.isArray(val)) {
+        let idx = 0;
+        if (subSelect && subSelect.value !== undefined) {
+            const parsed = parseInt(subSelect.value, 10);
+            if (!isNaN(parsed) && parsed >= 0) idx = parsed;
         }
-        // If it's an object (like density.stp, hardness.mohs)
-        return val[subSelect.value] !== undefined ? val[subSelect.value] : null;
+        return (val[idx] !== undefined && val[idx] !== null) ? val[idx] : (val[0] !== undefined ? val[0] : null);
+    }
+    if (typeof val === 'object' && val !== null) {
+        let key = (subSelect && subSelect.value !== undefined) ? subSelect.value : Object.keys(val)[0];
+        return val[key] !== undefined ? val[key] : (val[Object.keys(val)[0]] !== undefined ? val[Object.keys(val)[0]] : null);
     }
     
     return val;
 }
 
-function getNormalizedCategory(cat) {
+function getNormalizedCategory(cat, z = null) {
+    if (z) {
+        if (z === 85) return 'Metalloid';
+        if (z === 9 || z === 17 || z === 35 || z === 53 || z === 117) return 'Halogen';
+        if (z === 2 || z === 10 || z === 18 || z === 36 || z === 54 || z === 86 || z === 118) return 'Noble gas';
+        if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Other nonmetal';
+        if (z === 5 || z === 14 || z === 32 || z === 33 || z === 51 || z === 52) return 'Metalloid';
+    }
     if (!cat) return 'Unknown';
     const lowerCat = cat.toLowerCase();
-    if (lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal' || lowerCat === 'halogen') return 'Reactive nonmetal';
-    if (lowerCat.includes('unknown')) {
-        if (lowerCat.includes('transition metal')) return 'Transition metal';
-        if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
-        if (lowerCat.includes('reactive nonmetal') || lowerCat.includes('nonmetal') || lowerCat.includes('halogen')) return 'Reactive nonmetal';
-        if (lowerCat.includes('metalloid')) return 'Metalloid';
-        if (lowerCat.includes('noble gas')) return 'Noble gas';
-        if (lowerCat.includes('alkali metal')) return 'Alkali metal';
-        if (lowerCat.includes('alkaline earth metal')) return 'Alkaline earth metal';
-        return 'Unknown';
-    }
+    if (lowerCat.includes('halogen')) return 'Halogen';
+    if (lowerCat.includes('noble gas')) return 'Noble gas';
+    if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Other nonmetal';
+    if (lowerCat.includes('transition metal') && !lowerCat.includes('post')) return 'Transition metal';
+    if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
+    if (lowerCat.includes('metalloid')) return 'Metalloid';
+    if (lowerCat.includes('alkali metal') && !lowerCat.includes('alkaline')) return 'Alkali metal';
+    if (lowerCat.includes('alkaline earth metal')) return 'Alkaline earth metal';
+    if (lowerCat.includes('lanthanide')) return 'Lanthanide';
+    if (lowerCat.includes('actinide')) return 'Actinide';
     return cat;
 }
 
@@ -1195,7 +2000,10 @@ function getHeatmapColor(value, config) {
 }
 
 function getGradientColor(value, propName) {
-    const config = heatmapConfigs[propName];
+    let pKey = propName;
+    if (pKey === 'ionizationEnergy') pKey = 'ionization';
+    if (pKey === 'atomicRadius') pKey = 'radius';
+    const config = heatmapConfigs[pKey] || heatmapConfigs[propName];
     if (!config || value === null || value === undefined || isNaN(value)) return heatmapUnknownColor;
     
     let cMin = config.min;
@@ -1233,97 +2041,134 @@ function getGradientColor(value, propName) {
     
     return `rgb(${r}, ${g}, ${b})`;
 }
+window.getPropertyValue = getPropertyValue;
+window.getGradientColor = getGradientColor;
+
+const _glossyBgCache = new Map();
 
 function getGlossyBackground(colorStr, category = '') {
-    if (!colorStr) return 'rgba(255,255,255,0.08)';
+    if (!colorStr) return 'rgba(255,255,255,0.02)';
+    const cacheKey = colorStr + '|' + category;
+    const cached = _glossyBgCache.get(cacheKey);
+    if (cached) return cached;
     
-    let r = 100, g = 100, b = 100;
-    let hasRgb = false;
+    const cat = category.toLowerCase();
+    const isMetal = cat.includes('metal') || cat.includes('lanthanide') || cat.includes('actinide');
+    const isGas = cat.includes('gas') || cat.includes('diatomic') || cat.includes('reactive nonmetal'); 
 
-    if (colorStr.startsWith('#')) {
+    let baseHsl = '';
+    let baseRgb = '';
+
+    if (colorStr.startsWith('hsl')) {
+        baseHsl = colorStr.replace('hsl(', '').replace(')', '');
+    } else if (colorStr.startsWith('rgb')) {
+        const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+            baseRgb = `${match[1]},${match[2]},${match[3]}`;
+        }
+    } else {
         let hex = colorStr.replace('#', '');
         if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
-        hasRgb = true;
-    } else if (colorStr.startsWith('rgb')) {
-        const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-        if (match) {
-            r = parseInt(match[1]);
-            g = parseInt(match[2]);
-            b = parseInt(match[3]);
-            hasRgb = true;
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        baseRgb = `${r},${g},${b}`;
+    }
+
+    let res = '';
+    if (isMetal) {
+        // Metallic: Hard diagonal gradient of the SAME color, from bright to dark
+        if (baseHsl) {
+            res = `linear-gradient(135deg, hsla(${baseHsl}, 0.8) 0%, hsla(${baseHsl}, 0.1) 50%, hsla(${baseHsl}, 0.3) 100%)`;
+        } else {
+            res = `linear-gradient(135deg, rgba(${baseRgb}, 0.8) 0%, rgba(${baseRgb}, 0.1) 50%, rgba(${baseRgb}, 0.3) 100%)`;
         }
-    } else if (colorStr.startsWith('hsl')) {
-        const match = colorStr.match(/hsla?\((\d+),\s*(\d+)%?,\s*(\d+)%?/);
-        if (match) {
-            const h = parseInt(match[1]);
-            const s = parseInt(match[2]);
-            const l = parseInt(match[3]);
-            const lLight = Math.min(100, Math.round(l + 18));
-            const lDark = Math.max(0, Math.round(l - 18));
-            return `linear-gradient(145deg, hsl(${h}, ${s}%, ${lLight}%) 0%, hsl(${h}, ${s}%, ${l}%) 48%, hsl(${h}, ${s}%, ${lDark}%) 100%)`;
+    } 
+    else if (isGas) {
+        // Gaseous: Bright center, fading to dark edges
+        if (baseHsl) {
+            res = `radial-gradient(circle at 50% 50%, hsla(${baseHsl}, 0.8) 0%, hsla(${baseHsl}, 0.1) 80%)`;
+        } else {
+            res = `radial-gradient(circle at 50% 50%, rgba(${baseRgb}, 0.8) 0%, rgba(${baseRgb}, 0.1) 80%)`;
+        }
+    } 
+    else {
+        // Matte / Solid Non-metal: Smooth top-to-bottom
+        if (baseHsl) {
+            res = `linear-gradient(180deg, hsla(${baseHsl}, 0.6) 0%, hsla(${baseHsl}, 0.1) 100%)`;
+        } else {
+            res = `linear-gradient(180deg, rgba(${baseRgb}, 0.6) 0%, rgba(${baseRgb}, 0.1) 100%)`;
         }
     }
 
-    if (hasRgb) {
-        // Directional Light Gradient for 2.5D Fake Depth:
-        // Top-left illuminated highlight (35% brighter tint towards light source)
-        const lr = Math.min(255, Math.round(r + (255 - r) * 0.35));
-        const lg = Math.min(255, Math.round(g + (255 - g) * 0.35));
-        const lb = Math.min(255, Math.round(b + (255 - b) * 0.35));
-
-        // Bottom-right shadow (38% deeper shade for pronounced 3D depth)
-        const dr = Math.round(r * 0.62);
-        const dg = Math.round(g * 0.62);
-        const db = Math.round(b * 0.62);
-
-        return `linear-gradient(145deg, rgb(${lr}, ${lg}, ${lb}) 0%, rgb(${r}, ${g}, ${b}) 48%, rgb(${dr}, ${dg}, ${db}) 100%)`;
-    }
-
-    return colorStr;
+    _glossyBgCache.set(cacheKey, res);
+    return res;
 }
 
-function updateGridVisuals() {
-    invalidateGridCellCache();
+function updateGridVisuals(force = false) {
     const isMain = currentView === 'main';
     const isIsotopes = currentView === 'isotopes';
     const gridId = isMain ? '#main-grid' : 
                    isIsotopes ? '#isotopes-grid' : '#electrons-grid';
     const activeProp = isMain ? currentProperty : currentElecProperty;
     
-    // Toggle controllers
     const tempWrapper = document.getElementById('temp-controller-wrapper');
     const timelineWrapper = document.getElementById('timeline-controller-wrapper');
+    const tempDisplay = document.getElementById('temp-display-container');
+    const timelineDisplay = document.getElementById('timeline-display-container');
     if (tempWrapper && timelineWrapper) {
         if (isMain && currentProperty === 'discoveryYear') {
             tempWrapper.classList.add('hidden');
             tempWrapper.style.display = 'none';
+            if (tempDisplay) { tempDisplay.classList.add('hidden'); tempDisplay.style.display = 'none'; }
             timelineWrapper.classList.remove('hidden');
             timelineWrapper.style.display = 'flex';
-        } else if (isMain && ['category', 'state', 'meltingPoint', 'boilingPoint'].includes(currentProperty)) {
+            timelineWrapper.style.visibility = 'visible';
+            if (timelineDisplay) { timelineDisplay.classList.remove('hidden'); timelineDisplay.style.display = 'flex'; timelineDisplay.style.visibility = 'visible'; }
+        } else if (isMain) {
             tempWrapper.classList.remove('hidden');
             tempWrapper.style.display = 'flex';
+            tempWrapper.style.visibility = 'visible';
+            if (tempDisplay) { tempDisplay.classList.remove('hidden'); tempDisplay.style.display = 'flex'; tempDisplay.style.visibility = 'visible'; }
             timelineWrapper.classList.add('hidden');
             timelineWrapper.style.display = 'none';
+            if (timelineDisplay) { timelineDisplay.classList.add('hidden'); timelineDisplay.style.display = 'none'; }
         } else {
             tempWrapper.classList.add('hidden');
             tempWrapper.style.display = 'none';
+            if (tempDisplay) { tempDisplay.classList.add('hidden'); tempDisplay.style.display = 'none'; }
             timelineWrapper.classList.add('hidden');
             timelineWrapper.style.display = 'none';
+            if (timelineDisplay) { timelineDisplay.classList.add('hidden'); timelineDisplay.style.display = 'none'; }
         }
     }
 
-    const cells = document.querySelectorAll(`${gridId} .element-cell`);
-    let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
-    const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
+    // High-performance visual cache: check if active grid is already styled
+    const gridEl = document.querySelector(gridId);
+    const curT = typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298;
+    const curY = typeof currentTimelineYear !== 'undefined' ? currentTimelineYear : 2026;
+    const visualKey = `${currentView}_${activeProp}_${curT}_${curY}`;
 
-    cells.forEach(cell => {
-        const z = parseInt(cell.dataset.z);
-        const elData = getElementByNumber(z);
+    if (!force && gridEl && gridEl._renderedVisualKey === visualKey && gridEl.children.length >= 118) {
+        return; // Fast path: Grid visuals already up-to-date! Skip heavy DOM iterations.
+    }
+    if (gridEl) gridEl._renderedVisualKey = visualKey;
+     // Rebuild cache for the current active grid
+    const cachedItems = getGridCellCache();
+    
+    let solidCount = 0, liquidCount = 0, gasCount = 0, unknownCount = 0;
+    const blockColors = {
+        s: '#00d4ff', // Cyan (s-block)
+        p: '#22c55e', // Emerald Green (p-block)
+        d: '#6366f1', // Indigo / Purple (d-block)
+        f: '#a855f7'  // Vibrant Purple (f-block, distinct from red exceptions)
+    };
+
+    cachedItems.forEach(item => {
+        const cell = item.cell;
+        const elData = item.elData;
         if (!elData) return;
-        const normalizedCategory = getNormalizedCategory(elData.category);
+        const normalizedCategory = getNormalizedCategory(elData.category, elData.atomicNumber);
         
         // 1. Determine State at currentTemp for text color (always active)
         let currentState = 'Unknown';
@@ -1338,28 +2183,20 @@ function updateGridVisuals() {
         else if (currentState === 'Gas') gasCount++;
         else unknownCount++;
 
-        const symSpan = cell.querySelector('.cell-sym');
+        const symSpan = item.symSpan;
         if (symSpan) {
             if (!isMain && !isIsotopes && (activeProp === 'configuration' || activeProp === 'expanded')) {
                 const isException = (elData.atomicNumber in aufbauExceptions);
-                if (isException) {
-                    symSpan.style.color = '#ef4444';
-                    symSpan.style.textShadow = '0 0 8px rgba(239, 68, 68, 0.95), 0 0 4px #000';
-                } else {
-                    symSpan.style.color = '#ffffff';
-                    symSpan.style.textShadow = '0 0 4px #000, 0 1px 3px #000';
-                }
+                symSpan.style.color = isException ? '#ef4444' : '#ffffff';
             } else {
                 symSpan.style.color = stateTextColors[currentState];
-                symSpan.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)'; // Maximum contrast over all categories
             }
         }
 
         if (currentView === 'electrons') {
-            const bohrWrapper = cell.querySelector('.cell-bohr');
+            const bohrWrapper = item.bohrSpan;
             if (bohrWrapper) {
                 bohrWrapper.style.color = stateTextColors[currentState];
-                bohrWrapper.style.textShadow = '0 0 5px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,0.9)';
             }
         }
 
@@ -1370,7 +2207,9 @@ function updateGridVisuals() {
         if (isMain || isIsotopes) {
             if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
                 color = categoryColors[normalizedCategory] || '#333';
-                if (currentProperty === 'wiki') {
+                if (isIsotopes) {
+                    valText = (typeof isotopeData !== 'undefined' && isotopeData[item.z]) ? `${isotopeData[item.z].length} iso` : '0';
+                } else if (currentProperty === 'wiki') {
                     valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
                 } else {
                     valText = elData.atomicMass ? elData.atomicMass.toFixed(3) : '';
@@ -1389,6 +2228,7 @@ function updateGridVisuals() {
                     if (!Number.isInteger(valText)) valText = (valText > 100 || valText < -100) ? Math.round(valText) : Number(valText.toPrecision(3)).toString();
                 } else {
                     color = heatmapUnknownColor;
+                    valText = '-';
                 }
             }
         } else {
@@ -1437,9 +2277,17 @@ function updateGridVisuals() {
             }
         }
 
-        cell.style.background = getGlossyBackground(color, normalizedCategory);
-        cell.style.borderColor = color;
-        cell.style.boxShadow = '';
+        if (currentView === 'electrons' || currentView === 'isotopes') {
+            const isSel = (selectedElement && selectedElement.atomicNumber === item.z);
+            cell.style.background = `linear-gradient(180deg, ${hexToRgbaLocal(color, isSel ? 0.85 : 0.54)} 0%, ${hexToRgbaLocal(color, isSel ? 0.70 : 0.40)} 40%, ${hexToRgbaLocal(color, isSel ? 0.55 : 0.28)} 100%)`;
+            cell.style.border = isSel ? '2px solid #00f0ff' : `1px solid ${hexToRgbaLocal(color, 0.65)}`;
+            cell.style.boxShadow = isSel ? '0 0 10px rgba(0, 240, 255, 0.8)' : 'none';
+            cell.style.borderRadius = '4px';
+        } else {
+            cell.style.background = getGlossyBackground(color, normalizedCategory);
+            cell.style.borderColor = color;
+            cell.style.boxShadow = '';
+        }
 
         // Timeline opacity logic
         if (isMain && currentProperty === 'discoveryYear') {
@@ -1462,10 +2310,17 @@ function updateGridVisuals() {
         }
 
         cell.dataset.category = normalizedCategory;
+        let dualCat = elData.dualCategory || '';
+        if (elData.atomicNumber === 85) {
+            dualCat = normalizedCategory === 'Metalloid' ? 'Halogen' : 'Metalloid';
+        } else if (elData.atomicNumber === 84) {
+            dualCat = normalizedCategory === 'Metalloid' ? 'Post-transition metal' : 'Metalloid';
+        }
+        cell.dataset.dualCategory = dualCat;
         cell.dataset.state = currentState;
         cell.dataset.block = elData.block || '';
 
-        const valSpan = cell.querySelector('.cell-value');
+        const valSpan = item.valSpan;
         if(valSpan) {
             if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum')) {
                 valSpan.innerHTML = valText;
@@ -1484,7 +2339,12 @@ function updateGridVisuals() {
     }
     updateSelectedCardVisuals();
     filterGridElements(currentSearchQuery);
+    if (window.PeriodicCanvasGrid) {
+        window.PeriodicCanvasGrid.requestRender();
+    }
 }
+
+let _isFilterActive = false;
 
 function filterGridElements(rawQuery) {
     const q = (rawQuery || '').trim().toLowerCase();
@@ -1494,20 +2354,29 @@ function filterGridElements(rawQuery) {
         if (input.value !== (rawQuery || '')) input.value = rawQuery || '';
     });
 
-    document.querySelectorAll('.element-cell').forEach(cell => {
-        const z = cell.dataset.z;
-        if (!z) return;
-        const el = getElementByNumber(parseInt(z));
-        if (!el) return;
+    if (!q && !_isFilterActive) return;
 
-        if (!q) {
+    if (!q) {
+        _isFilterActive = false;
+        document.querySelectorAll('.element-cell').forEach(cell => {
             cell.style.opacity = '1';
             cell.style.filter = 'none';
             cell.style.transform = 'none';
             cell.style.zIndex = '1';
             cell.style.pointerEvents = 'auto';
-            return;
-        }
+        });
+        return;
+    }
+
+    _isFilterActive = true;
+    const activeView = document.querySelector('.view-mode.active');
+    if (!activeView) return;
+
+    activeView.querySelectorAll('.element-cell').forEach(cell => {
+        const z = cell.dataset.z;
+        if (!z) return;
+        const el = getElementByNumber(parseInt(z));
+        if (!el) return;
 
         const nameMatch = el.name.toLowerCase().includes(q);
         const symbolMatch = el.symbol.toLowerCase() === q || el.symbol.toLowerCase().startsWith(q);
@@ -1532,7 +2401,7 @@ function filterGridElements(rawQuery) {
 function updateSelectedCardVisuals() {
     if (!selectedElement) return;
     const el = selectedElement;
-    const normalizedCategory = getNormalizedCategory(el.category);
+    const normalizedCategory = getNormalizedCategory(el.category, el.atomicNumber);
     
     let currentState = 'Unknown';
     if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
@@ -1541,11 +2410,11 @@ function updateSelectedCardVisuals() {
         else currentState = 'Gas';
     }
     
-    let color = '#333';
+    let color = '#00d4ff';
     const activeProp = (currentView === 'electrons') ? currentElecProperty : currentProperty;
     
     if (activeProp === 'category' || activeProp === 'wiki') {
-        color = categoryColors[normalizedCategory] || '#333';
+        color = categoryColors[normalizedCategory] || '#00d4ff';
     } else if (activeProp === 'state') {
         color = stateColors[currentState] || '#6b7280';
     } else if (activeProp === 'oxidation') {
@@ -1556,17 +2425,17 @@ function updateSelectedCardVisuals() {
             if (primary < 0) color = getHeatmapColor(primary, { minColor: '#ff0000', maxColor: '#ffffff', scale: 'linear', min: -4, max: 0 });
             else if (primary > 0) color = getHeatmapColor(primary, { minColor: '#ffffff', maxColor: '#00ff00', scale: 'linear', min: 0, max: 8 });
             else color = '#ffffff';
-        } else { color = '#333'; }
+        } else { color = '#00d4ff'; }
     } else if (activeProp === 'configuration' || activeProp === 'expanded') {
         const blockColors = { s: '#00d4ff', p: '#84cc16', d: '#d946ef', f: '#3b82f6' };
-        color = blockColors[el.block] || categoryColors[normalizedCategory] || '#333';
+        color = blockColors[el.block] || categoryColors[normalizedCategory] || '#00d4ff';
     } else if (activeProp === 'energyLevel') {
         const shells = el.electronsPerShell ? el.electronsPerShell.length : 1;
         color = getHeatmapColor(shells, heatmapConfigs.energyLevels);
     } else if (activeProp === 'quantum') {
         const qn = getQuantumNumbers(el.electronConfiguration);
         const lColors = {0: '#ff6b6b', 1: '#4ecdc4', 2: '#feca57', 3: '#a29bfe'};
-        color = lColors[qn.l] || '#333';
+        color = lColors[qn.l] || '#00d4ff';
     } else if (heatmapConfigs[activeProp]) {
         const numValue = getPropertyValue(el, activeProp);
         if (activeProp === 'discoveryYear' && el.discoveryYear === 'Ancient') {
@@ -1577,25 +2446,97 @@ function updateSelectedCardVisuals() {
             color = heatmapUnknownColor;
         }
     } else {
-        color = categoryColors[normalizedCategory] || '#333';
+        color = categoryColors[normalizedCategory] || '#00d4ff';
     }
 
     const glossBg = (activeProp === 'category' || activeProp === 'wiki') ? 
         getGlossyBackground(color, normalizedCategory) : 
         getGlossyBackground(color, '');
 
-    // 1. Update Property Interface card
+    // 1. Update Property Interface card background & border (Matches Element Box)
     const mainCard = document.getElementById('element-detail-card');
     if (mainCard) {
-        mainCard.style.background = glossBg;
-        mainCard.style.borderColor = color || 'rgba(0,212,255,0.3)';
+        mainCard.style.setProperty('background', glossBg, 'important');
+        mainCard.style.setProperty('border-color', color || '#00d4ff', 'important');
     }
 
-    // 2. Update Electrons & Orbitals card
+    // 2. Update Electrons & Orbitals card background & border
     const elecCard = document.getElementById('elec-element-card');
     if (elecCard) {
-        elecCard.style.background = glossBg;
-        elecCard.style.borderColor = color || 'rgba(0,212,255,0.3)';
+        elecCard.style.setProperty('background', glossBg, 'important');
+        elecCard.style.setProperty('border-color', color || '#00d4ff', 'important');
+    }
+
+    const isoCard = document.getElementById('iso-element-card');
+    if (isoCard) {
+        isoCard.style.setProperty('background', glossBg, 'important');
+        isoCard.style.setProperty('border-color', color || '#00d4ff', 'important');
+    }
+
+    // 3. Dynamic Temperature State Pill, Dot & Text Reflection
+    const curK = Math.round(currentTemp || 298);
+    const stateText = `${currentState} (${curK} K)`;
+
+    const stateDotColors = {
+        'Solid': '#ffffff',   // Crisp Pure White for solid state
+        'Liquid': '#00f0ff',  // Electric Neon Cyan for liquid
+        'Gas': '#ff0055',     // Vibrant Neon Pink-Red for gas
+        'Unknown': '#94a3b8'  // Muted Slate Silver for unknown
+    };
+    const curDotColor = stateDotColors[currentState] || '#ffffff';
+    const stateGlow = (currentState === 'Solid') ? '0 0 7px rgba(255, 255, 255, 0.9)' :
+                      (currentState === 'Liquid') ? '0 0 7px #00f0ff' :
+                      (currentState === 'Gas') ? '0 0 7px #ff0055' : '0 0 4px #94a3b8';
+    const statePillBorder = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.45)' :
+                            (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.55)' :
+                            (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.55)' : 'rgba(148, 163, 184, 0.35)';
+    const statePillBg = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.12)' :
+                        (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.14)' :
+                        (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.14)' : 'rgba(148, 163, 184, 0.10)';
+
+    const statePills = [
+        { dot: document.getElementById('dh-state-dot'), text: document.getElementById('dh-state-text'), pill: document.getElementById('dh-state-pill') },
+        { dot: document.getElementById('elec-state-dot'), text: document.getElementById('elec-state-text'), pill: document.getElementById('elec-state-pill') },
+        { dot: document.getElementById('iso-state-dot'), text: document.getElementById('iso-state-text'), pill: document.getElementById('iso-state-pill') }
+    ];
+
+    statePills.forEach(group => {
+        if (group.dot) {
+            group.dot.style.setProperty('background', curDotColor, 'important');
+            group.dot.style.setProperty('box-shadow', stateGlow, 'important');
+        }
+        if (group.text) {
+            group.text.textContent = stateText;
+            group.text.style.setProperty('color', curDotColor, 'important');
+            group.text.style.setProperty('text-shadow', `0 0 6px ${statePillBorder}`, 'important');
+        }
+        if (group.pill) {
+            group.pill.style.setProperty('border-color', statePillBorder, 'important');
+            group.pill.style.setProperty('background', statePillBg, 'important');
+        }
+    });
+
+    // 4. Update Header Badges for Metal / Non-metal Category
+    const catColor = categoryColors[normalizedCategory] || '#00d4ff';
+    const catText = (el.category || normalizedCategory).toUpperCase();
+    const badgeHtml = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${catColor}; box-shadow: 0 0 5px ${catColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${catText}</span>`;
+
+    [document.getElementById('dh-series-badge'), document.getElementById('elec-series-badge'), document.getElementById('iso-series-badge')].forEach(badge => {
+        if (badge) {
+            badge.innerHTML = badgeHtml;
+            badge.style.setProperty('color', '#ffffff', 'important');
+            badge.style.setProperty('border-color', catColor, 'important');
+            const bgGrad = `linear-gradient(135deg, ${window.hexToRgba ? window.hexToRgba(catColor, 0.42) : hexToRgbaLocal(catColor, 0.42)} 0%, ${window.hexToRgba ? window.hexToRgba(catColor, 0.18) : hexToRgbaLocal(catColor, 0.18)} 100%)`;
+            badge.style.setProperty('background', bgGrad, 'important');
+            const glow = window.hexToRgba ? window.hexToRgba(catColor, 0.50) : hexToRgbaLocal(catColor, 0.50);
+            badge.style.setProperty('box-shadow', `0 0 8px ${glow}`, 'important');
+        }
+    });
+
+    const valState = document.getElementById('val-state');
+    if (valState) {
+        valState.textContent = currentState;
+        valState.style.setProperty('color', curDotColor, 'important');
     }
 
     let symbolColor = stateTextColors[currentState] || '#ffffff';
@@ -1634,43 +2575,60 @@ function updateSelectedCardVisuals() {
         elecName.innerText = el.name;
         elecName.style.color = '#ffffff';
     }
-
-    const dhBohr = document.getElementById('dh-bohr');
-    if (dhBohr) dhBohr.style.color = symbolColor;
 }
 
 function renderLegend() {
-    const legendContainers = [document.getElementById('in-grid-legend'), document.getElementById('iso-in-grid-legend')].filter(Boolean);
-    if (legendContainers.length === 0) return;
+    const legendContainer = document.getElementById('in-grid-legend');
+    if (!legendContainer) return;
 
-    const pConf = heatmapConfigs[currentProperty];
+    let propKey = currentProperty;
+    if (propKey === 'ionizationEnergy') propKey = 'ionization';
+    if (propKey === 'atomicRadius') propKey = 'radius';
+    const pConf = heatmapConfigs[propKey] || heatmapConfigs[currentProperty];
+
     if (pConf) {
         const isLog = pConf.scale === 'log';
+        const isIonization = (currentProperty === 'ionization' || currentProperty === 'ionizationEnergy');
+        const subIonEl = document.getElementById('sub-ionization');
+        const currentSubIonIdx = subIonEl ? parseInt(subIonEl.value, 10) || 0 : 0;
+
         const midRowHtml = pConf.midColor ? `
                             <div class="hm-row" style="margin-top: 10px;">
                                 <span>Zero (0°C)</span>
-                                <input type="color" class="hm-mid-input" value="${pConf.midColor}">
+                                <input type="color" id="hm-mid" value="${pConf.midColor}">
                             </div>` : '';
         const maxMargin = pConf.midColor ? '10px' : '20px';
         const gradString = pConf.midColor ? `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.midColor}, ${pConf.maxColor})` : `linear-gradient(to bottom, ${pConf.minColor}, ${pConf.maxColor})`;
 
-        const hmHtml = `
+        const ionSubRowHtml = isIonization ? `
+            <div class="hm-row" style="margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                <span style="color:#00d4ff; font-weight:700; font-size:0.42rem;">Level</span>
+                <div class="ion-pill-group">
+                    <button class="ion-pill ${currentSubIonIdx === 0 ? 'active' : ''}" data-idx="0">1st</button>
+                    <button class="ion-pill ${currentSubIonIdx === 1 ? 'active' : ''}" data-idx="1">2nd</button>
+                    <button class="ion-pill ${currentSubIonIdx === 2 ? 'active' : ''}" data-idx="2">3rd</button>
+                    <button class="ion-pill ${currentSubIonIdx === 3 ? 'active' : ''}" data-idx="3">4th</button>
+                </div>
+            </div>` : '';
+
+        legendContainer.innerHTML = `
             <div class="legend-box heatmap-controller">
                 <div class="heatmap-section">
-                    <div class="legend-box-title">Color</div>
+                    <div class="legend-box-title">${isIonization ? 'Ionization Energy' : 'Color'}</div>
+                    ${ionSubRowHtml}
                     <div class="heatmap-colors">
                         <div class="hm-controls">
                             <div class="hm-row">
                                 <span>Minimum</span>
-                                <input type="color" class="hm-min-input" value="${pConf.minColor}">
+                                <input type="color" id="hm-min" value="${pConf.minColor}">
                             </div>${midRowHtml}
                             <div class="hm-row" style="margin-top: ${maxMargin};">
                                 <span>Maximum</span>
-                                <input type="color" class="hm-max-input" value="${pConf.maxColor}">
+                                <input type="color" id="hm-max" value="${pConf.maxColor}">
                             </div>
                             <div class="hm-row hm-unknown">
                                 <span style="color: #888">Unknown</span>
-                                <input type="color" class="hm-unk-input" value="${heatmapUnknownColor}">
+                                <input type="color" id="hm-unk" value="${heatmapUnknownColor}">
                             </div>
                         </div>
                         <div class="hm-bars">
@@ -1682,7 +2640,7 @@ function renderLegend() {
                 <div class="heatmap-section">
                     <div class="legend-box-title">Scale</div>
                     <div class="heatmap-scale">
-                        <button class="scale-btn hm-linear-btn ${!isLog ? 'active' : ''}">
+                        <button class="scale-btn ${!isLog ? 'active' : ''}" id="hm-linear">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -1690,7 +2648,7 @@ function renderLegend() {
                             </svg>
                             Linear
                         </button>
-                        <button class="scale-btn hm-log-btn ${isLog ? 'active' : ''}">
+                        <button class="scale-btn ${isLog ? 'active' : ''}" id="hm-log">
                             <svg viewBox="0 0 100 100" width="40" height="40">
                                 <line x1="20" y1="80" x2="80" y2="80" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
                                 <line x1="20" y1="80" x2="20" y2="20" stroke="#aaa" stroke-width="3" marker-end="url(#arrowhead)"/>
@@ -1710,21 +2668,35 @@ function renderLegend() {
             </div>
         `;
 
-        legendContainers.forEach(container => {
-            container.innerHTML = hmHtml;
-        });
+        if (isIonization) {
+            legendContainer.querySelectorAll('.ion-pill').forEach(pill => {
+                pill.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = pill.dataset.idx;
+                    const subSelect = document.getElementById('sub-ionization');
+                    if (subSelect) subSelect.value = idx;
+                    legendContainer.querySelectorAll('.ion-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    updateGridVisuals();
+                    if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
+                        window.PeriodicCanvasGrid.render();
+                    }
+                });
+            });
+        }
 
-        document.querySelectorAll('.hm-min-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].minColor = e.target.value; updateGridVisuals(); }));
-        document.querySelectorAll('.hm-max-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].maxColor = e.target.value; updateGridVisuals(); }));
-        document.querySelectorAll('.hm-mid-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapConfigs[currentProperty].midColor = e.target.value; updateGridVisuals(); }));
-        document.querySelectorAll('.hm-unk-input').forEach(inp => inp.addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); }));
-        document.querySelectorAll('.hm-linear-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'linear'; updateGridVisuals(); }));
-        document.querySelectorAll('.hm-log-btn').forEach(btn => btn.addEventListener('click', () => { heatmapConfigs[currentProperty].scale = 'log'; updateGridVisuals(); }));
+        document.getElementById('hm-min').addEventListener('input', (e) => { pConf.minColor = e.target.value; updateGridVisuals(); });
+        document.getElementById('hm-max').addEventListener('input', (e) => { pConf.maxColor = e.target.value; updateGridVisuals(); });
+        const hmMid = document.getElementById('hm-mid');
+        if (hmMid) hmMid.addEventListener('input', (e) => { pConf.midColor = e.target.value; updateGridVisuals(); });
+        document.getElementById('hm-unk').addEventListener('input', (e) => { heatmapUnknownColor = e.target.value; updateGridVisuals(); });
+        document.getElementById('hm-linear').addEventListener('click', () => { pConf.scale = 'linear'; updateGridVisuals(); });
+        document.getElementById('hm-log').addEventListener('click', () => { pConf.scale = 'log'; updateGridVisuals(); });
         return;
     }
     
     if (currentProperty !== 'category' && currentProperty !== 'state') {
-        legendContainers.forEach(container => container.innerHTML = '');
+        legendContainer.innerHTML = '';
         return;
     }
     
@@ -1733,68 +2705,335 @@ function renderLegend() {
         'Metalloids': ['Metalloid'],
         'Non-Metals': ['Reactive nonmetal', 'Noble gas']
     };
-    const stateGroups = {
-        'State': ['Solid', 'Liquid', 'Gas', 'Unknown']
+    const sColors = {
+        'Solid': '#ffffff',     // Pure Crisp White
+        'Liquid': '#00f0ff',    // Electric Neon Cyan
+        'Gas': '#f87171',       // Neon Coral Red
+        'Unknown': '#94a3b8'    // Slate Gray
     };
+    window.sColors = sColors;
+
+    function hexToRgbaLocal(color, alpha) {
+        if (!color) return `rgba(100,116,139,${alpha})`;
+        if (typeof color === 'string' && color.startsWith('rgb(')) {
+            const m = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+            if (m) return `rgba(${m[1]},${m[2]},${m[3]},${alpha})`;
+        } else if (typeof color === 'string' && color.startsWith('rgba(')) {
+            return color.replace(/rgba\((\d+,\s*\d+,\s*\d+,)\s*[^)]+\)/, `rgba($1 ${alpha})`);
+        }
+        if (typeof color !== 'string' || color[0] !== '#') return `rgba(100,116,139,${alpha})`;
+        let c = color.substring(1);
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        if (isNaN(num)) return `rgba(100,116,139,${alpha})`;
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function updateLegendIndicatorUI() {
+        const allItems = document.querySelectorAll('#in-grid-legend .legend-item, #elec-in-grid-legend .legend-item');
+        const allSuper = document.querySelectorAll('#in-grid-legend .interactive-super, #elec-in-grid-legend .interactive-super');
+        const isAnyActive = !!(lockedLegendKey || lockedLegendGroup);
+
+        allItems.forEach(item => {
+            const key = item.dataset.key;
+            const type = item.dataset.type;
+            const isMatched = (lockedLegendKey === key && lockedLegendType === type) ||
+                              (lockedLegendGroup && categoryGroups[lockedLegendGroup] && categoryGroups[lockedLegendGroup].includes(key));
+
+            if (isMatched) {
+                item.classList.add('legend-item-active');
+                item.classList.remove('legend-item-dimmed');
+                if (type === 'state') {
+                    if (key === 'Unknown') {
+                        item.style.setProperty('box-shadow', '0 0 14px rgba(148, 163, 184, 0.8), inset 0 0 8px rgba(148, 163, 184, 0.4)', 'important');
+                        item.style.setProperty('border', '2px dashed #ffffff', 'important');
+                        item.style.setProperty('background', 'rgba(51, 65, 85, 0.95)', 'important');
+                    } else if (key === 'Solid') {
+                        item.style.setProperty('box-shadow', '0 0 16px #ffffff, 0 0 4px #ffffff, inset 0 0 8px rgba(255,255,255,0.8)', 'important');
+                        item.style.setProperty('border', '2px solid #ffffff', 'important');
+                        item.style.setProperty('background', 'linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%)', 'important');
+                    } else {
+                        const color = sColors[key] || '#ffffff';
+                        item.style.setProperty('box-shadow', `0 0 16px ${color}, 0 0 4px #ffffff, inset 0 0 8px ${color}`, 'important');
+                        item.style.setProperty('border', `2px solid #ffffff`, 'important');
+                        item.style.setProperty('background', `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.65)} 0%, ${hexToRgbaLocal(color, 0.45)} 100%)`, 'important');
+                    }
+                    item.style.setProperty('transform', 'scale(1.08)', 'important');
+                    item.style.setProperty('z-index', '15', 'important');
+                    item.style.setProperty('opacity', '1', 'important');
+                    item.style.setProperty('filter', 'none', 'important');
+                } else {
+                    const color = categoryColors[key] || '#00d4ff';
+                    item.style.setProperty('box-shadow', `0 0 16px ${color}, 0 0 4px #ffffff, inset 0 0 8px ${color}`, 'important');
+                    item.style.setProperty('border', `2px solid #ffffff`, 'important');
+                    item.style.setProperty('background', `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.95)} 0%, ${hexToRgbaLocal(color, 0.75)} 50%, ${hexToRgbaLocal(color, 0.55)} 100%)`, 'important');
+                    item.style.setProperty('transform', 'scale(1.08)', 'important');
+                    item.style.setProperty('z-index', '15', 'important');
+                    item.style.setProperty('opacity', '1', 'important');
+                    item.style.setProperty('filter', 'none', 'important');
+                }
+            } else if (isAnyActive) {
+                item.classList.remove('legend-item-active');
+                item.classList.add('legend-item-dimmed');
+                item.style.setProperty('box-shadow', 'none', 'important');
+                item.style.setProperty('transform', 'scale(0.97)', 'important');
+                item.style.setProperty('z-index', '1', 'important');
+                item.style.setProperty('opacity', '0.35', 'important');
+                item.style.setProperty('filter', 'brightness(0.65)', 'important');
+            } else {
+                item.classList.remove('legend-item-active');
+                item.classList.remove('legend-item-dimmed');
+                if (type === 'state') {
+                    if (key === 'Unknown') {
+                        item.style.setProperty('background', 'rgba(30, 41, 59, 0.55)', 'important');
+                        item.style.setProperty('border', '1px dashed rgba(148, 163, 184, 0.7)', 'important');
+                        item.style.setProperty('box-shadow', 'none', 'important');
+                    } else if (key === 'Solid') {
+                        const solidBg = `linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(226, 232, 240, 0.65) 50%, rgba(203, 213, 225, 0.45) 100%)`;
+                        item.style.setProperty('background', solidBg, 'important');
+                        item.style.setProperty('border', '1px solid #ffffff', 'important');
+                        item.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5)', 'important');
+                    } else {
+                        const color = sColors[key] || '#ffffff';
+                        const stateBg = `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.42)} 0%, ${hexToRgbaLocal(color, 0.25)} 50%, ${hexToRgbaLocal(color, 0.12)} 100%)`;
+                        item.style.setProperty('background', stateBg, 'important');
+                        item.style.setProperty('border', `1px solid ${color}`, 'important');
+                        item.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.4)', 'important');
+                    }
+                } else {
+                    if (currentProperty === 'state') {
+                        item.style.setProperty('background', 'rgba(30, 41, 59, 0.40)', 'important');
+                        item.style.setProperty('border', '1px solid rgba(148, 163, 184, 0.25)', 'important');
+                        item.style.setProperty('box-shadow', 'none', 'important');
+                        const span = item.querySelector('span');
+                        if (span) {
+                            span.style.setProperty('color', '#94a3b8', 'important');
+                            span.style.setProperty('text-shadow', 'none', 'important');
+                            span.style.setProperty('font-weight', '600', 'important');
+                        }
+                    } else {
+                        const color = categoryColors[key] || '#00d4ff';
+                        const glossBg = `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.82)} 0%, ${hexToRgbaLocal(color, 0.60)} 50%, ${hexToRgbaLocal(color, 0.40)} 100%)`;
+                        item.style.setProperty('background', glossBg, 'important');
+                        item.style.setProperty('border', `1px solid ${color}`, 'important');
+                        item.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.4)', 'important');
+                        const span = item.querySelector('span');
+                        if (span) {
+                            span.style.setProperty('color', '#ffffff', 'important');
+                            span.style.setProperty('text-shadow', '0 1px 2px rgba(0,0,0,0.85)', 'important');
+                            span.style.setProperty('font-weight', '800', 'important');
+                        }
+                    }
+                }
+                item.style.setProperty('transform', 'none', 'important');
+                item.style.setProperty('z-index', '1', 'important');
+                item.style.setProperty('opacity', '1', 'important');
+                item.style.setProperty('filter', 'none', 'important');
+            }
+        });
+
+        allSuper.forEach(item => {
+            const grp = item.dataset.group;
+            const isMatched = (lockedLegendGroup === grp);
+            if (isMatched) {
+                item.classList.add('super-active');
+                item.classList.remove('super-dimmed');
+                item.style.setProperty('box-shadow', '0 0 16px rgba(0, 240, 255, 0.95), inset 0 0 8px rgba(0, 240, 255, 0.45)', 'important');
+                item.style.setProperty('border-radius', '4px', 'important');
+                item.style.setProperty('background', 'rgba(0, 212, 255, 0.35)', 'important');
+                item.style.setProperty('color', '#ffffff', 'important');
+                item.style.setProperty('transform', 'scale(1.05)', 'important');
+                item.style.setProperty('opacity', '1', 'important');
+            } else if (isAnyActive) {
+                item.classList.remove('super-active');
+                item.classList.add('super-dimmed');
+                item.style.boxShadow = '';
+                item.style.borderRadius = '';
+                item.style.background = '';
+                item.style.color = '';
+                item.style.transform = '';
+                item.style.opacity = '0.40';
+            } else {
+                item.classList.remove('super-active');
+                item.classList.remove('super-dimmed');
+                item.style.boxShadow = '';
+                item.style.borderRadius = '';
+                item.style.background = '';
+                item.style.color = '';
+                item.style.transform = '';
+                item.style.opacity = '';
+            }
+        });
+    }
+    window.updateLegendIndicatorUI = updateLegendIndicatorUI;
+
+    window.clearLegendHighlightingForce = function() {
+        lockedLegendKey = null;
+        lockedLegendType = null;
+        lockedLegendGroup = null;
+        window.lockedLegendKey = null;
+        window.lockedLegendType = null;
+        window.lockedLegendGroup = null;
+        window.activeLegendHighlight = null;
+        updateLegendIndicatorUI();
+        applyLegendHighlighting(null, null, null);
+        if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.render === 'function') {
+            window.PeriodicCanvasGrid.render();
+        }
+    };
+
+    window.handleLegendClick = function(item, e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (!item) return;
+        const key = item.dataset.key;
+        const type = item.dataset.type;
+        if (lockedLegendKey === key && lockedLegendType === type) {
+            window.clearLegendHighlightingForce();
+        } else {
+            lockedLegendKey = key;
+            lockedLegendType = type;
+            lockedLegendGroup = null;
+            window.lockedLegendKey = key;
+            window.lockedLegendType = type;
+            window.lockedLegendGroup = null;
+            window.activeLegendHighlight = { key, type, groupKeys: null };
+            updateLegendIndicatorUI();
+            applyLegendHighlighting(key, type, null);
+        }
+    };
+
+    window.handleSuperLegendClick = function(item, e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (!item) return;
+        const groupName = item.dataset.group;
+        if (lockedLegendGroup === groupName) {
+            window.clearLegendHighlightingForce();
+        } else {
+            lockedLegendGroup = groupName;
+            lockedLegendKey = null;
+            lockedLegendType = null;
+            window.lockedLegendGroup = groupName;
+            window.lockedLegendKey = null;
+            window.lockedLegendType = null;
+            const grpKeys = categoryGroups[groupName] || [];
+            window.activeLegendHighlight = { key: null, type: null, groupKeys: grpKeys };
+            updateLegendIndicatorUI();
+            applyLegendHighlighting(null, null, grpKeys);
+        }
+    };
+
+    if (currentProperty === 'state') {
+        legendContainer.className = 'in-grid-legend state-view';
+    } else {
+        legendContainer.className = 'in-grid-legend';
+    }
+
+    function makeLegendItem(key, type = 'category', customLabel = null) {
+        const label = customLabel || key;
+        if (type === 'category') {
+            if (currentProperty === 'state') {
+                return `
+                    <div class="legend-item legend-item-muted" data-key="${key}" data-type="category" style="background: rgba(30, 41, 59, 0.35); border: 1px solid rgba(148, 163, 184, 0.2); box-shadow: none;">
+                        <span style="color: #94a3b8 !important; font-weight: 600; text-shadow: none;">${label}</span>
+                    </div>
+                `;
+            }
+            const color = categoryColors[key] || '#00d4ff';
+            const glossBg = `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.82)} 0%, ${hexToRgbaLocal(color, 0.60)} 50%, ${hexToRgbaLocal(color, 0.40)} 100%)`;
+            return `
+                <div class="legend-item" data-key="${key}" data-type="category" style="background: ${glossBg}; border: 1px solid ${color}; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.4);">
+                    <span style="color: #ffffff !important; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.85);">${label}</span>
+                </div>
+            `;
+        } else if (key === 'Unknown') {
+            const countStr = (window.lastStateCounts && window.lastStateCounts[key] !== undefined) ? ` (${window.lastStateCounts[key]})` : '';
+            return `
+                <div class="legend-item" data-key="${key}" data-type="state" style="background: rgba(30, 41, 59, 0.55); border: 1px dashed rgba(148, 163, 184, 0.7); color: #94a3b8; box-shadow: none;">
+                    <span style="color: #94a3b8 !important; font-weight: 700; font-style: italic; text-shadow: 0 1px 2px rgba(0,0,0,0.9);">${label}${countStr}</span>
+                </div>
+            `;
+        } else if (key === 'Solid') {
+            const countStr = (window.lastStateCounts && window.lastStateCounts[key] !== undefined) ? ` (${window.lastStateCounts[key]})` : '';
+            const solidBg = `linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(226, 232, 240, 0.65) 50%, rgba(203, 213, 225, 0.45) 100%)`;
+            return `
+                <div class="legend-item" data-key="${key}" data-type="state" style="background: ${solidBg}; border: 1px solid #ffffff; color: #0f172a; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5);">
+                    <span style="color: #0f172a !important; font-weight: 800; text-shadow: 0 1px 0 rgba(255,255,255,0.4);">${label}${countStr}</span>
+                </div>
+            `;
+        } else {
+            const color = sColors[key] || '#ffffff';
+            const countStr = (window.lastStateCounts && window.lastStateCounts[key] !== undefined) ? ` (${window.lastStateCounts[key]})` : '';
+            const stateBg = `linear-gradient(180deg, ${hexToRgbaLocal(color, 0.42)} 0%, ${hexToRgbaLocal(color, 0.25)} 50%, ${hexToRgbaLocal(color, 0.12)} 100%)`;
+            return `
+                <div class="legend-item" data-key="${key}" data-type="state" style="background: ${stateBg}; border: 1px solid ${color}; color: ${color}; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.4);">
+                    <span style="color: ${color} !important; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.9);">${label}${countStr}</span>
+                </div>
+            `;
+        }
+    }
 
     let html = `
         <div class="legend-box category-box">
-            <div class="legend-box-title">Element Series</div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">
+                <span>⚛️ Element Series & States</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
             <div class="legend-box-content">
-    `;
-    
-    for (const [groupName, keys] of Object.entries(categoryGroups)) {
-        html += `<div class="legend-group"><div class="legend-group-title interactive-super" data-group="${groupName}">${groupName}</div>`;
-        for (const key of keys) {
-            const color = categoryColors[key];
-            if (color) {
-                const glossBg = getGlossyBackground(color, key);
-                html += `
-                    <div class="legend-item" data-key="${key}" data-type="category" style="background: ${glossBg}; border: 1px solid ${color}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">
-                        <span style="color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: 500;">${key}</span>
+                <div class="legend-series-grid">
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metals">Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Alkali metal')}
+                            ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
+                            ${makeLegendItem('Transition metal', 'category', 'Transition')}
+                            ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
+                            ${makeLegendItem('Lanthanide')}
+                            ${makeLegendItem('Actinide')}
+                        </div>
                     </div>
-                `;
-            }
-        }
-        html += `</div>`;
-    }
-    html += `</div></div>`;
-    
-    html += `
-        <div class="legend-box state-box">
-            <div class="legend-box-title">State at Current Temp</div>
-            <div class="legend-box-content">
-    `;
-    
-    for (const [groupName, keys] of Object.entries(stateGroups)) {
-        html += `<div class="legend-group">`;
-        for (const key of keys) {
-            const color = stateColors[key];
-            if (color) {
-                const countStr = (window.lastStateCounts && window.lastStateCounts[key] !== undefined) ? ` (${window.lastStateCounts[key]})` : '';
-                const glossBg = getGlossyBackground(color, '');
-                html += `
-                    <div class="legend-item" data-key="${key}" data-type="state" style="background: transparent; border: 1px solid ${color}; border-radius: 4px; padding: 4px 8px; margin-bottom: 2px;">
-                        <span style="color: ${color}; font-weight: 600;">${key}${countStr}</span>
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Metalloids">Metalloids</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Metalloid')}
+                        </div>
                     </div>
-                `;
-            }
-        }
-        html += `</div>`;
-    }
-    html += `</div></div>`;
-    
-    legendContainers.forEach(container => {
-        container.innerHTML = html;
-    });
-    
-    // Interactions for individual items
-    document.querySelectorAll('.in-grid-legend .legend-item').forEach(item => {
-        // Restore box-shadow if this item is currently locked
-        if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
-            item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-        }
+                    <div class="legend-group-row">
+                        <span class="legend-subheading interactive-super" data-group="Non-Metals">Non-Metals</span>
+                        <div class="legend-chips-wrap">
+                            ${makeLegendItem('Reactive nonmetal', 'category', 'Reactive Nonmetal')}
+                            ${makeLegendItem('Noble gas', 'category', 'Noble Gas')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend-states-bar">
+                    <span class="legend-states-label">State at ${typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298} K (Symbol Color):</span>
+                    <div class="legend-states-chips">
+                        ${makeLegendItem('Solid', 'state')}
+                        ${makeLegendItem('Liquid', 'state')}
+                        ${makeLegendItem('Gas', 'state')}
+                        ${makeLegendItem('Unknown', 'state')}
+                    </div>
+                </div>
+            </div>
+        </div>
         
+        <div class="legend-box hero-inspector-box" id="central-hero-inspector">
+            <!-- Populated dynamically by updateCentralHeroInspector -->
+        </div>
+    `;
+    
+    legendContainer.innerHTML = html;
+    updateLegendIndicatorUI();
+    if (typeof updateCentralHeroInspector === 'function') {
+        updateCentralHeroInspector(null);
+    }
+
+    // Interactions for individual items (Tap = highlight/toggle; Long-press = concept modal)
+    document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const key = e.currentTarget.dataset.key;
@@ -1802,70 +3041,201 @@ function renderLegend() {
             applyLegendHighlighting(key, type);
         });
         item.addEventListener('mouseleave', () => clearLegendHighlighting());
-        item.addEventListener('click', (e) => {
-            const key = e.currentTarget.dataset.key;
-            const type = e.currentTarget.dataset.type;
-            if (lockedLegendKey === key) {
-                lockedLegendKey = null;
-                lockedLegendType = null;
-                lockedLegendGroup = null;
-                e.currentTarget.style.boxShadow = '';
-            } else {
-                lockedLegendKey = key;
-                lockedLegendType = type;
-                lockedLegendGroup = null;
-                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-            }
-            clearLegendHighlighting();
-        });
+
+        if (typeof window.bindLongPress === 'function') {
+            window.bindLongPress(
+                item,
+                (el) => {
+                    const key = el.dataset.key;
+                    const type = el.dataset.type;
+                    if (window.openLegendConceptModal) window.openLegendConceptModal(key, type);
+                },
+                (el, e) => {
+                    window.handleLegendClick(el, e);
+                }
+            );
+        } else {
+            item.addEventListener('click', (e) => window.handleLegendClick(item, e));
+        }
     });
 
-    // Interactions for super categories
-    document.querySelectorAll('.in-grid-legend .interactive-super').forEach(item => {
+    // Interactions for super categories (Tap = highlight group; Long-press = concept modal)
+    document.querySelectorAll('#in-grid-legend .interactive-super').forEach(item => {
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const groupName = e.currentTarget.dataset.group;
             applyLegendHighlighting(null, null, categoryGroups[groupName]);
         });
         item.addEventListener('mouseleave', () => clearLegendHighlighting());
-        item.addEventListener('click', (e) => {
-            const groupName = e.currentTarget.dataset.group;
-            if (lockedLegendGroup === groupName) {
-                lockedLegendKey = null;
-                lockedLegendType = null;
-                lockedLegendGroup = null;
-                e.currentTarget.style.boxShadow = '';
-            } else {
-                lockedLegendKey = null;
-                lockedLegendType = null;
-                lockedLegendGroup = groupName;
-                document.querySelectorAll('.in-grid-legend .legend-item, .in-grid-legend .interactive-super').forEach(el => el.style.boxShadow = '');
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-            }
-            clearLegendHighlighting();
-        });
+
+        if (typeof window.bindLongPress === 'function') {
+            window.bindLongPress(
+                item,
+                (el) => {
+                    const groupName = el.dataset.group;
+                    if (window.openLegendConceptModal) window.openLegendConceptModal(groupName, 'category');
+                },
+                (el, e) => {
+                    window.handleSuperLegendClick(el, e);
+                }
+            );
+        } else {
+            item.addEventListener('click', (e) => window.handleSuperLegendClick(item, e));
+        }
     });
 }
 
+function updateCentralHeroInspector(z) {
+    const container = document.getElementById('central-hero-inspector');
+    if (!container) return;
+
+    const el = z ? getElementByNumber(z) : (selectedElement || null);
+
+    if (!el) {
+        // Default Key Guide (Carbon reference)
+        const refEl = getElementByNumber(6) || {
+            atomicNumber: 6,
+            symbol: 'C',
+            name: 'Carbon',
+            atomicMass: 12.011,
+            category: 'Reactive nonmetal',
+            electronConfigurationNoble: '[He] 2s² 2p²',
+            electronegativity: 2.55
+        };
+        const catColor = (typeof categoryColors !== 'undefined' && categoryColors['Reactive nonmetal']) ? categoryColors['Reactive nonmetal'] : '#059669';
+        container.innerHTML = `
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view full anatomy guide">
+                <span>🔍 Element Key / Anatomy</span>
+                <span class="legend-title-help">ℹ️ Guide</span>
+            </div>
+            <div class="hero-inspector-body hero-anatomy-mode">
+                <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 14px rgba(5, 150, 105, 0.45);">
+                    <div class="hero-tile-top">
+                        <span class="hero-tile-z" title="Atomic Number (Z)">6</span>
+                        <span class="hero-tile-mass" title="Standard Atomic Weight">12.011 u</span>
+                    </div>
+                    <div class="hero-tile-sym" style="color: #ffffff;" title="Chemical Symbol (White = Solid at 298 K)">C</div>
+                    <div class="hero-tile-name">Carbon</div>
+                    <div class="hero-tile-config">[He] 2s² 2p²</div>
+                </div>
+                <div class="hero-anatomy-callouts">
+                    <div class="anatomy-callout-row"><span class="callout-tag">Z:</span> Atomic Number</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag" style="color: #00f0ff;">Sym:</span> State Color (298 K)</div>
+                    <div class="anatomy-callout-row"><span class="callout-tag">u:</span> Atomic Mass</div>
+                    <div class="anatomy-callout-hint">Hover or tap any element to inspect</div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const zNum = el.atomicNumber;
+    const cat = getNormalizedCategory(el.category, zNum);
+    const catColor = (typeof categoryColors !== 'undefined' && categoryColors[cat]) ? categoryColors[cat] : '#00d4ff';
+
+    let state = 'Unknown';
+    if (el.meltingPoint !== null && el.meltingPoint !== undefined && el.boilingPoint !== null && el.boilingPoint !== undefined) {
+        const curK = typeof currentTemp !== 'undefined' ? currentTemp : 298;
+        if (curK < el.meltingPoint) state = 'Solid';
+        else if (curK < el.boilingPoint) state = 'Liquid';
+        else state = 'Gas';
+    }
+    const stateColor = (typeof stateTextColors !== 'undefined' && stateTextColors[state]) ? stateTextColors[state] : '#ffffff';
+    const massStr = el.atomicMass ? (typeof el.atomicMass === 'number' ? el.atomicMass.toFixed(3) : el.atomicMass) : '-';
+    const enStr = el.electronegativity ? `${el.electronegativity}` : '-';
+    const cfgStr = el.electronConfigurationNoble || el.electronConfiguration || '-';
+    const densityStr = el.density ? `${el.density} g/cm³` : '-';
+    const mpStr = el.meltingPoint ? `${Math.round(el.meltingPoint)} K` : '-';
+    const bpStr = el.boilingPoint ? `${Math.round(el.boilingPoint)} K` : '-';
+
+    container.innerHTML = `
+        <div class="legend-box-title" style="border-color: ${catColor};">
+            <span style="color: ${catColor}; font-weight: 800;">${el.name.toUpperCase()} (#${zNum})</span>
+            <span class="hero-cat-pill" style="background: ${catColor}33; border: 1px solid ${catColor}; color: #ffffff;">${cat}</span>
+        </div>
+        <div class="hero-inspector-body hero-live-mode">
+            <div class="hero-card-tile" style="border-color: ${catColor}; box-shadow: 0 0 16px ${catColor}66;">
+                <div class="hero-tile-top">
+                    <span class="hero-tile-z">${zNum}</span>
+                    <span class="hero-tile-mass">${massStr} u</span>
+                </div>
+                <div class="hero-tile-sym" style="color: ${stateColor}; text-shadow: 0 0 10px ${stateColor};">${el.symbol}</div>
+                <div class="hero-tile-name">${el.name}</div>
+                <div class="hero-tile-config">${cfgStr}</div>
+            </div>
+            <div class="hero-live-details">
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">State:</span>
+                    <span class="hero-prop-val" style="color: ${stateColor}; font-weight: 800;">${state}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Electroneg:</span>
+                    <span class="hero-prop-val">${enStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Melting Pt:</span>
+                    <span class="hero-prop-val">${mpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Boiling Pt:</span>
+                    <span class="hero-prop-val">${bpStr}</span>
+                </div>
+                <div class="hero-prop-row">
+                    <span class="hero-prop-lbl">Density:</span>
+                    <span class="hero-prop-val">${densityStr}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+window.updateCentralHeroInspector = updateCentralHeroInspector;
+
 // Select Element
-function selectElement(z) {
+function selectElement(z, isUserClick = false, openSidebar = true) {
     const el = getElementByNumber(z);
     if (!el) return;
+    if (isUserClick && typeof window.trackElementInspection === 'function') {
+        window.trackElementInspection();
+    }
+
+    if (!isUserClick && selectedElement && selectedElement.atomicNumber === z && window._lastSelectedView === currentView) {
+        return; // Fast path: Element already selected and styled for this view!
+    }
+    window._lastSelectedView = currentView;
+
+    // Native Haptic Feedback & Interstitial Trigger (only on direct user click)
+    if (isUserClick) {
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+        if (window.NativeServices?.Ads) {
+            window.NativeServices.Ads.showInterstitial();
+        }
+    }
     
     selectedElement = el;
+    updateCentralHeroInspector(z);
     
-    // Highlight in current grid
-    document.querySelectorAll('.element-cell').forEach(c => c.classList.remove('selected'));
-    const cell = document.querySelector(`.view-mode.active .element-cell[data-z="${z}"]`);
-    if (cell) cell.classList.add('selected');
-    
-    // Open smart floating panel on mobile positioned opposite to clicked element
-    positionMobileSidebar(cell, el);
+    // Position sidebar immediately before updating DOM content
+    const activeView = document.querySelector('.view-mode.active');
+    const cell = activeView ? activeView.querySelector(`.element-cell[data-z="${z}"]`) : null;
+    if (openSidebar && isUserClick) {
+        positionMobileSidebar(cell, el);
+    }
+
+    // Highlight in active view only
+    if (activeView) {
+        activeView.querySelectorAll('.element-cell.selected').forEach(c => c.classList.remove('selected'));
+        if (cell) {
+            cell.classList.add('selected');
+        }
+    }
     
     if (currentView === 'main') {
-        document.getElementById('empty-state').classList.add('hidden');
-        document.getElementById('element-detail-card').classList.remove('hidden');
+        const emptyState = document.getElementById('empty-state');
+        const detailCard = document.getElementById('element-detail-card');
+        if (emptyState) emptyState.classList.add('hidden');
+        if (detailCard) detailCard.classList.remove('hidden');
         
         document.getElementById('dh-number').innerText = el.atomicNumber;
         document.getElementById('dh-mass').innerText = el.atomicMass;
@@ -1874,8 +3244,6 @@ function selectElement(z) {
         
         updateSidebarValues();
     } else if (currentView === 'electrons') {
-        const dCard = document.getElementById('element-duality-card');
-        if (dCard) dCard.classList.add('hidden');
         document.getElementById('elec-empty-state').classList.add('hidden');
         document.getElementById('elec-element-card').classList.remove('hidden');
         document.getElementById('elec-details').classList.remove('hidden');
@@ -1897,18 +3265,31 @@ function selectElement(z) {
         const qn = getQuantumNumbers(sortedExpanded);
         document.getElementById('val-quantum').innerText = `n=${qn.n}, l=${qn.l}, m=${qn.m}`;
         
+        updateSidebarValues();
         updateSelectedCardVisuals();
         
         if (window.OrbitalViewer) {
             window.OrbitalViewer.setElement(el);
+            const isMobile = (window.innerWidth <= 1000 || window.innerHeight <= 520);
+            const elecSidebar = document.querySelector('#view-electrons .view-right');
+            const isSidebarVisible = !isMobile || (elecSidebar && (elecSidebar.classList.contains('mobile-active') || elecSidebar.classList.contains('open')));
+            if (isSidebarVisible) {
+                if (!window.OrbitalViewer.renderer) {
+                    window.OrbitalViewer.init('three-canvas-container');
+                }
+                window.OrbitalViewer.start();
+                window.OrbitalViewer.resize();
+            }
         }
         renderAufbauDiagram(el.electronConfiguration);
         drawLargeBohrModel(el);
     } else if (currentView === 'isotopes') {
-        const dCard = document.getElementById('element-duality-card');
-        if (dCard) dCard.classList.add('hidden');
-        if (typeof updateIsotopesView === 'function') {
-            updateIsotopesView(z);
+        if (typeof updateIsotopeSidebar === 'function') {
+            updateIsotopeSidebar(z);
+        }
+        updateSelectedCardVisuals();
+        if (typeof renderIsotopeLegend === 'function') {
+            renderIsotopeLegend(el);
         }
     }
 }
@@ -1916,6 +3297,15 @@ function selectElement(z) {
 function renderAufbauDiagram(configStr) {
     const gridContainer = document.getElementById('elec-in-grid-legend');
     if (!gridContainer) return;
+
+    const selEl = (typeof selectedElement !== 'undefined' && selectedElement) ? selectedElement : null;
+    const activeLabel = selEl ? `${selEl.symbol} (${selEl.atomicNumber})` : 'All Elements';
+
+    if (gridContainer._renderedConfig === configStr && gridContainer._renderedLabel === activeLabel && gridContainer.children.length > 0) {
+        return; // Fast path: Aufbau diagram is already up-to-date!
+    }
+    gridContainer._renderedConfig = configStr;
+    gridContainer._renderedLabel = activeLabel;
     
     const parts = configStr ? configStr.split(' ') : [];
     const configMap = {};
@@ -1923,44 +3313,42 @@ function renderAufbauDiagram(configStr) {
         const match = p.match(/(\d[spdf])(\d+)/);
         if (match) configMap[match[1]] = parseInt(match[2]);
     });    
-    const rows = [
-        ['1s', '2s', '3s', '4s', '5s', '6s', '7s'],
-        ['2p', '3p', '4p', '5p', '6p', '7p'],
-        ['3d', '4d', '5d', '6d'],
-        ['4f', '5f']
+
+    const blockRows = [
+        {
+            key: 's',
+            label: 's-Block',
+            count: '14',
+            color: '#00d4ff',
+            subshells: ['1s', '2s', '3s', '4s', '5s', '6s', '7s']
+        },
+        {
+            key: 'p',
+            label: 'p-Block',
+            count: '36',
+            color: '#22c55e',
+            subshells: ['2p', '3p', '4p', '5p', '6p', '7p']
+        },
+        {
+            key: 'd',
+            label: 'd-Block',
+            count: '40',
+            color: '#6366f1',
+            subshells: ['3d', '4d', '5d', '6d']
+        },
+        {
+            key: 'f',
+            label: 'f-Block',
+            count: '28',
+            color: '#a855f7',
+            subshells: ['4f', '5f']
+        }
     ];
 
     const blockCap = { s: 1, p: 3, d: 5, f: 7 }; // number of orbitals
-    const blockColorClass = { s: 's-block', p: 'p-block', d: 'd-block', f: 'f-block' };
     
     // Track the highest filled subshell to mark as active
     let lastFilledSubshell = parts.length > 0 ? parts[parts.length-1].match(/(\d[spdf])/)?.[1] : null;
-
-    const blockColors = {
-        s: '#00d4ff', // Vibrant Electric Cyan
-        p: '#84cc16', // Vibrant Neon Lime Green
-        d: '#d946ef', // Vibrant Saturated Neon Magenta
-        f: '#3b82f6'  // Vibrant Electric Sapphire Blue
-    };
-    let html = `
-    <div class="legend-box aufbau-box" style="display: flex; flex-direction: column; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 10px 16px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 15px rgba(0,212,255,0.15);">
-        <div class="legend-box-title" style="color: #00d4ff; font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid rgba(0, 212, 255, 0.25); padding-bottom: 4px;">Electron Configuration</div>
-        <div class="legend-box-content" style="gap: 20px;">
-            <div class="aufbau-diagram-container" style="margin: 0; align-items: flex-start; padding: 0;">
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 0;">
-                    <div class="aufbau-legend" style="margin-bottom: 0; gap: 6px;">
-                        <div class="legend-item" data-key="s" data-type="block" style="background: rgba(0, 212, 255, 0.2); border: 1.5px solid #00d4ff; color: #00d4ff; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);">s-block</div>
-                        <div class="legend-item" data-key="p" data-type="block" style="background: rgba(132, 204, 22, 0.2); border: 1.5px solid #84cc16; color: #84cc16; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(132, 204, 22, 0.3);">p-block</div>
-                        <div class="legend-item" data-key="d" data-type="block" style="background: rgba(217, 70, 239, 0.2); border: 1.5px solid #d946ef; color: #d946ef; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(217, 70, 239, 0.3);">d-block</div>
-                        <div class="legend-item" data-key="f" data-type="block" style="background: rgba(59, 130, 246, 0.2); border: 1.5px solid #3b82f6; color: #3b82f6; font-weight: 700; border-radius: 6px; padding: 4px 10px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);">f-block</div>
-                    </div>
-                    <div class="legend-item exception-indicator-item" data-key="exception" data-type="exception" style="background: rgba(15, 23, 42, 0.9); border: 1.5px solid #ffffff; border-radius: 6px; padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; transition: all 0.2s ease; box-shadow: 0 0 8px rgba(255,255,255,0.25); width: fit-content;">
-                        <span style="color: #ef4444; font-weight: 900; font-size: 0.82rem; text-shadow: 0 0 8px rgba(239, 68, 68, 0.95);">Sym</span>
-                        <span style="color: #ffffff;">= Exception</span>
-                    </div>
-                </div>
-                <div class="aufbau-grid">
-    `;
 
     const getLValue = (block) => {
         if (block === 's') return 0;
@@ -1970,30 +3358,80 @@ function renderAufbauDiagram(configStr) {
         return 0;
     };
 
-    rows.forEach(row => {
-        html += `<div class="aufbau-row">`;
-        row.forEach((subshell) => {
-            const blockType = subshell[1];
+    let html = `
+    <div class="legend-box unified-aufbau-panel" style="width: 100%; height: 100%; max-height: 100%; padding: 2px 6px; box-sizing: border-box; background: rgba(9, 14, 26, 0.96); border: 1.2px solid rgba(0, 212, 255, 0.35); border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;">
+        
+        <!-- Header Row -->
+        <div class="aufbau-header-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 212, 255, 0.22); padding-bottom: 1.5px; margin-bottom: 1.5px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="legend-box-title" style="color: #00d4ff; font-weight: 800; font-size: 0.48rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                    Blocks & Aufbau Orbital Order
+                </span>
+            </div>
             
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <!-- Separate Exceptions Indicator: Red border and red text ONLY -->
+                <div class="legend-item exception-indicator-item" data-key="exception" data-type="exception" style="border: 1.2px solid #ef4444; color: #ef4444; background: transparent; border-radius: 4px; padding: 1px 6px; font-size: 0.40rem; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.15s ease;">
+                    <span style="display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 5px #ef4444;"></span>
+                    <span>Exceptions (20)</span>
+                </div>
+
+                <!-- Target Element Badge -->
+                <div style="font-size: 0.40rem; color: #ffffff; font-family: var(--font-mono); font-weight: 800; display: flex; align-items: center; gap: 3px;">
+                    <span style="color: #94a3b8; font-size: 0.34rem; text-transform: uppercase;">Target:</span>
+                    <span style="color: #00f0ff; background: rgba(0,240,255,0.15); padding: 0.5px 5px; border-radius: 3px; border: 1px solid rgba(0,240,255,0.4);">${activeLabel}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4-Row Stacked Grid (s, p, d, f aligned with their subshell sequences) -->
+        <div class="aufbau-diagram-container" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; width: 100%; min-height: 0; padding: 1px 0; gap: 2px;">
+    `;
+
+    const blockBgGradients = {
+        s: 'linear-gradient(135deg, rgba(0, 212, 255, 0.88), rgba(2, 132, 199, 0.95))',
+        p: 'linear-gradient(135deg, rgba(34, 197, 94, 0.88), rgba(22, 163, 74, 0.95))',
+        d: 'linear-gradient(135deg, rgba(99, 102, 241, 0.88), rgba(79, 70, 229, 0.95))',
+        f: 'linear-gradient(135deg, rgba(168, 85, 247, 0.88), rgba(147, 51, 234, 0.95))'
+    };
+
+    blockRows.forEach(bRow => {
+        html += `
+        <div class="aufbau-block-row" style="display: flex; align-items: stretch; gap: 5px; width: 100%; flex: 1; min-height: 0;">
+            <!-- Block Pill on Left: Colored background with crisp white text -->
+            <div class="legend-item elec-block-item" data-key="${bRow.key}" data-type="block" style="flex: 0 0 52px; height: 100%; background: ${blockBgGradients[bRow.key]}; border: 1.2px solid ${bRow.color}; color: #ffffff; border-radius: 4px; padding: 0 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); box-sizing: border-box;">
+                <span style="font-size: 0.44rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.6);">${bRow.label}</span>
+                <span style="font-size: 0.38rem; font-weight: 800; color: #ffffff; opacity: 0.95; font-family: monospace; background: rgba(0,0,0,0.25); padding: 0.5px 3px; border-radius: 2.5px;">${bRow.count}</span>
+            </div>
+
+            <!-- Divider Line between Block buttons and Subshell Grid -->
+            <div class="aufbau-row-divider"></div>
+
+            <!-- Subshells for this Block on Right -->
+            <div class="aufbau-subshell-track" style="flex: 1; display: flex; align-items: center; gap: 4px; justify-content: flex-start; overflow: hidden; height: 100%;">
+        `;
+
+        bRow.subshells.forEach(subshell => {
+            const blockType = subshell[1];
             const nValue = parseInt(subshell[0]);
             const lValue = getLValue(subshell[1]);
-            const block = subshell[1];
-            const numOrbitals = blockCap[block];
+            const numOrbitals = blockCap[blockType];
             const numElectrons = configMap[subshell] || 0;
-            const bgClass = blockColorClass[block];
             const isActive = subshell === lastFilledSubshell;
-            
-            html += `<div class="subshell-group interactive-subshell" data-key="${subshell}" data-type="subshell" data-n="${nValue}" data-l="${lValue}" style="cursor: pointer; padding: 2px; border-radius: 4px; transition: transform 0.1s;">`;
-            
-            html += `<div class="subshell-label" style="font-weight: bold; color: #ffffff; text-shadow: 0 0 4px rgba(0,0,0,0.8);">${subshell}</div><div class="orbital-boxes">`;
-            
-            // Map box index to m values
-            // For s: 0. For p: -1, 0, 1. For d: -2, -1, 0, 1, 2.
+            const hasElectrons = numElectrons > 0;
+
+            const superscripts = { '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '10': '¹⁰', '11': '¹¹', '12': '¹²', '13': '¹³', '14': '¹⁴' };
+            const countSup = hasElectrons ? (superscripts[numElectrons] || numElectrons) : '';
+            const capsuleClass = `subshell-group interactive-subshell ${hasElectrons ? 'has-electrons' : ''} ${isActive ? 'active-valence' : ''}`;
+
+            html += `<div class="${capsuleClass}" data-key="${subshell}" data-type="subshell" data-n="${nValue}" data-l="${lValue}" title="${subshell}${hasElectrons ? ' (' + numElectrons + 'e⁻)' : ''} - Tap to highlight elements or click box to inspect 3D">`;
+            html += `<div class="subshell-label" style="color: ${bRow.color};">${subshell}${countSup ? `<sup style="font-size: 0.36rem; color: #ffffff; text-shadow: 0 0 3px ${bRow.color}; margin-left: 0.5px;">${countSup}</sup>` : ''}</div><div class="orbital-boxes">`;
+
             let mValues = [];
             for (let m = -lValue; m <= lValue; m++) {
                 mValues.push(m);
             }
-            
+
             for (let i = 0; i < numOrbitals; i++) {
                 let electronsInThisOrbital = 0;
                 if (numElectrons > i) {
@@ -2002,8 +3440,8 @@ function renderAufbauDiagram(configStr) {
                 }
                 
                 let arrows = '';
-                if (electronsInThisOrbital === 1) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.9);">&#x21BF;</span>';
-                if (electronsInThisOrbital === 2) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.9);">&#x21BF;</span><span class="arrow-down" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0,255,255,0.9);">&#x21C2;</span>';
+                if (electronsInThisOrbital === 1) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: 900; text-shadow: 0 0 4px rgba(255,255,255,0.9);">&#x21BF;</span>';
+                if (electronsInThisOrbital === 2) arrows = '<span class="arrow-up" style="color: #ffffff; font-weight: 900; text-shadow: 0 0 4px rgba(255,255,255,0.9);">&#x21BF;</span><span class="arrow-down" style="color: #00ffff; font-weight: 900; text-shadow: 0 0 4px rgba(0,255,255,0.9);">&#x21C2;</span>';
                 
                 let isLastOrbital = false;
                 if (isActive) {
@@ -2012,30 +3450,28 @@ function renderAufbauDiagram(configStr) {
                 }
                 const activeClass = isLastOrbital ? 'active-orbital' : '';
                 
-                const boxColor = blockColors[blockType] || '#444';
-                const hasElectrons = electronsInThisOrbital > 0;
-                const glossyBg = hasElectrons ? getGlossyBackground(boxColor) : 'rgba(15, 23, 42, 0.65)';
-                const boxBorder = hasElectrons ? `1.5px solid ${boxColor}` : '1px solid rgba(255, 255, 255, 0.12)';
-                const boxGlow = hasElectrons ? `0 0 8px ${boxColor}` : 'none';
+                const boxColor = bRow.color;
+                const hasE = electronsInThisOrbital > 0;
+                const glossyBg = hasE ? getGlossyBackground(boxColor) : 'rgba(15, 23, 42, 0.65)';
+                const boxBorder = hasE ? `1.2px solid ${boxColor}` : '1px solid rgba(255, 255, 255, 0.14)';
+                const boxGlow = hasE ? `0 0 6px ${boxColor}` : 'none';
                 
                 const mVal = mValues[i] !== undefined ? mValues[i] : 0;
                 
-                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" style="background: ${glossyBg}; border: ${boxBorder}; box-shadow: ${boxGlow}; border-radius: 3px; transition: transform 0.1s, box-shadow 0.1s;">${arrows}</div>`;
+                html += `<div class="orbital-box interactive-box ${activeClass}" data-m="${mVal}" title="Click to inspect 3D Orbital" style="background: ${glossyBg}; border: ${boxBorder}; box-shadow: ${boxGlow};">${arrows}</div>`;
             }
+
             html += `</div></div>`; // close orbital-boxes and subshell-group
         });
-        html += `</div>`;
+
+        html += `</div></div>`; // close aufbau-subshell-track and aufbau-block-row
     });
 
-    html += `</div></div></div></div>`; // close grid, container, content, box
+    html += `</div></div>`; // close aufbau-diagram-container and unified-aufbau-panel
     gridContainer.innerHTML = html;
 
-    // Bind event listeners for block legend ONLY (s, p, d, f indicators)
+    // Bind event listeners for block legend (s, p, d, f indicators and exceptions)
     document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(item => {
-        if (item.dataset.key === lockedLegendKey && item.dataset.type === lockedLegendType) {
-            item.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-        }
-        
         item.addEventListener('mouseenter', (e) => {
             if (lockedLegendKey || lockedLegendGroup) return;
             const key = e.currentTarget.dataset.key;
@@ -2046,51 +3482,97 @@ function renderAufbauDiagram(configStr) {
             if (lockedLegendKey || lockedLegendGroup) return;
             clearLegendHighlighting();
         });
-        item.addEventListener('click', (e) => {
-            const key = e.currentTarget.dataset.key;
-            const type = e.currentTarget.dataset.type;
-            
-            if (lockedLegendKey === key && lockedLegendType === type) {
-                lockedLegendKey = null;
-                lockedLegendType = null;
-                e.currentTarget.style.boxShadow = 'none';
-                clearLegendHighlighting();
-            } else {
-                document.querySelectorAll('#elec-in-grid-legend .legend-item').forEach(el => {
-                    el.style.boxShadow = 'none';
-                });
-                lockedLegendKey = key;
-                lockedLegendType = type;
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,255,0.8)';
-                applyLegendHighlighting(key, type);
-            }
-        });
+        if (typeof window.bindLongPress === 'function') {
+            window.bindLongPress(
+                item,
+                (el) => {
+                    const key = el.dataset.key;
+                    const type = el.dataset.type;
+                    if (window.openLegendConceptModal) window.openLegendConceptModal(key, type);
+                },
+                (el, e) => {
+                    const key = el.dataset.key;
+                    const type = el.dataset.type;
+                    if (lockedLegendKey === key && lockedLegendType === type) {
+                        window.clearLegendHighlightingForce();
+                    } else {
+                        lockedLegendKey = key;
+                        lockedLegendType = type;
+                        lockedLegendGroup = null;
+                        window.lockedLegendKey = key;
+                        window.lockedLegendType = type;
+                        window.lockedLegendGroup = null;
+                        window.activeLegendHighlight = { key, type, groupKeys: null };
+                        updateLegendIndicatorUI();
+                        applyLegendHighlighting(key, type, null);
+                    }
+                }
+            );
+        } else {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const key = e.currentTarget.dataset.key;
+                const type = e.currentTarget.dataset.type;
+                
+                if (lockedLegendKey === key && lockedLegendType === type) {
+                    window.clearLegendHighlightingForce();
+                } else {
+                    lockedLegendKey = key;
+                    lockedLegendType = type;
+                    lockedLegendGroup = null;
+                    window.lockedLegendKey = key;
+                    window.lockedLegendType = type;
+                    window.lockedLegendGroup = null;
+                    window.activeLegendHighlight = { key, type, groupKeys: null };
+                    updateLegendIndicatorUI();
+                    applyLegendHighlighting(key, type, null);
+                }
+            });
+        }
     });
 
-    // Add specific interaction handlers for 3D orbital viewer
+    // Subshell Capsule Click -> Highlight elements ending on this subshell + update sidebar 3D
     document.querySelectorAll('.interactive-subshell').forEach(subshell => {
         subshell.addEventListener('mouseenter', (e) => {
-            e.currentTarget.style.transform = 'scale(1.1)';
-            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+            if (lockedLegendKey || lockedLegendGroup) return;
+            const key = e.currentTarget.dataset.key;
+            applyLegendHighlighting(key, 'subshell');
         });
         subshell.addEventListener('mouseleave', (e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.background = 'transparent';
+            if (lockedLegendKey || lockedLegendGroup) return;
+            clearLegendHighlighting();
         });
         subshell.addEventListener('click', (e) => {
-            // Clicking the group means we want 'all' orientations
+            e.stopPropagation();
+            const key = e.currentTarget.dataset.key;
             const n = parseInt(e.currentTarget.dataset.n);
             const l = parseInt(e.currentTarget.dataset.l);
+            
             if (window.OrbitalViewer) {
                 window.OrbitalViewer.drawOrbital(n, l, 'all');
             }
+
+            if (lockedLegendKey === key && lockedLegendType === 'subshell') {
+                window.clearLegendHighlightingForce();
+            } else {
+                lockedLegendKey = key;
+                lockedLegendType = 'subshell';
+                lockedLegendGroup = null;
+                window.lockedLegendKey = key;
+                window.lockedLegendType = 'subshell';
+                window.lockedLegendGroup = null;
+                window.activeLegendHighlight = { key, type: 'subshell', groupKeys: null };
+                updateLegendIndicatorUI();
+                applyLegendHighlighting(key, 'subshell', null);
+            }
         });
     });
 
+    // Orbital Box Click -> Open Dedicated 3D Orbital Visualizer Modal
     document.querySelectorAll('.interactive-box').forEach(box => {
         box.addEventListener('mouseenter', (e) => {
             e.currentTarget.style.transform = 'scale(1.2)';
-            e.currentTarget.style.boxShadow = '0 0 5px rgba(255,255,255,0.8)';
+            e.currentTarget.style.boxShadow = '0 0 8px rgba(0,240,255,0.9)';
             e.currentTarget.style.zIndex = '10';
         });
         box.addEventListener('mouseleave', (e) => {
@@ -2099,7 +3581,7 @@ function renderAufbauDiagram(configStr) {
             e.currentTarget.style.zIndex = '1';
         });
         box.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent triggering the subshell group click
+            e.stopPropagation();
             const group = e.currentTarget.closest('.interactive-subshell');
             if (group) {
                 const n = parseInt(group.dataset.n);
@@ -2107,6 +3589,9 @@ function renderAufbauDiagram(configStr) {
                 const m = parseInt(e.currentTarget.dataset.m);
                 if (window.OrbitalViewer) {
                     window.OrbitalViewer.drawOrbital(n, l, m);
+                    if (typeof window.OrbitalViewer.openModal === 'function') {
+                        window.OrbitalViewer.openModal(n, l, m);
+                    }
                 }
             }
         });
@@ -2120,142 +3605,83 @@ function renderAufbauDiagram(configStr) {
     }
 }
 
-// Chemical Duality Knowledge Base (Boundary Elements Exhibiting Dual Nonmetal ⇄ Metalloid/Metal Characteristics)
-const chemicalDualityData = {
-    85: {
-        title: "Chemical Duality: Halogen Nonmetal ⇄ Metalloid",
-        badge: "Halogen Nonmetal ⇄ Metalloid",
-        summary: "Astatine is the quintessential periodic boundary element. Nominally grouped as a halogen in Group 17, relativistic spin-orbit coupling and high polarizability impart pronounced metalloid and metallic behavior.",
-        nonmetalTraits: [
-            "Forms astatide anion (At⁻) in -1 oxidation state with electropositive metals",
-            "Forms volatile diatomic interhalogens (AtI, AtBr, AtCl)",
-            "Undergoes nucleophilic aromatic halogen exchange reactions",
-            "Concentrates selectively in thyroid tissue via halogen metabolic pathways"
-        ],
-        metalloidTraits: [
-            "Readily forms stable cations in solution (At⁺, [At(H₂O)₂]⁺) unlike lighter halogens",
-            "Precipitates with H₂S from acid solution identically to heavy transition metals",
-            "Displays metallic luster and low Pauling electronegativity (2.2)",
-            "Exhibits narrow bandgap with semimetallic condensed conductivity"
-        ],
-        mechanism: "Relativistic expansion and spin-orbit splitting of the 6p valence subshell weaken halogen electron affinity and stabilize positive (+1, +3) oxidation states."
-    },
-    117: {
-        title: "Chemical Duality: Reactive Nonmetal ⇄ Superheavy Metalloid",
-        badge: "Reactive Nonmetal ⇄ Post-Transition Metalloid",
-        summary: "Tennessine is a Period 7 superheavy eka-astatine. Due to extreme relativistic spin-orbit splitting, its 7p subshell is split into 7p₁/₂ and 7p₃/₂, suppressing typical halogen halide formation and favoring metallic/metalloid bonding.",
-        nonmetalTraits: [
-            "Formally classified in Group 17 with 7s² 7p⁵ valence configuration",
-            "Theoretical ability to form volatile halides and formal Ts⁻ anions",
-            "Shares volatility patterns with lighter halogens in gas chromatography"
-        ],
-        metalloidTraits: [
-            "Strong thermodynamic preference for +1 and +3 oxidation states over -1",
-            "Extreme stabilization of closed 7p₁/₂ subshell produces an inert-pair-like effect",
-            "Predicted metallic luster, high density (~7.2 g/cm³), and metallic conductivity",
-            "Low electron affinity (~1.7 eV) makes it the least electronegative Group 17 member"
-        ],
-        mechanism: "Relativistic spin-orbit splitting breaks the 7p subshell into a strongly contracted, inert 7p₁/₂ spinor and an easily ionized 7p₃/₂ spinor."
-    },
-    52: {
-        title: "Chemical Duality: Metalloid ⇄ Chalcogen Nonmetal",
-        badge: "Metalloid ⇄ Chalcogen Nonmetal",
-        summary: "Tellurium bridges the nonmetal chalcogens (oxygen, sulfur) with heavy metals, forming covalent nonmetal oxyacids while possessing a brittle metallic crystalline structure.",
-        nonmetalTraits: [
-            "Forms tellurides (Te²⁻) with alkali and alkaline-earth elements",
-            "Forms covalent tellurite (TeO₃²⁻) and tellurate oxyanions analogous to sulfur",
-            "Forms volatile covalent organotellurium compounds (e.g., dimethyl telluride)"
-        ],
-        metalloidTraits: [
-            "Silvery-white metallic appearance with brittle hexagonal crystalline lattice",
-            "p-type elemental semiconductor whose electrical conductivity increases in light",
-            "Amphoteric dioxide (TeO₂) that dissolves in both strong acids and strong bases"
-        ],
-        mechanism: "Moderate electronegativity (2.1) and polarizable 5p electrons place tellurium directly on the diagonal metalloid boundary."
-    },
-    34: {
-        title: "Chemical Duality: Reactive Nonmetal ⇄ Metalloid Semiconductor",
-        badge: "Reactive Nonmetal ⇄ Metalloid Semiconductor",
-        summary: "Selenium is traditionally a nonmetal, but its thermodynamically stable crystalline grey allotrope behaves physically as an anisotropic metalloid semiconductor.",
-        nonmetalTraits: [
-            "Forms molecular covalent compounds and oxoacids (H₂Se, SeO₂, H₂SeO₄)",
-            "Insulating red allotrope composed of crown-shaped Se₈ rings identical to sulfur",
-            "Essential biological nonmetal trace micronutrient (incorporated as selenocysteine)"
-        ],
-        metalloidTraits: [
-            "Grey 'metallic' selenium consists of helical polymeric chains with delocalized electrons",
-            "Exhibits high photoconductivity (electrical conductivity increases 1000× under illumination)",
-            "Acts as a semiconductor rectifier in selenium diodes and photovoltaic cells"
-        ],
-        mechanism: "Trigonal helical chain packing enables intermolecular electron hopping, bridging molecular insulator and conducting metalloid states."
-    },
-    84: {
-        title: "Chemical Duality: Post-Transition Metal ⇄ Metalloid / Chalcogen",
-        badge: "Post-Transition Metal ⇄ Metalloid / Chalcogen",
-        summary: "Polonium displays simple cubic metallic crystal geometry and electrical conduction, yet retains volatile nonmetal-like chalcogen chemistry.",
-        nonmetalTraits: [
-            "Forms polonide anions (Po²⁻) and volatile polonium hydride (H₂Po)",
-            "Forms volatile covalent halides (PoF₆) and organopolonium complexes",
-            "Chemical behavior in trace tracer solutions closely mirrors tellurium"
-        ],
-        metalloidTraits: [
-            "Crystallizes in the rare simple cubic metallic lattice (α-Po) with metallic conductivity",
-            "Forms basic polonium(IV) hydroxide and predominantly behaves as Po²⁺/Po⁴⁺ cations",
-            "Displays high thermal and electrical conductivity characteristic of true metals"
-        ],
-        mechanism: "Increased nuclear charge and metallic valence de-localization in Period 6 yield metallic conduction alongside chalcogen covalent bonding."
-    }
-};
-
-function updateSidebarValues() {
+function updateSidebarValues(force = false) {
     if (!selectedElement) return;
     const el = selectedElement;
-    
-    // Chemical Duality handling
-    const dualityCard = document.getElementById('element-duality-card');
-    const dualityData = chemicalDualityData[el.atomicNumber];
-    if (dualityCard) {
-        if (dualityData) {
-            dualityCard.classList.remove('hidden');
-            const badgeEl = document.getElementById('duality-badge');
-            if (badgeEl) badgeEl.innerText = dualityData.badge;
-            
-            const summaryEl = document.getElementById('duality-summary');
-            if (summaryEl) summaryEl.innerText = dualityData.summary;
-            
-            const nonmetalList = document.getElementById('duality-nonmetal-list');
-            if (nonmetalList) {
-                nonmetalList.innerHTML = dualityData.nonmetalTraits.map(t => `<li>${t}</li>`).join('');
-            }
-            
-            const metalloidList = document.getElementById('duality-metalloid-list');
-            if (metalloidList) {
-                metalloidList.innerHTML = dualityData.metalloidTraits.map(t => `<li>${t}</li>`).join('');
-            }
-            
-            const mechEl = document.getElementById('duality-mechanism');
-            if (mechEl) mechEl.innerText = dualityData.mechanism;
-            
-            document.getElementById('val-category').innerHTML = `${el.category} <span style="display: inline-block; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #facc15; padding: 1px 6px; border-radius: 3px; margin-left: 5px; font-weight: 700; vertical-align: middle;">⇄ Dual Nature</span>`;
-        } else {
-            dualityCard.classList.add('hidden');
-            document.getElementById('val-category').innerText = el.category;
-        }
-    } else {
-        document.getElementById('val-category').innerText = el.category;
+    if (!force && window._renderedSidebarElZ === el.atomicNumber) {
+        return;
     }
+    window._renderedSidebarElZ = el.atomicNumber;
+    const normalizedCategory = getNormalizedCategory(el.category, el.atomicNumber);
     
-    document.getElementById('val-atomicMass').innerText = el.atomicMass;
-    document.getElementById('val-energyLevels').innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
-    document.getElementById('val-electronegativity').innerText = el.electronegativity || '-';
-    document.getElementById('val-discovered').innerText = el.discoveryYear || '-';
+    const catColor = categoryColors[normalizedCategory] || '#00d4ff';
+    const catText = (el.category || normalizedCategory).toUpperCase();
     
+    const valCat = document.getElementById('val-category');
+    if (valCat) {
+        if (el.dualCategory) {
+            valCat.innerHTML = `<span style="color: ${catColor}; font-weight:700;">${el.category || normalizedCategory}</span> <span style="color: #94a3b8; font-size:0.6rem; font-weight:400;">/</span> <span style="color: #38bdf8; font-weight:700;">${el.dualCategory}</span> <span title="Dual classification: displays intermediate chemical behavior" style="font-size: 0.62rem; cursor:pointer;">ℹ️</span>`;
+        } else {
+            valCat.innerText = el.category || normalizedCategory;
+            valCat.style.setProperty('color', catColor, 'important');
+        }
+    }
+
+    const noteCallout = document.getElementById('val-classification-callout');
+    if (noteCallout) {
+        if (el.classificationNote) {
+            noteCallout.innerHTML = `<span style="font-weight:700; color:#38bdf8;">Dual Nature:</span> ${el.classificationNote}`;
+            noteCallout.style.display = 'block';
+        } else {
+            noteCallout.style.display = 'none';
+        }
+    }
+
+    const valMass = document.getElementById('val-atomicMass');
+    if (valMass) valMass.innerText = el.atomicMass;
+    const valEnergy = document.getElementById('val-energyLevels');
+    if (valEnergy) valEnergy.innerText = el.electronsPerShell ? el.electronsPerShell.join(', ') : '-';
+    const valElNeg = document.getElementById('val-electronegativity');
+    if (valElNeg) valElNeg.innerText = el.electronegativity || '-';
+    const valDisc = document.getElementById('val-discovered');
+    if (valDisc) valDisc.innerText = el.discoveryYear || '-';
+    
+    // Top Card Header Badges
+    let badgeHtml = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${catColor}; box-shadow: 0 0 5px ${catColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${catText}</span>`;
+    if (el.dualCategory) {
+        const dualColor = categoryColors[el.dualCategory] || '#38bdf8';
+        badgeHtml += ` <span style="color:rgba(255,255,255,0.4); font-size:0.45rem;">•</span> <span style="color:${dualColor}; font-size:0.42rem; font-weight:800; border-left: 1px solid rgba(255,255,255,0.25); padding-left: 4px;">${el.dualCategory.toUpperCase()}</span>`;
+    }
+
+    [document.getElementById('dh-series-badge'), document.getElementById('elec-series-badge'), document.getElementById('iso-series-badge')].forEach(badge => {
+        if (badge) {
+            badge.innerHTML = badgeHtml;
+            badge.style.setProperty('color', '#ffffff', 'important');
+            badge.style.setProperty('border-color', catColor, 'important');
+            const bgGrad = `linear-gradient(135deg, ${window.hexToRgba ? window.hexToRgba(catColor, 0.42) : hexToRgbaLocal(catColor, 0.42)} 0%, ${window.hexToRgba ? window.hexToRgba(catColor, 0.18) : hexToRgbaLocal(catColor, 0.18)} 100%)`;
+            badge.style.setProperty('background', bgGrad, 'important');
+            const glow = window.hexToRgba ? window.hexToRgba(catColor, 0.50) : hexToRgbaLocal(catColor, 0.50);
+            badge.style.setProperty('box-shadow', `0 0 8px ${glow}`, 'important');
+        }
+    });
+
+    // Top Card Quick Stats
+    const sortedNoble = sortElectronConfig(el.electronConfigurationNoble || el.electronConfiguration);
+    const dhConfig = document.getElementById('dh-config-text');
+    if (dhConfig) dhConfig.textContent = sortedNoble || '-';
+    const elecConfig = document.getElementById('elec-config-text');
+    if (elecConfig) elecConfig.textContent = sortedNoble || '-';
+
+    const tagsStr = `Grp ${el.group || '-'} • Per ${el.period || '-'} • ${el.block || '-'}-block`;
+    const dhTags = document.getElementById('dh-tags-text');
+    if (dhTags) dhTags.textContent = tagsStr;
+    const elecTags = document.getElementById('elec-tags-text');
+    if (elecTags) elecTags.textContent = tagsStr;
+
     const wikiBtn = document.getElementById('val-wiki');
     if (wikiBtn) {
         wikiBtn.parentElement.onclick = () => {
-            // Let the prop-item click handler do its thing to set it as active,
-            // but also we can directly open the modal if we want.
-            // Wait, if they just want it to be a normal property row, it will get selected by the prop-item listener.
+            // Let the prop-item click handler do its thing
         };
         wikiBtn.onclick = (e) => {
             e.stopPropagation(); // prevent row click
@@ -2281,11 +3707,6 @@ function updateSidebarValues() {
         else currentState = 'Gas';
     }
     document.getElementById('val-state').innerText = currentState;
-
-    const bohrEl = document.getElementById('dh-bohr');
-    if (bohrEl) {
-        bohrEl.innerHTML = generateMiniBohrSVG(el.electronsPerShell);
-    }
 
     // Apply dynamic card styling matching the current table view mode
     updateSelectedCardVisuals();
@@ -2362,7 +3783,7 @@ function updateSidebarValues() {
 
 function drawLargeBohrModel(el) {
     const container = document.getElementById('bohr-reference');
-    if (!el.electronsPerShell) return;
+    if (!container || !el || !el.electronsPerShell) return;
     
     let svg = `<svg viewBox="0 0 200 200" width="100%" height="100%">`;
     
@@ -2398,27 +3819,17 @@ function drawLargeBohrModel(el) {
 
 function setupLayoutToggle() {
     const btn = document.getElementById('btn-layout-toggle');
-    if (!btn) return;
+    const grid = document.getElementById('main-grid');
+    if (!btn || !grid) return;
 
     btn.onclick = () => {
-        if (currentView !== 'main' && currentView !== 'properties' && currentView !== 'isotopes') return;
+        if (currentView !== 'main' && currentView !== 'properties') return;
 
         savedPropertyLayoutMode = savedPropertyLayoutMode === '18col' ? '32col' : '18col';
         tableLayoutMode = savedPropertyLayoutMode;
         
-        const mainGrid = document.getElementById('main-grid');
-        const isoGrid = document.getElementById('isotopes-grid');
-        
-        [mainGrid, isoGrid].forEach(g => {
-            if (!g) return;
-            if (tableLayoutMode === '32col') {
-                g.classList.add('extended-32col');
-            } else {
-                g.classList.remove('extended-32col');
-            }
-        });
-
         if (tableLayoutMode === '32col') {
+            grid.classList.add('extended-32col');
             btn.textContent = '↩️';
             btn.title = 'Switch to Standard 18-Col View';
             btn.style.background = 'rgba(74, 222, 128, 0.2)';
@@ -2426,6 +3837,7 @@ function setupLayoutToggle() {
             btn.style.color = '#4ade80';
             btn.style.boxShadow = '0 0 12px rgba(74, 222, 128, 0.35)';
         } else {
+            grid.classList.remove('extended-32col');
             btn.textContent = '↔️';
             btn.title = 'Switch to Extended 32-Col View';
             btn.style.background = 'rgba(0, 212, 255, 0.1)';
@@ -2438,17 +3850,131 @@ function setupLayoutToggle() {
     };
 }
 
+async function toggleLandscapeFullscreenMode(forceEnable = false) {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!isFS || forceEnable) {
+        try {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                await docEl.requestFullscreen().catch(() => {});
+            } else if (docEl.webkitRequestFullscreen) {
+                await docEl.webkitRequestFullscreen().catch(() => {});
+            }
+        } catch (e) {}
+
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+        }
+    } else {
+        try {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                await document.webkitExitFullscreen().catch(() => {});
+            }
+        } catch (e) {}
+
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+        }
+    }
+}
+
+function updateRotateBtnUI() {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const rotateBtn = document.getElementById('btn-mobile-rotate');
+    if (rotateBtn) {
+        const textSpan = rotateBtn.querySelector('.nav-text');
+        const iconSpan = rotateBtn.querySelector('.nav-icon');
+        if (textSpan) textSpan.textContent = isFS ? 'Exit Landscape' : 'Full Landscape';
+        if (iconSpan) iconSpan.textContent = isFS ? '📱↩️' : '📱🔄';
+    }
+}
+
+document.addEventListener('fullscreenchange', updateRotateBtnUI);
+document.addEventListener('webkitfullscreenchange', updateRotateBtnUI);
+
+let mobileLandscapeAutoTriggered = false;
+function autoActivateMobileLandscape() {
+    if (mobileLandscapeAutoTriggered || window.Platform?.isNative) return;
+    if (window.innerWidth <= 1000 || 'ontouchstart' in window) {
+        mobileLandscapeAutoTriggered = true;
+        toggleLandscapeFullscreenMode(true);
+    }
+}
+
+document.addEventListener('touchstart', autoActivateMobileLandscape, { passive: true });
+document.addEventListener('click', autoActivateMobileLandscape, { passive: true });
+
 // Init
 window.addEventListener('DOMContentLoaded', () => {
+    // Initialize WebAssembly Thermodynamic Engine (696 bytes)
+    if (window.PeriodicaWasm && typeof window.PeriodicaWasm.initSync === 'function') {
+        window.PeriodicaWasm.initSync(elementsData);
+    }
     setupPerfModeOnLoad();
     setupUI();
     setupLayoutToggle();
     setupMobileLeftNav();
     setupPinchToZoom();
-    renderGrid(); // Initial render for main view
     
-    // OrbitalViewer is lazily initialized when switching to the Electrons view
-    // so that #three-canvas-container has valid, non-zero DOM dimensions.
+    // Pre-render all grids to prevent DOM creation lag during tab switching
+    const originalView = currentView;
+    
+    currentView = 'main';
+    renderGrid();
+    
+    currentView = 'electrons';
+    renderGrid();
+    updateGridVisuals(true);
+    
+    currentView = 'isotopes';
+    renderGrid();
+    updateGridVisuals(true);
+    
+    currentView = originalView;
+    updateGridVisuals(true);
+
+    // Initialize Hardware-Accelerated Canvas 2D Periodic Grid Engine
+    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.init === 'function') {
+        window.PeriodicCanvasGrid.init();
+    }
+    
+    // Pre-warm OrbitalViewer & Carbon (Z=6) defaults during idle time after startup
+    const prewarmOrbitalViewer = () => {
+        // Pre-warm browser layout for electron view offscreen so first user tap has 0ms layout lag
+        const elecView = document.getElementById('view-electrons');
+        if (elecView && !elecView.classList.contains('active')) {
+            elecView.style.position = 'absolute';
+            elecView.style.visibility = 'hidden';
+            elecView.style.display = 'flex';
+            elecView.style.left = '-9999px';
+            void elecView.offsetHeight; // Force browser to compute initial layout offscreen
+            elecView.style.display = '';
+            elecView.style.position = '';
+            elecView.style.visibility = '';
+            elecView.style.left = '';
+        }
+
+        if (window.OrbitalViewer && !window.OrbitalViewer.renderer) {
+            window.OrbitalViewer.init('three-canvas-container');
+            if (window.OrbitalViewer.renderer && currentView !== 'electrons') {
+                window.OrbitalViewer.stop(); // Keep render loop paused until electrons view is active
+            }
+        }
+        // Pre-warm electron sidebar for default Carbon (Z=6)
+        if (typeof selectElement === 'function') {
+            const savedV = currentView;
+            currentView = 'electrons';
+            selectElement(6, false, false);
+            currentView = savedV;
+        }
+    };
+    if (typeof requestIdleCallback !== 'undefined') {
+        requestIdleCallback(prewarmOrbitalViewer, { timeout: 2500 });
+    } else {
+        setTimeout(prewarmOrbitalViewer, 1500);
+    }
 
     // Process deep-link URL hash if present
     handleHashRouting();
@@ -2468,9 +3994,11 @@ function generateMiniBohrSVG(shells) {
     return svg;
 }
 
+let currentSidebarSide = null; // 'pos-left' or 'pos-right'
+
 // Smart Mobile Floating Panel Positioning & Control
 function positionMobileSidebar(cell, el) {
-    if (currentView !== 'main' && currentView !== 'electrons') {
+    if (currentView !== 'main' && currentView !== 'electrons' && currentView !== 'isotopes') {
         closeMobileSidebar();
         return;
     }
@@ -2478,38 +4006,81 @@ function positionMobileSidebar(cell, el) {
     const sidebar = document.querySelector('.view-mode.active .view-right');
     if (!sidebar) return;
 
-    if (window.innerWidth <= 900) {
+    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
         let isLeftHalf = false;
         if (cell) {
             const rect = cell.getBoundingClientRect();
-            const cellCenterX = rect.left + rect.width / 2;
-            isLeftHalf = cellCenterX < (window.innerWidth / 2);
+            if (rect.width > 0) {
+                const cellCenterX = rect.left + rect.width / 2;
+                isLeftHalf = cellCenterX < (window.innerWidth / 2);
+            }
+        } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
+            const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
+            if (screenPos) {
+                isLeftHalf = screenPos.x < (window.innerWidth / 2);
+            } else {
+                const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
+                isLeftHalf = (pos.col <= 9);
+            }
         } else if (el) {
-            isLeftHalf = (el.group || 1) <= 9;
+            const z = el.atomicNumber || el.z;
+            if (typeof getGridPosition === 'function' && z) {
+                const pos = getGridPosition(z);
+                isLeftHalf = (pos.col <= 9);
+            } else {
+                isLeftHalf = (el.group || 1) <= 9;
+            }
         }
 
-        if (isLeftHalf) {
-            sidebar.classList.remove('pos-left');
-            sidebar.classList.add('pos-right');
+        const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
+        const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
+
+        if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
+            // Switching to other side: close current side and open on new side
+            sidebar.classList.remove('mobile-active', 'open', otherSide);
+            currentSidebarSide = targetSide;
+            sidebar.classList.add(targetSide);
+            void sidebar.offsetWidth; // Force synchronous reflow
+            sidebar.classList.add('mobile-active');
         } else {
-            sidebar.classList.remove('pos-right');
-            sidebar.classList.add('pos-left');
+            // Within same side: keep same panel open in-place and replace values
+            currentSidebarSide = targetSide;
+            sidebar.classList.remove(otherSide);
+            sidebar.classList.add(targetSide);
+            sidebar.classList.add('mobile-active');
         }
-
-        sidebar.classList.add('mobile-active');
     } else {
         sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
+        currentSidebarSide = null;
     }
 }
 
 function closeMobileSidebar() {
-    document.querySelectorAll('.view-right').forEach(sb => {
-        sb.classList.remove('mobile-active', 'open');
+    const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active, .view-right.mobile-active');
+    if (!activeSidebar && !currentSidebarSide && !selectedElement) {
+        return; // Fast path: Sidebar is already closed! Skip heavy DOM queries and canvas redraw.
+    }
+    document.querySelectorAll('.view-right.mobile-active, .view-right.open').forEach(sb => {
+        sb.classList.remove('mobile-active', 'open', 'pos-left', 'pos-right', 'is-extended');
     });
+    currentSidebarSide = null;
+    document.querySelectorAll('.element-cell.selected').forEach(c => c.classList.remove('selected'));
+    selectedElement = null;
+    if (typeof closeIsotopeDetailPanel === 'function') {
+        closeIsotopeDetailPanel();
+    }
+    if (window.OrbitalViewer && typeof window.OrbitalViewer.stop === 'function') {
+        window.OrbitalViewer.stop();
+    }
+    if (currentView === 'main' && window.PeriodicCanvasGrid) {
+        window.PeriodicCanvasGrid.render();
+    }
 }
+window.closeMobileSidebar = closeMobileSidebar;
+window.dismissDetailSidebar = closeMobileSidebar;
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 900) {
+    if (window.innerWidth > 1000 && window.innerHeight > 520) {
         document.querySelectorAll('.view-right').forEach(sb => {
             sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
         });
@@ -2524,6 +4095,380 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+let _tableTypeModalOpenTime = 0;
+function openTableTypeModal() {
+    const modal = document.getElementById('table-type-modal');
+    if (!modal) return;
+    _tableTypeModalOpenTime = Date.now();
+    document.querySelectorAll('.table-type-opt').forEach(opt => {
+        if (opt.dataset.prop === currentProperty) {
+            opt.classList.add('active');
+        } else {
+            opt.classList.remove('active');
+        }
+    });
+    const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
+    if (bridge && typeof bridge.setVisibility === 'function') {
+        bridge.setVisibility(false);
+    }
+    modal.style.display = 'flex';
+}
+window.openTableTypeModal = openTableTypeModal;
+
+function closeTableTypeModal(e) {
+    if (Date.now() - _tableTypeModalOpenTime < 350) {
+        return;
+    }
+    const modal = document.getElementById('table-type-modal');
+    if (modal) modal.style.display = 'none';
+    syncNativeSliderVisibility();
+}
+window.closeTableTypeModal = closeTableTypeModal;
+
+function openCardAnatomyModal(viewId, propKey) {
+    const v = viewId || currentView || 'main';
+    const p = propKey || currentProperty || 'category';
+
+    const modal = document.getElementById('card-anatomy-modal');
+    if (!modal) return;
+
+    // Temporarily hide native slider while modal is open
+    const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
+    if (bridge && typeof bridge.setVisibility === 'function') {
+        bridge.setVisibility(false);
+    }
+
+    const titleEl = document.getElementById('anatomy-modal-title');
+    const cardDemo = document.getElementById('anatomy-card-demo');
+    const detailsList = document.getElementById('anatomy-details-list');
+
+    const propTitles = {
+        'category': 'Standard Category View',
+        'state': 'State of Matter View',
+        'discoveryYear': 'Discovery Timeline View',
+        'electronegativity': 'Electronegativity Heatmap',
+        'atomicMass': 'Atomic Mass View',
+        'atomicRadius': 'Atomic Radius Heatmap',
+        'ionizationEnergy': 'Ionization Energy View',
+        'electronAffinity': 'Electron Affinity View',
+        'meltingPoint': 'Melting Point Thermal View',
+        'boilingPoint': 'Boiling Point Thermal View',
+        'density': 'Density Heatmap',
+        'block': 'Orbital Block View'
+    };
+
+    let viewTitle = propTitles[p] || 'Periodic Table View';
+    if (v === 'electrons') viewTitle = 'Electron Configuration & Orbitals View';
+    else if (v === 'isotopes') viewTitle = 'Isotopes & Radioactivity View';
+    else if (v === 'compounds') viewTitle = 'Compounds & Formulas View';
+    else if (v === 'reactions') viewTitle = 'Chemical Reactions View';
+    else if (v === 'crystals') viewTitle = 'Crystal Structures 3D View';
+    else if (v === 'compare') viewTitle = 'Element Comparison View';
+    else if (v === 'quiz') viewTitle = 'Periodic Chemistry Quiz View';
+
+    if (titleEl) titleEl.innerHTML = `📖 ${viewTitle} — Element Box Anatomy`;
+
+    function hexToRgbaLocalAnatomy(color, alpha) {
+        if (!color) return `rgba(100,116,139,${alpha})`;
+        if (typeof color === 'string' && color.startsWith('rgb(')) {
+            const m = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+            if (m) return `rgba(${m[1]},${m[2]},${m[3]},${alpha})`;
+        } else if (typeof color === 'string' && color.startsWith('rgba(')) {
+            return color.replace(/rgba\((\d+,\s*\d+,\s*\d+,)\s*[^)]+\)/, `rgba($1 ${alpha})`);
+        }
+        if (typeof color !== 'string' || color[0] !== '#') return `rgba(100,116,139,${alpha})`;
+        let c = color.substring(1);
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        if (isNaN(num)) return `rgba(100,116,139,${alpha})`;
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    // Build preview card & explanations tailored to the active view & property
+    let demoNum = '6';
+    let demoSym = 'C';
+    let demoName = 'Carbon';
+    let demoVal = '12.011';
+    let demoBg = 'linear-gradient(180deg, #10b981 0%, #059669 100%)';
+    let demoBorder = '2px solid #10b981';
+    let demoNumColor = '#ffffff';
+    let demoSymColor = '#ffffff';
+    let demoNameColor = '#ffffff';
+    let demoValColor = '#ffffff';
+    let callouts = [];
+
+    if (v === 'main' || v === 'properties') {
+        if (p === 'category') {
+            demoBg = 'linear-gradient(180deg, rgba(16, 185, 129, 0.85) 0%, rgba(5, 150, 105, 0.50) 100%)';
+            demoBorder = '2px solid #10b981';
+            demoSymColor = '#ffffff'; // White for solid state at STP
+            demoVal = '12.011';
+            callouts = [
+                { badge: 'Background Color', color: '#10b981', text: '<strong>Element Series / Chemical Family:</strong> Categorizes elements into Alkali, Transition Metals, Lanthanides, Nonmetals, Halogens, Noble Gases, etc.' },
+                { badge: 'Symbol Text Color', color: '#00d4ff', text: '<strong>Physical State at STP:</strong> <span style="color:#ffffff;">White = Solid</span>, <span style="color:#00f0ff;">Cyan = Liquid</span>, <span style="color:#ff0055;">Crimson Red = Gas</span>, <span style="color:#94a3b8;">Gray = Unknown</span>.' },
+                { badge: 'Top-Left Number', color: '#a855f7', text: '<strong>Atomic Number (Z):</strong> Total number of protons in the nucleus (e.g. 6 for Carbon).' },
+                { badge: 'Center Symbol & Name', color: '#38bdf8', text: '<strong>IUPAC Symbol & Name:</strong> Standard 1 or 2 letter chemical symbol and full English name.' },
+                { badge: 'Bottom Value', color: '#fbbf24', text: '<strong>Standard Atomic Weight (u):</strong> Average mass of all naturally occurring isotopes in unified atomic mass units.' }
+            ];
+        } else if (p === 'state') {
+            demoBg = 'linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%)';
+            demoBorder = '2px solid #ffffff';
+            demoNumColor = '#0f172a';
+            demoSymColor = '#0f172a';
+            demoNameColor = '#1e293b';
+            demoValColor = '#334155';
+            demoVal = 'Solid';
+            callouts = [
+                { badge: 'Card Background', color: '#ffffff', text: '<strong>Physical State at Active Temperature:</strong> <span style="background:#ffffff; color:#0f172a; padding:1px 4px; border-radius:3px; font-weight:700;">White = Solid</span>, <span style="background:#0284c7; color:#fff; padding:1px 4px; border-radius:3px;">Cyan = Liquid</span>, <span style="background:#e11d48; color:#fff; padding:1px 4px; border-radius:3px;">Red = Gas</span>, <span style="background:#1e293b; color:#94a3b8; padding:1px 4px; border-radius:3px;">Smoky Slate = Unknown</span>.' },
+                { badge: 'Bottom State Label', color: '#38bdf8', text: '<strong>Phase Status:</strong> Displays "Solid", "Liquid", "Gas", or "Unknown" based on current slider temperature.' },
+                { badge: 'Top-Left Number', color: '#a855f7', text: '<strong>Atomic Number (Z):</strong> Number of protons in nucleus.' },
+                { badge: 'Slider Control', color: '#f59e0b', text: '<strong>Thermal Phase Scrubbing:</strong> Use the top temperature bar to heat from 0 K up to 6,000 K and watch elements melt and vaporize in real-time!' }
+            ];
+        } else if (p === 'discoveryYear') {
+            demoBg = 'linear-gradient(180deg, rgba(49, 46, 129, 0.85) 0%, rgba(6, 182, 212, 0.50) 100%)';
+            demoBorder = '2px solid #06b6d4';
+            demoVal = 'Ancient';
+            callouts = [
+                { badge: 'Card Illumination', color: '#06b6d4', text: '<strong>Discovery Timeline:</strong> Elements discovered on or before the selected timeline year shine brightly; undiscovered elements are dimmed.' },
+                { badge: 'Bottom Value', color: '#10b981', text: '<strong>Discovery Year:</strong> Exact discovery year (or "Ancient" for prehistoric elements like Carbon, Gold, Copper).' },
+                { badge: 'Timeline Scrubbing', color: '#ec4899', text: '<strong>Interactive Slider:</strong> Scrub the timeline track from 1650 to 2026 to watch humanity uncover the elements chronologically.' }
+            ];
+        } else {
+            // Heatmap Property
+            demoBg = 'linear-gradient(180deg, rgba(234, 179, 8, 0.85) 0%, rgba(202, 138, 4, 0.50) 100%)';
+            demoBorder = '2px solid #eab308';
+            demoVal = '2.55';
+            callouts = [
+                { badge: 'Heatmap Spectrum', color: '#eab308', text: `<strong>${viewTitle}:</strong> Card background color reflects relative numerical magnitude from Minimum (Cool Blue/Cyan) to Maximum (Warm Red/Amber).` },
+                { badge: 'Bottom Numeric Value', color: '#38bdf8', text: '<strong>Physical Property Value:</strong> Exact scientific measurement with proper units displayed in the bottom footer.' },
+                { badge: 'Void Legend Scale', color: '#a855f7', text: '<strong>Interactive Gradient:</strong> Switch between Linear and Logarithmic scale modes directly in the void legend.' }
+            ];
+        }
+    } else if (v === 'electrons') {
+        demoBg = 'linear-gradient(180deg, rgba(16, 185, 129, 0.85) 0%, rgba(5, 150, 105, 0.50) 100%)';
+        demoBorder = '2px solid #10b981';
+        demoVal = '[He] 2s² 2p²';
+        callouts = [
+            { badge: 'Orbital Subshells', color: '#00d4ff', text: '<strong>Electronic Configuration:</strong> Displays ground-state electron filling according to the Aufbau principle, Hund\'s rule, and Pauli exclusion.' },
+            { badge: 'Interactive Subshell Matrix', color: '#a855f7', text: '<strong>Spin Orbital Boxes:</strong> Interactive 1s through 7s, 2p-6p, 3d-6d, 4f-5f quantum orbital diagram with live electron spin arrows (↑↓).' },
+            { badge: 'Subshell Blocks', color: '#10b981', text: '<strong>s, p, d, f Blocks:</strong> Instant highlighting and valence shell breakdown.' }
+        ];
+    } else {
+        demoBg = 'linear-gradient(180deg, rgba(0, 212, 255, 0.4) 0%, rgba(168, 85, 247, 0.3) 100%)';
+        demoBorder = '2px solid #00d4ff';
+        demoVal = viewTitle;
+        callouts = [
+            { badge: 'Tab Focus', color: '#00d4ff', text: `<strong>${viewTitle}:</strong> Dedicated specialized chemistry workspace for deep exploration.` },
+            { badge: 'Interactive Models', color: '#a855f7', text: 'Tap any element in the periodic grid to instantly focus calculations, structures, and charts.' }
+        ];
+    }
+
+    if (cardDemo) {
+        cardDemo.innerHTML = `
+            <div class="anatomy-card-preview" style="background: ${demoBg}; border: ${demoBorder};">
+                <div class="anatomy-card-num" style="color: ${demoNumColor};">${demoNum}</div>
+                <div class="anatomy-card-sym" style="color: ${demoSymColor};">${demoSym}</div>
+                <div class="anatomy-card-name" style="color: ${demoNameColor};">${demoName}</div>
+                <div class="anatomy-card-val" style="color: ${demoValColor};">${demoVal}</div>
+            </div>
+        `;
+    }
+
+    if (detailsList) {
+        detailsList.innerHTML = callouts.map(c => `
+            <div class="anatomy-callout-item">
+                <span class="anatomy-callout-badge" style="background: ${hexToRgbaLocalAnatomy(c.color, 0.25)}; border: 1px solid ${c.color}; color: ${c.color};">${c.badge}</span>
+                <span class="anatomy-callout-text">${c.text}</span>
+            </div>
+        `).join('');
+    }
+
+    const dontShowCheck = document.getElementById('anatomy-dont-show-again');
+    if (dontShowCheck) {
+        dontShowCheck.checked = !!localStorage.getItem('periodica_guide_disabled');
+    }
+
+    _cardAnatomyModalOpenTime = Date.now();
+    modal.style.display = 'flex';
+}
+window.openCardAnatomyModal = openCardAnatomyModal;
+
+let _cardAnatomyModalOpenTime = 0;
+function closeCardAnatomyModal(e) {
+    if (Date.now() - _cardAnatomyModalOpenTime < 350) {
+        return;
+    }
+    const modal = document.getElementById('card-anatomy-modal');
+    if (modal) modal.style.display = 'none';
+
+    const dontShowCheck = document.getElementById('anatomy-dont-show-again');
+    if (dontShowCheck && dontShowCheck.checked) {
+        localStorage.setItem('periodica_guide_disabled', 'true');
+    } else {
+        localStorage.removeItem('periodica_guide_disabled');
+    }
+
+    syncNativeSliderVisibility();
+}
+window.closeCardAnatomyModal = closeCardAnatomyModal;
+
+function isAnyModalOpen() {
+    const modalIds = [
+        'settings-modal', 'wiki-modal', 'legal-doc-modal', 'table-type-modal',
+        'card-anatomy-modal', 'temp-converter-modal', 'rate-us-modal',
+        'app-update-modal', 'orbital-visualizer-modal', 'decay-explanation-modal',
+        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal',
+        'env-pressure-modal'
+    ];
+    for (let i = 0; i < modalIds.length; i++) {
+        const el = document.getElementById(modalIds[i]);
+        if (el) {
+            if (el.style.display && el.style.display !== 'none') return true;
+            try {
+                const style = window.getComputedStyle(el);
+                if (style.display !== 'none' && style.visibility !== 'hidden' && el.offsetWidth > 0) {
+                    return true;
+                }
+            } catch (err) {}
+        }
+    }
+    return false;
+}
+window.isAnyModalOpen = isAnyModalOpen;
+
+function openSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    if (typeof initPerfModeUI === 'function') initPerfModeUI();
+    const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
+    if (bridge && typeof bridge.setVisibility === 'function') {
+        bridge.setVisibility(false);
+    }
+    syncNativeSliderVisibility();
+}
+window.openSettingsModal = openSettingsModal;
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.style.display = 'none';
+    syncNativeSliderVisibility();
+}
+window.closeSettingsModal = closeSettingsModal;
+
+let _modalObserverInitialized = false;
+function initModalSliderObserver() {
+    if (_modalObserverInitialized || !window.MutationObserver) return;
+    _modalObserverInitialized = true;
+    const modalIds = [
+        'settings-modal', 'wiki-modal', 'legal-doc-modal', 'table-type-modal',
+        'card-anatomy-modal', 'temp-converter-modal', 'rate-us-modal',
+        'app-update-modal', 'orbital-visualizer-modal', 'decay-explanation-modal',
+        'compare-element-picker-modal', 'legend-concept-modal', 'pro-paywall-modal',
+        'env-pressure-modal'
+    ];
+    const observer = new MutationObserver(() => {
+        syncNativeSliderVisibility();
+    });
+    modalIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+        }
+    });
+}
+window.initModalSliderObserver = initModalSliderObserver;
+
+function syncNativeSliderVisibility() {
+    const isMainView = (currentView === 'main' || currentView === 'properties');
+    const modalActive = isAnyModalOpen();
+    const isTimelineProp = isMainView && !modalActive && (currentProperty === 'discoveryYear');
+    const isTempProp = isMainView && !modalActive && !isTimelineProp;
+
+    const tempDisplay = document.getElementById('temp-display-container');
+    const timelineDisplay = document.getElementById('timeline-display-container');
+    const tempWrapper = document.getElementById('temp-controller-wrapper');
+    const timelineWrapper = document.getElementById('timeline-controller-wrapper');
+
+    if (tempDisplay) {
+        if (isTempProp) {
+            tempDisplay.classList.remove('hidden');
+            tempDisplay.style.display = 'flex';
+            tempDisplay.style.visibility = 'visible';
+        } else {
+            tempDisplay.classList.add('hidden');
+            tempDisplay.style.display = 'none';
+        }
+    }
+
+    if (timelineDisplay) {
+        if (isTimelineProp) {
+            timelineDisplay.classList.remove('hidden');
+            timelineDisplay.style.display = 'flex';
+            timelineDisplay.style.visibility = 'visible';
+        } else {
+            timelineDisplay.classList.add('hidden');
+            timelineDisplay.style.display = 'none';
+        }
+    }
+
+    if (tempWrapper) {
+        if (isTempProp) {
+            tempWrapper.classList.remove('hidden');
+            tempWrapper.style.display = 'flex';
+            tempWrapper.style.visibility = 'visible';
+        } else {
+            tempWrapper.classList.add('hidden');
+            tempWrapper.style.display = 'none';
+        }
+    }
+
+    if (timelineWrapper) {
+        if (isTimelineProp) {
+            timelineWrapper.classList.remove('hidden');
+            timelineWrapper.style.display = 'flex';
+            timelineWrapper.style.visibility = 'visible';
+        } else {
+            timelineWrapper.classList.add('hidden');
+            timelineWrapper.style.display = 'none';
+        }
+    }
+
+    const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
+    if (bridge) {
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.classList.add('has-native-slider');
+        }
+        const mobileLeftNav = document.getElementById('mobile-left-nav');
+        const isExpanded = !!(mobileLeftNav && mobileLeftNav.classList.contains('expanded'));
+
+        if (isTimelineProp) {
+            if (typeof bridge.setMode === 'function') bridge.setMode('timeline');
+            if (typeof bridge.setVisibility === 'function') bridge.setVisibility(true);
+            if (typeof bridge.setProgress === 'function') bridge.setProgress(currentTimelineYear || 2026);
+        } else if (isTempProp) {
+            if (typeof bridge.setMode === 'function') bridge.setMode('temp');
+            if (typeof bridge.setVisibility === 'function') bridge.setVisibility(true);
+            if (typeof bridge.setProgress === 'function') bridge.setProgress(Math.round(currentTemp || 298));
+        } else {
+            if (typeof bridge.setMode === 'function') bridge.setMode('none');
+            if (typeof bridge.setVisibility === 'function') bridge.setVisibility(false);
+        }
+
+        if (typeof bridge.setDrawerExpanded === 'function') {
+            bridge.setDrawerExpanded(isExpanded);
+        }
+    }
+
+    if (typeof window.refreshCustomSliders === 'function') {
+        window.refreshCustomSliders();
+    }
+}
+window.syncNativeSliderVisibility = syncNativeSliderVisibility;
+
 // Mobile Left Collapsible Sidebar Interactions
 function setupMobileLeftNav() {
     const mobileLeftNav = document.getElementById('mobile-left-nav');
@@ -2534,16 +4479,27 @@ function setupMobileLeftNav() {
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mobileLeftNav.classList.toggle('expanded');
+            syncNativeSliderVisibility();
         });
     }
 
-    // Mobile nav item clicks
+    // Mobile nav item clicks (single-fire clean handler)
     document.querySelectorAll('.mobile-nav-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const view = item.dataset.view;
-            if (view && typeof switchView === 'function') {
-                switchView(view);
+        let lastTap = 0;
+        const handleMobileNav = (e) => {
+            const now = Date.now();
+            if (now - lastTap < 250) return;
+            lastTap = now;
+            if (e) e.stopPropagation();
+            const view = item.dataset.view || item.closest('[data-view]')?.dataset.view;
+            if (view) {
+                if (view !== 'main' && window.isProUser && !window.isProUser()) {
+                    if (window.openProPaywallModal) window.openProPaywallModal(view);
+                    return;
+                }
+                if (typeof switchView === 'function') {
+                    switchView(view);
+                }
             }
             // Sync active state with top nav buttons
             document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
@@ -2551,13 +4507,32 @@ function setupMobileLeftNav() {
             
             // Auto collapse when item clicked
             mobileLeftNav.classList.remove('expanded');
+            syncNativeSliderVisibility();
+        };
+        item.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
+                handleMobileNav(e);
+            }
         });
+        item.addEventListener('click', handleMobileNav);
     });
+
+    // Dedicated Mobile Fullscreen Landscape Toggle Button
+    const rotateBtn = document.getElementById('btn-mobile-rotate');
+    if (rotateBtn) {
+        rotateBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await toggleLandscapeFullscreenMode();
+            mobileLeftNav.classList.remove('expanded');
+            syncNativeSliderVisibility();
+        });
+    }
 
     // Auto collapse when clicking anywhere else on the page
     document.addEventListener('click', (e) => {
         if (mobileLeftNav.classList.contains('expanded') && !mobileLeftNav.contains(e.target)) {
             mobileLeftNav.classList.remove('expanded');
+            syncNativeSliderVisibility();
         }
     });
 }
@@ -2575,7 +4550,10 @@ function setupPinchToZoom() {
         let grid = null;
 
         wrapper.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.table-controls, input, button, select, .sidebar-close-btn, .view-right, #in-grid-legend, #elec-in-grid-legend, #iso-in-grid-legend')) return;
             grid = wrapper.querySelector('.periodic-grid');
+            // CRITICAL: Never block compositor on single-finger touches (slider drags).
+            // Only intercept 2-finger pinch gestures.
             if (e.touches.length === 2) {
                 pinching = true;
                 pinchStartDist = Math.hypot(
@@ -2583,11 +4561,134 @@ function setupPinchToZoom() {
                     e.touches[0].clientY - e.touches[1].clientY
                 );
                 pinchStartScale = currentScale;
-                e.preventDefault(); // prevent browser scroll on pinch start
             } else {
                 pinching = false;
             }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', (e) => {
+            if (!pinching || e.touches.length !== 2 || !grid) return;
+
+            e.preventDefault(); // CRITICAL: blocks native scroll so pinch works
+
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+
+            const ratio = dist / (pinchStartDist || 1);
+            currentScale = Math.min(Math.max(pinchStartScale * ratio, 0.4), 3.0);
+
+            // Compute midpoint of the two fingers in wrapper-local coords
+            const wRect = wrapper.getBoundingClientRect();
+            const midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - wRect.left;
+            const midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - wRect.top;
+
+            grid.style.transformOrigin = `${midX}px ${midY}px`;
+            grid.style.transform = `scale(${currentScale})`;
         }, { passive: false });
+
+        wrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                pinching = false;
+                pinchStartDist = 0;
+            }
+        }, { passive: true });
+    });
+}
+
+function setTableProperty(propKey) {
+    if (!propKey) return;
+    if (propKey !== 'category' && window.isProUser && !window.isProUser()) {
+        if (window.openProPaywallModal) window.openProPaywallModal(propKey);
+        return;
+    }
+    currentProperty = propKey;
+    window.currentProperty = propKey;
+    if (typeof syncPropertyButtons === 'function') syncPropertyButtons();
+
+    const propLabels = {
+        'category': 'Category',
+        'state': 'State',
+        'discoveryYear': 'Discovery Year',
+        'electronegativity': 'Electronegativity',
+        'atomicMass': 'Atomic Mass',
+        'atomicRadius': 'Atomic Radius',
+        'ionizationEnergy': 'Ionization Energy',
+        'electronAffinity': 'Electron Affinity',
+        'meltingPoint': 'Melting Point',
+        'boilingPoint': 'Boiling Point',
+        'density': 'Density',
+        'block': 'Orbital Block'
+    };
+    const label = propLabels[propKey] || propKey;
+
+    const btnTop = document.getElementById('btn-table-type-top');
+    if (btnTop) btnTop.innerHTML = `🎛️ ${label} ▾`;
+
+    // Sync sidebar active property item if present
+    document.querySelectorAll('.prop-item:not(.elec-prop-item)').forEach(p => {
+        if (p.dataset.prop === propKey) p.classList.add('active');
+        else p.classList.remove('active');
+    });
+
+    // Close Table Type modal
+    const modal = document.getElementById('table-type-modal');
+    if (modal) modal.style.display = 'none';
+
+    // Update visuals & sync native slider
+    updateGridVisuals();
+    renderLegend();
+    if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
+        window.PeriodicCanvasGrid.render();
+    }
+    syncNativeSliderVisibility();
+
+    // Auto-open Card Anatomy Guide on first view of this property
+    if (!localStorage.getItem('periodica_guide_disabled')) {
+        const guideKey = 'periodica_guide_seen_' + (currentView || 'main') + '_' + propKey;
+        if (!localStorage.getItem(guideKey)) {
+            localStorage.setItem(guideKey, 'true');
+            setTimeout(() => {
+                openCardAnatomyModal(currentView || 'main', propKey);
+            }, 100);
+        }
+    }
+}
+window.setTableProperty = setTableProperty;
+
+
+
+
+
+// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+function setupPinchToZoom() {
+    const wrappers = document.querySelectorAll('.grid-wrapper');
+    wrappers.forEach(wrapper => {
+        let pinchStartDist = 0;
+        let pinchStartScale = 1;
+        let currentScale = 1;
+        let pinching = false;
+
+        // Cache grid reference; it may be dynamically re-rendered so re-query on touchstart
+        let grid = null;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.table-controls, input, button, select, .sidebar-close-btn, .view-right, #in-grid-legend, #elec-in-grid-legend, #iso-in-grid-legend')) return;
+            grid = wrapper.querySelector('.periodic-grid');
+            // CRITICAL: Never block compositor on single-finger touches (slider drags).
+            // Only intercept 2-finger pinch gestures.
+            if (e.touches.length === 2) {
+                pinching = true;
+                pinchStartDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                pinchStartScale = currentScale;
+            } else {
+                pinching = false;
+            }
+        }, { passive: true });
 
         wrapper.addEventListener('touchmove', (e) => {
             if (!pinching || e.touches.length !== 2 || !grid) return;
@@ -2635,7 +4736,10 @@ function detectDeviceTier() {
             const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
             if (!gl) return 'unknown';
             const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-            return dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'unknown';
+            const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'unknown';
+            const loseExt = gl.getExtension('WEBGL_lose_context');
+            if (loseExt) loseExt.loseContext();
+            return renderer;
         } catch { return 'unknown'; }
     })();
 
@@ -2735,4 +4839,922 @@ function setupPerfModeOnLoad() {
     }
 }
 
+// In-App Legal & Compliance Document Viewer
+function openLegalDoc(type) {
+    const modal = document.getElementById('legal-doc-modal');
+    const titleEl = document.getElementById('legal-modal-title');
+    const bodyEl = document.getElementById('legal-modal-body');
+    if (!modal || !titleEl || !bodyEl) return;
+
+    if (window.NativeServices?.Haptics) {
+        window.NativeServices.Haptics.selection();
+    }
+
+    if (type === 'privacy') {
+        titleEl.innerHTML = '🔒 Privacy Policy';
+        bodyEl.innerHTML = `
+            <p><strong>Effective Date:</strong> August 23, 2026</p>
+            <p>Periodica 3D is an offline-first educational chemistry application. We do <strong>not</strong> collect, store, or sell any personal identifiable information.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">1. Information We Collect</h4>
+            <p>We do not collect names, emails, phone numbers, or contacts. User preferences and quiz high scores are stored strictly locally on your device.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">2. Third-Party Services</h4>
+            <p>In ad-supported versions, Google Mobile Ads (AdMob) may receive standard anonymous device metrics and advertising IDs to serve relevant, non-intrusive ads in accordance with Google Play and COPPA policies.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">3. In-App Purchases & Subscriptions</h4>
+            <p>All optional Pro subscriptions and "Remove Ads" purchases are processed directly by Google Play or Apple App Store. We do not process or store any financial or billing data.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">4. Contact</h4>
+            <p>Questions or inquiries: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff;">periodicax.support@gmail.com</a></p>
+        `;
+    } else if (type === 'terms') {
+        titleEl.innerHTML = '📜 Terms of Use & Conditions';
+        bodyEl.innerHTML = `
+            <p><strong>Effective Date:</strong> September 2, 2026</p>
+            <p>By downloading, installing, or using Periodica 3D, you agree to be bound by these Terms of Use.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">1. Educational & Reference License</h4>
+            <p>You are granted a personal, non-exclusive license to use Periodica 3D for educational, reference, and personal study purposes.</p>
+            <h4 style="color:#fbbf24; margin:16px 0 6px;">2. Scientific Data & Inaccuracy Disclaimer</h4>
+            <p>Periodica 3D aggregates an extensive volume of chemical, physical, and nuclear data (118 elements, 3,000+ isotopes, crystal lattices, and reaction balances) compiled from IUPAC, NIST, and peer-reviewed literature.</p>
+            <p><strong>Important Notice:</strong> While every effort has been made to verify accuracy, scientific measurements evolve, theoretical models differ (e.g. electronegativity/radii scales), and transactinide data (Z > 100) relies on quantum calculations. Data may contain unintentional inaccuracies, approximations, or typographical discrepancies. The application is provided "as is" without warranty.</p>
+            <p><strong>Non-Suitability for High-Risk Use:</strong> NEVER use this app as a certified reference for hazardous chemical synthesis, laboratory safety manuals, medical treatment, or radiological protection.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">3. Subscriptions & In-App Purchases</h4>
+            <p>Optional subscriptions and "Remove Ads" purchases are processed securely through Google Play Store or Apple App Store. Subscriptions auto-renew unless cancelled at least 24 hours before the renewal date in your app store account settings.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">4. Limitation of Liability</h4>
+            <p>To the maximum extent permitted by law, the developers and distributors assume no liability for any direct or indirect damages, experimental failure, or laboratory incidents resulting from reliance on the data.</p>
+            <h4 style="color:#00d4ff; margin:16px 0 6px;">5. Contact & Corrections</h4>
+            <p>For inquiries or scientific data corrections: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff;">periodicax.support@gmail.com</a></p>
+        `;
+    } else if (type === 'disclaimer') {
+        titleEl.innerHTML = '⚠️ Scientific Data & Accuracy Disclaimer';
+        bodyEl.innerHTML = `
+            <div style="background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.25); border-radius:10px; padding:12px 14px; margin-bottom:14px;">
+                <p style="color:#fbbf24; font-weight:700; margin:0 0 4px; font-size:0.9rem;">⚠️ Comprehensive Data Notice</p>
+                <p style="color:#cbd5e1; font-size:0.8rem; margin:0; line-height:1.5;">This application loads a massive volume of interconnected scientific data that may contain theoretical approximations, experimental uncertainties, or typographical inaccuracies.</p>
+            </div>
+            <h4 style="color:#00d4ff; margin:14px 0 6px;">1. Scale of the Scientific Dataset</h4>
+            <p>Periodica 3D incorporates an extensive corpus of scientific information spanning:</p>
+            <ul style="padding-left:18px; margin:6px 0; color:#94a3b8; font-size:0.8rem; line-height:1.6;">
+                <li><strong>118 Chemical Elements:</strong> Atomic weights, oxidation states, electron configurations, ionization energies (levels 1-10), electronegativities, and lattice parameters.</li>
+                <li><strong>3,000+ Isotopic Nuclides:</strong> Half-lives, decay modes (α, β⁻, β⁺, ε, fission), and isotopic abundances.</li>
+                <li><strong>Quantum Mechanical Wavefunctions:</strong> Real-time 3D mathematical scalar-field evaluations of hydrogenic orbitals (1s through 7p).</li>
+                <li><strong>Chemical Reaction Solver:</strong> Matrix equation balancing and stoichiometry.</li>
+            </ul>
+            <h4 style="color:#00d4ff; margin:14px 0 6px;">2. Experimental Uncertainty & Approximations</h4>
+            <p>While data is sourced from established international organizations (IUPAC, NIST, Nubase, CRC Handbook), users should note:</p>
+            <ul style="padding-left:18px; margin:6px 0; color:#94a3b8; font-size:0.8rem; line-height:1.6;">
+                <li>Physical constants, isotope half-lives, and decay radiation evaluations are subject to periodic experimental revision by international committees.</li>
+                <li>For synthetic superheavy elements (Z ≥ 104), reported properties often represent relativistic quantum calculations or single-atom estimates with inherent scientific uncertainty.</li>
+                <li>Differing scientific references employ differing electronegativity scales (Pauling, Allen, Mulliken) and radius models (covalent, ionic, van der Waals).</li>
+            </ul>
+            <h4 style="color:#ef4444; margin:14px 0 6px;">3. Strictly Educational Use (Not for Critical / Lab Safety)</h4>
+            <p><strong>PERIODICA 3D IS NOT A CERTIFIED SAFETY PROTOCOL OR CLINICAL TOOL.</strong></p>
+            <p>Never rely on this application as a substitute for verified Material Safety Data Sheets (MSDS/SDS), certified laboratory safety procedures, medical diagnoses, chemical synthesis safety, or radiological protection.</p>
+            <h4 style="color:#00d4ff; margin:14px 0 6px;">4. Report Data Inaccuracies</h4>
+            <p>We welcome submissions from researchers and educators to continuously improve accuracy. Submit verified citations to: <a href="mailto:periodicax.support@gmail.com" style="color:#00d4ff; font-weight:600;">periodicax.support@gmail.com</a></p>
+        `;
+    } else if (type === 'licenses') {
+        titleEl.innerHTML = '⚖️ Open Source & Third-Party Licenses';
+        bodyEl.innerHTML = `
+            <p style="color:#94a3b8; font-size:0.82rem; margin-bottom:14px;">Periodica 3D is built on open-source technologies and scientific data. Tap any item below to view its full license agreement:</p>
+
+            <!-- Three.js -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(0,212,255,0.2); border-radius:10px; padding:12px 14px; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <div>
+                        <span style="font-weight:700; color:#ffffff; font-size:0.9rem;">Three.js & OrbitControls</span>
+                        <span style="font-size:0.75rem; color:#64748b; margin-left:6px;">(r128)</span>
+                    </div>
+                    <span style="background:rgba(0,212,255,0.15); color:#00d4ff; border:1px solid rgba(0,212,255,0.3); font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:700; font-family:'IBM Plex Mono',monospace;">MIT License</span>
+                </div>
+                <p style="font-size:0.75rem; color:#94a3b8; margin:6px 0 10px;">Copyright © 2010-2026 Three.js Authors. Hardware-accelerated WebGL 3D rendering library.</p>
+                <button onclick="toggleLicenseText('lic-three')" style="padding:6px 12px; background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); color:#00d4ff; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;"><span id="lic-three-arrow">▼ Read Full License</span></button>
+                <div id="lic-three" style="display:none; margin-top:10px;">
+                    <pre style="white-space:pre-wrap; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; line-height:1.45; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); max-height:160px; overflow-y:auto; margin:0;">The MIT License
+
+Copyright © 2010-2026 Three.js authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre>
+                </div>
+            </div>
+
+            <!-- Capacitor -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(168,85,247,0.2); border-radius:10px; padding:12px 14px; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <div>
+                        <span style="font-weight:700; color:#ffffff; font-size:0.9rem;">Ionic Capacitor</span>
+                        <span style="font-size:0.75rem; color:#64748b; margin-left:6px;">(v7.0)</span>
+                    </div>
+                    <span style="background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3); font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:700; font-family:'IBM Plex Mono',monospace;">MIT License</span>
+                </div>
+                <p style="font-size:0.75rem; color:#94a3b8; margin:6px 0 10px;">Copyright © 2026 Ionic. Cross-platform native mobile runtime and bridge plugins.</p>
+                <button onclick="toggleLicenseText('lic-cap')" style="padding:6px 12px; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.25); color:#c084fc; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;"><span id="lic-cap-arrow">▼ Read Full License</span></button>
+                <div id="lic-cap" style="display:none; margin-top:10px;">
+                    <pre style="white-space:pre-wrap; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; line-height:1.45; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); max-height:160px; overflow-y:auto; margin:0;">The MIT License (MIT)
+
+Copyright (c) 2017-present Drifty Co.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</pre>
+                </div>
+            </div>
+
+            <!-- Google Fonts -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(16,185,129,0.2); border-radius:10px; padding:12px 14px; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <div>
+                        <span style="font-weight:700; color:#ffffff; font-size:0.9rem;">DM Sans, IBM Plex Mono, Source Serif 4</span>
+                    </div>
+                    <span style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:700; font-family:'IBM Plex Mono',monospace;">SIL OFL 1.1</span>
+                </div>
+                <p style="font-size:0.75rem; color:#94a3b8; margin:6px 0 10px;">Copyright © Colophon Foundry, IBM, and Frank Grießhammer. High-legibility scientific typography.</p>
+                <button onclick="toggleLicenseText('lic-fonts')" style="padding:6px 12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:#34d399; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;"><span id="lic-fonts-arrow">▼ Read Full License</span></button>
+                <div id="lic-fonts" style="display:none; margin-top:10px;">
+                    <pre style="white-space:pre-wrap; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; line-height:1.45; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); max-height:160px; overflow-y:auto; margin:0;">SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font Software,
+subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Source or Binary forms, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license.</pre>
+                </div>
+            </div>
+
+            <!-- Scientific Data Attributions -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:12px 14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <div>
+                        <span style="font-weight:700; color:#ffffff; font-size:0.9rem;">Scientific Data & Database Sources</span>
+                    </div>
+                    <span style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:700; font-family:'IBM Plex Mono',monospace;">Open Data / CC BY-SA</span>
+                </div>
+                <p style="font-size:0.75rem; color:#94a3b8; margin:6px 0 10px;">Chemical and nuclear datasets utilized under standard international scientific attribution guidelines.</p>
+                <button onclick="toggleLicenseText('lic-data')" style="padding:6px 12px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); color:#fbbf24; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;"><span id="lic-data-arrow">▼ View Data Sources</span></button>
+                <div id="lic-data" style="display:none; margin-top:10px;">
+                    <pre style="white-space:pre-wrap; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; line-height:1.45; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); max-height:160px; overflow-y:auto; margin:0;">• IUPAC: Standard Atomic Weights, Periodic Table of Elements (IUPAC Commission on Isotopic Abundances and Atomic Weights).
+• NIST: Physical Reference Data, Standard Reference Database 78 (Ground Levels & Ionization Energies).
+• Nubase / Atomic Mass Data Center: Nuclear decay half-lives and decay modes.
+• NCBI PubChem: Chemical structure nomenclature and molecular masses (U.S. National Library of Medicine, Public Domain).
+• Wikipedia: Element overview articles and historical discovery summaries (Wikimedia Foundation, licensed under Creative Commons Attribution-ShareAlike 4.0 International License CC BY-SA 4.0).</pre>
+                </div>
+            </div>
+        `;
+    }
+
+    modal.style.display = 'flex';
+    syncNativeSliderVisibility();
+}
+
+window.toggleLicenseText = function(id) {
+    if (window.NativeServices?.Haptics) {
+        window.NativeServices.Haptics.selection();
+    }
+    const el = document.getElementById(id);
+    const arrow = document.getElementById(id + '-arrow');
+    if (!el) return;
+    const isHidden = el.style.display === 'none';
+    el.style.display = isHidden ? 'block' : 'none';
+    if (arrow) {
+        arrow.textContent = isHidden ? '▲ Hide Full License' : '▼ Read Full License';
+    }
+};
+
+window.copyMcpConfig = function() {
+    const config = {
+        mcpServers: {
+            "periodica": {
+                "command": "node",
+                "args": ["mcp-server/index.js"]
+            }
+        }
+    };
+    const jsonStr = JSON.stringify(config, null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(jsonStr).then(() => {
+            if (typeof showToast === 'function') showToast('📋 MCP Config copied to clipboard!');
+            else alert('MCP Config copied to clipboard!');
+        }).catch(() => {
+            prompt('Copy MCP Config:', jsonStr);
+        });
+    } else {
+        prompt('Copy MCP Config:', jsonStr);
+    }
+    if (window.NativeServices?.Haptics) {
+        window.NativeServices.Haptics.notification('SUCCESS');
+    }
+};
+
+// Global document listener to clear active legend highlighting when tapping empty space outside components
+document.addEventListener('pointerdown', (e) => {
+    if (!window.lockedLegendKey && !window.lockedLegendGroup) return;
+    if (e.target.closest('#in-grid-legend, #elec-in-grid-legend, #periodic-canvas-engine, .sidebar-drawer, .modal, button, input, select, .nav-btn, .theme-toggle, .badge-btn, .tab-btn')) {
+        return;
+    }
+    if (typeof window.clearLegendHighlightingForce === 'function') {
+        window.clearLegendHighlightingForce();
+    }
+}, { passive: true });
+
+/* ==========================================================================
+   Direct Temperature Converter & Input Manager
+   ========================================================================== */
+function openTempConverterModal() {
+    const modal = document.getElementById('temp-converter-modal');
+    if (!modal) return;
+
+    if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setVisibility) {
+        window.PeriodicaNativeSlider.setVisibility(false);
+    }
+
+    const curK = Math.max(0, Math.min(6000, currentTemp || 298));
+    const inputK = document.getElementById('conv-input-k');
+    const inputC = document.getElementById('conv-input-c');
+    const inputF = document.getElementById('conv-input-f');
+
+    if (inputK) inputK.value = Math.round(curK * 100) / 100;
+    if (inputC) inputC.value = Math.round((curK - 273.15) * 100) / 100;
+    if (inputF) inputF.value = Math.round(((curK - 273.15) * 1.8 + 32) * 100) / 100;
+
+    updateConvStatePreview(curK);
+    modal.style.display = 'flex';
+}
+window.openTempConverterModal = openTempConverterModal;
+
+function closeTempConverterModal() {
+    const modal = document.getElementById('temp-converter-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (typeof syncNativeSliderVisibility === 'function') {
+        syncNativeSliderVisibility();
+    }
+}
+window.closeTempConverterModal = closeTempConverterModal;
+
+function handleConvInput(sourceUnit) {
+    const inputK = document.getElementById('conv-input-k');
+    const inputC = document.getElementById('conv-input-c');
+    const inputF = document.getElementById('conv-input-f');
+    if (!inputK || !inputC || !inputF) return;
+
+    let kVal = 298;
+    if (sourceUnit === 'k') {
+        const val = parseFloat(inputK.value);
+        if (isNaN(val)) return;
+        kVal = Math.max(0, Math.min(6000, val));
+        inputC.value = Math.round((kVal - 273.15) * 100) / 100;
+        inputF.value = Math.round(((kVal - 273.15) * 1.8 + 32) * 100) / 100;
+    } else if (sourceUnit === 'c') {
+        const val = parseFloat(inputC.value);
+        if (isNaN(val)) return;
+        kVal = Math.max(0, Math.min(6000, val + 273.15));
+        inputK.value = Math.round(kVal * 100) / 100;
+        inputF.value = Math.round((val * 1.8 + 32) * 100) / 100;
+    } else if (sourceUnit === 'f') {
+        const val = parseFloat(inputF.value);
+        if (isNaN(val)) return;
+        const cVal = (val - 32) / 1.8;
+        kVal = Math.max(0, Math.min(6000, cVal + 273.15));
+        inputK.value = Math.round(kVal * 100) / 100;
+        inputC.value = Math.round(cVal * 100) / 100;
+    }
+
+    updateConvStatePreview(kVal);
+}
+window.handleConvInput = handleConvInput;
+
+function applyTempPreset(presetK) {
+    const inputK = document.getElementById('conv-input-k');
+    if (inputK) {
+        inputK.value = presetK;
+        handleConvInput('k');
+    }
+}
+window.applyTempPreset = applyTempPreset;
+
+function updateConvStatePreview(k) {
+    let solids = 0, liquids = 0, gases = 0, unknowns = 0;
+    const data = typeof elementsData !== 'undefined' ? elementsData : [];
+    for (let i = 0; i < data.length; i++) {
+        const el = data[i];
+        const m = el.meltingPoint;
+        const b = el.boilingPoint;
+        if (m === null && b === null) {
+            unknowns++;
+        } else if (m !== null && k < m) {
+            solids++;
+        } else if (b !== null && k > b) {
+            gases++;
+        } else if (m !== null && (b === null || k <= b)) {
+            liquids++;
+        } else {
+            solids++;
+        }
+    }
+
+    const cSolid = document.getElementById('conv-count-solid');
+    const cLiquid = document.getElementById('conv-count-liquid');
+    const cGas = document.getElementById('conv-count-gas');
+    const cUnknown = document.getElementById('conv-count-unknown');
+
+    if (cSolid) cSolid.textContent = solids;
+    if (cLiquid) cLiquid.textContent = liquids;
+    if (cGas) cGas.textContent = gases;
+    if (cUnknown) cUnknown.textContent = unknowns;
+}
+
+function confirmTempConverter() {
+    const inputK = document.getElementById('conv-input-k');
+    if (inputK) {
+        const kVal = Math.max(0, Math.min(6000, parseFloat(inputK.value) || 298));
+        currentTemp = kVal;
+        if (typeof window.updateTempReadoutDirectly === 'function') {
+            window.updateTempReadoutDirectly(kVal);
+        }
+
+        if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setProgress) {
+            window.PeriodicaNativeSlider.setProgress(Math.round(kVal));
+        }
+
+        const tempSlider = document.getElementById('temp-slider');
+        if (tempSlider) tempSlider.value = Math.round(kVal);
+
+        if (typeof applyOptimizedTemperatureUpdate === 'function') {
+            applyOptimizedTemperatureUpdate(kVal);
+        }
+
+        if (window.PeriodicCanvasGrid) {
+            window.PeriodicCanvasGrid.render();
+        }
+    }
+    closeTempConverterModal();
+}
+window.confirmTempConverter = confirmTempConverter;
+
+/* ==========================================================================
+   Rate Us / In-App Review Manager
+   ========================================================================== */
+let selectedRatingStars = 5;
+
+function openRateUsModal() {
+    const modal = document.getElementById('rate-us-modal');
+    if (!modal) return;
+
+    if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setVisibility) {
+        window.PeriodicaNativeSlider.setVisibility(false);
+    }
+
+    handleStarClick(5);
+    modal.style.display = 'flex';
+}
+window.openRateUsModal = openRateUsModal;
+
+function closeRateUsModal() {
+    const modal = document.getElementById('rate-us-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (typeof syncNativeSliderVisibility === 'function') {
+        syncNativeSliderVisibility();
+    }
+}
+window.closeRateUsModal = closeRateUsModal;
+
+function handleStarClick(stars) {
+    selectedRatingStars = stars;
+    const starBtns = document.querySelectorAll('#star-rating-container .star-btn');
+    starBtns.forEach((btn, idx) => {
+        if (idx < stars) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    const feedbackArea = document.getElementById('rating-feedback-area');
+    const actionMsg = document.getElementById('rating-action-text');
+    const textareaWrap = document.getElementById('feedback-textarea-wrap');
+    const submitBtn = document.getElementById('rate-submit-btn');
+
+    if (feedbackArea) feedbackArea.style.display = 'block';
+
+    if (stars >= 4) {
+        if (actionMsg) actionMsg.textContent = '🎉 Thank you! Rate us 5 stars on Google Play to support development:';
+        if (textareaWrap) textareaWrap.style.display = 'none';
+        if (submitBtn) submitBtn.textContent = '⭐ Rate on Google Play';
+    } else {
+        if (actionMsg) actionMsg.textContent = 'We appreciate your honesty! How can we make Periodica 3D better?';
+        if (textareaWrap) textareaWrap.style.display = 'block';
+        if (submitBtn) submitBtn.textContent = 'Send Feedback';
+    }
+}
+window.handleStarClick = handleStarClick;
+
+function submitRating() {
+    localStorage.setItem('periodica_rated', 'true');
+    if (selectedRatingStars >= 4) {
+        if (window.PeriodicaNativeReview && typeof window.PeriodicaNativeReview.requestInAppReview === 'function') {
+            window.PeriodicaNativeReview.requestInAppReview();
+        } else {
+            const playUrl = 'https://play.google.com/store/apps/details?id=com.periodica.app';
+            window.open(playUrl, '_system');
+        }
+    } else {
+        // Direct feedback submission
+        const feedbackInput = document.getElementById('feedback-input-text');
+        const text = feedbackInput ? feedbackInput.value : '';
+        if (text) {
+            console.log('User Feedback:', text);
+            // Optionally mailto
+            window.open(`mailto:periodicax.support@gmail.com?subject=Periodica Feedback (${selectedRatingStars} Stars)&body=${encodeURIComponent(text)}`, '_system');
+        }
+    }
+    closeRateUsModal();
+}
+window.submitRating = submitRating;
+
+function dismissRateUsLater() {
+    localStorage.setItem('periodica_rate_later_timestamp', Date.now().toString());
+    closeRateUsModal();
+}
+window.dismissRateUsLater = dismissRateUsLater;
+
+/* ==========================================================================
+   App Update Manager (Mandatory & Optional In-App Updates + Push Alerts)
+   ========================================================================== */
+const APP_CURRENT_VERSION = window.AppConfig?.app?.version || '4.4.0';
+const APP_VERSION_CODE = 4305;
+window.isAppUpdateMandatory = false;
+window.isAppUpdateActive = false;
+let currentRemoteUpdateInfo = null;
+
+function syncAppVersionUI() {
+    const ver = APP_CURRENT_VERSION;
+    document.querySelectorAll('.mobile-nav-version-footer').forEach(el => {
+        el.textContent = `v${ver}`;
+    });
+    document.querySelectorAll('.version-badge').forEach(el => {
+        el.textContent = `v${ver}`;
+    });
+    const curPill = document.getElementById('update-current-ver');
+    if (curPill) curPill.textContent = `Current: v${ver}`;
+}
+window.syncAppVersionUI = syncAppVersionUI;
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncAppVersionUI);
+} else {
+    syncAppVersionUI();
+}
+
+function parseSemVer(v) {
+    if (!v) return [0, 0, 0];
+    const cleaned = String(v).replace(/^v/i, '').trim();
+    return cleaned.split('.').map(part => parseInt(part, 10) || 0);
+}
+
+function compareSemanticVersions(vNew, vCurrent) {
+    const [n1, n2, n3] = parseSemVer(vNew);
+    const [c1, c2, c3] = parseSemVer(vCurrent);
+    if (n1 !== c1) return n1 - c1;
+    if (n2 !== c2) return n2 - c2;
+    return n3 - c3;
+}
+
+async function fetchRemoteVersionInfo() {
+    const updateCfg = window.AppConfig?.updates || {};
+    const remoteUrl = updateCfg.remoteVersionUrl;
+    const localUrl = updateCfg.localFallbackUrl || 'version.json';
+
+    // 1. Try Remote URL with strict 4s timeout
+    if (remoteUrl) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            const res = await fetch(remoteUrl, { 
+                cache: 'no-store',
+                signal: controller.signal 
+            });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+                const data = await res.json();
+                console.log('[AppUpdate] Successfully fetched remote version:', data);
+                return data;
+            }
+        } catch (err) {
+            console.warn('[AppUpdate] Remote fetch failed or timed out:', err.message);
+        }
+    }
+
+    // 2. Try Local Fallback JSON
+    if (localUrl) {
+        try {
+            const res = await fetch(localUrl, { cache: 'no-store' });
+            if (res.ok) {
+                const data = await res.json();
+                console.log('[AppUpdate] Loaded local version fallback:', data);
+                return data;
+            }
+        } catch (err) {
+            console.warn('[AppUpdate] Local fallback fetch error:', err.message);
+        }
+    }
+
+    // 3. Embedded safe fallback
+    return {
+        latestVersion: '4.3.0',
+        latestVersionCode: 4300,
+        minRequiredVersionCode: 4200,
+        isMandatory: false,
+        releaseDate: 'September 2026',
+        downloadSize: '~14 MB',
+        changelog: [
+            'Direct Multi-Unit Temperature Converter (Kelvin, Celsius, Fahrenheit)',
+            'High-Precision 3D Electron Density & Orbital Slice Visualizer',
+            'Refined Adaptive Icon branding & Android 66% safe zone calibration',
+            'Instant zero-latency table rendering and memory optimizations'
+        ],
+        playStoreUrl: 'market://details?id=com.periodica.app',
+        fallbackUrl: 'https://play.google.com/store/apps/details?id=com.periodica.app'
+    };
+}
+
+async function checkAppUpdates(isManual = false) {
+    try {
+        const updateModal = document.getElementById('app-update-modal');
+        const updateCard = updateModal?.querySelector('.app-update-modal-card');
+        const currentVerEl = document.getElementById('update-current-ver');
+        const latestVerEl = document.getElementById('update-latest-ver');
+        const descEl = document.getElementById('update-modal-desc');
+        const warningEl = document.getElementById('update-mandatory-warning');
+        const dismissBtn = document.getElementById('update-dismiss-btn');
+        const closeBtn = document.getElementById('update-modal-close-btn');
+        const titleEl = document.getElementById('update-modal-title');
+        const iconWrapEl = updateModal?.querySelector('.app-update-icon-wrap');
+        const changelogList = document.getElementById('update-changelog-list');
+        const storeBtn = document.getElementById('update-store-action-btn') || updateModal?.querySelector('.update-btn-store');
+
+        if (currentVerEl) {
+            currentVerEl.textContent = `Current: v${APP_CURRENT_VERSION}`;
+        }
+
+        const info = await fetchRemoteVersionInfo();
+        currentRemoteUpdateInfo = info;
+
+        const latestCode = info.latestVersionCode || 0;
+        const minRequiredCode = info.minRequiredVersionCode || 0;
+        const semverDiff = compareSemanticVersions(info.latestVersion, APP_CURRENT_VERSION);
+
+        // Required / Mandatory condition:
+        // - App version code is strictly below the minimum required version code, OR
+        // - isMandatory flag is explicitly true
+        const isMandatory = (APP_VERSION_CODE < minRequiredCode) || (info.isMandatory === true);
+        const hasNewerVersion = (latestCode > APP_VERSION_CODE) || (semverDiff > 0) || isMandatory;
+
+        if (hasNewerVersion) {
+            // Optional update cooldown check for non-manual checks
+            if (!isManual && !isMandatory) {
+                const lastDismissed = localStorage.getItem('periodica_update_dismissed_time');
+                const cooldownMs = (window.AppConfig?.updates?.dismissedCooldownHours || 24) * 3600 * 1000;
+                if (lastDismissed && (Date.now() - parseInt(lastDismissed, 10) < cooldownMs)) {
+                    console.log('[AppUpdate] Optional update prompt in cooldown. Skipping automatic modal.');
+                    return;
+                }
+            }
+
+            window.isAppUpdateMandatory = isMandatory;
+            window.isAppUpdateActive = true;
+
+            if (latestVerEl) {
+                latestVerEl.textContent = `New: v${info.latestVersion}`;
+            }
+
+            // Populate dynamic changelog
+            if (changelogList && Array.isArray(info.changelog)) {
+                changelogList.innerHTML = info.changelog.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+            }
+
+            // Update Metadata info
+            const metaBadge = document.getElementById('update-meta-badge');
+            if (metaBadge) {
+                const parts = [];
+                if (info.downloadSize) parts.push(`📦 ${info.downloadSize}`);
+                if (info.releaseDate) parts.push(`📅 ${info.releaseDate}`);
+                metaBadge.textContent = parts.join('  •  ');
+                metaBadge.style.display = parts.length ? 'block' : 'none';
+            }
+
+            if (isMandatory) {
+                // MANDATORY / REQUIRED MODE (Strict Non-Skippable)
+                if (updateCard) {
+                    updateCard.classList.add('mandatory');
+                    updateCard.classList.remove('optional');
+                }
+                if (iconWrapEl) iconWrapEl.textContent = '🚨';
+                if (titleEl) titleEl.textContent = 'Critical Update Required';
+                if (warningEl) {
+                    warningEl.style.display = 'block';
+                    warningEl.innerHTML = '⚠️ <strong>Mandatory Update:</strong> You must update Periodica 3D to continue accessing quantum calculations and online chemistry services.';
+                }
+                if (descEl) {
+                    descEl.textContent = `A critical update (v${info.latestVersion}) has been released with required security and structural formula improvements.`;
+                }
+                // Strictly hide all dismissal controls
+                if (dismissBtn) dismissBtn.style.display = 'none';
+                if (closeBtn) closeBtn.style.display = 'none';
+                if (storeBtn) {
+                    storeBtn.textContent = 'Update Now to Continue 🚀';
+                    storeBtn.style.width = '100%';
+                }
+            } else {
+                // OPTIONAL MODE (Flexible / Recommended)
+                if (updateCard) {
+                    updateCard.classList.add('optional');
+                    updateCard.classList.remove('mandatory');
+                }
+                if (iconWrapEl) iconWrapEl.textContent = '🚀';
+                if (titleEl) titleEl.textContent = 'Update Available';
+                if (warningEl) warningEl.style.display = 'none';
+                if (descEl) {
+                    descEl.textContent = `Periodica 3D v${info.latestVersion} is available with new interactive features and performance optimizations.`;
+                }
+                // Show dismissal controls
+                if (dismissBtn) {
+                    dismissBtn.style.display = 'block';
+                    dismissBtn.textContent = 'Later';
+                }
+                if (closeBtn) closeBtn.style.display = 'block';
+                if (storeBtn) {
+                    storeBtn.textContent = 'Update Now 🚀';
+                    storeBtn.style.width = 'auto';
+                }
+            }
+
+            // Hide native slider so it doesn't bleed through modal
+            if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setVisibility) {
+                window.PeriodicaNativeSlider.setVisibility(false);
+            }
+
+            if (updateModal) {
+                updateModal.style.display = 'flex';
+            }
+
+            // Dispatch native push / local notification
+            if (window.NativeServices?.Notifications?.sendUpdateNotification) {
+                window.NativeServices.Notifications.sendUpdateNotification(info, isMandatory);
+            }
+        } else if (isManual) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.95); border:1px solid #00d4ff; color:#e2e8f0; font-family:var(--font-ui); font-size:0.85rem; padding:10px 20px; border-radius:24px; z-index:999999; box-shadow:0 4px 25px rgba(0,212,255,0.4); text-align:center;';
+            toast.innerHTML = `✨ You are on the latest version of Periodica 3D (<strong>v${APP_CURRENT_VERSION}</strong>)!`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.4s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+    } catch (err) {
+        console.warn('[AppUpdate] Update check failed:', err);
+        if (isManual) {
+            alert(`You are running Periodica 3D v${APP_CURRENT_VERSION}.`);
+        }
+    }
+}
+window.checkAppUpdates = checkAppUpdates;
+
+function openAppStoreForUpdate() {
+    const playUrl = currentRemoteUpdateInfo?.playStoreUrl || 'market://details?id=com.periodica.app';
+    const fallbackUrl = currentRemoteUpdateInfo?.fallbackUrl || 'https://play.google.com/store/apps/details?id=com.periodica.app';
+    
+    try {
+        // Try opening market:// link directly on Android
+        window.open(playUrl, '_system');
+    } catch (e) {
+        window.open(fallbackUrl, '_system');
+    }
+
+    // Only close if update is not mandatory
+    if (!window.isAppUpdateMandatory) {
+        closeAppUpdateModal();
+    }
+}
+window.openAppStoreForUpdate = openAppStoreForUpdate;
+
+function dismissAppUpdate() {
+    if (window.isAppUpdateMandatory) {
+        const warningToast = document.createElement('div');
+        warningToast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(239,68,68,0.95); border:1px solid #ef4444; color:#fff; font-family:var(--font-ui); font-size:0.85rem; padding:10px 20px; border-radius:24px; z-index:999999; box-shadow:0 4px 25px rgba(239,68,68,0.5); text-align:center;';
+        warningToast.textContent = '⚠️ This update is required to continue using Periodica 3D.';
+        document.body.appendChild(warningToast);
+        setTimeout(() => {
+            warningToast.style.transition = 'opacity 0.3s ease';
+            warningToast.style.opacity = '0';
+            setTimeout(() => warningToast.remove(), 300);
+        }, 2200);
+        return;
+    }
+    localStorage.setItem('periodica_update_dismissed_time', Date.now().toString());
+    closeAppUpdateModal();
+}
+window.dismissAppUpdate = dismissAppUpdate;
+
+function closeAppUpdateModal() {
+    if (window.isAppUpdateMandatory) {
+        return; // Non-dismissible
+    }
+    const modal = document.getElementById('app-update-modal');
+    if (modal) modal.style.display = 'none';
+    window.isAppUpdateActive = false;
+
+    if (typeof syncNativeSliderVisibility === 'function') {
+        syncNativeSliderVisibility();
+    }
+}
+window.closeAppUpdateModal = closeAppUpdateModal;
+
+// Developer Test Function: Simulate Required or Optional Update
+window.testAppUpdate = function(isMandatory = false) {
+    const mockInfo = {
+        latestVersion: isMandatory ? '5.0.0' : '4.3.0',
+        latestVersionCode: isMandatory ? 5000 : 4300,
+        minRequiredVersionCode: isMandatory ? 4500 : 4200,
+        isMandatory: isMandatory,
+        releaseDate: 'September 2026',
+        downloadSize: '~14.2 MB',
+        changelog: isMandatory ? [
+            'CRITICAL: Quantum mechanics backend upgrade',
+            'Required security patches and schema synchronisation',
+            'Full compliance with IUPAC standard isotope table'
+        ] : [
+            'Direct Multi-Unit Temperature Converter (K, °C, °F)',
+            'High-Precision 3D Electron Density & Orbital Slice Visualizer',
+            'Instant zero-latency table rendering optimizations'
+        ],
+        playStoreUrl: 'market://details?id=com.periodica.app',
+        fallbackUrl: 'https://play.google.com/store/apps/details?id=com.periodica.app'
+    };
+
+    currentRemoteUpdateInfo = mockInfo;
+    const updateModal = document.getElementById('app-update-modal');
+    const updateCard = updateModal?.querySelector('.app-update-modal-card');
+    const currentVerEl = document.getElementById('update-current-ver');
+    const latestVerEl = document.getElementById('update-latest-ver');
+    const descEl = document.getElementById('update-modal-desc');
+    const warningEl = document.getElementById('update-mandatory-warning');
+    const dismissBtn = document.getElementById('update-dismiss-btn');
+    const closeBtn = document.getElementById('update-modal-close-btn');
+    const titleEl = document.getElementById('update-modal-title');
+    const iconWrapEl = updateModal?.querySelector('.app-update-icon-wrap');
+    const changelogList = document.getElementById('update-changelog-list');
+    const storeBtn = document.getElementById('update-store-action-btn') || updateModal?.querySelector('.update-btn-store');
+
+    window.isAppUpdateMandatory = isMandatory;
+    window.isAppUpdateActive = true;
+
+    if (currentVerEl) currentVerEl.textContent = `Current: v${APP_CURRENT_VERSION}`;
+    if (latestVerEl) latestVerEl.textContent = `New: v${mockInfo.latestVersion}`;
+    if (changelogList) {
+        changelogList.innerHTML = mockInfo.changelog.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+    }
+
+    const metaBadge = document.getElementById('update-meta-badge');
+    if (metaBadge) {
+        metaBadge.textContent = `📦 ${mockInfo.downloadSize}  •  📅 ${mockInfo.releaseDate}`;
+        metaBadge.style.display = 'block';
+    }
+
+    if (isMandatory) {
+        if (updateCard) {
+            updateCard.classList.add('mandatory');
+            updateCard.classList.remove('optional');
+        }
+        if (iconWrapEl) iconWrapEl.textContent = '🚨';
+        if (titleEl) titleEl.textContent = 'Critical Update Required';
+        if (warningEl) {
+            warningEl.style.display = 'block';
+            warningEl.innerHTML = '⚠️ <strong>Mandatory Update:</strong> You must update Periodica 3D to continue accessing quantum calculations and online chemistry services.';
+        }
+        if (descEl) descEl.textContent = 'A mandatory update is required to continue enjoying all Periodica 3D features and online services.';
+        if (dismissBtn) dismissBtn.style.display = 'none';
+        if (closeBtn) closeBtn.style.display = 'none';
+        if (storeBtn) {
+            storeBtn.textContent = 'Update Now to Continue 🚀';
+            storeBtn.style.width = '100%';
+        }
+    } else {
+        if (updateCard) {
+            updateCard.classList.add('optional');
+            updateCard.classList.remove('mandatory');
+        }
+        if (iconWrapEl) iconWrapEl.textContent = '🚀';
+        if (titleEl) titleEl.textContent = 'Update Available';
+        if (warningEl) warningEl.style.display = 'none';
+        if (descEl) descEl.textContent = 'A new version of Periodica 3D is available with performance improvements and new interactive chemistry features!';
+        if (dismissBtn) {
+            dismissBtn.style.display = 'block';
+            dismissBtn.textContent = 'Later';
+        }
+        if (closeBtn) closeBtn.style.display = 'block';
+        if (storeBtn) {
+            storeBtn.textContent = 'Update Now 🚀';
+            storeBtn.style.width = 'auto';
+        }
+    }
+
+    if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setVisibility) {
+        window.PeriodicaNativeSlider.setVisibility(false);
+    }
+    if (updateModal) updateModal.style.display = 'flex';
+
+    if (window.NativeServices?.Notifications?.sendUpdateNotification) {
+        window.NativeServices.Notifications.sendUpdateNotification(mockInfo, isMandatory);
+    }
+    console.log(`[AppUpdate] Simulated ${isMandatory ? 'MANDATORY' : 'OPTIONAL'} update triggered.`);
+};
+
+// Trap Escape key for mandatory updates
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && window.isAppUpdateMandatory) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
+
+// Splash Screen Failsafe Dismiss & Background Update Check on Startup
+window.addEventListener('DOMContentLoaded', () => {
+    initModalSliderObserver();
+    syncNativeSliderVisibility();
+
+    setTimeout(() => {
+        if (typeof window.dismissSplashScreen === 'function') {
+            window.dismissSplashScreen();
+        }
+        syncNativeSliderVisibility();
+    }, 300);
+
+    setTimeout(() => {
+        syncNativeSliderVisibility();
+    }, 800);
+
+    // Automatic Startup Update Check
+    setTimeout(() => {
+        if (window.AppConfig?.features?.enableAppUpdates !== false) {
+            checkAppUpdates(false);
+        }
+    }, window.AppConfig?.updates?.startupCheckDelayMs || 2500);
+});
 

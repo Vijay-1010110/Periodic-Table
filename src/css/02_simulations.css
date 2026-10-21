@@ -1,0 +1,668 @@
+/**
+ * PERIODICA 3D - Simulation Lab & Physics Suite Styles
+ * High-tech glassmorphism, full-bleed interactive canvas, and mobile-first thumb dock.
+ * (c) 2026 Periodica 3D | Developer: Vijay-1010110
+ */
+
+/* Main Simulation Viewport Container */
+#view-simulations {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 30%, #0d1527 0%, #050811 100%);
+    position: relative;
+    user-select: none;
+}
+
+#view-simulations.active {
+    display: flex !important;
+}
+
+/* Simulation Top Header & Mode Tabs */
+.sim-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: rgba(15, 23, 42, 0.90);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1.5px solid rgba(0, 212, 255, 0.25);
+    z-index: 20;
+    gap: 8px;
+    flex-shrink: 0;
+    min-height: 44px;
+}
+
+.sim-tabs-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-width: 0;
+}
+
+.sim-tabs-row::-webkit-scrollbar {
+    display: none;
+}
+
+.sim-beta-tag {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.20));
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    color: #00d4ff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.sim-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.80rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sim-tab-btn:hover {
+    background: rgba(0, 212, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.sim-tab-btn.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(168, 85, 247, 0.25));
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
+}
+
+.tab-txt-short {
+    display: none;
+}
+.tab-txt-full {
+    display: inline;
+}
+
+/* Clean Top Action Strip */
+.sim-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sim-ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #e2e8f0;
+    font-size: 0.86rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.sim-ctrl-btn:hover {
+    background: rgba(0, 212, 255, 0.25);
+    border-color: #00d4ff;
+    color: #ffffff;
+}
+
+.sim-ctrl-btn:active {
+    transform: scale(0.92);
+}
+
+.sim-ctrl-btn.guide-btn {
+    width: auto;
+    padding: 0 9px;
+    gap: 4px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.16), rgba(168, 85, 247, 0.16));
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    color: #00d4ff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+}
+
+/* Simulation Workspace & 100% Unobstructed Canvas Stage */
+.sim-workspace {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.sim-viewport-stage {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #020408;
+}
+
+.sim-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: crosshair;
+}
+
+/* ==================== FLOATING DYNAMIC STATUS NARRATOR PILL ==================== */
+.sim-narrator-pill {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin: 0 auto;
+    max-width: 90%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 212, 255, 0.15);
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.sim-narrator-pill .narrator-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.sim-narrator-pill .narrator-msg {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ==================== FLOATING BOTTOM THUMB DECK ==================== */
+.sim-game-deck {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(10, 16, 30, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(0, 212, 255, 0.35);
+    border-radius: 12px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 212, 255, 0.18);
+    pointer-events: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sim-game-deck::-webkit-scrollbar {
+    display: none;
+}
+
+.sim-deck-left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+}
+
+.sim-deck-left::-webkit-scrollbar {
+    display: none;
+}
+
+.sim-deck-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sim-deck-chip {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.sim-deck-chip:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: #ffffff;
+}
+
+.sim-deck-chip.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.32), rgba(168, 85, 247, 0.32));
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+}
+
+.sim-deck-chip.small {
+    padding: 4px 8px;
+    font-size: 0.70rem;
+    border-radius: 6px;
+}
+
+/* Large glowing Hero Action Button */
+.sim-deck-hero-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    touch-action: manipulation;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.sim-deck-hero-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-hero-btn.primary {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
+}
+
+.sim-deck-hero-btn.primary:hover {
+    background: linear-gradient(135deg, #0369a1, #38bdf8);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+}
+
+.sim-deck-hero-btn.danger {
+    background: linear-gradient(135deg, #dc2626, #f43f5e);
+    border: 1.5px solid #f87171;
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+}
+
+.sim-deck-hero-btn.warn {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    border: 1.5px solid #fbbf24;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+}
+
+.sim-deck-hero-btn.cool {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    border: 1.5px solid #7dd3fc;
+    color: #0f172a;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+}
+
+.sim-deck-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #cbd5e1;
+    font-size: 0.74rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+
+.sim-deck-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.sim-deck-tool-btn:active {
+    transform: scale(0.93);
+}
+
+.sim-deck-slider-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 3px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sim-deck-slider-label {
+    font-size: 0.70rem;
+    color: #94a3b8;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sim-deck-slider-label b {
+    color: #00d4ff;
+    font-family: var(--font-mono);
+}
+
+.sim-deck-slider {
+    width: 65px;
+    height: 4px;
+    accent-color: #00d4ff;
+    cursor: pointer;
+}
+
+.sim-deck-select {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    color: #00d4ff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    max-width: 130px;
+}
+
+.sim-deck-toggles {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==================== PEDAGOGICAL GUIDE MODAL ==================== */
+.sim-guide-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.sim-guide-modal-card {
+    background: #0b1120;
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 14px;
+    width: min(580px, 94vw);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2);
+    animation: simModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes simModalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.sim-guide-modal-header {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sim-guide-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.sim-guide-modal-title h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-family: var(--font-ui);
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.sim-guide-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.15s ease;
+}
+
+.sim-guide-modal-close:hover {
+    color: #ffffff;
+}
+
+.sim-guide-modal-body {
+    padding: 14px 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.80rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+}
+
+.sim-guide-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    padding: 9px 12px;
+}
+
+.sim-guide-card h4 {
+    margin: 0 0 4px;
+    color: #38bdf8;
+    font-size: 0.84rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sim-guide-card p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.77rem;
+    line-height: 1.4;
+}
+
+.sim-guide-modal-footer {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sim-guide-confirm-btn {
+    background: linear-gradient(135deg, #0284c7, #00d4ff);
+    border: 1.5px solid #38bdf8;
+    color: #020617;
+    font-weight: 800;
+    font-size: 0.82rem;
+    padding: 7px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    transition: all 0.15s ease;
+}
+
+.sim-guide-confirm-btn:hover {
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.6);
+}
+
+.sim-guide-confirm-btn:active {
+    transform: scale(0.95);
+}
+
+/* ==================== MOBILE & TOUCHSCREEN RESPONSIVE RULES ==================== */
+@media (max-width: 900px), (max-height: 500px) {
+    .tab-txt-short {
+        display: inline;
+    }
+    .tab-txt-full {
+        display: none;
+    }
+
+    .sim-header-bar {
+        padding: 4px 6px;
+        gap: 5px;
+        min-height: 40px;
+    }
+
+    .sim-tab-btn {
+        padding: 4px 7px;
+        font-size: 0.74rem;
+        gap: 4px;
+    }
+
+    .sim-beta-tag {
+        font-size: 0.62rem;
+        padding: 2px 5px;
+    }
+
+    .sim-ctrl-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.80rem;
+    }
+
+    .sim-ctrl-btn.guide-btn {
+        padding: 0 7px;
+        font-size: 0.72rem;
+    }
+
+    .sim-narrator-pill {
+        top: 6px;
+        padding: 2px 10px;
+        max-width: 88%;
+    }
+
+    .sim-narrator-pill .narrator-icon {
+        font-size: 0.75rem;
+    }
+
+    .sim-narrator-pill .narrator-msg {
+        font-size: 0.68rem;
+    }
+
+    .sim-game-deck {
+        bottom: 6px;
+        left: 6px;
+        right: 6px;
+        padding: 4px 8px;
+        gap: 6px;
+        border-radius: 10px;
+    }
+
+    .sim-deck-chip {
+        padding: 4px 7px;
+        font-size: 0.70rem;
+    }
+
+    .sim-deck-hero-btn {
+        padding: 5px 10px;
+        font-size: 0.74rem;
+    }
+
+    .sim-deck-tool-btn {
+        padding: 4px 7px;
+        font-size: 0.70rem;
+    }
+
+    .sim-deck-slider {
+        width: 50px;
+    }
+
+    .sim-deck-select {
+        font-size: 0.68rem;
+        padding: 3px 4px;
+        max-width: 105px;
+    }
+}

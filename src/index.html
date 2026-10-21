@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.4, maximum-scale=3.0, user-scalable=yes">
-    <title>PeriodicaX - 3D Periodic Table & Interactive Chemistry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.4, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
+    <title>Periodica 3D - Periodic Table & Chemistry</title>
     
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -11,143 +11,193 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4EN5NFDF90"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-4EN5NFDF90');
-    </script>
-
-    <meta name="description" content="Explore chemistry through PeriodicaX: a visually stunning 3D periodic table. Dive deep into quantum mechanics, 3D electron orbitals, chemical reactions, isotope decay, and interactive quantum data.">
-    <meta name="keywords" content="chemistry, chemical reaction, 3D electron orbital, quantum mechanics, quantum, electron configuration, periodic table, interactive chemistry, chemical elements, nuclear isotopes, half-life simulator, chemical compounds, crystal structures, chemistry quiz, mendeleev table, atomic mass, electronegativity, atomic radius">
-    <meta name="author" content="PeriodicaX Team">
+    <meta name="description" content="Periodica 3D - Interactive 3D Periodic Table of Elements featuring 3D electron orbitals, nuclear decay simulations, chemical reactions, and physical properties.">
     <meta name="theme-color" content="#0f172a">
-    <link rel="canonical" href="https://vijay-1010110.github.io/Periodic-Table/" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://en.wikipedia.org https://*.wikipedia.org https://pubchem.ncbi.nlm.org https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob: https:; frame-src 'self' https://en.wikipedia.org; connect-src 'self' https://raw.githubusercontent.com https://*.githubusercontent.com https://api.periodica.app https://en.wikipedia.org https://pubchem.ncbi.nlm.org https://fonts.googleapis.com https://fonts.gstatic.com ws://127.0.0.1:* ws://localhost:*; media-src 'self' data: blob:;">
     <link rel="manifest" href="manifest.json">
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-                console.log("Unregistered service worker");
-            }
-        });
-    }
-    </script>
-    
-    <!-- Google Search Console Verification -->
-    <meta name="google-site-verification" content="ZbZNjpiUNBseMfcBvLLECTlBmqwCRTB-NCTmpHa0e70" />
-    
-    <!-- Bing Webmaster Tools Verification (Replace content with your Bing ID) -->
-    <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_ID_HERE" />
-    
-    <!-- Yandex Webmaster Verification (Replace content with your Yandex ID) -->
-    <meta name="yandex-verification" content="YOUR_YANDEX_VERIFICATION_ID_HERE" />
-
-    <!-- Microsoft Clarity Tracking -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/YOUR_CLARITY_ID_HERE";
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script");
-    </script>
-
-    <!-- Google AdSense (Replace client with your ca-pub ID) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID_HERE" crossorigin="anonymous"></script>
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vijay-1010110.github.io/Periodic-Table/">
-    <meta property="og:title" content="PeriodicaX - 3D Periodic Table, Chemistry, Orbitals & Quantum Data">
-    <meta property="og:description" content="Explore chemistry through PeriodicaX: a visually stunning 3D periodic table. Dive deep into quantum mechanics, 3D electron orbitals, chemical reactions, isotope decay, and interactive quantum data.">
-    <meta property="og:image" content="https://vijay-1010110.github.io/Periodic-Table/assets/showcase/main_interface.png">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://vijay-1010110.github.io/Periodic-Table/">
-    <meta property="twitter:title" content="PeriodicaX - 3D Periodic Table, Chemistry, Orbitals & Quantum Data">
-    <meta property="twitter:description" content="Explore chemistry through PeriodicaX: a visually stunning 3D periodic table. Dive deep into quantum mechanics, 3D electron orbitals, chemical reactions, isotope decay, and interactive quantum data.">
-    <meta property="twitter:image" content="https://vijay-1010110.github.io/Periodic-Table/assets/showcase/main_interface.png">
-
-    <!-- Structured Data JSON-LD for Google Search & SEO -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebApplication",
-          "@id": "https://vijay-1010110.github.io/Periodic-Table/#webapp",
-          "url": "https://vijay-1010110.github.io/Periodic-Table/",
-          "name": "PeriodicaX - Interactive 3D Periodic Table of Elements for Chemistry & Quantum Mechanics",
-          "applicationCategory": "EducationalApplication",
-          "operatingSystem": "All",
-          "browserRequirements": "Requires JavaScript. Requires HTML5.",
-          "description": "Interactive Periodic Table featuring 3D electron orbitals, quantum mechanics data, chemical reactions, nuclear isotopes half-life simulator, 3D crystal structures, and element comparison matrix."
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "What is PeriodicaX?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "PeriodicaX is an interactive, modern 3D web platform for exploring the periodic table of elements, quantum chemistry, 3D atomic orbitals, nuclear isotope decay simulations, chemical reaction balancing, and crystal lattices."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How do I view 3D electron orbitals?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Navigate to the 'Electrons & Orbitals' tab or URL hashtag #orbitals to interact with real-time 3D quantum mechanical orbital visualizers, electron configurations, and quantum chemistry data for any element."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Does PeriodicaX support isotope decay simulations?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, under the 'Isotopes' tab (#isotopes), you can simulate nuclear half-lives with an interactive 100-atom particle chamber for both stable and radioactive isotopes."
-              }
-            }
-          ]
-        }
-      ]
-    }
-    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
     
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-    <!-- Scripts -->
-    <script src="js/13_platform.js"></script>
-    <script src="js/01_data.js"></script>
-    <script src="js/04_isotopes_data.js"></script>
-    <script src="js/05_isotopes.js"></script>
-    <script src="js/06_emulator.js"></script>
-    <script src="js/02_main.js"></script>
-    <script src="js/03_orbitals.js"></script>
+    <!-- Local Offline Three.js & OrbitControls -->
+    <script src="assets/vendor/three.min.js"></script>
+    <script src="assets/vendor/OrbitControls.js"></script>
 
     <!-- CSS_INJECT -->
 </head>
 <body class="theme-dark">
+    <!-- ===================== SKELETON PERIODIC TABLE SPLASH SCREEN ===================== -->
+    <div id="app-splash-skeleton" class="app-splash-skeleton">
+        <!-- Shimmering Placeholder Top Bar -->
+        <div class="splash-top-bar-placeholder">
+            <div class="splash-brand-pill">
+                <div class="splash-logo-mini"></div>
+                <div class="splash-brand-text-ph"></div>
+            </div>
+            <div class="splash-slider-ph"></div>
+            <div class="splash-temp-ph"></div>
+        </div>
+
+        <!-- 18-Column Periodic Table Skeleton Matrix -->
+        <div class="splash-table-matrix-wrapper">
+            <div class="splash-table-matrix">
+<div class="sk-cell" style="grid-column:1;grid-row:1;"><span class="sk-z">1</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:1;"><span class="sk-z">2</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:2;"><span class="sk-z">3</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:2;"><span class="sk-z">4</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:2;"><span class="sk-z">5</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:2;"><span class="sk-z">6</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:2;"><span class="sk-z">7</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:2;"><span class="sk-z">8</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:2;"><span class="sk-z">9</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:2;"><span class="sk-z">10</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:3;"><span class="sk-z">11</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:3;"><span class="sk-z">12</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:3;"><span class="sk-z">13</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:3;"><span class="sk-z">14</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:3;"><span class="sk-z">15</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:3;"><span class="sk-z">16</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:3;"><span class="sk-z">17</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:3;"><span class="sk-z">18</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:4;"><span class="sk-z">19</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:4;"><span class="sk-z">20</span></div>
+<div class="sk-cell" style="grid-column:3;grid-row:4;"><span class="sk-z">21</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:4;"><span class="sk-z">22</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:4;"><span class="sk-z">23</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:4;"><span class="sk-z">24</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:4;"><span class="sk-z">25</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:4;"><span class="sk-z">26</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:4;"><span class="sk-z">27</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:4;"><span class="sk-z">28</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:4;"><span class="sk-z">29</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:4;"><span class="sk-z">30</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:4;"><span class="sk-z">31</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:4;"><span class="sk-z">32</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:4;"><span class="sk-z">33</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:4;"><span class="sk-z">34</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:4;"><span class="sk-z">35</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:4;"><span class="sk-z">36</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:5;"><span class="sk-z">37</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:5;"><span class="sk-z">38</span></div>
+<div class="sk-cell" style="grid-column:3;grid-row:5;"><span class="sk-z">39</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:5;"><span class="sk-z">40</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:5;"><span class="sk-z">41</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:5;"><span class="sk-z">42</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:5;"><span class="sk-z">43</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:5;"><span class="sk-z">44</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:5;"><span class="sk-z">45</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:5;"><span class="sk-z">46</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:5;"><span class="sk-z">47</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:5;"><span class="sk-z">48</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:5;"><span class="sk-z">49</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:5;"><span class="sk-z">50</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:5;"><span class="sk-z">51</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:5;"><span class="sk-z">52</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:5;"><span class="sk-z">53</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:5;"><span class="sk-z">54</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:6;"><span class="sk-z">55</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:6;"><span class="sk-z">56</span></div>
+<div class="sk-cell sk-ph" style="grid-column:3;grid-row:6;">57-71</div>
+<div class="sk-cell" style="grid-column:3;grid-row:8;"><span class="sk-z">57</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:8;"><span class="sk-z">58</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:8;"><span class="sk-z">59</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:8;"><span class="sk-z">60</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:8;"><span class="sk-z">61</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:8;"><span class="sk-z">62</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:8;"><span class="sk-z">63</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:8;"><span class="sk-z">64</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:8;"><span class="sk-z">65</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:8;"><span class="sk-z">66</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:8;"><span class="sk-z">67</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:8;"><span class="sk-z">68</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:8;"><span class="sk-z">69</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:8;"><span class="sk-z">70</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:8;"><span class="sk-z">71</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:6;"><span class="sk-z">72</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:6;"><span class="sk-z">73</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:6;"><span class="sk-z">74</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:6;"><span class="sk-z">75</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:6;"><span class="sk-z">76</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:6;"><span class="sk-z">77</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:6;"><span class="sk-z">78</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:6;"><span class="sk-z">79</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:6;"><span class="sk-z">80</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:6;"><span class="sk-z">81</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:6;"><span class="sk-z">82</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:6;"><span class="sk-z">83</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:6;"><span class="sk-z">84</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:6;"><span class="sk-z">85</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:6;"><span class="sk-z">86</span></div>
+<div class="sk-cell" style="grid-column:1;grid-row:7;"><span class="sk-z">87</span></div>
+<div class="sk-cell" style="grid-column:2;grid-row:7;"><span class="sk-z">88</span></div>
+<div class="sk-cell sk-ph" style="grid-column:3;grid-row:7;">89-103</div>
+<div class="sk-cell" style="grid-column:3;grid-row:9;"><span class="sk-z">89</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:9;"><span class="sk-z">90</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:9;"><span class="sk-z">91</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:9;"><span class="sk-z">92</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:9;"><span class="sk-z">93</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:9;"><span class="sk-z">94</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:9;"><span class="sk-z">95</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:9;"><span class="sk-z">96</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:9;"><span class="sk-z">97</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:9;"><span class="sk-z">98</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:9;"><span class="sk-z">99</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:9;"><span class="sk-z">100</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:9;"><span class="sk-z">101</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:9;"><span class="sk-z">102</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:9;"><span class="sk-z">103</span></div>
+<div class="sk-cell" style="grid-column:4;grid-row:7;"><span class="sk-z">104</span></div>
+<div class="sk-cell" style="grid-column:5;grid-row:7;"><span class="sk-z">105</span></div>
+<div class="sk-cell" style="grid-column:6;grid-row:7;"><span class="sk-z">106</span></div>
+<div class="sk-cell" style="grid-column:7;grid-row:7;"><span class="sk-z">107</span></div>
+<div class="sk-cell" style="grid-column:8;grid-row:7;"><span class="sk-z">108</span></div>
+<div class="sk-cell" style="grid-column:9;grid-row:7;"><span class="sk-z">109</span></div>
+<div class="sk-cell" style="grid-column:10;grid-row:7;"><span class="sk-z">110</span></div>
+<div class="sk-cell" style="grid-column:11;grid-row:7;"><span class="sk-z">111</span></div>
+<div class="sk-cell" style="grid-column:12;grid-row:7;"><span class="sk-z">112</span></div>
+<div class="sk-cell" style="grid-column:13;grid-row:7;"><span class="sk-z">113</span></div>
+<div class="sk-cell" style="grid-column:14;grid-row:7;"><span class="sk-z">114</span></div>
+<div class="sk-cell" style="grid-column:15;grid-row:7;"><span class="sk-z">115</span></div>
+<div class="sk-cell" style="grid-column:16;grid-row:7;"><span class="sk-z">116</span></div>
+<div class="sk-cell" style="grid-column:17;grid-row:7;"><span class="sk-z">117</span></div>
+<div class="sk-cell" style="grid-column:18;grid-row:7;"><span class="sk-z">118</span></div>
+            </div>
+        </div>
+
+        <!-- Centered Chemistry Loading HUD with Blurring Backdrop -->
+        <div class="splash-loading-center-hud">
+            <div class="splash-atom-orbital-wrap">
+                <div class="splash-orbit ring-1"></div>
+                <div class="splash-orbit ring-2"></div>
+                <div class="splash-orbit ring-3"></div>
+                <img src="favicon.svg" class="splash-carbon-box-svg" width="56" height="56" style="border-radius: 12px; filter: drop-shadow(0 0 14px rgba(168,85,247,0.85)); flex-shrink: 0;" alt="Periodica Logo" />
+            </div>
+            <div class="splash-brand-heading">Periodica 3D</div>
+            <div class="splash-progress-track">
+                <div class="splash-progress-bar"></div>
+            </div>
+            <div class="splash-loading-text">Initializing Periodic Table Engine...</div>
+        </div>
+    </div>
+
 
     <!-- Mobile Left Collapsible Sidebar (Mobile Landscape Only) -->
     <aside id="mobile-left-nav" class="mobile-left-nav collapsed">
         <button id="mobile-nav-toggle" class="mobile-nav-toggle-btn" title="Toggle Navigation">
-            <span class="nav-icon">☰</span>
-            <span class="nav-text">PeriodicaX</span>
+            <div class="mobile-nav-logo-wrap" style="position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <img src="favicon.svg" class="mobile-nav-carbon-logo" width="24" height="24" style="border-radius: 5px; filter: drop-shadow(0 0 6px rgba(168,85,247,0.7)); flex-shrink: 0;" alt="Periodica Logo" />
+                <span id="sidebar-logo-pro-badge" class="logo-pro-badge" style="display: none;">PRO</span>
+            </div>
+            <span class="nav-text" style="font-weight:800; font-family:var(--font-ui); background:linear-gradient(135deg, #ffffff, #00d4ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Periodica 3D</span>
         </button>
+        <div id="sidebar-tier-widget" class="sidebar-tier-widget free" onclick="handleTierBadgeClick()" title="Periodica Tier">
+            <div class="sidebar-tier-icon">⭐</div>
+            <div class="sidebar-tier-details">
+                <span class="sidebar-tier-name">Free Plan</span>
+                <span class="sidebar-tier-sub">Tap to Unlock Pro ➔</span>
+            </div>
+        </div>
         <div class="mobile-nav-items">
             <button class="mobile-nav-item active" data-view="main" title="Property Interface">
                 <span class="nav-icon">⚛️</span>
@@ -156,81 +206,100 @@
             <button class="mobile-nav-item" data-view="electrons" title="Electrons & Orbitals">
                 <span class="nav-icon">🌌</span>
                 <span class="nav-text">Electrons</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="isotopes" title="Isotopes">
                 <span class="nav-icon">🧪</span>
                 <span class="nav-text">Isotopes</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="compounds" title="Compounds">
                 <span class="nav-icon">🧬</span>
                 <span class="nav-text">Compounds</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="reactions" title="Reactions">
                 <span class="nav-icon">💥</span>
                 <span class="nav-text">Reactions</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="crystals" title="Crystals">
                 <span class="nav-icon">🧊</span>
                 <span class="nav-text">Crystals</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="compare" title="Compare">
                 <span class="nav-icon">⚖️</span>
                 <span class="nav-text">Compare</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
             <button class="mobile-nav-item" data-view="quiz" title="Quiz">
                 <span class="nav-icon">❓</span>
                 <span class="nav-text">Quiz</span>
+                <span class="nav-pro-pill">PRO</span>
             </button>
-            <button class="mobile-nav-item" id="btn-mobile-settings" title="Settings" style="color: #94a3b8;" onclick="document.getElementById('settings-modal').style.display='flex'; initPerfModeUI();">
+            <button class="mobile-nav-item" data-view="simulations" title="Simulation Lab (Beta Preview)">
+                <span class="nav-icon">🪐</span>
+                <span class="nav-text">Sim Lab</span>
+                <span class="nav-pro-pill">PRO</span>
+                <span class="nav-beta-pill">BETA</span>
+            </button>
+            <button class="mobile-nav-item mobile-rotate-btn" id="btn-mobile-rotate" title="Toggle Fullscreen Landscape Mode" style="color: #00d4ff; border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 4px;">
+                <span class="nav-icon">🔄</span>
+                <span class="nav-text">Rotate</span>
+            </button>
+            <button class="mobile-nav-item" id="btn-mobile-settings" title="Settings" style="color: #94a3b8;" onclick="openSettingsModal()">
                 <span class="nav-icon">⚙️</span>
                 <span class="nav-text">Settings</span>
             </button>
         </div>
-        <div class="mobile-nav-version-footer" title="PeriodicaX Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v3.92.0</div>
+        <div class="mobile-nav-version-footer" title="Periodica 3D Version" style="margin-top: auto; padding: 6px 0; font-size: 0.62rem; font-family: var(--font-mono); color: #00d4ff; text-align: center; border-top: 1px solid rgba(0, 212, 255, 0.25); background: rgba(0, 212, 255, 0.08); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">v4.3.2</div>
     </aside>
 
     <nav class="top-nav">
         <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-            <svg class="site-logo-icon" width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px #00d4ff); flex-shrink: 0;">
-                <circle cx="50" cy="50" r="14" fill="url(#coreGlow)" stroke="#00d4ff" stroke-width="2"/>
-                <ellipse cx="50" cy="50" rx="42" ry="16" stroke="url(#cyanGrad)" stroke-width="3" stroke-dasharray="8 4" transform="rotate(30 50 50)"/>
-                <ellipse cx="50" cy="50" rx="42" ry="16" stroke="url(#purpleGrad)" stroke-width="3" stroke-dasharray="8 4" transform="rotate(-30 50 50)"/>
-                <ellipse cx="50" cy="50" rx="42" ry="16" stroke="url(#cyanGrad)" stroke-width="3" stroke-dasharray="8 4" transform="rotate(90 50 50)"/>
-                <circle cx="86" cy="30" r="4.5" fill="#00d4ff" filter="drop-shadow(0 0 6px #00d4ff)"/>
-                <circle cx="14" cy="70" r="4.5" fill="#c084fc" filter="drop-shadow(0 0 6px #c084fc)"/>
-                <circle cx="50" cy="8" r="4.5" fill="#38bdf8" filter="drop-shadow(0 0 6px #38bdf8)"/>
+            <svg class="site-logo-icon" width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); flex-shrink: 0;">
+                <rect x="4" y="4" width="92" height="92" rx="18" fill="#0a1426" stroke="url(#carbonBrandGrad)" stroke-width="5"/>
+                <rect x="7" y="7" width="86" height="86" rx="15" fill="none" stroke="rgba(0, 240, 255, 0.2)" stroke-width="1"/>
+                <text x="16" y="26" font-family="'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="14" fill="#00f0ff">6</text>
+                <text x="84" y="26" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="10" fill="#10b981" text-anchor="end">12.011</text>
+                <text x="50" y="52" dominant-baseline="central" font-family="'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="52" fill="url(#symBrandGrad)" text-anchor="middle">C</text>
+                <text x="50" y="84" font-family="'Segoe UI', system-ui, sans-serif" font-weight="800" font-size="9" fill="#f8fafc" text-anchor="middle" letter-spacing="1.5">CARBON</text>
                 <defs>
-                    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(50 50) scale(14)">
-                        <stop stop-color="#00d4ff"/>
-                        <stop offset="0.7" stop-color="#3b82f6"/>
-                        <stop offset="1" stop-color="#0f172a"/>
-                    </radialGradient>
-                    <linearGradient id="cyanGrad" x1="8" y1="50" x2="92" y2="50" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#00d4ff"/>
-                        <stop offset="1" stop-color="#0284c7"/>
+                    <linearGradient id="carbonBrandGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#00f0ff"/>
+                        <stop offset="0.5" stop-color="#38bdf8"/>
+                        <stop offset="100" stop-color="#00d4ff"/>
                     </linearGradient>
-                    <linearGradient id="purpleGrad" x1="8" y1="50" x2="92" y2="50" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#c084fc"/>
-                        <stop offset="1" stop-color="#9333ea"/>
+                    <linearGradient id="symBrandGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#ffffff"/>
+                        <stop offset="0.7" stop-color="#f0f9ff"/>
+                        <stop offset="1" stop-color="#bae6fd"/>
                     </linearGradient>
                 </defs>
             </svg>
             <span style="font-weight: 800; font-family: var(--font-ui); font-size: 1.25rem; background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PeriodicaX</span>
-            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v3.92.0</span>
+            <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v4.4.0</span>
+            <span id="top-tier-badge" class="tier-badge-pill free" onclick="handleTierBadgeClick()" title="Periodica Tier">FREE</span>
         </div>
         <div class="mode-buttons">
             <button class="nav-btn active" data-view="main">Property Interface</button>
-            <button class="nav-btn" data-view="electrons">Electrons & Orbitals</button>
-            <button class="nav-btn" data-view="isotopes">Isotopes</button>
-            <button class="nav-btn" data-view="compounds">Compounds</button>
-            <button class="nav-btn" data-view="reactions">Reactions</button>
-            <button class="nav-btn" data-view="crystals">Crystals</button>
-            <button class="nav-btn" data-view="compare">Compare</button>
-            <button class="nav-btn" data-view="quiz">Quiz</button>
+            <button class="nav-btn" data-view="electrons">Electrons & Orbitals <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="isotopes">Isotopes <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="compounds">Compounds <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="reactions">Reactions <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="crystals">Crystals <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="compare">Compare <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="quiz">Quiz <span class="nav-pro-pill">PRO</span></button>
+            <button class="nav-btn" data-view="simulations">Sim Lab <span class="nav-pro-pill">PRO</span> <span class="nav-beta-pill">BETA</span></button>
         </div>
         <div class="nav-controls" style="display: flex; align-items: center; gap: 8px;">
-            <button class="icon-btn" id="btn-layout-toggle" aria-label="Toggle Extended 32-Col Table Layout" title="Toggle 18-Col / 32-Col Extended Table Layout" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 8px; font-size: 1.1rem; color: #00d4ff; cursor: pointer; transition: all 0.2s ease; margin-left: 0; box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);">↔️</button>
-            <button class="icon-btn" id="btn-settings" aria-label="Settings" title="Settings" onclick="document.getElementById('settings-modal').style.display='flex'; initPerfModeUI();" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 1.1rem; color: #e2e8f0; cursor: pointer; transition: all 0.2s ease; margin-left: 0;">⚙️</button>
+            <div class="search-box">
+                <input type="text" id="top-search" placeholder="Search element, property...">
+            </div>
+            <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
         </div>
     </nav>
 
@@ -240,20 +309,40 @@
         <section class="view-mode active" id="view-main">
             <!-- Left: Table & Controls -->
             <div class="view-left">
-                <div class="grid-wrapper">
-                    <div class="periodic-grid" id="main-grid">
-                        <div class="table-controls">
-                            <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                            <div class="temp-controller" id="temp-controller-wrapper">
-                                <input type="range" id="temp-slider" min="0" max="6000" value="298">
-                                <label id="temp-display-container"><span>Temp:</span><input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298"><span>K</span><span class="temp-unit-sep">|</span><span id="temp-display-c" class="mono-text">25 °C</span><span class="temp-unit-sep">|</span><span id="temp-display-f" class="mono-text">77 °F</span></label>
-                            </div>
-                            <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
-                                <input type="range" id="timeline-slider" min="1650" max="2025" value="2025">
-                                <label id="timeline-display-container">Year: <input type="number" id="timeline-input" class="mono-text" min="1650" max="2025" value="2025"></label>
+                <div class="table-controls">
+                    <input type="text" id="search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                    <div class="temp-controller" id="temp-controller-wrapper">
+                        <div class="custom-slider" id="temp-custom-slider" role="slider" aria-valuemin="0" aria-valuemax="6000" aria-valuenow="298" aria-label="Temperature Slider">
+                            <div class="custom-slider-track" id="temp-slider-track">
+                                <div class="custom-slider-thumb" id="temp-slider-thumb"></div>
                             </div>
                         </div>
-
+                        <input type="range" id="temp-slider" min="0" max="6000" value="298" step="1" aria-label="Temperature Slider" style="display: none;">
+                        <div id="temp-display-container" onclick="openTempConverterModal()" title="Click to input or convert K / °C / °F">
+                            <span class="temp-lbl">Temp:</span>
+                            <span id="temp-val-k" class="temp-val mono-text">298</span><span class="temp-unit">K</span>
+                            <span class="temp-unit-sep">|</span>
+                            <span id="temp-val-c" class="temp-val mono-text">25</span><span class="temp-unit">°C</span>
+                            <span class="temp-unit-sep">|</span>
+                            <span id="temp-val-f" class="temp-val mono-text">77</span><span class="temp-unit">°F</span>
+                            <span class="temp-edit-hint" title="Direct Temperature Input">✏️</span>
+                            <input type="number" id="temp-input" class="mono-text" min="0" max="6000" value="298" style="display: none;">
+                            <span id="temp-display-c" style="display: none;">25 °C</span>
+                            <span id="temp-display-f" style="display: none;">77 °F</span>
+                        </div>
+                    </div>
+                    <div class="temp-controller timeline-controller hidden" id="timeline-controller-wrapper" style="display: none;">
+                        <div class="custom-slider" id="timeline-custom-slider" role="slider" aria-valuemin="1650" aria-valuemax="2026" aria-valuenow="2026" aria-label="Timeline Slider">
+                            <div class="custom-slider-track timeline-track" id="timeline-slider-track">
+                                <div class="custom-slider-thumb timeline-thumb" id="timeline-slider-thumb"></div>
+                            </div>
+                        </div>
+                        <input type="range" id="timeline-slider" min="1650" max="2026" value="2026" step="1" aria-label="Timeline Slider" style="display: none;">
+                        <label id="timeline-display-container"><span>Year:</span><input type="number" id="timeline-input" class="mono-text" min="1650" max="2026" value="2026"><span class="temp-unit-sep">|</span><span id="timeline-count" class="mono-text" style="color:#10b981; font-weight:700;">118 / 118</span></label>
+                    </div>
+                </div>
+                <div class="grid-wrapper">
+                    <div class="periodic-grid" id="main-grid">
                         <div id="in-grid-legend" class="in-grid-legend">
                             <!-- Dynamic legend injected by JS -->
                         </div>
@@ -264,47 +353,32 @@
 
             <!-- Right: Property Sidebar -->
             <div class="view-right sidebar" style="position: relative;">
-                <button class="sidebar-close-btn" aria-label="Close panel" onclick="closeMobileSidebar()">&times;</button>
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">⚛️</div>
                     <p>Select an element to view details</p>
                     <p class="small-text mt-2">Click any property below to color the table</p>
                 </div>
 
-                <div id="element-detail-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 135px; padding: 10px 14px 14px 14px; box-sizing: border-box;">
-                    <div id="dh-bohr" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;"></div>
-                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 2px 4px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
-                            <span id="dh-number"></span>
-                            <span id="dh-mass"></span>
-                        </div>
-                        <div class="ec-symbol mono-text" id="dh-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8); line-height: 1; font-size: 2.5rem; margin: 2px 0;"></div>
-                        <div class="ec-name" id="dh-name" style="color: #ffffff; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,1); font-size: 1.15rem; margin-top: 2px; z-index: 2;"></div>
+                <div id="element-detail-card" class="element-card ed-compact-card hidden">
+                    <div class="ed-header-row">
+                        <div class="ed-number-badge"><span id="dh-number">-</span></div>
+                        <div class="ed-series-badge" id="dh-series-badge">Category</div>
+                        <div class="ed-mass-val mono-text"><span id="dh-mass">-</span> u</div>
+                        <button class="ed-close-btn sidebar-close-btn" onclick="closeMobileSidebar()" aria-label="Close details" title="Close Panel">&times;</button>
                     </div>
-                </div>
-
-                <!-- Chemical Duality Card (shows dynamically for boundary elements like At, Ts, Te, Se, Po) -->
-                <div id="element-duality-card" class="duality-card hidden">
-                    <div class="duality-header">
-                        <div class="duality-title">
-                            <span>⚖️</span>
-                            <span>Chemical Duality</span>
+                    <div class="ed-body-row">
+                        <div class="ed-main-identity">
+                            <div class="ed-symbol mono-text" id="dh-symbol">-</div>
+                            <div class="ed-name" id="dh-name">-</div>
                         </div>
-                        <span id="duality-badge" class="duality-badge">Nonmetal ⇄ Metalloid</span>
-                    </div>
-                    <p id="duality-summary" class="duality-summary"></p>
-                    <div class="duality-grid">
-                        <div class="duality-col nonmetal">
-                            <div class="duality-col-heading">🧪 Nonmetal Traits</div>
-                            <ul id="duality-nonmetal-list"></ul>
+                        <div class="ed-quick-stats">
+                            <div class="ed-stat-pill" id="dh-state-pill">
+                                <span class="ed-stat-dot" id="dh-state-dot"></span>
+                                <span id="dh-state-text">Solid (298 K)</span>
+                            </div>
+                            <div class="ed-stat-sub mono-text" id="dh-config-text">-</div>
+                            <div class="ed-stat-sub ed-tags-text" id="dh-tags-text">-</div>
                         </div>
-                        <div class="duality-col metalloid">
-                            <div class="duality-col-heading">⚡ Metalloid Traits</div>
-                            <ul id="duality-metalloid-list"></ul>
-                        </div>
-                    </div>
-                    <div class="duality-mechanism-box">
-                        <strong>Scientific Origin: </strong><span id="duality-mechanism"></span>
                     </div>
                 </div>
 
@@ -313,9 +387,12 @@
                     <p class="small-text help-text">Click a property to visualize it on the table.</p>
                     
                     <!-- Property Items (act as buttons to switch heatmap) -->
-                    <div class="prop-item active" data-prop="category">
-                        <span class="prop-label">Series</span>
-                        <span class="prop-value" id="val-category">-</span>
+                    <div class="prop-item active" data-prop="category" style="flex-direction: column; align-items: stretch; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <span class="prop-label">Series</span>
+                            <span class="prop-value" id="val-category">-</span>
+                        </div>
+                        <div id="val-classification-callout" style="display:none; padding: 4px 8px; font-size: 0.52rem; border-radius: 4px; background: rgba(56, 189, 248, 0.12); border-left: 3px solid #38bdf8; color: #cbd5e1; line-height: 1.35; margin-top: 2px;"></div>
                     </div>
                     <div class="prop-item" data-prop="state">
                         <span class="prop-label">State at Current Temp</span>
@@ -346,35 +423,35 @@
                         <span class="prop-value mono-text"><span id="val-electronAffinity">-</span> <select id="unit-affinity" class="inline-select" data-type="energy"><option value="kJ/mol">kJ/mol</option><option value="eV">eV</option></select></span>
                     </div>
                     <div class="prop-item" data-prop="ionization">
-                        <span class="prop-label">Ionization, <select id="sub-ionization" class="inline-select sub-select"><option value="0">1st</option><option value="1">2nd</option><option value="2">3rd</option><option value="3">4th</option></select></span>
+                        <span class="prop-label">Ionization <select id="sub-ionization" class="inline-select sub-select"><option value="0">1st</option><option value="1">2nd</option><option value="2">3rd</option><option value="3">4th</option></select></span>
                         <span class="prop-value mono-text"><span id="val-ionization">-</span> <select id="unit-ionization" class="inline-select" data-type="energy"><option value="kJ/mol">kJ/mol</option><option value="eV">eV</option></select></span>
                     </div>
                     <div class="prop-item" data-prop="radius">
-                        <span class="prop-label">Radius, <select id="sub-radius" class="inline-select sub-select"><option value="calculated">calculated</option><option value="empirical">empirical</option><option value="covalent">covalent</option><option value="vanDerWaals">van der Waals</option></select></span>
+                        <span class="prop-label">Radius <select id="sub-radius" class="inline-select sub-select"><option value="calculated">calculated</option><option value="empirical">empirical</option><option value="covalent">covalent</option><option value="vanDerWaals">van der Waals</option></select></span>
                         <span class="prop-value mono-text"><span id="val-radius">-</span> <select id="unit-radius" class="inline-select" data-type="length"><option value="pm">pm</option><option value="A">Å</option></select></span>
                     </div>
                     <div class="prop-item" data-prop="hardness">
-                        <span class="prop-label">Hardness, <select id="sub-hardness" class="inline-select sub-select"><option value="brinell">Brinell</option><option value="mohs">Mohs</option><option value="vickers">Vickers</option></select></span>
+                        <span class="prop-label">Hardness <select id="sub-hardness" class="inline-select sub-select"><option value="brinell">Brinell</option><option value="mohs">Mohs</option><option value="vickers">Vickers</option></select></span>
                         <span class="prop-value mono-text"><span id="val-hardness">-</span> <span id="unit-hardness-span">MPa</span></span>
                     </div>
                     <div class="prop-item" data-prop="modulus">
-                        <span class="prop-label">Modulus, <select id="sub-modulus" class="inline-select sub-select"><option value="bulk">bulk</option><option value="shear">shear</option><option value="young">Young's</option></select></span>
+                        <span class="prop-label">Modulus <select id="sub-modulus" class="inline-select sub-select"><option value="bulk">bulk</option><option value="shear">shear</option><option value="young">Young's</option></select></span>
                         <span class="prop-value mono-text"><span id="val-modulus">-</span> GPa</span>
                     </div>
                     <div class="prop-item" data-prop="density">
-                        <span class="prop-label">Density, <select id="sub-density" class="inline-select sub-select"><option value="stp">STP</option><option value="liquid">liquid</option></select></span>
+                        <span class="prop-label">Density <select id="sub-density" class="inline-select sub-select"><option value="stp">STP</option><option value="liquid">liquid</option></select></span>
                         <span class="prop-value mono-text"><span id="val-density">-</span> <select id="unit-density" class="inline-select" data-type="density"><option value="kg/m3">kg/m³</option><option value="g/cm3">g/cm³</option></select></span>
                     </div>
                     <div class="prop-item" data-prop="conductivity">
-                        <span class="prop-label">Conductivity, <select id="sub-conductivity" class="inline-select sub-select"><option value="thermal">thermal</option><option value="electric">electric</option></select></span>
+                        <span class="prop-label">Conductivity <select id="sub-conductivity" class="inline-select sub-select"><option value="thermal">thermal</option><option value="electric">electric</option></select></span>
                         <span class="prop-value mono-text"><span id="val-conductivity">-</span> <span id="unit-conductivity-span">W/mK</span></span>
                     </div>
                     <div class="prop-item" data-prop="heat">
-                        <span class="prop-label">Heat, <select id="sub-heat" class="inline-select sub-select"><option value="specific">specific</option><option value="vaporization">vaporization</option><option value="fusion">fusion</option></select></span>
+                        <span class="prop-label">Heat <select id="sub-heat" class="inline-select sub-select"><option value="specific">specific</option><option value="vaporization">vaporization</option><option value="fusion">fusion</option></select></span>
                         <span class="prop-value mono-text"><span id="val-heat">-</span> <span id="unit-heat-span">J/kgK</span></span>
                     </div>
                     <div class="prop-item" data-prop="abundance">
-                        <span class="prop-label">Abundance, <select id="sub-abundance" class="inline-select sub-select"><option value="universe">universe</option><option value="sun">sun</option><option value="oceans">oceans</option><option value="human">human</option><option value="earthCrust" selected>earth crust</option><option value="meteorites">meteorites</option></select></span>
+                        <span class="prop-label">Abundance <select id="sub-abundance" class="inline-select sub-select"><option value="universe">universe</option><option value="sun">sun</option><option value="oceans">oceans</option><option value="human">human</option><option value="earthCrust" selected>earth crust</option><option value="meteorites">meteorites</option></select></span>
                         <span class="prop-value mono-text"><span id="val-abundance">-</span> %</span>
                     </div>
                     <div class="prop-item" data-prop="discoveryYear">
@@ -392,36 +469,42 @@
         <!-- VIEW: ELECTRONS & ORBITALS -->
         <section class="view-mode" id="view-electrons">
             <div class="view-left">
+                <div class="table-controls">
+                    <input type="text" id="elec-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                </div>
                 <div class="grid-wrapper">
                     <!-- Specialized grid showing Bohr models -->
                     <div class="periodic-grid" id="electrons-grid">
-                        <div class="table-controls">
-                            <input type="text" id="elec-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                        </div>
                         <!-- Grid items injected by JS -->
                     </div>
                 </div>
             </div>
             <div class="view-right sidebar" style="position: relative;">
-                <button class="sidebar-close-btn" aria-label="Close panel" onclick="closeMobileSidebar()">&times;</button>
-
                 <div id="elec-empty-state" class="empty-state">
                     <div class="empty-icon">⚛️</div>
                     <p>Select an element to view details</p>
                     <p class="small-text mt-2">Click any property below to color the table</p>
                 </div>
 
-                <div id="elec-element-card" class="element-card hidden" style="position: relative; overflow: hidden; min-height: 120px;">
-                    <div id="bohr-reference" style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; opacity: 0.2; pointer-events: none; display: flex; align-items: center; justify-content: center;">
-                        <!-- Animated SVG Bohr model goes here -->
+                <div id="elec-element-card" class="element-card ed-compact-card hidden">
+                    <div class="ed-header-row">
+                        <div class="ed-number-badge"><span id="elec-number">-</span></div>
+                        <div class="ed-series-badge" id="elec-series-badge">Category</div>
+                        <div class="ed-mass-val mono-text"><span id="elec-mass">-</span> u</div>
                     </div>
-                    <div style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
-                        <div class="ec-top mono-text" style="width: 100%; display: flex; justify-content: space-between; padding: 5px; color: #ffffff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,1);">
-                            <span id="elec-number"></span>
-                            <span id="elec-mass"></span>
+                    <div class="ed-body-row">
+                        <div class="ed-main-identity">
+                            <div class="ed-symbol mono-text" id="elec-symbol">-</div>
+                            <div class="ed-name" id="elec-name">-</div>
                         </div>
-                        <div class="ec-symbol mono-text" id="elec-symbol" style="text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);"></div>
-                        <div class="ec-name" id="elec-name" style="color: #ffffff; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,1); padding-bottom: 5px;"></div>
+                        <div class="ed-quick-stats">
+                            <div class="ed-stat-pill" id="elec-state-pill">
+                                <span class="ed-stat-dot" id="elec-state-dot"></span>
+                                <span id="elec-state-text">Solid (298 K)</span>
+                            </div>
+                            <div class="ed-stat-sub mono-text" id="elec-config-text">-</div>
+                            <div class="ed-stat-sub ed-tags-text" id="elec-tags-text">-</div>
+                        </div>
                     </div>
                 </div>
 
@@ -489,224 +572,235 @@
         <!-- VIEW: ISOTOPES -->
         <section class="view-mode" id="view-isotopes">
             <div class="view-left">
+                <div class="table-controls">
+                    <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
+                </div>
                 <div class="grid-wrapper" id="isotopes-grid-wrapper">
                     <div class="periodic-grid" id="isotopes-grid">
-                        <div class="table-controls">
-                            <input type="text" id="iso-grid-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
-                            <div class="temp-controller" id="iso-temp-controller-wrapper">
-                                <input type="range" id="iso-temp-slider" min="0" max="6000" value="298">
-                                <label id="iso-temp-display-container"><span>Temp:</span><input type="number" id="iso-temp-input" class="mono-text" min="0" max="6000" value="298"><span>K</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-c" class="mono-text">25 °C</span><span class="temp-unit-sep">|</span><span id="iso-temp-display-f" class="mono-text">77 °F</span></label>
-                            </div>
-                        </div>
-
-                        <div id="iso-in-grid-legend" class="in-grid-legend">
-                            <!-- Dynamic in-grid legend injected by JS -->
-                        </div>
                     </div>
                 </div>
             </div>
-            <div class="view-right sidebar" style="display: flex; align-items: center; justify-content: center; opacity: 0.5; position: relative;">
-                <button class="sidebar-close-btn" style="display: none; position: absolute; top: 15px; left: 15px; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; z-index: 10;" onclick="this.parentElement.classList.remove('open')">&times;</button>
-                <div style="text-align: center;">
+            <div class="view-right sidebar" id="iso-primary-sidebar">
+                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open')">&times;</button>
+                
+                <div id="iso-empty-state" class="empty-state">
                     <div style="font-size: 3rem; margin-bottom: 10px;">⚛️</div>
-                    <h3 style="margin-bottom: 5px;">Isotopes Explorer</h3>
-                    <p style="font-size: 0.9rem;">Click any element in the grid<br>to explore its isotopes.</p>
+                    <h3>Isotopes & Nuclear Explorer</h3>
+                    <p class="small-text">Select any element in the grid to inspect its isotopes, half-lives, decay modes, and nuclear stability.</p>
                 </div>
-            </div>
-            
-            <!-- ISOTOPE MODAL OVERLAY -->
-            <div id="isotope-modal-overlay" class="isotope-modal-overlay hidden">
-                <div id="isotope-modal" class="isotope-modal-dialog">
-                    
-                    <div class="mobile-drag-handle"></div>
 
-                    <!-- 1. TOP HERO HEADER (Element Card on Left, Active Isotope Banner on Right) -->
-                    <div class="iso-modal-hero-header">
-                        <div class="iso-topbar-left">
-                            <div id="modal-el-card"></div>
-                        </div>
-                        <div class="iso-topbar-right">
-                            <div id="modal-iso-card" class="iso-active-hero-banner"></div>
-                            <button id="close-modal-btn" aria-label="Close modal">✕</button>
-                        </div>
-                    </div>
-
-                    <!-- 2. MASS & STABILITY SPECTRUM TIMELINE RIBBON -->
-                    <div class="iso-modal-ribbon-wrap">
-                        <!-- Top Left Sidebar Controls: Search & Decay Filter Chips -->
-                        <div class="iso-sidebar-controls">
-                            <div class="iso-search-pill">
-                                <input type="text" id="iso-search-input" placeholder="Search isotope (e.g. 52, stable)..." />
-                                <div id="modal-isotope-count"></div>
+                <div class="iso-sidebar-content-wrapper" id="iso-sidebar-content-wrapper">
+                    <!-- PANE 1: PRIMARY ELEMENT & ISOTOPE LIST -->
+                    <div class="iso-pane-primary" id="iso-pane-primary">
+                        <div id="iso-element-card" class="element-card ed-compact-card hidden">
+                            <div class="ed-header-row">
+                                <div class="ed-number-badge"><span id="iso-number">-</span></div>
+                                <div class="ed-series-badge" id="iso-series-badge">Category</div>
+                                <div class="ed-mass-val mono-text"><span id="iso-mass">-</span> u</div>
                             </div>
-                            <div id="modal-decay-legend"></div>
+                            <div class="ed-body-row">
+                                <div class="ed-main-identity">
+                                    <div class="ed-symbol mono-text" id="iso-symbol">-</div>
+                                    <div class="ed-name" id="iso-name">-</div>
+                                </div>
+                                <div class="ed-quick-stats">
+                                    <div class="ed-stat-pill" id="iso-state-pill">
+                                        <span class="ed-stat-dot" id="iso-state-dot"></span>
+                                        <span id="iso-state-text">Solid (298 K)</span>
+                                    </div>
+                                    <div class="ed-stat-sub mono-text" id="iso-count-summary">-</div>
+                                    <div class="ed-stat-sub ed-tags-text" id="iso-tags-text">-</div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="iso-ribbon-header-title">
-                            <span>Mass Spectrum Timeline (A = Z + N)</span>
-                        </div>
-                        <div id="modal-isotope-list" class="iso-modal-isotope-list">
-                            <!-- Populated dynamically as authentic element cells -->
+                        <div id="iso-details" class="hidden">
+                            <!-- Quick Stats Cards Row -->
+                            <div class="iso-sidebar-stats-row">
+                                <div class="iso-stat-card">
+                                    <span class="iso-stat-num" id="iso-stat-stable-count">0</span>
+                                    <span class="iso-stat-lbl">Stable</span>
+                                </div>
+                                <div class="iso-stat-card">
+                                    <span class="iso-stat-num" id="iso-stat-radio-count">0</span>
+                                    <span class="iso-stat-lbl">Radioactive</span>
+                                </div>
+                                <div class="iso-stat-card">
+                                    <span class="iso-stat-num" id="iso-stat-total-count">0</span>
+                                    <span class="iso-stat-lbl">Total Known</span>
+                                </div>
+                            </div>
+
+                            <!-- Filter & Sort Hub for Isotopes List -->
+                            <div class="iso-filter-sort-hub">
+                                <div class="iso-sort-row">
+                                    <div class="iso-sort-btn-group">
+                                        <button type="button" class="iso-sort-btn active" id="iso-sort-neutrons" data-sort="neutrons" title="Sort by Neutrons / Mass">
+                                            <span class="iso-sort-icon">⚖️</span>
+                                            <span>Neutrons</span>
+                                        </button>
+                                        <button type="button" class="iso-sort-btn" id="iso-sort-category" data-sort="category" title="Sort by Decay Mode Category">
+                                            <span class="iso-sort-icon">🏷️</span>
+                                            <span>Category</span>
+                                        </button>
+                                    </div>
+                                    <button type="button" class="iso-order-toggle-btn" id="iso-order-toggle" title="Toggle Ascending / Descending">
+                                        <span id="iso-order-text">▲ Asc</span>
+                                    </button>
+                                </div>
+                                <!-- Quick Category Jump Chips (Smooth Scroll) -->
+                                <div class="iso-category-jump-bar" id="iso-category-jump-bar">
+                                    <!-- Injected dynamically by JS based on present isotope categories -->
+                                </div>
+                            </div>
+
+                            <!-- Scrollable List of Isotopes for Selected Element -->
+                            <div class="iso-sidebar-list-header">
+                                <span>Known Isotopes</span>
+                                <span id="iso-sidebar-list-count" class="mono-text">0 isotopes</span>
+                            </div>
+                            <div id="iso-sidebar-list" class="iso-sidebar-list-container">
+                                <!-- Populated dynamically with isotope items -->
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 3. INTERACTIVE 3-TAB INSPECTOR & SIMULATOR HUB -->
-                    <div class="iso-modal-tab-container">
+                    <!-- PANE 2: EXTENDED SELECTED ISOTOPE INSPECTOR -->
+                    <div class="iso-pane-extended hidden" id="iso-pane-extended">
+                        <!-- Button on the far end edge to close the extended panel -->
+                        <button type="button" class="iso-extended-close-btn" id="iso-extended-close-btn" onclick="if (typeof closeIsotopeDetailPanel === 'function') closeIsotopeDetailPanel();" aria-label="Close Inspector" title="Close Details Pane">&times;</button>
                         
-                        <!-- Sleek Modern Pill Tab Navigation -->
-                        <div class="iso-tab-nav-bar">
-                            <button class="iso-tab-btn active" data-tab="decay">
-                                <span class="tab-icon">☢️</span>
-                                <span class="tab-text-full">Nuclear Decay & Reaction</span>
-                                <span class="tab-text-short">Decay</span>
+                        <!-- Selected Isotope Detail Card (Color-Coded Hero Card) -->
+                        <div id="iso-sub-card" class="element-card ed-compact-card">
+                            <div class="ed-header-row">
+                                <div class="ed-number-badge"><span id="iso-sub-number">-</span></div>
+                                <div class="ed-series-badge" id="iso-sub-badge">Decay Mode</div>
+                                <div class="ed-mass-val mono-text"><span id="iso-sub-mass">-</span> u</div>
+                            </div>
+                            <div class="ed-body-row">
+                                <div class="ed-main-identity">
+                                    <div class="ed-symbol mono-text" id="iso-sub-symbol">-</div>
+                                    <div class="ed-name" id="iso-sub-name">-</div>
+                                </div>
+                                <div class="ed-quick-stats">
+                                    <div class="ed-stat-pill" id="iso-sub-state-pill">
+                                        <span class="ed-stat-dot" id="iso-sub-state-dot"></span>
+                                        <span id="iso-sub-state-text">Stable</span>
+                                    </div>
+                                    <div class="ed-stat-sub mono-text" id="iso-sub-abundance-text">-</div>
+                                    <div class="ed-stat-sub ed-tags-text" id="iso-sub-neutrons-text">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Tabs Navigation Bar -->
+                        <div class="iso-subpanel-tab-bar" id="iso-subpanel-tab-bar">
+                            <button class="iso-subtab-btn active" data-subtab="decay" id="subtab-btn-decay">
+                                <span class="subtab-icon">☢️</span>
+                                <span>Decay</span>
                             </button>
-                            <button class="iso-tab-btn" data-tab="physics">
-                                <span class="tab-icon">📊</span>
-                                <span class="tab-text-full">Physical & Nuclear Properties</span>
-                                <span class="tab-text-short">Properties</span>
+                            <button class="iso-subtab-btn" data-subtab="info" id="subtab-btn-info">
+                                <span class="subtab-icon">📋</span>
+                                <span>Info</span>
                             </button>
-                            <button class="iso-tab-btn" data-tab="simulator">
-                                <span class="tab-icon">⏳</span>
-                                <span class="tab-text-full">Half-Life Decay Simulator</span>
-                                <span class="tab-text-short">Simulator</span>
+                            <button class="iso-subtab-btn" data-subtab="sim" id="subtab-btn-sim">
+                                <span class="subtab-icon">⏳</span>
+                                <span>Simulator</span>
                             </button>
                         </div>
 
-                        <!-- Tab Content 1: Decay Visualizer -->
-                        <div id="iso-tab-decay" class="iso-tab-content">
-                            <div id="decay-infographic-container" class="iso-decay-infographic-box">
+                        <!-- TAB 1: Decay Process -->
+                        <div id="iso-subtab-decay" class="iso-subtab-content active">
+                            <div id="iso-sub-decay-diagram" class="iso-sub-decay-diagram">
+                                <!-- Populated by JS -->
                             </div>
                         </div>
 
-                        <!-- Tab Content 2: Physical & Nuclear Properties Matrix -->
-                        <div id="iso-tab-physics" class="iso-tab-content" style="display: none;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                                <h4 style="margin: 0; color: #00d4ff; font-size: 1.05rem; font-family: var(--font-ui);">Comprehensive Nuclear Data & Physical Constants</h4>
-                                <div id="m-iso-wiki"></div>
-                            </div>
-
-                            <div class="iso-physics-grid">
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Exact Atomic Mass</span>
-                                    <span class="prop-value mono-text" id="m-iso-mass" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Mass Excess (Δ)</span>
-                                    <span class="prop-value mono-text" id="m-iso-excess" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Binding Energy / Nucleon</span>
-                                    <span class="prop-value mono-text" id="m-iso-binding" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Natural Abundance</span>
-                                    <span class="prop-value mono-text" id="m-iso-abundance" style="font-size: 1rem; font-weight: 700; color: #4ade80;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Half-Life (T½)</span>
-                                    <span class="prop-value mono-text" id="m-iso-halflife" style="font-size: 1rem; font-weight: 700; color: #facc15;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Mode & Branching</span>
-                                    <span class="prop-value mono-text" id="m-iso-decay" style="font-size: 1rem; font-weight: 700; color: #38bdf8;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Decay Width (Γ)</span>
-                                    <span class="prop-value mono-text" id="m-iso-width" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Specific Activity</span>
-                                    <span class="prop-value mono-text" id="m-iso-activity" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Spin & Parity (Jπ)</span>
-                                    <span class="prop-value mono-text" id="m-iso-spin" style="font-size: 1rem; font-weight: 700; color: #c084fc;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Magnetic Dipole Moment</span>
-                                    <span class="prop-value mono-text" id="m-iso-magnetic" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                                <div class="prop-item" style="background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px;">
-                                    <span class="prop-label" style="font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase;">Electric Quadrupole Moment</span>
-                                    <span class="prop-value mono-text" id="m-iso-quadrupole" style="font-size: 1rem; font-weight: 700; color: #fff;">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tab Content 3: Half-Life Decay Simulator -->
-                        <div id="iso-tab-simulator" class="iso-tab-content" style="display: none;">
-                            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                    <div>
-                                        <h4 style="margin: 0; color: #00d4ff; font-size: 1.1rem; font-family: var(--font-ui); font-weight: 700;">Radioactive Half-Life Simulator</h4>
-                                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
-                                            <span style="font-size: 0.8rem; color: rgba(255,255,255,0.7); font-family: var(--font-ui);">Decay Formula:</span>
-                                            <span style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: #00d4ff; background: rgba(0, 212, 255, 0.12); padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(0, 212, 255, 0.35); box-shadow: 0 0 10px rgba(0, 212, 255, 0.2); display: inline-flex; align-items: center; gap: 4px;">
-                                                N(t) = N₀ &bull; (½)<span style="font-size: 0.8rem; vertical-align: super; font-weight: 800; color: #38bdf8; margin-left: 2px;">t / T½</span>
-                                            </span>
-                                        </div>
+                        <!-- TAB 2: Info List (Property & Electron style list) -->
+                        <div id="iso-subtab-info" class="iso-subtab-content hidden">
+                            <div class="property-list" style="padding: 0;">
+                                <div class="prop-list" id="iso-sub-prop-list">
+                                    <div class="prop-item">
+                                        <span class="prop-label">Exact Isotopic Mass</span>
+                                        <span class="prop-value mono-text" id="sub-val-mass">-</span>
                                     </div>
-                                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-                                        <div id="sim-halflife-badge" style="background: rgba(250, 204, 21, 0.15); border: 1px solid #facc15; color: #facc15; padding: 4px 12px; border-radius: 16px; font-weight: bold; font-family: var(--font-mono); font-size: 0.82rem;">T½ = -</div>
-                                        <div id="sim-daughter-badge" style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.4); color: #c084fc; padding: 3px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; font-family: var(--font-ui);">Decays Into: -</div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Mass Excess (Δ)</span>
+                                        <span class="prop-value mono-text" id="sub-val-excess">-</span>
                                     </div>
-                                </div>
-
-                                <!-- Decay Product Reaction Banner -->
-                                <div id="sim-reaction-banner" style="background: rgba(5, 12, 25, 0.85); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-family: var(--font-ui);">
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="font-size: 0.78rem; color: rgba(255,255,255,0.6); text-transform: uppercase; font-weight: 600;">Nuclear Reaction:</span>
-                                        <span id="sim-reaction-equation" style="font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: #fff;">-</span>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Binding Energy / Nucleon</span>
+                                        <span class="prop-value mono-text" id="sub-val-binding">-</span>
                                     </div>
-                                    <div id="sim-decay-type" style="font-size: 0.78rem; font-weight: 700; color: #facc15;">-</div>
-                                </div>
-
-                                <!-- Time Slider Controls -->
-                                <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.82rem;">
-                                        <span style="color: rgba(255,255,255,0.7);">Elapsed Time (t): <strong id="sim-time-text" style="color: #00d4ff;">0 Half-lives (0 s)</strong></span>
-                                        <span style="color: #4ade80;">Remaining Parent: <strong id="sim-atoms-text">100 / 100 (100.0%)</strong></span>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Natural Abundance</span>
+                                        <span class="prop-value mono-text" id="sub-val-abundance">-</span>
                                     </div>
-                                    <input type="range" id="sim-time-slider" min="0" max="7" step="0.1" value="0" style="width: 100%; accent-color: #00d4ff; cursor: pointer;" />
-                                    <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: rgba(255,255,255,0.4); font-family: var(--font-mono);">
-                                        <span>t = 0 (100%)</span>
-                                        <span>t = 1 T½ (50%)</span>
-                                        <span>t = 2 T½ (25%)</span>
-                                        <span>t = 3 T½ (12.5%)</span>
-                                        <span>t = 5 T½ (3.1%)</span>
-                                        <span>t = 7 T½ (0.8%)</span>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Half-Life (T½)</span>
+                                        <span class="prop-value mono-text" id="sub-val-halflife">-</span>
                                     </div>
-                                    <div class="sim-playback-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
-                                        <div style="display: flex; align-items: center; gap: 6px;">
-                                            <button id="sim-play-btn" class="sim-ctrl-btn" style="background: rgba(0, 212, 255, 0.18); border: 1px solid #00d4ff; color: #00d4ff; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">▶ Play Decay</button>
-                                            <button id="sim-reset-btn" class="sim-ctrl-btn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;">↺ Reset</button>
-                                        </div>
-                                        <div style="display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.72rem;">
-                                            <span style="color: rgba(255,255,255,0.5);">Jump:</span>
-                                            <button class="sim-jump-btn" data-step="1" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">1 T½</button>
-                                            <button class="sim-jump-btn" data-step="2" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">2 T½</button>
-                                            <button class="sim-jump-btn" data-step="3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">3 T½</button>
-                                            <button class="sim-jump-btn" data-step="5" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; cursor: pointer;">5 T½</button>
-                                        </div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Decay Mode & Branching</span>
+                                        <span class="prop-value mono-text" id="sub-val-decay">-</span>
                                     </div>
-                                </div>
-
-                                <!-- Atom Decay Visual Grid (100 Dots) -->
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-family: var(--font-ui);">
-                                        <div style="font-size: 0.76rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">100-Atom Particle Chamber:</div>
-                                        <div style="display: flex; align-items: center; gap: 14px; font-size: 0.76rem; font-weight: 600;">
-                                            <span style="display: flex; align-items: center; gap: 6px; color: #4ade80;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #4ade80; display: inline-block; box-shadow: 0 0 6px #4ade80;"></span> Parent: <strong id="sim-parent-label" style="color: #fff;">-</strong> (<span id="sim-parent-count">100</span>)</span>
-                                            <span style="display: flex; align-items: center; gap: 6px; color: #c084fc;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #a855f7; display: inline-block; box-shadow: 0 0 6px #a855f7;"></span> Decayed Daughter: <strong id="sim-daughter-label" style="color: #fff;">-</strong> (<span id="sim-daughter-count">0</span>)</span>
-                                        </div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Decay Energy (Q-value)</span>
+                                        <span class="prop-value mono-text" id="sub-val-qval">-</span>
                                     </div>
-                                    <div id="sim-atom-chamber" class="sim-atom-chamber">
-                                        <!-- Populated by JS with 100 animated glowing dots -->
+                                    <div class="prop-item">
+                                        <span class="prop-label">Spin & Parity (Jπ)</span>
+                                        <span class="prop-value mono-text" id="sub-val-spin">-</span>
+                                    </div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Magnetic Dipole Moment</span>
+                                        <span class="prop-value mono-text" id="sub-val-magnetic">-</span>
+                                    </div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Electric Quadrupole</span>
+                                        <span class="prop-value mono-text" id="sub-val-quadrupole">-</span>
+                                    </div>
+                                    <div class="prop-item">
+                                        <span class="prop-label">Nucleons (N & Z)</span>
+                                        <span class="prop-value mono-text" id="sub-val-nucleons">-</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- TAB 3: Decay Simulator with Time Slider -->
+                        <div id="iso-subtab-sim" class="iso-subtab-content hidden">
+                            <div class="iso-sub-sim-container">
+                                <div class="iso-sub-sim-header">
+                                    <div id="sub-sim-formula" class="sub-sim-formula">N(t) = N₀ &bull; (½)<sup>t/T½</sup></div>
+                                    <div id="sub-sim-halflife-badge" class="sub-sim-badge">T½ = -</div>
+                                </div>
+                                <div id="sub-sim-reaction-banner" class="sub-sim-reaction-banner">
+                                    <!-- Reaction Equation e.g. 203Hg -> 203Tl + e- + nu -->
+                                </div>
+                                <div class="iso-sub-sim-slider-box">
+                                    <div class="iso-sub-sim-slider-label">
+                                        <span>Elapsed Time:</span>
+                                        <span id="sub-sim-time-text" class="mono-text">0.00 s (0.00 T½)</span>
+                                    </div>
+                                    <input type="range" id="sub-sim-time-slider" min="0" max="100" value="0" step="0.5" class="iso-sub-slider">
+                                </div>
+                                <div class="iso-sub-sim-stats-grid">
+                                    <div class="sub-sim-stat">
+                                        <span class="sub-sim-stat-lbl">Remaining:</span>
+                                        <span id="sub-sim-parent-val" class="mono-text" style="color: #00d4ff;">100.0%</span>
+                                    </div>
+                                    <div class="sub-sim-stat">
+                                        <span class="sub-sim-stat-lbl">Daughter:</span>
+                                        <span id="sub-sim-daughter-val" class="mono-text" style="color: #a855f7;">0.0%</span>
+                                    </div>
+                                </div>
+                                <div id="sub-sim-decay-bar-wrap" class="sub-sim-decay-bar-wrap">
+                                    <div id="sub-sim-decay-bar-parent" class="sub-sim-bar-parent" style="width: 100%;"></div>
+                                    <div id="sub-sim-decay-bar-daughter" class="sub-sim-bar-daughter" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -740,6 +834,7 @@
 
             <!-- Compounds Right Sidebar Detail Pane -->
             <div class="view-right sidebar" id="compounds-sidebar">
+                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open', 'mobile-active')">&times;</button>
                 <div class="compound-detail-container">
                     <div class="comp-header-card">
                         <div class="comp-header-top">
@@ -809,18 +904,68 @@
             <div class="view-left">
                 <!-- Balancer Input Card -->
                 <div class="reaction-input-card">
-                    <h2 style="margin-top:0; color:#00d4ff; font-family: var(--font-ui);">Chemical Reaction Balancer & Simulator</h2>
-                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 15px;">
-                        Enter an unbalanced reaction equation (e.g. <code>CH4 + O2 -> CO2 + H2O</code> or <code>Fe + O2 = Fe2O3</code>) to solve stoichiometric coefficients.
-                    </p>
-                    <div class="reaction-input-wrap">
-                        <input type="text" id="reaction-input" placeholder="Type chemical equation here..." value="CH4 + O2 -> CO2 + H2O">
-                        <button id="balance-btn">Balance ⚡</button>
+                    <div class="reaction-header-row">
+                        <div>
+                            <h2 style="margin:0; color:#00d4ff; font-family: var(--font-ui); font-size:1.15rem;">Chemical Reaction Balancer & Simulator</h2>
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin: 3px 0 0 0;">
+                                Auto-solve stoichiometry, verify atom conservation, or practice balancing manually.
+                            </p>
+                        </div>
+                        <div class="reaction-mode-pills">
+                            <button id="rxn-mode-solver-btn" class="rxn-mode-btn active" onclick="setReactionMode('solver')">⚡ Auto-Solver</button>
+                            <button id="rxn-mode-practice-btn" class="rxn-mode-btn" onclick="setReactionMode('practice')">⚖️ Practice Balancer</button>
+                        </div>
                     </div>
+
+                    <!-- Auto-Solver View -->
+                    <div id="rxn-solver-container">
+                        <div class="reaction-input-wrap">
+                            <input type="text" id="reaction-input" placeholder="Type chemical equation (e.g. Fe + O2 -> Fe2O3)..." value="CH4 + O2 -> CO2 + H2O">
+                            <button id="balance-btn">Balance ⚡</button>
+                            <button id="rxn-clear-btn" class="rxn-icon-btn" title="Clear Equation" onclick="clearReactionInput()">&times;</button>
+                        </div>
+                        <!-- Quick Formula Shortcuts Ribbon -->
+                        <div class="chem-keyboard-ribbon" id="chem-keyboard-ribbon">
+                            <span class="chem-ribbon-label">Quick Input:</span>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol(' + ')">+</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol(' -> ')">➔</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol('(')">(</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol(')')">)</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol('2')">₂</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol('3')">₃</button>
+                            <button type="button" class="chem-key-chip" onclick="insertReactionSymbol('4')">₄</button>
+                            <button type="button" class="chem-key-chip sample" onclick="setReactionPresetSample('H2 + O2 -> H2O')">H₂O</button>
+                            <button type="button" class="chem-key-chip sample" onclick="setReactionPresetSample('Fe + O2 -> Fe2O3')">Fe₂O₃</button>
+                            <button type="button" class="chem-key-chip sample" onclick="setReactionPresetSample('Al + HCl -> AlCl3 + H2')">AlCl₃</button>
+                        </div>
+                    </div>
+
+                    <!-- Practice Mode View (Interactive Steppers) -->
+                    <div id="rxn-practice-container" style="display:none;">
+                        <div class="practice-toolbar">
+                            <div class="practice-title-wrap">
+                                <span class="practice-badge">PRACTICE CHALLENGE</span>
+                                <span id="practice-target-name" class="practice-target-name">Combustion of Methane</span>
+                            </div>
+                            <div class="practice-actions-wrap">
+                                <span id="practice-score-badge" class="practice-score-badge">Score: 0</span>
+                                <button type="button" class="practice-tool-btn" onclick="loadNewPracticeChallenge()">🎲 New</button>
+                                <button type="button" class="practice-tool-btn" onclick="revealPracticeSolution()">💡 Solve</button>
+                            </div>
+                        </div>
+                        <div class="practice-equation-wrap" id="practice-equation-wrap">
+                            <!-- Populated with coefficient steppers -->
+                        </div>
+                        <div class="practice-feedback-bar" id="practice-feedback-bar">
+                            <button id="practice-check-btn" class="practice-check-btn" onclick="checkPracticeBalance()">Check Balance ✅</button>
+                            <div id="practice-feedback-msg" class="practice-feedback-msg">Adjust coefficients using [+] and [-] until both sides match!</div>
+                        </div>
+                    </div>
+
                     <div id="reaction-error" class="reaction-error-msg" style="display: none;"></div>
                 </div>
 
-                <!-- Balanced Equation Display -->
+                <!-- Balanced Equation Display & Atom Inventory -->
                 <div class="balanced-result-card" id="balanced-result-card">
                     <div class="result-header">
                         <span class="result-title">Balanced Chemical Equation</span>
@@ -829,6 +974,12 @@
                     <div class="balanced-equation-text" id="balanced-equation-text">
                         CH₄ + 2O₂ &nbsp;➔&nbsp; CO₂ + 2H₂O
                     </div>
+                    <!-- Educational Chemical Reaction Transformation Stepper -->
+                    <div class="chem-reaction-process-stepper" id="chem-reaction-process-stepper"></div>
+                    <!-- Inline Stoichiometry for Direct Mobile Visibility -->
+                    <div class="reaction-inline-stoich" id="reaction-inline-stoich"></div>
+                    <!-- Atom Conservation & Inventory Table -->
+                    <div class="atom-inventory-section" id="atom-inventory-section"></div>
                 </div>
 
                 <!-- Preset Reactions Library -->
@@ -853,6 +1004,7 @@
 
             <!-- Reactions Right Sidebar -->
             <div class="view-right sidebar" id="reactions-sidebar">
+                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open', 'mobile-active')">&times;</button>
                 <div class="stoichiometry-panel">
                     <h3 style="margin-top:0; color:#38bdf8; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Stoichiometric Analysis</h3>
                     <div id="stoichiometry-breakdown">
@@ -882,6 +1034,7 @@
                         <div class="crystal-mode-toggle">
                             <button id="btn-mode-unitcell" class="crystal-toggle-btn active">Unit Cell (1x1x1)</button>
                             <button id="btn-mode-supercell" class="crystal-toggle-btn">Lattice Network (2x2x2)</button>
+                            <button id="btn-crystal-params" class="crystal-toggle-btn" style="background: rgba(0, 212, 255, 0.15); border-color: rgba(0, 212, 255, 0.4); color: #00d4ff;">ℹ️ Parameters</button>
                         </div>
                         <div class="miller-planes-toggle">
                             <span style="font-size:0.75rem; color:rgba(255,255,255,0.6);">Miller Plane:</span>
@@ -897,6 +1050,7 @@
 
             <!-- Crystals Right Sidebar -->
             <div class="view-right sidebar" id="crystals-sidebar">
+                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open', 'mobile-active')">&times;</button>
                 <div class="crystal-detail-container">
                     <div class="comp-header-card">
                         <h2 class="comp-title-large" id="crystal-detail-name">Face-Centered Cubic (FCC)</h2>
@@ -937,17 +1091,22 @@
                     <h2 style="margin-top:0; color:#00d4ff; font-family: var(--font-ui);">Side-by-Side Element Comparison</h2>
                     <div class="compare-selectors-row">
                         <div class="compare-select-box">
-                            <label style="font-size:0.8rem; color:rgba(255,255,255,0.7);">Element 1:</label>
-                            <select id="compare-select-1" class="compare-dropdown"></select>
+                            <label style="font-size:0.78rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Element 1:</label>
+                            <div id="compare-trigger-1" class="compare-select-trigger" onclick="openCompareElementPicker(0)"></div>
+                            <select id="compare-select-1" class="compare-dropdown" style="display:none;"></select>
                         </div>
                         <div class="compare-select-box">
-                            <label style="font-size:0.8rem; color:rgba(255,255,255,0.7);">Element 2:</label>
-                            <select id="compare-select-2" class="compare-dropdown"></select>
+                            <label style="font-size:0.78rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Element 2:</label>
+                            <div id="compare-trigger-2" class="compare-select-trigger" onclick="openCompareElementPicker(1)"></div>
+                            <select id="compare-select-2" class="compare-dropdown" style="display:none;"></select>
                         </div>
                         <div class="compare-select-box">
-                            <label style="font-size:0.8rem; color:rgba(255,255,255,0.7);">Element 3 (Optional):</label>
-                            <select id="compare-select-3" class="compare-dropdown"></select>
+                            <label style="font-size:0.78rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Element 3 (Optional):</label>
+                            <div id="compare-trigger-3" class="compare-select-trigger" onclick="openCompareElementPicker(2)"></div>
+                            <select id="compare-select-3" class="compare-dropdown" style="display:none;"></select>
                         </div>
+                        <button id="btn-toggle-radar" class="compare-radar-toggle-btn" style="align-self: flex-end; padding: 7px 14px; background: rgba(0,212,255,0.18); border: 1px solid rgba(0,212,255,0.4); border-radius: 8px; color: #00d4ff; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">📊 Radar Profile</button>
+                        <button id="btn-clear-compare" class="compare-clear-btn" onclick="clearAllCompareElements()" style="align-self: flex-end; padding: 7px 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; color: #f87171; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">✕ Clear</button>
                     </div>
                 </div>
 
@@ -963,6 +1122,7 @@
 
             <!-- Compare Right Sidebar (Radar Chart) -->
             <div class="view-right sidebar" id="compare-sidebar">
+                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open', 'mobile-active')">&times;</button>
                 <div class="compare-radar-card">
                     <h3 style="margin-top:0; color:#38bdf8; font-size:1.05rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Property Radar Profile</h3>
                     <div id="compare-radar-container"></div>
@@ -973,13 +1133,54 @@
         <!-- VIEW: QUIZ -->
         <section class="view-mode" id="view-quiz">
             <div class="view-left">
-                <!-- Quiz Card -->
-                <div class="quiz-card">
-                    <div class="quiz-card-header">
-                        <span class="quiz-cat-badge" id="quiz-cat-badge">Symbol</span>
-                        <span class="quiz-q-num" id="quiz-q-num">Question 1 of 7</span>
+                <!-- Quiz Header & Category Bar -->
+                <div class="quiz-header-card">
+                    <div class="quiz-top-ribbon">
+                        <div>
+                            <h2 style="margin:0; color:#00d4ff; font-family: var(--font-ui); font-size:1.15rem;">Interactive Chemistry Quiz</h2>
+                            <p style="font-size: 0.78rem; color: rgba(255,255,255,0.7); margin: 2px 0 0 0;">Test your knowledge across elements, periodic trends, reactions & crystals.</p>
+                        </div>
+                        <div class="quiz-score-ribbon">
+                            <div class="quiz-stat-pill score">
+                                <span class="qsp-label">Score:</span>
+                                <span id="quiz-score-val" class="qsp-val">0</span>
+                            </div>
+                            <div class="quiz-stat-pill streak">
+                                <span class="qsp-label">Streak:</span>
+                                <span id="quiz-streak-val" class="qsp-val">0</span>
+                                <span id="quiz-multiplier-badge" class="qsp-mult">1x</span>
+                            </div>
+                            <div class="quiz-stat-pill highscore">
+                                <span class="qsp-label">Best:</span>
+                                <span id="quiz-best-val" class="qsp-val">0</span>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Category Filter Pills -->
+                    <div class="quiz-category-pills" id="quiz-category-pills">
+                        <button class="quiz-cat-pill active" data-cat="all" onclick="selectQuizCategory('all')">🌟 All Topics</button>
+                        <button class="quiz-cat-pill" data-cat="symbols" onclick="selectQuizCategory('symbols')">⚛️ Elements & Symbols</button>
+                        <button class="quiz-cat-pill" data-cat="trends" onclick="selectQuizCategory('trends')">📈 Periodic Trends</button>
+                        <button class="quiz-cat-pill" data-cat="isotopes" onclick="selectQuizCategory('isotopes')">☢️ Isotopes & Nuclear</button>
+                        <button class="quiz-cat-pill" data-cat="reactions" onclick="selectQuizCategory('reactions')">🧪 Reactions</button>
+                        <button class="quiz-cat-pill" data-cat="crystals" onclick="selectQuizCategory('crystals')">🧊 Crystal Lattices</button>
+                    </div>
+                </div>
+
+                <!-- Quiz Progress Bar -->
+                <div class="quiz-progress-wrap" id="quiz-progress-wrap">
+                    <div class="quiz-progress-meta">
+                        <span id="quiz-q-num" class="quiz-q-num">Question 1 of 10</span>
+                        <span id="quiz-cat-badge" class="quiz-cat-badge">Symbol</span>
+                    </div>
+                    <div class="quiz-progress-dots" id="quiz-progress-dots">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Quiz Question Active Card -->
+                <div class="quiz-card" id="quiz-card-active">
                     <h2 class="quiz-question-text" id="quiz-q-text">What is the chemical symbol for Gold?</h2>
 
                     <div class="quiz-options-container" id="quiz-options-container">
@@ -990,24 +1191,87 @@
 
                     <div class="quiz-actions">
                         <button id="quiz-next-btn" class="quiz-btn-primary" style="display: none;">Next Question ➔</button>
+                        <button id="quiz-reset-btn" class="quiz-btn-secondary" onclick="restartQuizRound()">Restart 🔄</button>
                     </div>
+                </div>
+
+                <!-- End-of-Round Summary Screen (Hidden by default) -->
+                <div class="quiz-summary-card" id="quiz-summary-card" style="display: none;">
+                    <div class="summary-badge-wrap" id="summary-badge-wrap">🏆</div>
+                    <h2 id="summary-rank-title" class="summary-rank-title">Master Chemist!</h2>
+                    <p id="summary-rank-desc" class="summary-rank-desc">Outstanding mastery of the periodic table and chemical reactions.</p>
+                    <div class="summary-stats-grid">
+                        <div class="summary-stat-box">
+                            <span class="sum-stat-val" id="sum-final-score">100</span>
+                            <span class="sum-stat-lbl">Final Score</span>
+                        </div>
+                        <div class="summary-stat-box">
+                            <span class="sum-stat-val" id="sum-accuracy">100%</span>
+                            <span class="sum-stat-lbl">Accuracy</span>
+                        </div>
+                        <div class="summary-stat-box">
+                            <span class="sum-stat-val" id="sum-best-streak">10</span>
+                            <span class="sum-stat-lbl">Best Streak</span>
+                        </div>
+                    </div>
+                    <div class="summary-actions">
+                        <button class="quiz-btn-primary" onclick="restartQuizRound()">Play Again 🔄</button>
+                        <button class="quiz-btn-secondary" onclick="toggleQuizReview()">Review Answers 📋</button>
+                    </div>
+                    <div id="quiz-review-list" class="quiz-review-list" style="display: none;"></div>
                 </div>
             </div>
 
-            <!-- Quiz Right Sidebar (Scoreboard) -->
-            <div class="view-right sidebar" id="quiz-sidebar">
-                <div class="quiz-scoreboard-card">
-                    <h3 style="margin-top:0; color:#38bdf8; font-size:1.05rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">Quiz Scoreboard</h3>
-                    <div class="quiz-score-item">
-                        <span class="score-label">Total Score</span>
-                        <span class="score-val" id="quiz-score-val">0</span>
-                    </div>
-                    <div class="quiz-score-item">
-                        <span class="score-label">Current Streak</span>
-                        <span class="score-val" id="quiz-streak-val">0</span>
+            <!-- Quiz Right Sidebar (Hidden) -->
+            <div class="view-right sidebar" id="quiz-sidebar" style="display:none;"></div>
+        </section>
+
+        <!-- VIEW: SIMULATIONS (SIM LAB PRO) -->
+        <section class="view-mode" id="view-simulations">
+            <div class="sim-header-bar">
+                <div class="sim-tabs-row">
+                    <span class="sim-beta-tag" title="Physics & Reaction Simulation Suite (Work in Progress / Beta Preview)">🧪 BETA</span>
+                    <button class="sim-tab-btn active" data-sim="chain_reaction" onclick="switchSimTab('chain_reaction')">
+                        <span>⚛️</span> <span class="tab-txt-full">Nuclear Fission</span><span class="tab-txt-short">Fission</span>
+                    </button>
+                    <button class="sim-tab-btn" data-sim="decay" onclick="switchSimTab('decay')">
+                        <span>☢️</span> <span class="tab-txt-full">Particle Decay</span><span class="tab-txt-short">Decay</span>
+                    </button>
+                    <button class="sim-tab-btn" data-sim="molecule" onclick="switchSimTab('molecule')">
+                        <span>🧬</span> <span class="tab-txt-full">Molecule Physics</span><span class="tab-txt-short">Molecules</span>
+                    </button>
+                    <button class="sim-tab-btn" data-sim="environment" onclick="switchSimTab('environment')">
+                        <span>🌡️</span> <span class="tab-txt-full">States of Matter</span><span class="tab-txt-short">States</span>
+                    </button>
+                </div>
+
+                <!-- Clean Top Action Strip -->
+                <div class="sim-top-actions">
+                    <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
+                    <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
+                    <button id="sim-btn-reset" class="sim-ctrl-btn" onclick="resetActiveSim()" title="Reset Simulation">🔄</button>
+                    <button id="sim-btn-guide" class="sim-ctrl-btn guide-btn" onclick="openSimGuideModal()" title="How it Works & Physics Guide">ℹ️ Guide</button>
+                </div>
+            </div>
+
+            <div class="sim-workspace">
+                <div class="sim-viewport-stage">
+                    <!-- Dynamic 1-Line Status Narrator Pill -->
+                    <div class="sim-narrator-pill" id="sim-narrator-pill">
+                        <span class="narrator-icon">💡</span>
+                        <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                     </div>
 
-                    <button id="quiz-reset-btn" class="quiz-btn-secondary" style="margin-top: 15px; width: 100%;">Restart Quiz 🔄</button>
+                    <!-- Canvases (Full-bleed 100% unobstructed) -->
+                    <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
+                    <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
+                    <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
+                    <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
+
+                    <!-- Bottom Floating Game Controller Deck -->
+                    <div class="sim-game-deck" id="sim-game-deck">
+                        <!-- Populated dynamically by renderGameDeck() -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -1016,8 +1280,29 @@
 
     <!-- JS_DATA_INJECT -->
 
+    <!-- Simulation Lab Educational Guide Modal -->
+    <div id="sim-guide-modal" class="sim-guide-modal-backdrop" style="display:none;" onclick="if(event.target===this){closeSimGuideModal();}">
+        <div class="sim-guide-modal-card">
+            <div class="sim-guide-modal-header">
+                <div class="sim-guide-modal-title" id="sim-guide-modal-title">
+                    <span id="sim-guide-modal-icon">⚛️</span>
+                    <h3 id="sim-guide-modal-heading">Nuclear Fission Guide</h3>
+                </div>
+                <button class="sim-guide-modal-close" onclick="closeSimGuideModal()">&times;</button>
+            </div>
+            <div class="sim-guide-modal-body" id="sim-guide-modal-content">
+                <!-- Injected dynamically based on active tab -->
+            </div>
+            <div class="sim-guide-modal-footer">
+                <button class="sim-guide-confirm-btn" onclick="closeSimGuideModal()">
+                    🚀 Got It! Let's Experiment
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Wikipedia Modal -->
-    <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+    <div id="wiki-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px);" onclick="if(event.target===this){this.style.display='none';syncNativeSliderVisibility();}">
         <div style="width: 80vw; max-width: 1000px; height: 85vh; background: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.7);">
             <div id="wiki-modal-header" style="padding: 15px 25px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
                 <h3 style="margin: 0; color: #fff; font-family: var(--font-ui); font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
@@ -1025,7 +1310,7 @@
                     <svg id="wiki-modal-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                     Wikipedia Reference
                 </h3>
-                <button onclick="document.getElementById('wiki-modal').style.display='none'" style="background: transparent; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
+                <button onclick="document.getElementById('wiki-modal').style.display='none';syncNativeSliderVisibility();" style="background: transparent; border: none; color: #fff; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
             </div>
             <div style="flex: 1; position: relative; background: #fff;">
                 <div id="wiki-loader-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background:#0f172a; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:10; transition: opacity 0.3s ease;">
@@ -1033,17 +1318,17 @@
                     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
                     <h2 style="margin: 0; font-weight: 500; font-size: 1.2rem; color: #cbd5e1; font-family: 'Inter', sans-serif;">Loading Wikipedia Content...</h2>
                 </div>
-                <iframe id="wiki-iframe" style="width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.3s ease;"></iframe>
+                <iframe id="wiki-iframe" sandbox="allow-same-origin allow-scripts" style="width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.3s ease;"></iframe>
             </div>
         </div>
     </div>
 
     <!-- ===================== SETTINGS MODAL ===================== -->
-    <div id="settings-modal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);" onclick="if(event.target===this)this.style.display='none'">
+    <div id="settings-modal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);" onclick="if(event.target===this)closeSettingsModal()">
         <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#111827; border:1px solid rgba(0,212,255,0.25); border-radius:16px; padding:28px 28px 24px; width:min(480px,92vw); max-height:85vh; overflow-y:auto; box-shadow:0 0 40px rgba(0,212,255,0.12);">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
                 <h2 style="font-size:1.1rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:8px;">⚙️ Settings</h2>
-                <button onclick="document.getElementById('settings-modal').style.display='none'" style="background:transparent; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer; line-height:1;">×</button>
+                <button onclick="closeSettingsModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer; line-height:1;">×</button>
             </div>
 
             <!-- Performance Mode Section -->
@@ -1067,10 +1352,681 @@
                 <p id="perf-toggle-note" style="font-size:0.72rem; color:#64748b; margin-top:8px;"></p>
             </div>
 
+            <!-- AI & MCP Agent Bridge Section -->
+            <div style="background:rgba(168,85,247,0.06); border:1px solid rgba(168,85,247,0.25); border-radius:12px; padding:16px; margin-bottom:16px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:1.1rem;">🤖</span>
+                    <span style="font-weight:600; color:#e2e8f0; font-size:0.95rem;">AI Assistant & MCP Bridge</span>
+                    <span id="mcp-bridge-status-badge" style="margin-left:auto; font-size:0.68rem; font-family:'IBM Plex Mono',monospace; padding:3px 10px; border-radius:20px; font-weight:700; background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">🟡 AI Bridge Standby</span>
+                </div>
+                <p style="font-size:0.78rem; color:#94a3b8; margin-bottom:12px; line-height:1.5;">Allows AI assistants (Claude Desktop, Cursor, Gemini) to navigate views, select elements, open 3D orbitals, and solve reactions via the Model Context Protocol (MCP).</p>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                    <span style="font-size:0.85rem; color:#e2e8f0;">Enable AI Remote Navigation</span>
+                    <label style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle AI Remote Navigation">
+                        <input type="checkbox" id="mcp-mode-toggle" checked style="opacity:0; width:0; height:0; position:absolute;" onchange="if(window.PeriodicaMCP) window.PeriodicaMCP.toggle(this.checked)">
+                        <span style="position:absolute; inset:0; border-radius:26px; background:#0284c7; border:1px solid rgba(0,212,255,0.4); transition:background 0.25s;">
+                            <span style="position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:#ffffff; transition:transform 0.25s;" id="mcp-toggle-knob"></span>
+                        </span>
+                    </label>
+                </div>
+                
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="text" id="mcp-url-input" value="ws://127.0.0.1:38281" style="flex:1; background:#090d16; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:6px 10px; font-size:0.75rem; font-family:'IBM Plex Mono',monospace; color:#38bdf8;" onchange="if(window.PeriodicaMCP) window.PeriodicaMCP.setServerUrl(this.value)">
+                    <button onclick="copyMcpConfig()" style="padding:6px 12px; background:rgba(0,212,255,0.12); border:1px solid #00d4ff; color:#00d4ff; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap;" title="Copy Claude Desktop MCP config">📋 Copy Config</button>
+                </div>
+            </div>
+
+            <!-- Legal & App Info Section -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; margin-top:14px;">
+                <p style="font-size:0.75rem; color:#64748b; margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">About & Legal</p>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#cbd5e1;">
+                        <span>App Version</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Periodica 3D v4.3.2</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#cbd5e1;">
+                        <span>Developer</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Vijay-1010110</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#cbd5e1;">
+                        <span>Support Email</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; color:#94a3b8;">periodicax.support@gmail.com</span>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                        <button onclick="openLegalDoc('privacy')" style="flex:1; min-width:110px; padding:8px 12px; background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.25); color:#00d4ff; border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; text-align:center;">🔒 Privacy Policy</button>
+                        <button onclick="openLegalDoc('terms')" style="flex:1; min-width:110px; padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); color:#e2e8f0; border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; text-align:center;">📜 Terms of Use</button>
+                        <button onclick="openLegalDoc('disclaimer')" style="flex:1; min-width:110px; padding:8px 12px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; text-align:center;">⚠️ Data Disclaimer</button>
+                        <button onclick="openLegalDoc('licenses')" style="flex:1; min-width:110px; padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); color:#e2e8f0; border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; text-align:center;">⚖️ Licences</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Rate Us & Check Updates -->
+            <div style="display:flex; gap:10px; margin-top:14px;">
+                <button onclick="openRateUsModal()" style="flex:1; padding:10px 12px; background:linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.18)); border:1px solid #f59e0b; color:#fbbf24; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">⭐ Rate & Review</button>
+                <button onclick="checkAppUpdates(true)" style="flex:1; padding:10px 12px; background:linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(59, 130, 246, 0.18)); border:1px solid #00d4ff; color:#38bdf8; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">🚀 Check Updates</button>
+            </div>
+
             <!-- Device Info Section -->
-            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 14px;">
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 14px; margin-top:14px;">
                 <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Detected Device Info</p>
                 <div id="device-info-list" style="display:flex; flex-direction:column; gap:4px; font-size:0.78rem; font-family:'IBM Plex Mono',monospace; color:#94a3b8;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== LEGAL DOCUMENT MODAL ===================== -->
+    <div id="legal-doc-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);" onclick="if(event.target===this){this.style.display='none';syncNativeSliderVisibility();}">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#0f172a; border:1px solid rgba(0,212,255,0.3); border-radius:16px; width:min(700px,94vw); height:min(600px,88vh); display:flex; flex-direction:column; overflow:hidden; box-shadow:0 0 50px rgba(0,0,0,0.9);">
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(255,255,255,0.1);">
+                <h3 id="legal-modal-title" style="margin:0; font-size:1.1rem; color:#00d4ff; font-family:var(--font-ui); display:flex; align-items:center; gap:8px;"></h3>
+                <button onclick="document.getElementById('legal-doc-modal').style.display='none';syncNativeSliderVisibility();" style="background:transparent; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer; line-height:1; padding:0 4px;">×</button>
+            </div>
+            <div id="legal-modal-body" style="flex:1; padding:20px 24px; overflow-y:auto; color:#cbd5e1; font-size:0.85rem; line-height:1.6; font-family:var(--font-ui);"></div>
+        </div>
+    </div>
+
+    <!-- ===================== TABLE TYPE SELECTOR MODAL ===================== -->
+    <div id="table-type-modal" class="table-type-modal-overlay" style="display:none;" onclick="if(event.target===this)closeTableTypeModal()">
+        <div class="table-type-modal-card">
+            <div class="table-type-header">
+                <h3>🎛️ Select Table Property View</h3>
+                <button class="table-type-close-btn" onclick="closeTableTypeModal()">&times;</button>
+            </div>
+            <div class="table-type-grid">
+                <button class="table-type-opt active" data-prop="category" onclick="setTableProperty('category')">
+                    <span class="type-icon">🌈</span>
+                    <div class="type-info">
+                        <span class="type-name">Standard Category</span>
+                        <span class="type-desc">Alkali, Transition, Nonmetals, Halogens, Noble Gases</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="state" onclick="setTableProperty('state')">
+                    <span class="type-icon">🌡️</span>
+                    <div class="type-info">
+                        <span class="type-name">State of Matter</span>
+                        <span class="type-desc">Physical state at current temperature (Solid/Liquid/Gas)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="discoveryYear" onclick="setTableProperty('discoveryYear')">
+                    <span class="type-icon">⏳</span>
+                    <div class="type-info">
+                        <span class="type-name">Discovery Year</span>
+                        <span class="type-desc">Interactive timeline of discovery antiquity to modern</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="electronegativity" onclick="setTableProperty('electronegativity')">
+                    <span class="type-icon">⚡</span>
+                    <div class="type-info">
+                        <span class="type-name">Electronegativity</span>
+                        <span class="type-desc">Pauling scale heatmap gradient</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="atomicMass" onclick="setTableProperty('atomicMass')">
+                    <span class="type-icon">⚖️</span>
+                    <div class="type-info">
+                        <span class="type-name">Atomic Mass</span>
+                        <span class="type-desc">Standard atomic weight in unified atomic mass units (u)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="atomicRadius" onclick="setTableProperty('atomicRadius')">
+                    <span class="type-icon">⭕</span>
+                    <div class="type-info">
+                        <span class="type-name">Atomic Radius</span>
+                        <span class="type-desc">Empirical atomic radius in picometers (pm)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="ionizationEnergy" onclick="setTableProperty('ionizationEnergy')">
+                    <span class="type-icon">💥</span>
+                    <div class="type-info">
+                        <span class="type-name">Ionization Energy</span>
+                        <span class="type-desc">First ionization energy in kJ/mol</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="electronAffinity" onclick="setTableProperty('electronAffinity')">
+                    <span class="type-icon">🧲</span>
+                    <div class="type-info">
+                        <span class="type-name">Electron Affinity</span>
+                        <span class="type-desc">Energy change on electron attachment in kJ/mol</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="meltingPoint" onclick="setTableProperty('meltingPoint')">
+                    <span class="type-icon">🔥</span>
+                    <div class="type-info">
+                        <span class="type-name">Melting Point</span>
+                        <span class="type-desc">Phase transition temperature (Solid to Liquid in Kelvin)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="boilingPoint" onclick="setTableProperty('boilingPoint')">
+                    <span class="type-icon">💨</span>
+                    <div class="type-info">
+                        <span class="type-name">Boiling Point</span>
+                        <span class="type-desc">Vaporization temperature (Liquid to Gas in Kelvin)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="density" onclick="setTableProperty('density')">
+                    <span class="type-icon">🧊</span>
+                    <div class="type-info">
+                        <span class="type-name">Density</span>
+                        <span class="type-desc">Mass per unit volume (g/cm³ at STP)</span>
+                    </div>
+                </button>
+                <button class="table-type-opt" data-prop="block" onclick="setTableProperty('block')">
+                    <span class="type-icon">🧱</span>
+                    <div class="type-info">
+                        <span class="type-name">Orbital Block</span>
+                        <span class="type-desc">Electronic subshell blocks (s, p, d, f)</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ELEMENT CARD ANATOMY GUIDE MODAL ===================== -->
+    <div id="card-anatomy-modal" class="card-anatomy-modal-overlay" style="display:none;" onclick="if(event.target===this)closeCardAnatomyModal()">
+        <div class="card-anatomy-modal-card">
+            <div class="card-anatomy-header">
+                <h3 id="anatomy-modal-title">📖 Element Card Guide & Anatomy</h3>
+                <button class="card-anatomy-close-btn" onclick="closeCardAnatomyModal()">&times;</button>
+            </div>
+            <div class="card-anatomy-body">
+                <div class="anatomy-preview-section">
+                    <div class="anatomy-card-demo-wrap" id="anatomy-card-demo">
+                        <!-- Dynamic interactive sample element card rendered with callouts -->
+                    </div>
+                </div>
+                <div class="anatomy-details-section" id="anatomy-details-list">
+                    <!-- Dynamic callout breakdowns tailored to current view & property -->
+                </div>
+            </div>
+            <div class="card-anatomy-footer">
+                <label class="anatomy-checkbox-label">
+                    <input type="checkbox" id="anatomy-dont-show-again"> Don't show automatically on view switch
+                </label>
+                <button class="anatomy-confirm-btn" onclick="closeCardAnatomyModal()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== DIRECT TEMPERATURE INPUT & CONVERTER MODAL ===================== -->
+    <div id="temp-converter-modal" class="temp-converter-overlay" style="display:none;" onclick="if(event.target===this)closeTempConverterModal()">
+        <div class="temp-converter-card">
+            <div class="temp-converter-header">
+                <h3>🌡️ Direct Temperature Input & Converter</h3>
+                <button class="temp-converter-close-btn" onclick="closeTempConverterModal()">&times;</button>
+            </div>
+            <div class="temp-converter-body">
+                <p class="temp-converter-desc">Input temperature in Kelvin, Celsius, or Fahrenheit — all three units convert live in real-time!</p>
+                
+                <div class="converter-inputs-grid">
+                    <!-- Kelvin Box -->
+                    <div class="converter-input-box">
+                        <label class="converter-input-label" for="conv-input-k">
+                            <span class="unit-badge k-badge">Kelvin</span>
+                            <span class="unit-symbol">K</span>
+                        </label>
+                        <input type="number" id="conv-input-k" class="conv-num-input" min="0" max="6000" step="any" value="298" oninput="handleConvInput('k')">
+                        <span class="unit-hint">Range: 0 K – 6,000 K</span>
+                    </div>
+
+                    <!-- Celsius Box -->
+                    <div class="converter-input-box">
+                        <label class="converter-input-label" for="conv-input-c">
+                            <span class="unit-badge c-badge">Celsius</span>
+                            <span class="unit-symbol">°C</span>
+                        </label>
+                        <input type="number" id="conv-input-c" class="conv-num-input" min="-273.15" max="5726.85" step="any" value="24.85" oninput="handleConvInput('c')">
+                        <span class="unit-hint">Range: -273.15 °C – 5,726.85 °C</span>
+                    </div>
+
+                    <!-- Fahrenheit Box -->
+                    <div class="converter-input-box">
+                        <label class="converter-input-label" for="conv-input-f">
+                            <span class="unit-badge f-badge">Fahrenheit</span>
+                            <span class="unit-symbol">°F</span>
+                        </label>
+                        <input type="number" id="conv-input-f" class="conv-num-input" min="-459.67" max="10340.33" step="any" value="76.73" oninput="handleConvInput('f')">
+                        <span class="unit-hint">Range: -459.67 °F – 10,340.33 °F</span>
+                    </div>
+                </div>
+
+                <!-- Quick Scientific Presets -->
+                <div class="converter-presets-wrap">
+                    <span class="presets-title">⚡ Scientific Reference Benchmarks:</span>
+                    <div class="presets-buttons-grid">
+                        <button class="preset-btn" onclick="applyTempPreset(0)">🧊 0 K (Absolute Zero)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(77.36)">💨 77 K (Liquid N₂)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(273.15)">❄️ 273.15 K (0 °C Freezes)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(298.15)">🧪 298.15 K (25 °C Room / STP)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(310.15)">🌡️ 310.15 K (37 °C Body)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(373.15)">♨️ 373.15 K (100 °C Boils)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(1811)">🔥 1,811 K (1,538 °C Fe Melts)</button>
+                        <button class="preset-btn" onclick="applyTempPreset(5778)">☀️ 5,778 K (Sun's Surface)</button>
+                    </div>
+                </div>
+
+                <!-- Live State Breakdown Preview at this Temp -->
+                <div class="converter-preview-bar" id="conv-state-preview">
+                    <div class="state-chip chip-solid"><span id="conv-count-solid">103</span> Solids</div>
+                    <div class="state-chip chip-liquid"><span id="conv-count-liquid">4</span> Liquids</div>
+                    <div class="state-chip chip-gas"><span id="conv-count-gas">11</span> Gases</div>
+                    <div class="state-chip chip-unknown"><span id="conv-count-unknown">0</span> Unknown</div>
+                </div>
+            </div>
+            <div class="temp-converter-footer">
+                <button class="temp-cancel-btn" onclick="closeTempConverterModal()">Cancel</button>
+                <button class="temp-apply-btn" onclick="confirmTempConverter()">Apply Temperature</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ENVIRONMENTAL CONDITIONS & PRESSURE MODAL ===================== -->
+    <div id="env-pressure-modal" class="temp-converter-overlay" style="display:none;" onclick="if(event.target===this)closeEnvPressureModal()">
+        <div class="temp-converter-card" style="max-width:540px;">
+            <div class="temp-converter-header">
+                <h3>🪐 Environmental Conditions & Pressure</h3>
+                <button class="temp-converter-close-btn" onclick="closeEnvPressureModal()">&times;</button>
+            </div>
+            <div class="temp-converter-body">
+                <p class="temp-converter-desc">Explore elements under cosmic vacuums, deep-sea abyss hydrostatic pressures, planetary atmospheres, and laser-heated diamond anvil cells.</p>
+                
+                <!-- Cosmic & Laboratory Presets -->
+                <div class="converter-presets-wrap" style="margin-bottom:14px;">
+                    <span class="presets-title">🌌 Environmental Benchmarks:</span>
+                    <div class="presets-buttons-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+                        <button class="preset-btn" onclick="applyEnvModalPreset('earth_stp')">🌍 Earth STP</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('deep_space')">🌌 Deep Space</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('mars_surface')">🪐 Mars Surface</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('mariana_trench')">🌊 Mariana Abyss</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('diamond_anvil')">💎 Diamond Anvil</button>
+                        <button class="preset-btn" onclick="applyEnvModalPreset('earth_core')">🌋 Earth Core</button>
+                    </div>
+                </div>
+
+                <!-- Live Sliders -->
+                <div style="display:flex; flex-direction:column; gap:12px; background:rgba(0,0,0,0.25); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8; margin-bottom:4px;">
+                            <span>Temperature:</span>
+                            <span id="env-modal-temp-display" class="mono-text" style="color:#00d4ff; font-weight:700;">298 K</span>
+                        </div>
+                        <input type="range" id="env-modal-temp-slider" min="0" max="6000" value="298" class="sim-range-slider" oninput="updateEnvModalState()">
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#94a3b8; margin-bottom:4px;">
+                            <span>Pressure:</span>
+                            <span id="env-modal-press-display" class="mono-text" style="color:#10b981; font-weight:700;">1.00 atm</span>
+                        </div>
+                        <input type="range" id="env-modal-press-slider" min="-12" max="9" step="0.2" value="0" class="sim-range-slider" oninput="updateEnvModalState()">
+                    </div>
+                </div>
+
+                <!-- Phase Readout for Selected Element -->
+                <div id="env-modal-phase-card" style="margin-top:14px; padding:10px 14px; background:rgba(0, 212, 255, 0.06); border:1px solid rgba(0, 212, 255, 0.25); border-radius:10px; display:flex; align-items:center; justify-content:space-between;">
+                    <div>
+                        <div style="font-size:0.75rem; color:#94a3b8;" id="env-modal-target-element">Target Element: Carbon (C, Z=6)</div>
+                        <div style="font-size:0.95rem; font-weight:800; color:#ffffff;" id="env-modal-phase-label">Phase: SOLID (Graphite / Diamond)</div>
+                    </div>
+                    <span id="env-modal-phase-badge" style="font-size:0.7rem; font-family:var(--font-mono); font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(0,212,255,0.2); color:#00d4ff;">SOLID</span>
+                </div>
+            </div>
+            <div class="temp-converter-footer" style="display:flex; justify-content:space-between; gap:10px;">
+                <button class="temp-cancel-btn" onclick="closeEnvPressureModal()">Close</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="temp-apply-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0;" onclick="applyEnvModalToTable()">Apply to Table</button>
+                    <button class="temp-apply-btn" style="background:linear-gradient(135deg, #00d4ff, #0284c7); color:#000; font-weight:800;" onclick="launchEnvToSimLab()">🔬 Open Sim Lab</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PERIODICA 3D PRO PAYWALL MODAL ===================== -->
+    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this)closeProPaywallModal()">
+        <div class="pro-modal-card">
+            <div class="pro-modal-header">
+                <div class="pro-modal-title-wrap">
+                    <span class="pro-modal-crown-icon">👑</span>
+                    <h3 class="pro-modal-title">Periodica 3D Pro</h3>
+                </div>
+                <button class="pro-modal-close-btn" onclick="closeProPaywallModal()" aria-label="Close Pro Modal">&times;</button>
+            </div>
+            <div class="pro-modal-body">
+                <p id="pro-modal-callout-text" class="pro-feature-callout">
+                    Unlock 3D Quantum Orbitals, Nuclear Isotopes, Reactions Balancer, 3D Crystals, and all 12+ periodic heatmaps!
+                </p>
+
+                <div class="pro-features-grid">
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🌌</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">3D Quantum Orbitals</span>
+                            <span class="pro-feat-desc">Atomic wavefunctions, nodal slicing & subshells</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🧪</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Nuclear Isotopes & Decay</span>
+                            <span class="pro-feat-desc">3,000+ nuclides & Monte Carlo decay chamber</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🧬</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">3D Molecular Compounds</span>
+                            <span class="pro-feat-desc">Interactive structures & mass percentages</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">💥</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Reactions & Stoichiometry</span>
+                            <span class="pro-feat-desc">Instant Gaussian equation balancer</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🧊</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">3D Crystal Lattices</span>
+                            <span class="pro-feat-desc">Bravais unit cells & atomic packing factors</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">⚖️</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Element Comparison Radar</span>
+                            <span class="pro-feat-desc">Multi-variable comparative trend radar</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">❓</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Chemistry Quiz Lab</span>
+                            <span class="pro-feat-desc">Mastery streak tracker & challenge mode</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🪐</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">Physics Simulation Lab</span>
+                            <span class="pro-feat-desc">Nuclear chain reactions, particle decays & molecular dynamics</span>
+                        </div>
+                    </div>
+                    <div class="pro-feat-item">
+                        <span class="pro-feat-icon">🌡️</span>
+                        <div class="pro-feat-text">
+                            <span class="pro-feat-name">All 12+ Property Heatmaps</span>
+                            <span class="pro-feat-desc">Electronegativity, ionization tiers, radii</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pro-pricing-banner">
+                    <div class="pro-pricing-meta">
+                        <span class="pro-pricing-badge">✓ Lifetime License • No Ads • No Subscription</span>
+                        <span class="pro-pricing-heading">One-Time Lifetime Unlock</span>
+                    </div>
+                    <span class="pro-pricing-price" id="pro-pricing-display">Special Launch Offer</span>
+                </div>
+            </div>
+
+            <div class="pro-modal-footer">
+                <button class="pro-btn-buy" onclick="purchasePro()">
+                    <span>⭐</span> Unlock Lifetime Pro on Google Play
+                </button>
+                <div class="pro-footer-actions-row">
+                    <button class="pro-btn-secondary" onclick="restorePurchases()">🔄 Restore Purchases</button>
+                    <button class="pro-btn-secondary" onclick="closeProPaywallModal()">Back to Free Table ➔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== RATE US / IN-APP REVIEW MODAL ===================== -->
+    <div id="rate-us-modal" class="rate-us-modal-overlay" style="display:none;" onclick="if(event.target===this)closeRateUsModal()">
+        <div class="rate-us-modal-card">
+            <div class="rate-us-header">
+                <span class="rate-us-app-icon">💎</span>
+                <h3>Enjoying Periodica 3D?</h3>
+                <button class="rate-us-close-btn" onclick="closeRateUsModal()">&times;</button>
+            </div>
+            <div class="rate-us-body">
+                <p class="rate-us-subtitle">Tap a star to rate your chemistry learning experience:</p>
+                <div class="star-rating-row" id="star-rating-container">
+                    <span class="star-btn" data-star="1" onclick="handleStarClick(1)">★</span>
+                    <span class="star-btn" data-star="2" onclick="handleStarClick(2)">★</span>
+                    <span class="star-btn" data-star="3" onclick="handleStarClick(3)">★</span>
+                    <span class="star-btn" data-star="4" onclick="handleStarClick(4)">★</span>
+                    <span class="star-btn" data-star="5" onclick="handleStarClick(5)">★</span>
+                </div>
+                <div class="rating-feedback-area" id="rating-feedback-area" style="display:none;">
+                    <p id="rating-action-text" class="rating-action-msg"></p>
+                    <div id="feedback-textarea-wrap" style="display:none; width:100%; margin-top:8px;">
+                        <textarea id="feedback-input-text" placeholder="What can we improve in future updates?" rows="3" style="width:100%; background:rgba(15,23,42,0.8); border:1px solid rgba(0,212,255,0.3); border-radius:8px; color:#fff; padding:8px 10px; font-size:0.82rem; resize:none;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="rate-us-footer">
+                <button class="rate-btn-secondary" onclick="dismissRateUsLater()">Maybe Later</button>
+                <button class="rate-btn-primary" id="rate-submit-btn" onclick="submitRating()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== APP UPDATE PROMPT MODAL (MANDATORY & OPTIONAL) ===================== -->
+    <div id="app-update-modal" class="app-update-modal-overlay" style="display:none;" onclick="if(event.target===this && !window.isAppUpdateMandatory) closeAppUpdateModal();">
+        <div class="app-update-modal-card optional">
+            <div class="app-update-header">
+                <div class="app-update-icon-wrap">🚀</div>
+                <h3 id="update-modal-title">Update Available</h3>
+                <button id="update-modal-close-btn" class="app-update-close-btn" onclick="closeAppUpdateModal()" aria-label="Close update modal">&times;</button>
+            </div>
+            <div class="app-update-body">
+                <div class="update-version-pills">
+                    <span class="current-ver-pill" id="update-current-ver">Current: v4.4.0</span>
+                    <span class="ver-arrow">➔</span>
+                    <span class="latest-ver-pill" id="update-latest-ver">New: v4.4.0</span>
+                </div>
+                <div id="update-meta-badge" class="update-meta-badge" style="display:none;"></div>
+                <p id="update-modal-desc" class="app-update-desc">A new version of Periodica 3D is available with performance improvements and new interactive chemistry features!</p>
+                <div class="update-changelog-box" id="update-changelog-box">
+                    <span class="changelog-title">What's New:</span>
+                    <ul id="update-changelog-list">
+                        <li>Direct Temperature Converter (K, °C, °F)</li>
+                        <li>Enhanced Carbon Box brand design</li>
+                        <li>Optimized zero-latency table rendering</li>
+                    </ul>
+                </div>
+                <div id="update-mandatory-warning" class="mandatory-warning-badge" style="display:none;">
+                    ⚠️ This update is required to continue using Periodica online services.
+                </div>
+            </div>
+            <div class="app-update-footer">
+                <button id="update-dismiss-btn" class="update-btn-dismiss" onclick="dismissAppUpdate()">Later</button>
+                <button id="update-store-action-btn" class="update-btn-store" onclick="openAppStoreForUpdate()">Update Now 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ORBITAL 3D VISUALIZER MODAL ===================== -->
+    <div id="orbital-visualizer-modal" class="orbital-modal-overlay" style="display:none;">
+        <div class="orbital-modal-card">
+            <!-- Modal Header -->
+            <div class="orbital-modal-header">
+                <div class="orbital-modal-title-wrap">
+                    <div class="orbital-modal-badge" id="ovm-el-badge">6 C</div>
+                    <div>
+                        <h3 id="ovm-el-name" class="orbital-modal-name">Carbon — 2p Orbital</h3>
+                        <span id="ovm-config-preview" class="orbital-modal-sub">[He] 2s² 2p²</span>
+                    </div>
+                </div>
+                <button class="orbital-modal-close-btn" onclick="window.OrbitalViewer && window.OrbitalViewer.closeModal()">&times;</button>
+            </div>
+
+            <!-- Controls Ribbon -->
+            <div class="orbital-modal-toolbar">
+                <div class="orbital-select-group">
+                    <label class="ovm-label" for="ovm-subshell-select">Subshell:</label>
+                    <select id="ovm-subshell-select" class="ovm-dropdown">
+                    </select>
+                </div>
+
+                <div class="orbital-select-group">
+                    <label class="ovm-label" for="ovm-orientation-select">Orientation:</label>
+                    <select id="ovm-orientation-select" class="ovm-dropdown">
+                    </select>
+                </div>
+
+                <div class="orbital-toggle-group">
+                    <label class="ovm-toggle-label">
+                        <input type="checkbox" id="ovm-slice-toggle">
+                        <span>Slice View</span>
+                    </label>
+                    <label class="ovm-toggle-label">
+                        <input type="checkbox" id="ovm-autorotate-toggle" checked>
+                        <span>Auto-Rotate</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 3D Canvas Viewport -->
+            <div id="ovm-canvas-container" class="orbital-modal-canvas-wrap">
+                <div id="ovm-orientation-badge" class="ovm-floating-badge">2p<sub>x</sub> (m = +1)</div>
+            </div>
+
+            <!-- Quantum & Energy Info Footer -->
+            <div class="orbital-modal-footer">
+                <div class="ovm-footer-item">
+                    <span class="ovm-foot-label">Quantum:</span>
+                    <span id="ovm-quantum-text" class="ovm-foot-val mono-text">n=2, ℓ=1, m=+1</span>
+                </div>
+                <div class="ovm-footer-item">
+                    <span class="ovm-foot-label">Radius:</span>
+                    <span id="ovm-radius-text" class="ovm-foot-val mono-text">~67 pm</span>
+                </div>
+                <div class="ovm-footer-item">
+                    <span class="ovm-foot-label">Occupancy:</span>
+                    <span id="ovm-occupancy-text" class="ovm-foot-val">Single (↿)</span>
+                </div>
+                <div class="ovm-footer-item ovm-energy-item">
+                    <span class="ovm-foot-label">Binding Energy:</span>
+                    <span id="ovm-binding-text" class="ovm-foot-val mono-text">-24.40</span>
+                    <select id="ovm-energy-unit" class="ovm-unit-select">
+                        <option value="eV" selected>eV</option>
+                        <option value="kJ">kJ/mol</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== DECAY PROCESS EXPLANATION MODAL ===================== -->
+    <div id="decay-explanation-modal" class="decay-modal-overlay" style="display:none;">
+        <div class="decay-modal-card">
+            <!-- Modal Header -->
+            <div class="decay-modal-header" id="dem-header">
+                <div class="decay-modal-title-wrap">
+                    <div class="decay-modal-badge" id="dem-badge">α</div>
+                    <div>
+                        <h3 id="dem-title" class="decay-modal-name">Alpha Decay (α Emission)</h3>
+                        <span id="dem-subtitle" class="decay-modal-sub">Nuclear Transformation & Particle Emission</span>
+                    </div>
+                </div>
+                <button class="decay-modal-close-btn" onclick="closeDecayExplanationModal()">&times;</button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="decay-modal-body" id="dem-body">
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="decay-modal-footer">
+                <span id="dem-nuclide-count" class="decay-modal-foot-count">436 Known Nuclides</span>
+                <button class="decay-modal-close-action" onclick="closeDecayExplanationModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== THEMED COMPARE ELEMENT PICKER MODAL ===================== -->
+    <div id="compare-element-picker-modal" class="compare-picker-modal-overlay" onclick="if(event.target===this)closeCompareElementPicker()">
+        <div class="compare-picker-modal-card">
+            <!-- Modal Header -->
+            <div class="compare-picker-header">
+                <div class="compare-picker-title-wrap">
+                    <span class="compare-picker-icon">⚖️</span>
+                    <div>
+                        <h3 id="compare-picker-title" class="compare-picker-title">Select Element to Compare</h3>
+                        <span id="compare-picker-slot-badge" class="compare-picker-slot-badge">Slot 1</span>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="compare-picker-clear-slot-btn" onclick="clearCurrentPickerSlot()">✕ Clear Slot</button>
+                    <button class="compare-picker-close-btn" onclick="closeCompareElementPicker()">&times;</button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="compare-picker-toolbar">
+                <div class="compare-picker-search-wrap">
+                    <span class="compare-picker-search-icon">🔍</span>
+                    <input type="text" id="compare-picker-search" class="compare-picker-search-input" placeholder="Search by name, symbol, or atomic number (e.g. Fe, Iron, 26)..." oninput="filterComparePickerElements()">
+                    <button class="compare-picker-search-clear" onclick="clearComparePickerSearch()">&times;</button>
+                </div>
+                <div class="compare-picker-cat-pills" id="compare-picker-cat-pills"></div>
+            </div>
+
+            <!-- Scrollable Elements Grid -->
+            <div class="compare-picker-grid" id="compare-picker-grid"></div>
+        </div>
+    </div>
+
+    <!-- ===================== LEGEND CONCEPT INSPECTOR MODAL ===================== -->
+    <div id="legend-concept-modal" class="legend-concept-modal-overlay" style="display:none;" onclick="if(event.target===this)closeLegendConceptModal()">
+        <div class="legend-concept-modal-card">
+            <!-- Header -->
+            <div class="legend-concept-header">
+                <div class="legend-concept-title-wrap">
+                    <h3 id="lcm-title" class="legend-concept-title">Solid State</h3>
+                    <span id="lcm-badge" class="legend-concept-badge">State of Matter • Condensed Phase</span>
+                </div>
+                <button class="legend-concept-close-btn" onclick="closeLegendConceptModal()" aria-label="Close concept inspector">&times;</button>
+            </div>
+            
+            <!-- Body -->
+            <div class="legend-concept-body">
+                <!-- Scientific SVG Graphic Diagram -->
+                <div id="lcm-svg-container" class="legend-concept-svg-wrap"></div>
+
+                <!-- Concept Definition -->
+                <div class="concept-section">
+                    <div class="concept-section-title">
+                        <span>📖</span> Scientific Definition
+                    </div>
+                    <p id="lcm-definition" class="concept-definition-text"></p>
+                </div>
+
+                <!-- Characteristics & Properties -->
+                <div class="concept-section">
+                    <div class="concept-section-title">
+                        <span>⚡</span> Key Characteristics & Behaviors
+                    </div>
+                    <ul id="lcm-characteristics-list" class="concept-characteristics-list"></ul>
+                </div>
+
+                <!-- Real-World Examples -->
+                <div class="concept-section">
+                    <div class="concept-section-title">
+                        <span>🔬</span> Representative Elements & Examples
+                    </div>
+                    <div id="lcm-examples-list" class="concept-examples-wrap"></div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="legend-concept-footer">
+                <span class="legend-concept-hint">💡 Tap any legend item to highlight • Long-press for details & diagrams</span>
+                <button class="legend-concept-dismiss-btn" onclick="closeLegendConceptModal()">Got It</button>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 /**
  * 08_reactions.js
- * Chemical Reaction Balancer Engine, Stoichiometry Calculator, and UI Controller
+ * Chemical Reaction Balancer Engine, Stoichiometry Calculator, Atom Conservation Inventory,
+ * and Interactive Practice Balancer Challenge Mode
  */
 
 // Preset Chemical Reactions Database
@@ -25,13 +26,30 @@ const presetReactions = [
     { name: 'Baking Soda & Vinegar', equation: 'NaHCO3 + HC2H3O2 -> NaC2H3O2 + H2O + CO2', category: 'Acid-Base' }
 ];
 
-let selectedReactionCategory = 'All';
+var reactionsViewInitialized = false;
+var selectedReactionCategory = 'All';
+var currentReactionMode = 'solver'; // 'solver' | 'practice'
+
+// Practice Mode State
+var practiceReactionIndex = 0;
+var practiceScore = 0;
+var practiceTargetReaction = null;
+var practiceUserR = [];
+var practiceUserP = [];
+var practiceTargetR = [];
+var practiceTargetP = [];
+var practiceReactantStrs = [];
+var practiceProductStrs = [];
+var practiceElements = [];
 
 function initReactionsView() {
-    setupReactionsUI();
-    renderReactionPresets();
-    // Default test balancing
-    balanceEquation('CH4 + O2 -> CO2 + H2O');
+    if (!reactionsViewInitialized) {
+        setupReactionsUI();
+        renderReactionPresets();
+        // Default test balancing
+        balanceEquation('CH4 + O2 -> CO2 + H2O');
+        reactionsViewInitialized = true;
+    }
 }
 
 function setupReactionsUI() {
@@ -64,6 +82,72 @@ function setupReactionsUI() {
     });
 }
 
+// Mode Toggle: 'solver' vs 'practice'
+function setReactionMode(mode) {
+    currentReactionMode = mode;
+    const solverBtn = document.getElementById('rxn-mode-solver-btn');
+    const practiceBtn = document.getElementById('rxn-mode-practice-btn');
+    const solverContainer = document.getElementById('rxn-solver-container');
+    const practiceContainer = document.getElementById('rxn-practice-container');
+    const presetsSection = document.querySelector('.reaction-presets-section');
+
+    if (mode === 'solver') {
+        if (solverBtn) solverBtn.classList.add('active');
+        if (practiceBtn) practiceBtn.classList.remove('active');
+        if (solverContainer) solverContainer.style.display = 'block';
+        if (practiceContainer) practiceContainer.style.display = 'none';
+        if (presetsSection) presetsSection.style.display = 'block';
+
+        const input = document.getElementById('reaction-input');
+        if (input) balanceEquation(input.value || 'CH4 + O2 -> CO2 + H2O');
+    } else {
+        if (solverBtn) solverBtn.classList.remove('active');
+        if (practiceBtn) practiceBtn.classList.add('active');
+        if (solverContainer) solverContainer.style.display = 'none';
+        if (practiceContainer) practiceContainer.style.display = 'block';
+        if (presetsSection) presetsSection.style.display = 'none';
+
+        if (!practiceTargetReaction) {
+            loadNewPracticeChallenge();
+        } else {
+            renderPracticeEquation();
+            updatePracticeAtomMeters();
+        }
+    }
+}
+window.setReactionMode = setReactionMode;
+
+// Shortcut ribbon helpers
+function insertReactionSymbol(sym) {
+    const input = document.getElementById('reaction-input');
+    if (!input) return;
+    const start = input.selectionStart || input.value.length;
+    const end = input.selectionEnd || input.value.length;
+    const val = input.value;
+    input.value = val.substring(0, start) + sym + val.substring(end);
+    input.focus();
+    input.setSelectionRange(start + sym.length, start + sym.length);
+}
+window.insertReactionSymbol = insertReactionSymbol;
+
+function clearReactionInput() {
+    const input = document.getElementById('reaction-input');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+}
+window.clearReactionInput = clearReactionInput;
+
+function setReactionPresetSample(eq) {
+    const input = document.getElementById('reaction-input');
+    if (input) {
+        input.value = eq;
+        balanceEquation(eq);
+    }
+}
+window.setReactionPresetSample = setReactionPresetSample;
+
 function renderReactionPresets() {
     const container = document.getElementById('reaction-presets-grid');
     if (!container) return;
@@ -72,7 +156,7 @@ function renderReactionPresets() {
 
     const filtered = presetReactions.filter(r => selectedReactionCategory === 'All' || r.category === selectedReactionCategory);
 
-    filtered.forEach(r => {
+    filtered.forEach((r, idx) => {
         const card = document.createElement('div');
         card.className = 'reaction-preset-card';
         card.innerHTML = `
@@ -81,9 +165,14 @@ function renderReactionPresets() {
             <span class="preset-badge">${r.category}</span>
         `;
         card.onclick = () => {
-            const input = document.getElementById('reaction-input');
-            if (input) input.value = r.equation;
-            balanceEquation(r.equation);
+            if (currentReactionMode === 'practice') {
+                const globalIdx = presetReactions.indexOf(r);
+                loadNewPracticeChallenge(globalIdx >= 0 ? globalIdx : 0);
+            } else {
+                const input = document.getElementById('reaction-input');
+                if (input) input.value = r.equation;
+                balanceEquation(r.equation);
+            }
         };
         container.appendChild(card);
     });
@@ -98,14 +187,9 @@ function parseFormula(formula) {
     const elementCounts = {};
 
     function parseSubFormula(str, multiplier = 1) {
-        const regex = /([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)/g;
-        let match;
-        const stack = [multiplier];
-
         let i = 0;
         while (i < str.length) {
             if (str[i] === '(') {
-                // Find matching closing parenthesis
                 let depth = 1;
                 let j = i + 1;
                 while (j < str.length && depth > 0) {
@@ -140,18 +224,40 @@ function parseFormula(formula) {
     return elementCounts;
 }
 
+function getFormulaMolarMass(formula) {
+    const counts = parseFormula(formula);
+    let totalMass = 0;
+    for (const sym in counts) {
+        const el = (typeof elementsData !== 'undefined') ? elementsData.find(e => e.symbol === sym) : null;
+        const atomicMass = el ? el.atomicMass : 0;
+        totalMass += counts[sym] * atomicMass;
+    }
+    return totalMass;
+}
+
 /**
  * Main Balancing Algorithm using Gaussian Elimination over Rationals
  */
 function balanceEquation(rawInput) {
     const errorEl = document.getElementById('reaction-error');
-    const resultCard = document.getElementById('balanced-result-card');
+    const balanceBtn = document.getElementById('balance-btn');
 
     if (errorEl) errorEl.style.display = 'none';
-    if (!rawInput || !rawInput.includes('->') && !rawInput.includes('=')) {
+
+    // Animate button solving state
+    if (balanceBtn) {
+        balanceBtn.classList.add('is-solving');
+        balanceBtn.innerHTML = 'Solving... ⚡';
+    }
+
+    if (!rawInput || (!rawInput.includes('->') && !rawInput.includes('='))) {
         if (errorEl) {
             errorEl.textContent = 'Please enter a valid reaction equation with "->" or "=" (e.g. H2 + O2 -> H2O)';
             errorEl.style.display = 'block';
+        }
+        if (balanceBtn) {
+            balanceBtn.classList.remove('is-solving');
+            balanceBtn.innerHTML = 'Balance ⚡';
         }
         return;
     }
@@ -165,6 +271,10 @@ function balanceEquation(rawInput) {
         if (errorEl) {
             errorEl.textContent = 'Both reactants and products are required.';
             errorEl.style.display = 'block';
+        }
+        if (balanceBtn) {
+            balanceBtn.classList.remove('is-solving');
+            balanceBtn.innerHTML = 'Balance ⚡';
         }
         return;
     }
@@ -204,17 +314,36 @@ function balanceEquation(rawInput) {
 
         renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, elements, reactants, products);
 
+        // Success Haptic & Button Feedback
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.impact('MEDIUM');
+        }
+
+        if (balanceBtn) {
+            balanceBtn.classList.remove('is-solving');
+            balanceBtn.classList.add('is-success');
+            balanceBtn.innerHTML = 'Balanced! ✅';
+            setTimeout(() => {
+                balanceBtn.classList.remove('is-success');
+                balanceBtn.innerHTML = 'Balance ⚡';
+            }, 1400);
+        }
+
     } catch (err) {
         if (errorEl) {
             errorEl.textContent = err.message || 'Error balancing reaction equation.';
             errorEl.style.display = 'block';
         }
+        if (balanceBtn) {
+            balanceBtn.classList.remove('is-solving');
+            balanceBtn.innerHTML = 'Balance ⚡';
+        }
     }
 }
+window.balanceEquation = balanceEquation;
 
 function solveMatrixNullspace(matrix, cols) {
     const rows = matrix.length;
-    // Clone matrix with fractions [numerator, denominator]
     const M = matrix.map(r => r.map(v => [v, 1]));
 
     let lead = 0;
@@ -231,18 +360,15 @@ function solveMatrixNullspace(matrix, cols) {
         }
         if (lead === cols) break;
 
-        // Swap rows i and r
         const temp = M[i];
         M[i] = M[r];
         M[r] = temp;
 
-        // Scale row r to have pivot 1
         const pivot = M[r][lead];
         for (let j = 0; j < cols; j++) {
             M[r][j] = divFrac(M[r][j], pivot);
         }
 
-        // Eliminate column entries in other rows
         for (let k = 0; k < rows; k++) {
             if (k !== r) {
                 const factor = M[k][lead];
@@ -254,35 +380,23 @@ function solveMatrixNullspace(matrix, cols) {
         lead++;
     }
 
-    // Set free variable (last column) to 1, back substitute
-    const solution = new Array(cols).fill(null).map(() => [0, 1]);
-    solution[cols - 1] = [1, 1];
-
-    for (let i = cols - 2; i >= 0; i--) {
-        let sum = [0, 1];
-        for (let j = i + 1; j < cols; j++) {
-            if (i < rows) {
-                sum = addFrac(sum, mulFrac(M[i][j], solution[j]));
-            }
+    const freeVarCol = cols - 1;
+    const solution = [];
+    for (let r = 0; r < cols - 1; r++) {
+        let val = [0, 1];
+        if (r < rows && M[r][r][0] === 1) {
+            val = subFrac([0, 1], M[r][freeVarCol]);
         }
-        solution[i] = [ -sum[0], sum[1] ];
+        solution.push(val);
     }
+    solution.push([1, 1]);
 
-    // Find LCM of denominators to make all integer
-    let lcm = 1;
-    solution.forEach(frac => {
-        const den = Math.abs(frac[1]);
-        lcm = (lcm * den) / gcd(lcm, den);
+    let commonDenom = 1;
+    solution.forEach(f => {
+        commonDenom = (commonDenom * f[1]) / gcd(commonDenom, f[1]);
     });
 
-    const intCoeffs = solution.map(frac => Math.round((frac[0] / frac[1]) * lcm));
-
-    // Ensure all positive
-    if (intCoeffs.some(c => c <= 0)) {
-        intCoeffs.forEach((c, idx) => { intCoeffs[idx] = Math.abs(c); });
-    }
-
-    // Simplify by GCD of all coefficients
+    const intCoeffs = solution.map(f => Math.round((f[0] * commonDenom) / f[1]));
     let g = intCoeffs[0];
     intCoeffs.forEach(c => { g = gcd(g, c); });
     return intCoeffs.map(c => c / g);
@@ -307,18 +421,18 @@ function renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, eleme
 
     if (!balancedEqEl) return;
 
-    // Build HTML for balanced equation
+    // Build HTML for balanced equation with bouncy highlight
     const rHtml = reactantStrs.map((str, i) => {
-        const coeff = rCoeffs[i] > 1 ? `<span class="coeff-highlight">${rCoeffs[i]}</span>` : '';
-        return `${coeff}${formatSubscripts(str)}`;
-    }).join(' + ');
+        const coeff = `<span class="coeff-highlight ${rCoeffs[i] > 1 ? 'large' : 'unit'}">${rCoeffs[i]}</span>`;
+        return `${coeff}&nbsp;${formatSubscripts(str)}`;
+    }).join(' &nbsp;+&nbsp; ');
 
     const pHtml = productStrs.map((str, i) => {
-        const coeff = pCoeffs[i] > 1 ? `<span class="coeff-highlight">${pCoeffs[i]}</span>` : '';
-        return `${coeff}${formatSubscripts(str)}`;
-    }).join(' + ');
+        const coeff = `<span class="coeff-highlight ${pCoeffs[i] > 1 ? 'large' : 'unit'}">${pCoeffs[i]}</span>`;
+        return `${coeff}&nbsp;${formatSubscripts(str)}`;
+    }).join(' &nbsp;+&nbsp; ');
 
-    balancedEqEl.innerHTML = `${rHtml} &nbsp;➔&nbsp; ${pHtml}`;
+    balancedEqEl.innerHTML = `${rHtml} &nbsp;&nbsp;<span style="color:#00d4ff; font-weight:800;">➔</span>&nbsp;&nbsp; ${pHtml}`;
 
     // Determine Reaction Type
     const rCount = reactantStrs.length;
@@ -331,16 +445,96 @@ function renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, eleme
     
     if (reactantStrs.some(s => s.includes('O2')) && productStrs.some(s => s.includes('CO2') || s.includes('H2O'))) {
         rxnType = 'Combustion';
+    } else if (reactantStrs.some(s => s.includes('H') && (s.includes('Cl') || s.includes('SO4') || s.includes('NO3'))) &&
+               reactantStrs.some(s => s.includes('OH'))) {
+        rxnType = 'Acid-Base Neutralization';
     }
 
     if (typeBadge) typeBadge.textContent = rxnType;
 
-    // Stoichiometry Ratios Table
+    // Calculate Molar Masses
+    let totalReactantMass = 0;
+    let totalProductMass = 0;
+    reactantStrs.forEach((str, i) => {
+        totalReactantMass += rCoeffs[i] * getFormulaMolarMass(str);
+    });
+    productStrs.forEach((str, i) => {
+        totalProductMass += pCoeffs[i] * getFormulaMolarMass(str);
+    });
+
+    // Educational Chemical Reaction Process Stepper
+    const chemStepper = document.getElementById('chem-reaction-process-stepper');
+    if (chemStepper) {
+        chemStepper.innerHTML = `
+            <div class="chem-stepper-track">
+                <div class="chem-step-card">
+                    <span class="cs-icon">🧪</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 1: Reactants</span>
+                        <span class="cs-label">${reactantStrs.join(' + ')}</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚡</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 2: Activation</span>
+                        <span class="cs-label">Bonds break apart</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card">
+                    <span class="cs-icon">⚛️</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 3: Conservation</span>
+                        <span class="cs-label">${elements.length} elements conserved</span>
+                    </div>
+                </div>
+                <span class="chem-connector">➔</span>
+                <div class="chem-step-card active">
+                    <span class="cs-icon">✨</span>
+                    <div class="cs-info">
+                        <span class="cs-num">Step 4: Products</span>
+                        <span class="cs-label">${productStrs.join(' + ')}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Inline Stoichiometry for Direct Mobile Visibility
+    const inlineStoich = document.getElementById('reaction-inline-stoich');
+    const inlineHtml = `
+        <div class="inline-stoich-row">
+            <div class="stoich-pill">
+                <span class="stoich-pill-lbl">Molar Ratio:</span>
+                <span class="stoich-pill-val cyan">
+                    ${rCoeffs.join(' : ')} &nbsp;➔&nbsp; ${pCoeffs.join(' : ')}
+                </span>
+            </div>
+            <div class="stoich-pill">
+                <span class="stoich-pill-lbl">Mass Balance:</span>
+                <span class="stoich-pill-val green">
+                    ${totalReactantMass.toFixed(2)} g/mol &nbsp;=&nbsp; ${totalProductMass.toFixed(2)} g/mol (Δ0.00)
+                </span>
+            </div>
+        </div>
+    `;
+    if (inlineStoich) inlineStoich.innerHTML = inlineHtml;
+
+    // Render Atom Conservation & Inventory Matrix
+    renderAtomInventory(reactantStrs, productStrs, rCoeffs, pCoeffs, elements, reactants, products);
+
+    // Sidebar Stoichiometry Ratios Table (if opened)
     if (stoichContainer) {
         stoichContainer.innerHTML = `
             <div class="stoich-card">
                 <h5>Molar Ratio</h5>
                 <div class="stoich-value">${rCoeffs.join(' : ')} &nbsp;➔&nbsp; ${pCoeffs.join(' : ')}</div>
+            </div>
+            <div class="stoich-card">
+                <h5>Total Mass Conserved</h5>
+                <div class="stoich-value" style="color:#4ade80;">${totalReactantMass.toFixed(2)} g/mol</div>
             </div>
             <div class="stoich-card">
                 <h5>Conserved Elements</h5>
@@ -350,6 +544,311 @@ function renderBalancedResult(reactantStrs, productStrs, rCoeffs, pCoeffs, eleme
     }
 }
 
+function renderAtomInventory(reactantStrs, productStrs, rCoeffs, pCoeffs, elements, reactants, products) {
+    const section = document.getElementById('atom-inventory-section');
+    if (!section) return;
+
+    let rowsHtml = '';
+    elements.forEach(elem => {
+        let rTotal = 0;
+        let pTotal = 0;
+
+        reactantStrs.forEach((str, i) => {
+            const count = (reactants[i][elem] || 0) * rCoeffs[i];
+            if (count > 0) {
+                rTotal += count;
+            }
+        });
+
+        productStrs.forEach((str, i) => {
+            const count = (products[i][elem] || 0) * pCoeffs[i];
+            if (count > 0) {
+                pTotal += count;
+            }
+        });
+
+        const isBalanced = rTotal === pTotal;
+        const elemData = (typeof elementsData !== 'undefined') ? elementsData.find(e => e.symbol === elem) : null;
+        const elemName = elemData ? elemData.name : elem;
+
+        rowsHtml += `
+            <div class="atom-inv-row">
+                <div class="atom-inv-cell elem">
+                    <span class="atom-sym-badge">${elem}</span>
+                    <span class="atom-elem-name">${elemName}</span>
+                </div>
+                <div class="atom-inv-cell left">
+                    <span class="atom-count-pill">${rTotal}</span>
+                </div>
+                <div class="atom-inv-cell center">
+                    <span class="atom-equals-badge">${isBalanced ? '=' : '≠'}</span>
+                </div>
+                <div class="atom-inv-cell right">
+                    <span class="atom-count-pill">${pTotal}</span>
+                </div>
+                <div class="atom-inv-cell status">
+                    <span class="atom-status-badge ${isBalanced ? 'balanced' : 'unbalanced'}">
+                        ${isBalanced ? '✅ Conserved' : '❌ Unbalanced'}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+
+    section.innerHTML = `
+        <div class="atom-inventory-card">
+            <div class="atom-inventory-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.1rem;">⚖️</span>
+                    <span style="font-weight:700; color:#38bdf8; font-size:0.9rem;">Atom Conservation Matrix</span>
+                </div>
+                <span class="atom-all-balanced-badge">✅ All Atoms Conserved (Law of Conservation of Mass)</span>
+            </div>
+            <div class="atom-inv-table-wrap">
+                <div class="atom-inv-head-row">
+                    <span class="head-col">Element</span>
+                    <span class="head-col">Reactants (Left)</span>
+                    <span class="head-col"></span>
+                    <span class="head-col">Products (Right)</span>
+                    <span class="head-col">Conservation</span>
+                </div>
+                ${rowsHtml}
+            </div>
+        </div>
+    `;
+}
+
+// ===================== PRACTICE / CHALLENGE BALANCER MODE =====================
+
+function loadNewPracticeChallenge(chosenIndex) {
+    let rObj;
+    if (typeof chosenIndex === 'number' && presetReactions[chosenIndex]) {
+        practiceReactionIndex = chosenIndex;
+        rObj = presetReactions[chosenIndex];
+    } else {
+        practiceReactionIndex = Math.floor(Math.random() * presetReactions.length);
+        rObj = presetReactions[practiceReactionIndex];
+    }
+
+    practiceTargetReaction = rObj;
+    const arrow = rObj.equation.includes('->') ? '->' : '=';
+    const parts = rObj.equation.split(arrow);
+    practiceReactantStrs = parts[0].split('+').map(s => s.trim()).filter(Boolean);
+    practiceProductStrs = parts[1].split('+').map(s => s.trim()).filter(Boolean);
+
+    // Parse formulas
+    const reactants = practiceReactantStrs.map(parseFormula);
+    const products = practiceProductStrs.map(parseFormula);
+
+    const allElementsSet = new Set();
+    reactants.forEach(r => Object.keys(r).forEach(e => allElementsSet.add(e)));
+    products.forEach(p => Object.keys(p).forEach(e => allElementsSet.add(e)));
+    practiceElements = Array.from(allElementsSet);
+
+    // Solve for target solution
+    const totalSpecies = reactants.length + products.length;
+    const matrix = practiceElements.map(elem => {
+        const row = [];
+        reactants.forEach(r => row.push(r[elem] || 0));
+        products.forEach(p => row.push(-(p[elem] || 0)));
+        return row;
+    });
+
+    const targetCoeffs = solveMatrixNullspace(matrix, totalSpecies);
+    practiceTargetR = targetCoeffs.slice(0, reactants.length);
+    practiceTargetP = targetCoeffs.slice(reactants.length);
+
+    // Initialize user coefficients to 1
+    practiceUserR = practiceReactantStrs.map(() => 1);
+    practiceUserP = practiceProductStrs.map(() => 1);
+
+    const titleEl = document.getElementById('practice-target-name');
+    if (titleEl) titleEl.textContent = rObj.name;
+
+    const feedbackMsg = document.getElementById('practice-feedback-msg');
+    if (feedbackMsg) {
+        feedbackMsg.className = 'practice-feedback-msg';
+        feedbackMsg.textContent = 'Adjust coefficients using [+] and [-] until all atoms balance!';
+    }
+
+    renderPracticeEquation();
+    updatePracticeAtomMeters();
+}
+window.loadNewPracticeChallenge = loadNewPracticeChallenge;
+
+function renderPracticeEquation() {
+    const wrap = document.getElementById('practice-equation-wrap');
+    if (!wrap) return;
+
+    const rHtml = practiceReactantStrs.map((str, i) => `
+        <div class="practice-term">
+            <div class="stepper-wrap">
+                <button type="button" class="stepper-btn" onclick="adjustPracticeCoeff('R', ${i}, -1)">−</button>
+                <span class="stepper-val" id="stepper-r-${i}">${practiceUserR[i]}</span>
+                <button type="button" class="stepper-btn" onclick="adjustPracticeCoeff('R', ${i}, 1)">+</button>
+            </div>
+            <span class="practice-formula">${formatSubscripts(str)}</span>
+        </div>
+    `).join('<span class="practice-op">+</span>');
+
+    const pHtml = practiceProductStrs.map((str, i) => `
+        <div class="practice-term">
+            <div class="stepper-wrap">
+                <button type="button" class="stepper-btn" onclick="adjustPracticeCoeff('P', ${i}, -1)">−</button>
+                <span class="stepper-val" id="stepper-p-${i}">${practiceUserP[i]}</span>
+                <button type="button" class="stepper-btn" onclick="adjustPracticeCoeff('P', ${i}, 1)">+</button>
+            </div>
+            <span class="practice-formula">${formatSubscripts(str)}</span>
+        </div>
+    `).join('<span class="practice-op">+</span>');
+
+    wrap.innerHTML = `
+        <div class="practice-side reactants">${rHtml}</div>
+        <div class="practice-arrow">➔</div>
+        <div class="practice-side products">${pHtml}</div>
+    `;
+}
+
+function adjustPracticeCoeff(side, idx, delta) {
+    if (side === 'R') {
+        practiceUserR[idx] = Math.max(1, Math.min(20, practiceUserR[idx] + delta));
+    } else {
+        practiceUserP[idx] = Math.max(1, Math.min(20, practiceUserP[idx] + delta));
+    }
+
+    // Update displayed coefficient
+    const valEl = document.getElementById(side === 'R' ? `stepper-r-${idx}` : `stepper-p-${idx}`);
+    if (valEl) valEl.textContent = side === 'R' ? practiceUserR[idx] : practiceUserP[idx];
+
+    if (window.NativeServices?.Haptics) {
+        window.NativeServices.Haptics.impact('LIGHT');
+    }
+
+    updatePracticeAtomMeters();
+}
+window.adjustPracticeCoeff = adjustPracticeCoeff;
+
+function updatePracticeAtomMeters() {
+    const reactants = practiceReactantStrs.map(parseFormula);
+    const products = practiceProductStrs.map(parseFormula);
+
+    const section = document.getElementById('atom-inventory-section');
+    if (!section) return;
+
+    let allBalanced = true;
+    let rowsHtml = '';
+
+    practiceElements.forEach(elem => {
+        let rCount = 0;
+        let pCount = 0;
+
+        reactants.forEach((r, i) => {
+            rCount += (r[elem] || 0) * practiceUserR[i];
+        });
+
+        products.forEach((p, i) => {
+            pCount += (p[elem] || 0) * practiceUserP[i];
+        });
+
+        const isBal = rCount === pCount;
+        if (!isBal) allBalanced = false;
+
+        const delta = pCount - rCount;
+        let deltaText = 'Balanced ✅';
+        if (delta < 0) deltaText = `Need ${Math.abs(delta)} more on Products ⚠️`;
+        if (delta > 0) deltaText = `Need ${delta} more on Reactants ⚠️`;
+
+        rowsHtml += `
+            <div class="atom-inv-row ${isBal ? 'is-balanced' : 'is-unbalanced'}">
+                <div class="atom-inv-cell elem">
+                    <span class="atom-sym-badge">${elem}</span>
+                </div>
+                <div class="atom-inv-cell left">
+                    <span class="atom-count-pill ${isBal ? 'good' : 'warn'}">${rCount}</span>
+                </div>
+                <div class="atom-inv-cell center">
+                    <span class="atom-equals-badge">${isBal ? '=' : '≠'}</span>
+                </div>
+                <div class="atom-inv-cell right">
+                    <span class="atom-count-pill ${isBal ? 'good' : 'warn'}">${pCount}</span>
+                </div>
+                <div class="atom-inv-cell status">
+                    <span class="atom-status-badge ${isBal ? 'balanced' : 'unbalanced'}">${deltaText}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    section.innerHTML = `
+        <div class="atom-inventory-card">
+            <div class="atom-inventory-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.1rem;">⚖️</span>
+                    <span style="font-weight:700; color:#38bdf8; font-size:0.9rem;">Live Practice Atom Scales</span>
+                </div>
+                <span class="atom-all-balanced-badge ${allBalanced ? 'balanced' : 'unbalanced'}">
+                    ${allBalanced ? '🎉 All Atoms Balanced!' : '⚠️ Still Unbalanced'}
+                </span>
+            </div>
+            <div class="atom-inv-table-wrap">
+                <div class="atom-inv-head-row">
+                    <span class="head-col">Element</span>
+                    <span class="head-col">Reactants</span>
+                    <span class="head-col"></span>
+                    <span class="head-col">Products</span>
+                    <span class="head-col">Status</span>
+                </div>
+                ${rowsHtml}
+            </div>
+        </div>
+    `;
+
+    return allBalanced;
+}
+
+function checkPracticeBalance() {
+    const isBalanced = updatePracticeAtomMeters();
+    const feedbackMsg = document.getElementById('practice-feedback-msg');
+    const scoreBadge = document.getElementById('practice-score-badge');
+
+    if (isBalanced) {
+        practiceScore += 20;
+        if (scoreBadge) scoreBadge.textContent = `Score: ${practiceScore}`;
+        if (feedbackMsg) {
+            feedbackMsg.className = 'practice-feedback-msg success';
+            feedbackMsg.innerHTML = `🎉 <strong>Perfect!</strong> You balanced <em>${practiceTargetReaction.name}</em>! (+20 pts)`;
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.notification('SUCCESS');
+        }
+    } else {
+        if (feedbackMsg) {
+            feedbackMsg.className = 'practice-feedback-msg error';
+            feedbackMsg.innerHTML = `❌ <strong>Not quite balanced yet.</strong> Look at the atom scales below to see which side is missing atoms!`;
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.notification('WARNING');
+        }
+    }
+}
+window.checkPracticeBalance = checkPracticeBalance;
+
+function revealPracticeSolution() {
+    practiceUserR = [...practiceTargetR];
+    practiceUserP = [...practiceTargetP];
+    renderPracticeEquation();
+    updatePracticeAtomMeters();
+
+    const feedbackMsg = document.getElementById('practice-feedback-msg');
+    if (feedbackMsg) {
+        feedbackMsg.className = 'practice-feedback-msg info';
+        feedbackMsg.innerHTML = `💡 <strong>Solution Revealed:</strong> Molar ratio is ${practiceTargetR.join(':')} ➔ ${practiceTargetP.join(':')}`;
+    }
+}
+window.revealPracticeSolution = revealPracticeSolution;
+
 function formatSubscripts(formulaStr) {
-    return formulaStr.replace(/(\d+)/g, '<sub>$1</sub>');
+    if (!formulaStr) return '';
+    const safeStr = window.escapeHtml ? window.escapeHtml(formulaStr) : formulaStr.replace(/[&<>"']/g, '');
+    return safeStr.replace(/(\d+)/g, '<sub>$1</sub>');
 }

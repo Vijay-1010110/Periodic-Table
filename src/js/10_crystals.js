@@ -16,11 +16,20 @@ let crystalRotating = true;
 let isDraggingCrystal = false;
 let prevCrystalMousePos = { x: 0, y: 0 };
 
+let crystalsViewInitialized = false;
+
 function initCrystalsView() {
-    setupCrystalsUI();
-    renderCrystalsList();
-    initCrystal3DViewer();
-    selectCrystalSystem('fcc');
+    if (!crystalsViewInitialized) {
+        setupCrystalsUI();
+        renderCrystalsList();
+        initCrystal3DViewer();
+        selectCrystalSystem('fcc');
+        crystalsViewInitialized = true;
+    } else {
+        if (typeof window.startCrystalViewer === 'function') {
+            window.startCrystalViewer();
+        }
+    }
 }
 
 function setupCrystalsUI() {
@@ -43,7 +52,6 @@ function setupCrystalsUI() {
             if (comp) render3DCrystal(comp);
         };
     }
-
     const planeBtns = document.querySelectorAll('.miller-btn');
     planeBtns.forEach(btn => {
         btn.onclick = (e) => {
@@ -54,6 +62,21 @@ function setupCrystalsUI() {
             if (comp) render3DCrystal(comp);
         };
     });
+
+    const paramsBtn = document.getElementById('btn-crystal-params');
+    if (paramsBtn) {
+        paramsBtn.onclick = () => {
+            const sb = document.getElementById('crystals-sidebar');
+            if (sb) {
+                const isOpen = sb.classList.contains('mobile-active');
+                if (isOpen) {
+                    sb.classList.remove('open', 'mobile-active');
+                } else {
+                    sb.classList.add('open', 'mobile-active', 'pos-right');
+                }
+            }
+        };
+    }
 }
 
 function renderCrystalsList() {
@@ -174,9 +197,27 @@ function initCrystal3DViewer() {
     });
     dom.addEventListener('touchend', () => { isDraggingCrystal = false; });
 
+    let crystalRafId = null;
+    let isCrystalRunning = false;
+
+    window.startCrystalViewer = function() {
+        if (isCrystalRunning) return;
+        isCrystalRunning = true;
+        animate();
+    };
+
+    window.stopCrystalViewer = function() {
+        isCrystalRunning = false;
+        if (crystalRafId) {
+            cancelAnimationFrame(crystalRafId);
+            crystalRafId = null;
+        }
+    };
+
     // Animation Loop
     function animate() {
-        requestAnimationFrame(animate);
+        if (!isCrystalRunning) return;
+        crystalRafId = requestAnimationFrame(animate);
         if (crystalGroup && crystalRotating && !isDraggingCrystal) {
             crystalGroup.rotation.y += 0.004;
         }
@@ -184,9 +225,11 @@ function initCrystal3DViewer() {
             crystalRenderer.render(crystalScene, crystalCamera);
         }
     }
-    animate();
+    if (typeof currentView !== 'undefined' && currentView === 'crystals') {
+        window.startCrystalViewer();
+    }
 
-    window.addEventListener('resize', () => {
+    function resizeCrystal() {
         if (!canvasContainer || !crystalRenderer || !crystalCamera) return;
         const w = canvasContainer.clientWidth;
         const h = canvasContainer.clientHeight;
@@ -195,7 +238,9 @@ function initCrystal3DViewer() {
             crystalCamera.updateProjectionMatrix();
             crystalRenderer.setSize(w, h);
         }
-    });
+    }
+    window.resizeCrystalViewer = resizeCrystal;
+    window.addEventListener('resize', resizeCrystal);
 }
 
 function render3DCrystal(sys) {

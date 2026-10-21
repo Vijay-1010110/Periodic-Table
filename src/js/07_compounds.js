@@ -21,11 +21,20 @@ let isMolRotating = true;
 let isDraggingMol = false;
 let previousMousePosition = { x: 0, y: 0 };
 
+let compoundsViewInitialized = false;
+
 function initCompoundsView() {
-    setupCompoundsEvents();
-    renderCompoundsGrid();
-    initMoleculeViewer();
-    selectCompound('water');
+    if (!compoundsViewInitialized) {
+        setupCompoundsEvents();
+        renderCompoundsGrid();
+        initMoleculeViewer();
+        selectCompound('water');
+        compoundsViewInitialized = true;
+    } else {
+        if (typeof window.startMoleculeViewer === 'function') {
+            window.startMoleculeViewer();
+        }
+    }
 }
 
 function setupCompoundsEvents() {
@@ -311,7 +320,7 @@ function renderCompoundsGrid() {
             <div style="grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.7); background: rgba(15, 23, 42, 0.6); border-radius: 14px; border: 1px dashed rgba(0, 212, 255, 0.3);">
                 <div style="font-size: 2.8rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,212,255,0.4));">🧪</div>
                 <div style="font-size: 1.15rem; font-family: var(--font-ui); font-weight: 700; color: #00d4ff;">Searching 110M+ PubChem Compounds...</div>
-                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 6px;">Searching live database for "${compoundSearchQuery}". If it's a valid chemical formula (e.g. K2Cr2O7), our engine will synthesize it on-the-fly!</div>
+                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 6px;">Searching live database for "${window.escapeHtml ? window.escapeHtml(compoundSearchQuery) : compoundSearchQuery}". If it's a valid chemical formula (e.g. K2Cr2O7), our engine will synthesize it on-the-fly!</div>
             </div>
         `;
     } else {
@@ -354,6 +363,18 @@ function selectCompound(id) {
     if (!comp) return;
 
     selectedCompoundId = id;
+
+    // Open floating sidebar on mobile
+    const sidebar = document.getElementById('compounds-sidebar');
+    if (sidebar) {
+        sidebar.classList.add('open', 'mobile-active', 'pos-right');
+    }
+    if (typeof window.startMoleculeViewer === 'function') {
+        window.startMoleculeViewer();
+    }
+    if (typeof window.resizeMoleculeViewer === 'function') {
+        setTimeout(window.resizeMoleculeViewer, 120);
+    }
 
     // Update Header Card
     const nameEl = document.getElementById('comp-detail-name');
@@ -502,9 +523,27 @@ function initMoleculeViewer() {
     });
     dom.addEventListener('touchend', () => { isDraggingMol = false; });
 
+    let molRafId = null;
+    let isMolRunning = false;
+
+    window.startMoleculeViewer = function() {
+        if (isMolRunning) return;
+        isMolRunning = true;
+        animate();
+    };
+
+    window.stopMoleculeViewer = function() {
+        isMolRunning = false;
+        if (molRafId) {
+            cancelAnimationFrame(molRafId);
+            molRafId = null;
+        }
+    };
+
     // Animation Loop
     function animate() {
-        requestAnimationFrame(animate);
+        if (!isMolRunning) return;
+        molRafId = requestAnimationFrame(animate);
         if (molGroup && isMolRotating && !isDraggingMol) {
             molGroup.rotation.y += 0.005;
         }
@@ -512,9 +551,11 @@ function initMoleculeViewer() {
             molRenderer.render(molScene, molCamera);
         }
     }
-    animate();
+    if (typeof currentView !== 'undefined' && currentView === 'compounds') {
+        window.startMoleculeViewer();
+    }
 
-    window.addEventListener('resize', () => {
+    function resizeMol() {
         if (!canvasContainer || !molRenderer || !molCamera) return;
         const w = canvasContainer.clientWidth;
         const h = canvasContainer.clientHeight;
@@ -523,7 +564,9 @@ function initMoleculeViewer() {
             molCamera.updateProjectionMatrix();
             molRenderer.setSize(w, h);
         }
-    });
+    }
+    window.resizeMoleculeViewer = resizeMol;
+    window.addEventListener('resize', resizeMol);
 }
 
 function render3DMolecule(comp) {

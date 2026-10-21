@@ -1,6 +1,6 @@
 {
   "name": "periodica-web",
-  "version": "3.92.0",
+  "version": "4.4.0",
   "description": "PeriodicaX - Definitive Standalone Web Periodic Table",
   "scripts": {
     "build": "python build.py"
