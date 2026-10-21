@@ -704,67 +704,66 @@
    Matches User Mockup with 67% Canvas Card, 33% Control Sidebar & Bottom Element Dock
    ========================================================================== */
 
-/* Top Header Mode Switcher for States Tab */
-.env-header-modes {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(11, 18, 33, 0.90);
-    padding: 3px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    flex-shrink: 0;
-}
-
-.env-mode-btn {
+/* Element Selector Dropdown inside Sidebar Header */
+.env-elem-select-wrap {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
+}
+
+.env-elem-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(0, 212, 255, 0.14);
+    border: 1.2px solid rgba(0, 212, 255, 0.45);
     border-radius: 6px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #94a3b8;
-    font-size: 0.74rem;
-    font-weight: 700;
+    padding: 3px 22px 3px 8px;
+    color: #ffffff;
     font-family: var(--font-ui);
+    font-size: 0.82rem;
+    font-weight: 700;
     cursor: pointer;
-    white-space: nowrap;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2300d4ff' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px 5px;
     transition: all 0.15s ease;
 }
 
-.env-mode-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.env-mode-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(59, 130, 246, 0.25));
+.env-elem-select:focus,
+.env-elem-select:hover {
     border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+    background-color: rgba(0, 212, 255, 0.22);
 }
 
-/* Suite Container */
+.env-elem-select option {
+    background: #0b1329;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* Suite Container - Fills Full Height without bottom bar */
 .env-states-suite {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    padding: 6px 10px 6px 10px;
-    gap: 6px;
+    padding: 8px 10px;
     box-sizing: border-box;
     overflow: hidden;
     background: #020408;
 }
 
-/* Main Top Row (Canvas + Sidebar) */
+/* Main Row (Canvas + Sidebar) - Full 100% Height */
 .env-main-row {
     display: flex;
     flex: 1;
+    height: 100%;
     min-height: 0;
     width: 100%;
-    gap: 8px;
+    gap: 10px;
 }
 
 /* Canvas Card (Left ~67%) */
@@ -1072,80 +1071,5 @@
     transform: scale(0.96);
 }
 
-/* Bottom Element Dock */
-.env-bottom-dock {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 34px;
-    background: rgba(10, 16, 30, 0.92);
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    border-radius: 8px;
-    padding: 3px 8px;
-    flex-shrink: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 6px;
-}
-
-.env-bottom-dock::-webkit-scrollbar {
-    display: none;
-}
-
-.env-dock-left {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
-}
-
-.env-dock-tag {
-    font-size: 0.68rem;
-    font-family: var(--font-mono);
-    font-weight: 800;
-    color: #00d4ff;
-    letter-spacing: 0.5px;
-    margin-right: 4px;
-}
-
-.env-dock-chip {
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #cbd5e1;
-    font-size: 0.72rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s ease;
-}
-
-.env-dock-chip:hover {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: rgba(0, 212, 255, 0.4);
-    color: #ffffff;
-}
-
-.env-dock-chip.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.32), rgba(59, 130, 246, 0.32));
-    border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
-}
-
-.env-dock-right {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.env-dock-info {
-    font-size: 0.70rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    color: #fbbf24;
-    white-space: nowrap;
-}
+/* Bottom Element Dock removed per user instruction */
 

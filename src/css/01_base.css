@@ -667,7 +667,12 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .in-grid-legend .category-box {
-    flex: 1.6 !important;
+    flex: 3 !important;
+    min-width: 0 !important;
+}
+
+.in-grid-legend .state-box {
+    flex: 1 !important;
     min-width: 0 !important;
 }
 
@@ -2093,20 +2098,20 @@ body.has-native-slider #temp-custom-slider {
         min-height: 0 !important;
     }
     .in-grid-legend .metals-col-sblock {
-        flex: 1 !important;
+        flex: 1.25 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 1.5px !important;
     }
     .in-grid-legend .metals-col-dblock {
-        flex: 1.2 !important;
+        flex: 1.35 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
     }
     .in-grid-legend .metals-col-pblock {
-        flex: 1.2 !important;
+        flex: 1.25 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;

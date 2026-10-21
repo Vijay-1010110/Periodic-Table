@@ -476,16 +476,13 @@
         // Toggle General Simulation Stage vs Dedicated States Instrument Suite
         const generalStage = document.getElementById('sim-general-stage');
         const statesSuite = document.getElementById('env-states-suite');
-        const envHeaderModes = document.getElementById('env-header-modes');
 
         if (tabName === 'environment') {
             if (generalStage) generalStage.style.display = 'none';
             if (statesSuite) statesSuite.style.display = 'flex';
-            if (envHeaderModes) envHeaderModes.style.display = 'flex';
         } else {
             if (generalStage) generalStage.style.display = 'flex';
             if (statesSuite) statesSuite.style.display = 'none';
-            if (envHeaderModes) envHeaderModes.style.display = 'none';
         }
 
         // Switch Visible Canvases inside general stage

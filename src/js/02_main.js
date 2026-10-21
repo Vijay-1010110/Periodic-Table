@@ -2977,41 +2977,58 @@ function renderLegend() {
 
     let html = `
         <div class="legend-box category-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">
-                <span>⚛️ Element Series & States</span>
-                <span class="legend-title-help">ℹ️ Guide</span>
-            </div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">Element Series ℹ️</div>
             <div class="legend-box-content">
-                <div class="legend-series-grid">
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Metals">Metals</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Alkali metal')}
-                            ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
-                            ${makeLegendItem('Transition metal', 'category', 'Transition')}
-                            ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
-                            ${makeLegendItem('Lanthanide')}
-                            ${makeLegendItem('Actinide')}
+                <!-- Column 1: Metals (70%) -->
+                <div class="legend-col-metals">
+                    <div class="legend-group-title interactive-super" data-group="Metals">Metals</div>
+                    <div class="metals-layout-grid">
+                        <div class="metals-top-row">
+                            <div class="metals-col-sblock">
+                                ${makeLegendItem('Alkali metal', 'category', 'Alkali')}
+                                ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
+                            </div>
+                            <div class="metals-col-dblock">
+                                ${makeLegendItem('Transition metal', 'category', 'Transition')}
+                            </div>
+                            <div class="metals-col-pblock">
+                                ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
+                            </div>
                         </div>
-                    </div>
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Metalloids">Metalloids</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Metalloid')}
+                        <div class="metals-bottom-row">
+                            ${makeLegendItem('Lanthanide', 'category', 'Lanthanides')}
                         </div>
-                    </div>
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Non-Metals">Non-Metals</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Reactive nonmetal', 'category', 'Reactive Nonmetal')}
-                            ${makeLegendItem('Noble gas', 'category', 'Noble Gas')}
+                        <div class="metals-bottom-row">
+                            ${makeLegendItem('Actinide', 'category', 'Actinides')}
                         </div>
                     </div>
                 </div>
-                
-                <div class="legend-states-bar">
-                    <span class="legend-states-label">State at ${typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298} K (Symbol Color):</span>
-                    <div class="legend-states-chips">
+
+                <!-- Column 2: Metalloids (10%) -->
+                <div class="legend-col-metalloids">
+                    <div class="legend-group-title interactive-super" data-group="Metalloids">Metalloids</div>
+                    <div class="metalloids-items">
+                        ${makeLegendItem('Metalloid')}
+                    </div>
+                </div>
+
+                <!-- Column 3: Non-Metals (20%) -->
+                <div class="legend-col-nonmetals">
+                    <div class="legend-group-title interactive-super" data-group="Non-Metals">Non-Metals</div>
+                    <div class="nonmetals-items">
+                        ${makeLegendItem('Other nonmetal', 'category', 'Other Nonmetals')}
+                        ${makeLegendItem('Halogen', 'category', 'Halogens')}
+                        ${makeLegendItem('Noble gas', 'category', 'Noble Gases')}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend-box state-box">
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State at Current Temp ℹ️</div>
+            <div class="legend-box-content">
+                <div class="legend-group legend-group-states">
+                    <div class="legend-group-items">
                         ${makeLegendItem('Solid', 'state')}
                         ${makeLegendItem('Liquid', 'state')}
                         ${makeLegendItem('Gas', 'state')}
@@ -3020,17 +3037,12 @@ function renderLegend() {
                 </div>
             </div>
         </div>
-        
-        <div class="legend-box hero-inspector-box" id="central-hero-inspector">
-            <!-- Populated dynamically by updateCentralHeroInspector -->
-        </div>
     `;
     
     legendContainer.innerHTML = html;
+    _legendStateItems = null;
+    _lastLegendCounts = { Solid: -1, Liquid: -1, Gas: -1, Unknown: -1 };
     updateLegendIndicatorUI();
-    if (typeof updateCentralHeroInspector === 'function') {
-        updateCentralHeroInspector(null);
-    }
 
     // Interactions for individual items (Tap = highlight/toggle; Long-press = concept modal)
     document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {

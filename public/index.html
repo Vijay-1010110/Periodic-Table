@@ -696,7 +696,12 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .in-grid-legend .category-box {
-    flex: 1.6 !important;
+    flex: 3 !important;
+    min-width: 0 !important;
+}
+
+.in-grid-legend .state-box {
+    flex: 1 !important;
     min-width: 0 !important;
 }
 
@@ -2122,20 +2127,20 @@ body.has-native-slider #temp-custom-slider {
         min-height: 0 !important;
     }
     .in-grid-legend .metals-col-sblock {
-        flex: 1 !important;
+        flex: 1.25 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 1.5px !important;
     }
     .in-grid-legend .metals-col-dblock {
-        flex: 1.2 !important;
+        flex: 1.35 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
     }
     .in-grid-legend .metals-col-pblock {
-        flex: 1.2 !important;
+        flex: 1.25 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
@@ -11123,67 +11128,66 @@ body.is-pro-user .nav-pro-pill {
    Matches User Mockup with 67% Canvas Card, 33% Control Sidebar & Bottom Element Dock
    ========================================================================== */
 
-/* Top Header Mode Switcher for States Tab */
-.env-header-modes {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(11, 18, 33, 0.90);
-    padding: 3px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    flex-shrink: 0;
-}
-
-.env-mode-btn {
+/* Element Selector Dropdown inside Sidebar Header */
+.env-elem-select-wrap {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
+}
+
+.env-elem-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(0, 212, 255, 0.14);
+    border: 1.2px solid rgba(0, 212, 255, 0.45);
     border-radius: 6px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #94a3b8;
-    font-size: 0.74rem;
-    font-weight: 700;
+    padding: 3px 22px 3px 8px;
+    color: #ffffff;
     font-family: var(--font-ui);
+    font-size: 0.82rem;
+    font-weight: 700;
     cursor: pointer;
-    white-space: nowrap;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2300d4ff' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px 5px;
     transition: all 0.15s ease;
 }
 
-.env-mode-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.env-mode-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.35), rgba(59, 130, 246, 0.25));
+.env-elem-select:focus,
+.env-elem-select:hover {
     border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
+    background-color: rgba(0, 212, 255, 0.22);
 }
 
-/* Suite Container */
+.env-elem-select option {
+    background: #0b1329;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* Suite Container - Fills Full Height without bottom bar */
 .env-states-suite {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    padding: 6px 10px 6px 10px;
-    gap: 6px;
+    padding: 8px 10px;
     box-sizing: border-box;
     overflow: hidden;
     background: #020408;
 }
 
-/* Main Top Row (Canvas + Sidebar) */
+/* Main Row (Canvas + Sidebar) - Full 100% Height */
 .env-main-row {
     display: flex;
     flex: 1;
+    height: 100%;
     min-height: 0;
     width: 100%;
-    gap: 8px;
+    gap: 10px;
 }
 
 /* Canvas Card (Left ~67%) */
@@ -11491,82 +11495,7 @@ body.is-pro-user .nav-pro-pill {
     transform: scale(0.96);
 }
 
-/* Bottom Element Dock */
-.env-bottom-dock {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 34px;
-    background: rgba(10, 16, 30, 0.92);
-    border: 1px solid rgba(0, 212, 255, 0.25);
-    border-radius: 8px;
-    padding: 3px 8px;
-    flex-shrink: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 6px;
-}
-
-.env-bottom-dock::-webkit-scrollbar {
-    display: none;
-}
-
-.env-dock-left {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
-}
-
-.env-dock-tag {
-    font-size: 0.68rem;
-    font-family: var(--font-mono);
-    font-weight: 800;
-    color: #00d4ff;
-    letter-spacing: 0.5px;
-    margin-right: 4px;
-}
-
-.env-dock-chip {
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #cbd5e1;
-    font-size: 0.72rem;
-    font-weight: 700;
-    font-family: var(--font-ui);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s ease;
-}
-
-.env-dock-chip:hover {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: rgba(0, 212, 255, 0.4);
-    color: #ffffff;
-}
-
-.env-dock-chip.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.32), rgba(59, 130, 246, 0.32));
-    border-color: #00d4ff;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
-}
-
-.env-dock-right {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.env-dock-info {
-    font-size: 0.70rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    color: #fbbf24;
-    white-space: nowrap;
-}
+/* Bottom Element Dock removed per user instruction */
 
 
 </style>
@@ -22353,105 +22282,65 @@ window.PeriodicCanvasGrid = (function() {
                 touch-action: auto !important;
             }
             .in-grid-legend .legend-box {
-                background: rgba(9, 14, 26, 0.96) !important;
-                border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+                background: rgba(9, 14, 26, 0.98) !important;
+                border: 1px solid rgba(0, 212, 255, 0.35) !important;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
-                padding: 4px 8px !important;
+                padding: 2px 4px !important;
                 border-radius: 6px !important;
                 height: 100% !important;
                 box-sizing: border-box !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: flex-start !important;
-                min-height: 0 !important;
             }
-            .in-grid-legend .category-box { flex: 1.6 !important; min-width: 0 !important; }
-            .in-grid-legend .hero-inspector-box { flex: 1.1 !important; min-width: 0 !important; border-color: rgba(0, 212, 255, 0.45) !important; }
+            .in-grid-legend .category-box { flex: 3 !important; min-width: 0 !important; }
+            .in-grid-legend .state-box { flex: 1 !important; min-width: 0 !important; }
             .in-grid-legend .legend-box-title {
-                font-size: 0.62rem !important;
+                font-size: 0.44rem !important;
                 font-weight: 800 !important;
-                margin-bottom: 3px !important;
-                padding-bottom: 2px !important;
-                border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
+                margin-bottom: 2px !important;
+                text-align: center !important;
                 color: #00d4ff !important;
                 letter-spacing: 0.5px !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
             }
-            .in-grid-legend .legend-series-grid {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 3px !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-                justify-content: space-around !important;
-            }
-            .in-grid-legend .legend-group-row {
-                display: flex !important;
-                align-items: center !important;
-                gap: 5px !important;
-            }
-            .in-grid-legend .legend-subheading {
-                font-size: 0.52rem !important;
-                font-weight: 800 !important;
+            .in-grid-legend .legend-group-title {
+                font-size: 0.40rem !important;
+                font-weight: 700 !important;
+                margin-bottom: 2px !important;
+                text-align: center !important;
                 color: rgba(255, 255, 255, 0.85) !important;
                 text-transform: uppercase !important;
-                letter-spacing: 0.5px !important;
-                min-width: 60px !important;
-                flex-shrink: 0 !important;
-                cursor: pointer !important;
-            }
-            .in-grid-legend .legend-chips-wrap {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 2.5px !important;
-                flex: 1 !important;
-            }
-            .in-grid-legend .legend-states-bar {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                gap: 5px !important;
-                margin-top: 2px !important;
-                padding-top: 2px !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-            .in-grid-legend .legend-states-label {
-                font-size: 0.48rem !important;
-                color: #94a3b8 !important;
-                font-weight: 700 !important;
                 white-space: nowrap !important;
-            }
-            .in-grid-legend .legend-states-chips {
-                display: flex !important;
-                gap: 3px !important;
-                align-items: center !important;
+                cursor: pointer !important;
+                transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease !important;
             }
             .in-grid-legend .legend-item {
                 border-radius: 3px !important;
-                padding: 1.5px 5px !important;
-                display: inline-flex !important;
+                padding: 0 2px !important;
+                display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 cursor: pointer !important;
-                line-height: 1.15 !important;
+                line-height: 1.05 !important;
                 box-sizing: border-box !important;
-                font-size: 0.58rem !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                font-size: 0.38rem !important;
                 margin: 0 !important;
                 text-align: center !important;
-                white-space: nowrap !important;
+                white-space: normal !important;
                 transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, filter 0.15s ease !important;
             }
             .in-grid-legend .legend-item span {
-                font-size: 0.56rem !important;
+                font-size: 0.38rem !important;
                 font-family: var(--font-ui) !important;
                 font-weight: 700 !important;
-                white-space: nowrap !important;
-                line-height: 1.15 !important;
+                white-space: normal !important;
+                line-height: 1.05 !important;
                 text-align: center !important;
+                letter-spacing: -0.2px !important;
             }
             .in-grid-legend .legend-item[data-type="category"] span {
                 color: #ffffff !important;
@@ -22460,24 +22349,20 @@ window.PeriodicCanvasGrid = (function() {
                 color: inherit !important;
             }
             .in-grid-legend .legend-item[data-key="Solid"][data-type="state"] {
-                color: #0f172a !important;
-                background: #ffffff !important;
-                border: 1px solid #ffffff !important;
+                color: #ffffff !important;
             }
             .in-grid-legend .legend-item[data-key="Liquid"][data-type="state"] {
                 color: #00f0ff !important;
-                border: 1px solid #00f0ff !important;
             }
             .in-grid-legend .legend-item[data-key="Gas"][data-type="state"] {
                 color: #ff0055 !important;
-                border: 1px solid #ff0055 !important;
             }
             .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
-                color: #94a3b8 !important;
-                border: 1px dashed rgba(148, 163, 184, 0.7) !important;
+                color: #a1a1aa !important;
             }
+            
             .in-grid-legend .legend-item:hover, .in-grid-legend .legend-item:active {
-                filter: brightness(1.2) !important;
+                border-color: #ffffff !important;
                 box-shadow: 0 0 8px rgba(0, 212, 255, 0.8) !important;
             }
             .in-grid-legend .legend-item-active {
@@ -22486,6 +22371,94 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .legend-item-dimmed {
                 opacity: 0.35 !important;
                 filter: brightness(0.65) !important;
+            }
+            
+            .in-grid-legend .legend-col-metals {
+                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
+                padding-right: 4px !important;
+            }
+            .in-grid-legend .legend-col-metalloids {
+                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
+                padding-right: 4px !important;
+            }
+            .in-grid-legend .metals-layout-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metals-top-row {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 1.5px !important;
+                flex: 2 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metals-col-sblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.25 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-col-dblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.35 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-col-pblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.25 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-bottom-row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metalloids-items {
+                flex-direction: column !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-col-nonmetals {
+                flex: 2 !important;
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+            }
+            .in-grid-legend .nonmetals-items {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .state-box .legend-box-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
+                justify-content: space-between !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-group-states {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-group-states .legend-group-items {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                justify-content: space-between !important;
+                flex: 1 !important;
             }
             
             .in-grid-legend .heatmap-controller {
@@ -22514,24 +22487,6 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .heatmap-scale { display: flex !important; flex-direction: column !important; gap: 2px !important; }
             .in-grid-legend .scale-btn { display: flex !important; align-items: center !important; gap: 2px !important; padding: 1px 3px !important; font-size: 0.40rem !important; border-radius: 2px !important; }
             .in-grid-legend .scale-btn svg { width: 10px !important; height: 10px !important; }
-
-            .hero-inspector-body { display: flex !important; gap: 6px !important; flex: 1 !important; min-height: 0 !important; align-items: stretch !important; }
-            .hero-card-tile { width: 66px !important; flex-shrink: 0 !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.5px solid #00d4ff !important; border-radius: 0px !important; padding: 2px 4px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; box-sizing: border-box !important; position: relative !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7) !important; }
-            .hero-tile-top { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; font-family: monospace !important; font-size: 0.52rem !important; line-height: 1 !important; }
-            .hero-tile-z { font-weight: 800 !important; color: #38bdf8 !important; }
-            .hero-tile-mass { font-size: 0.44rem !important; color: rgba(255, 255, 255, 0.75) !important; }
-            .hero-tile-sym { font-size: 1.40rem !important; font-weight: 900 !important; text-align: center !important; line-height: 1 !important; margin: 1px 0 !important; font-family: system-ui, sans-serif !important; }
-            .hero-tile-name { font-size: 0.50rem !important; text-align: center !important; color: #f1f5f9 !important; font-weight: 700 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-            .hero-tile-config { font-size: 0.40rem !important; font-family: monospace !important; text-align: center !important; color: #94a3b8 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-            .hero-anatomy-callouts { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 2.5px !important; flex: 1 !important; min-width: 0 !important; font-size: 0.52rem !important; color: #cbd5e1 !important; }
-            .anatomy-callout-row { display: flex !important; align-items: center !important; gap: 3.5px !important; white-space: nowrap !important; }
-            .anatomy-callout-row .callout-tag { font-weight: 800 !important; font-family: monospace !important; color: #38bdf8 !important; min-width: 30px !important; }
-            .anatomy-callout-hint { font-size: 0.46rem !important; color: #94a3b8 !important; font-style: italic !important; margin-top: 2px !important; }
-            .hero-live-details { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 1.5px !important; flex: 1 !important; min-width: 0 !important; }
-            .hero-prop-row { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; font-size: 0.48rem !important; line-height: 1.15 !important; }
-            .hero-prop-lbl { color: #94a3b8 !important; font-weight: 600 !important; }
-            .hero-prop-val { color: #f1f5f9 !important; font-family: monospace !important; font-weight: 700 !important; text-align: right !important; }
-            .hero-cat-pill { font-size: 0.46rem !important; font-weight: 700 !important; padding: 1px 4px !important; border-radius: 2px !important; text-transform: uppercase !important; }
             
             #view-main .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
         `;
@@ -23172,9 +23127,10 @@ window.PeriodicCanvasGrid = (function() {
                 borderAlpha = isSelected ? 1.0 : (isHovered ? 0.95 : 0.75);
             }
 
-            // Sharp rectangular card (r = 0)
+            // Square shape card with smooth tactile rounded corners
+            const cornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
             ctx.beginPath();
-            ctx.rect(x, y, w, h);
+            ctx.roundRect(x, y, w, h, cornerRadius);
 
             let cardGrad;
             if (activeHighlight && !isHighlighted) {
@@ -23446,8 +23402,9 @@ window.PeriodicCanvasGrid = (function() {
             const w = b.w;
             const h = b.h;
 
+            const phCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
             ctx.beginPath();
-            ctx.rect(x, y, w, h);
+            ctx.roundRect(x, y, w, h, phCornerRadius);
             ctx.fillStyle = hexToRgba(p.color, 0.22);
             ctx.fill();
 
@@ -23525,9 +23482,10 @@ window.PeriodicCanvasGrid = (function() {
         const h = b.h;
         const r = 4.5;
 
+        const selCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x, y, w, h);
+        ctx.roundRect(x, y, w, h, selCornerRadius);
 
         // Premium obsidian glass background with subtle cyan / purple gradient
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
@@ -23611,9 +23569,10 @@ window.PeriodicCanvasGrid = (function() {
         const h = b.h;
         const r = 4.5;
 
+        const selCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x, y, w, h);
+        ctx.roundRect(x, y, w, h, selCornerRadius);
 
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
         cardGrad.addColorStop(0, isFit ? 'rgba(16, 36, 56, 0.90)' : 'rgba(15, 23, 42, 0.75)');
@@ -102585,41 +102544,58 @@ function renderLegend() {
 
     let html = `
         <div class="legend-box category-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">
-                <span>⚛️ Element Series & States</span>
-                <span class="legend-title-help">ℹ️ Guide</span>
-            </div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">Element Series ℹ️</div>
             <div class="legend-box-content">
-                <div class="legend-series-grid">
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Metals">Metals</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Alkali metal')}
-                            ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
-                            ${makeLegendItem('Transition metal', 'category', 'Transition')}
-                            ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
-                            ${makeLegendItem('Lanthanide')}
-                            ${makeLegendItem('Actinide')}
+                <!-- Column 1: Metals (70%) -->
+                <div class="legend-col-metals">
+                    <div class="legend-group-title interactive-super" data-group="Metals">Metals</div>
+                    <div class="metals-layout-grid">
+                        <div class="metals-top-row">
+                            <div class="metals-col-sblock">
+                                ${makeLegendItem('Alkali metal', 'category', 'Alkali')}
+                                ${makeLegendItem('Alkaline earth metal', 'category', 'Alkaline Earth')}
+                            </div>
+                            <div class="metals-col-dblock">
+                                ${makeLegendItem('Transition metal', 'category', 'Transition')}
+                            </div>
+                            <div class="metals-col-pblock">
+                                ${makeLegendItem('Post-transition metal', 'category', 'Post-Transition')}
+                            </div>
                         </div>
-                    </div>
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Metalloids">Metalloids</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Metalloid')}
+                        <div class="metals-bottom-row">
+                            ${makeLegendItem('Lanthanide', 'category', 'Lanthanides')}
                         </div>
-                    </div>
-                    <div class="legend-group-row">
-                        <span class="legend-subheading interactive-super" data-group="Non-Metals">Non-Metals</span>
-                        <div class="legend-chips-wrap">
-                            ${makeLegendItem('Reactive nonmetal', 'category', 'Reactive Nonmetal')}
-                            ${makeLegendItem('Noble gas', 'category', 'Noble Gas')}
+                        <div class="metals-bottom-row">
+                            ${makeLegendItem('Actinide', 'category', 'Actinides')}
                         </div>
                     </div>
                 </div>
-                
-                <div class="legend-states-bar">
-                    <span class="legend-states-label">State at ${typeof currentTemp !== 'undefined' ? Math.round(currentTemp) : 298} K (Symbol Color):</span>
-                    <div class="legend-states-chips">
+
+                <!-- Column 2: Metalloids (10%) -->
+                <div class="legend-col-metalloids">
+                    <div class="legend-group-title interactive-super" data-group="Metalloids">Metalloids</div>
+                    <div class="metalloids-items">
+                        ${makeLegendItem('Metalloid')}
+                    </div>
+                </div>
+
+                <!-- Column 3: Non-Metals (20%) -->
+                <div class="legend-col-nonmetals">
+                    <div class="legend-group-title interactive-super" data-group="Non-Metals">Non-Metals</div>
+                    <div class="nonmetals-items">
+                        ${makeLegendItem('Other nonmetal', 'category', 'Other Nonmetals')}
+                        ${makeLegendItem('Halogen', 'category', 'Halogens')}
+                        ${makeLegendItem('Noble gas', 'category', 'Noble Gases')}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend-box state-box">
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State at Current Temp ℹ️</div>
+            <div class="legend-box-content">
+                <div class="legend-group legend-group-states">
+                    <div class="legend-group-items">
                         ${makeLegendItem('Solid', 'state')}
                         ${makeLegendItem('Liquid', 'state')}
                         ${makeLegendItem('Gas', 'state')}
@@ -102628,17 +102604,12 @@ function renderLegend() {
                 </div>
             </div>
         </div>
-        
-        <div class="legend-box hero-inspector-box" id="central-hero-inspector">
-            <!-- Populated dynamically by updateCentralHeroInspector -->
-        </div>
     `;
     
     legendContainer.innerHTML = html;
+    _legendStateItems = null;
+    _lastLegendCounts = { Solid: -1, Liquid: -1, Gas: -1, Unknown: -1 };
     updateLegendIndicatorUI();
-    if (typeof updateCentralHeroInspector === 'function') {
-        updateCentralHeroInspector(null);
-    }
 
     // Interactions for individual items (Tap = highlight/toggle; Long-press = concept modal)
     document.querySelectorAll('#in-grid-legend .legend-item').forEach(item => {
@@ -107687,11 +107658,18 @@ window.OrbitalViewer = {
                 phaseBadge.style.borderColor = phase.color;
             }
 
-            // 3. Telemetry (TEMP)
+            // 1. Element Selector in sidebar header
+            const elemSelect = document.getElementById('env-elem-select');
+            if (elemSelect && elemSelect.value != this.activeElementId) {
+                elemSelect.value = String(this.activeElementId);
+            }
+
+            // 3. Telemetry (TEMP) with integrated 1 atm Melt info
+            const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
             const tempK = document.getElementById('env-temp-k');
             const tempC = document.getElementById('env-temp-c');
             if (tempK) tempK.textContent = this.temperatureK.toFixed(1) + ' K';
-            if (tempC) tempC.textContent = (this.temperatureK - 273.15).toFixed(1) + ' °C';
+            if (tempC) tempC.textContent = (this.temperatureK - 273.15).toFixed(1) + ' °C • Melt: ' + Tm + ' K';
 
             // 4. Telemetry (PRESSURE)
             const pressAtm = document.getElementById('env-press-atm');
@@ -107726,33 +107704,7 @@ window.OrbitalViewer = {
                 pressSlider.value = logP.toFixed(2);
             }
 
-            // 6. Bottom Dock Info
-            const dockInfo = document.getElementById('env-dock-info');
-            if (dockInfo) {
-                const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
-                dockInfo.textContent = '1 atm Melt: ' + Tm + ' K';
-            }
-
-            // 7. Active element chips in dock
-            const chips = document.querySelectorAll('.env-dock-chip');
-            chips.forEach(chip => {
-                const z = parseInt(chip.getAttribute('data-z'), 10);
-                if (z === this.activeElementId) {
-                    chip.classList.add('active');
-                } else {
-                    chip.classList.remove('active');
-                }
-            });
-
-            // 8. Mode buttons in header
-            const modeBtns = document.querySelectorAll('.env-mode-btn');
-            modeBtns.forEach(btn => {
-                if (btn.getAttribute('data-mode') === this.viewMode) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+            // Dock chips and header modes removed per user instruction
         }
 
         calculatePhase(elementData) {
@@ -112317,16 +112269,13 @@ window.OrbitalViewer = {
         // Toggle General Simulation Stage vs Dedicated States Instrument Suite
         const generalStage = document.getElementById('sim-general-stage');
         const statesSuite = document.getElementById('env-states-suite');
-        const envHeaderModes = document.getElementById('env-header-modes');
 
         if (tabName === 'environment') {
             if (generalStage) generalStage.style.display = 'none';
             if (statesSuite) statesSuite.style.display = 'flex';
-            if (envHeaderModes) envHeaderModes.style.display = 'flex';
         } else {
             if (generalStage) generalStage.style.display = 'flex';
             if (statesSuite) statesSuite.style.display = 'none';
-            if (envHeaderModes) envHeaderModes.style.display = 'none';
         }
 
         // Switch Visible Canvases inside general stage
@@ -114142,21 +114091,7 @@ window.OrbitalViewer = {
                         <span>🌡️</span> <span class="tab-txt-full">States of Matter</span><span class="tab-txt-short">States</span>
                     </button>
                 </div>
-
-                <!-- View Switcher Modes for States of Matter -->
-                <div class="env-header-modes" id="env-header-modes" style="display:none;">
-                    <button class="env-mode-btn" data-mode="split" onclick="window.envSimulationEngine.setViewMode('split')">
-                        <span>◫</span> Split View
-                    </button>
-                    <button class="env-mode-btn" data-mode="chamber" onclick="window.envSimulationEngine.setViewMode('chamber')">
-                        <span>⚛</span> Atom Chamber
-                    </button>
-                    <button class="env-mode-btn active" data-mode="diagram" onclick="window.envSimulationEngine.setViewMode('diagram')">
-                        <span>📈</span> Phase Diagram
-                    </button>
-                </div>
-
-                <!-- Clean Top Action Strip -->
+<!-- Clean Top Action Strip -->
                 <div class="sim-top-actions">
                     <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
                     <button id="sim-btn-sound" class="sim-ctrl-btn" onclick="toggleSimAudio()" title="Sound Effects">🔊</button>
@@ -114189,12 +114124,17 @@ window.OrbitalViewer = {
                             <canvas id="env-phase-canvas" class="env-canvas"></canvas>
                         </div>
                         <div class="env-sidebar-card" id="env-sidebar-card">
-                            <!-- 1. Header: Element Badge & Phase Pill -->
+                            <!-- 1. Header: Element Selector Badge & Phase Pill -->
                             <div class="env-card-header">
-                                <div class="env-elem-badge" id="env-active-elem-badge">
-                                    <span class="env-z" id="env-active-z">26</span>
-                                    <span class="env-sym" id="env-active-sym">Fe</span>
-                                    <span class="env-name" id="env-active-name">Iron</span>
+                                <div class="env-elem-select-wrap">
+                                    <select class="env-elem-select" id="env-elem-select" onchange="window.envSimulationEngine.setElement(this.value)">
+                                        <option value="26" selected>26 Fe Iron</option>
+                                        <option value="6">6 C Carbon</option>
+                                        <option value="79">79 Au Gold</option>
+                                        <option value="1">1 H Hydrogen</option>
+                                        <option value="8">8 O Oxygen</option>
+                                        <option value="29">29 Cu Copper</option>
+                                    </select>
                                 </div>
                                 <div class="env-phase-badge" id="env-active-phase-badge">
                                     <span class="env-phase-dot" id="env-phase-dot"></span>
@@ -114281,36 +114221,8 @@ window.OrbitalViewer = {
                             </div>
                         </div>
                     </div>
-
-                    <!-- Bottom Element Dock -->
-                    <div class="env-bottom-dock" id="env-bottom-dock">
-                        <div class="env-dock-left">
-                            <span class="env-dock-tag">● ELEMENT:</span>
-                            <button class="env-dock-chip" data-z="6" onclick="window.envSimulationEngine.setElement(6)">
-                                6 C Carbon
-                            </button>
-                            <button class="env-dock-chip active" data-z="26" onclick="window.envSimulationEngine.setElement(26)">
-                                26 Fe Iron
-                            </button>
-                            <button class="env-dock-chip" data-z="79" onclick="window.envSimulationEngine.setElement(79)">
-                                79 Au Gold
-                            </button>
-                            <button class="env-dock-chip" data-z="1" onclick="window.envSimulationEngine.setElement(1)">
-                                1 H Hydrogen
-                            </button>
-                            <button class="env-dock-chip" data-z="8" onclick="window.envSimulationEngine.setElement(8)">
-                                8 O Oxygen
-                            </button>
-                            <button class="env-dock-chip" data-z="29" onclick="window.envSimulationEngine.setElement(29)">
-                                29 Cu Copper
-                            </button>
-                        </div>
-                        <div class="env-dock-right">
-                            <span class="env-dock-info" id="env-dock-info">1 atm Melt: 1811 K</span>
-                        </div>
-                    </div>
                 </div>
-            </div>
+            </div></div>
             </section>
 
     </main>

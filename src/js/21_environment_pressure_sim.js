@@ -404,11 +404,18 @@
                 phaseBadge.style.borderColor = phase.color;
             }
 
-            // 3. Telemetry (TEMP)
+            // 1. Element Selector in sidebar header
+            const elemSelect = document.getElementById('env-elem-select');
+            if (elemSelect && elemSelect.value != this.activeElementId) {
+                elemSelect.value = String(this.activeElementId);
+            }
+
+            // 3. Telemetry (TEMP) with integrated 1 atm Melt info
+            const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
             const tempK = document.getElementById('env-temp-k');
             const tempC = document.getElementById('env-temp-c');
             if (tempK) tempK.textContent = this.temperatureK.toFixed(1) + ' K';
-            if (tempC) tempC.textContent = (this.temperatureK - 273.15).toFixed(1) + ' °C';
+            if (tempC) tempC.textContent = (this.temperatureK - 273.15).toFixed(1) + ' °C • Melt: ' + Tm + ' K';
 
             // 4. Telemetry (PRESSURE)
             const pressAtm = document.getElementById('env-press-atm');
@@ -443,33 +450,7 @@
                 pressSlider.value = logP.toFixed(2);
             }
 
-            // 6. Bottom Dock Info
-            const dockInfo = document.getElementById('env-dock-info');
-            if (dockInfo) {
-                const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
-                dockInfo.textContent = '1 atm Melt: ' + Tm + ' K';
-            }
-
-            // 7. Active element chips in dock
-            const chips = document.querySelectorAll('.env-dock-chip');
-            chips.forEach(chip => {
-                const z = parseInt(chip.getAttribute('data-z'), 10);
-                if (z === this.activeElementId) {
-                    chip.classList.add('active');
-                } else {
-                    chip.classList.remove('active');
-                }
-            });
-
-            // 8. Mode buttons in header
-            const modeBtns = document.querySelectorAll('.env-mode-btn');
-            modeBtns.forEach(btn => {
-                if (btn.getAttribute('data-mode') === this.viewMode) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+            // Dock chips and header modes removed per user instruction
         }
 
         calculatePhase(elementData) {

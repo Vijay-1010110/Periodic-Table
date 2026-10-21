@@ -298,105 +298,65 @@ window.PeriodicCanvasGrid = (function() {
                 touch-action: auto !important;
             }
             .in-grid-legend .legend-box {
-                background: rgba(9, 14, 26, 0.96) !important;
-                border: 1.5px solid rgba(0, 212, 255, 0.35) !important;
+                background: rgba(9, 14, 26, 0.98) !important;
+                border: 1px solid rgba(0, 212, 255, 0.35) !important;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
-                padding: 4px 8px !important;
+                padding: 2px 4px !important;
                 border-radius: 6px !important;
                 height: 100% !important;
                 box-sizing: border-box !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: flex-start !important;
-                min-height: 0 !important;
             }
-            .in-grid-legend .category-box { flex: 1.6 !important; min-width: 0 !important; }
-            .in-grid-legend .hero-inspector-box { flex: 1.1 !important; min-width: 0 !important; border-color: rgba(0, 212, 255, 0.45) !important; }
+            .in-grid-legend .category-box { flex: 3 !important; min-width: 0 !important; }
+            .in-grid-legend .state-box { flex: 1 !important; min-width: 0 !important; }
             .in-grid-legend .legend-box-title {
-                font-size: 0.62rem !important;
+                font-size: 0.44rem !important;
                 font-weight: 800 !important;
-                margin-bottom: 3px !important;
-                padding-bottom: 2px !important;
-                border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
+                margin-bottom: 2px !important;
+                text-align: center !important;
                 color: #00d4ff !important;
                 letter-spacing: 0.5px !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
             }
-            .in-grid-legend .legend-series-grid {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 3px !important;
-                flex: 1 !important;
-                min-height: 0 !important;
-                justify-content: space-around !important;
-            }
-            .in-grid-legend .legend-group-row {
-                display: flex !important;
-                align-items: center !important;
-                gap: 5px !important;
-            }
-            .in-grid-legend .legend-subheading {
-                font-size: 0.52rem !important;
-                font-weight: 800 !important;
+            .in-grid-legend .legend-group-title {
+                font-size: 0.40rem !important;
+                font-weight: 700 !important;
+                margin-bottom: 2px !important;
+                text-align: center !important;
                 color: rgba(255, 255, 255, 0.85) !important;
                 text-transform: uppercase !important;
-                letter-spacing: 0.5px !important;
-                min-width: 60px !important;
-                flex-shrink: 0 !important;
-                cursor: pointer !important;
-            }
-            .in-grid-legend .legend-chips-wrap {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 2.5px !important;
-                flex: 1 !important;
-            }
-            .in-grid-legend .legend-states-bar {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                gap: 5px !important;
-                margin-top: 2px !important;
-                padding-top: 2px !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-            .in-grid-legend .legend-states-label {
-                font-size: 0.48rem !important;
-                color: #94a3b8 !important;
-                font-weight: 700 !important;
                 white-space: nowrap !important;
-            }
-            .in-grid-legend .legend-states-chips {
-                display: flex !important;
-                gap: 3px !important;
-                align-items: center !important;
+                cursor: pointer !important;
+                transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease !important;
             }
             .in-grid-legend .legend-item {
                 border-radius: 3px !important;
-                padding: 1.5px 5px !important;
-                display: inline-flex !important;
+                padding: 0 2px !important;
+                display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 cursor: pointer !important;
-                line-height: 1.15 !important;
+                line-height: 1.05 !important;
                 box-sizing: border-box !important;
-                font-size: 0.58rem !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                font-size: 0.38rem !important;
                 margin: 0 !important;
                 text-align: center !important;
-                white-space: nowrap !important;
+                white-space: normal !important;
                 transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, filter 0.15s ease !important;
             }
             .in-grid-legend .legend-item span {
-                font-size: 0.56rem !important;
+                font-size: 0.38rem !important;
                 font-family: var(--font-ui) !important;
                 font-weight: 700 !important;
-                white-space: nowrap !important;
-                line-height: 1.15 !important;
+                white-space: normal !important;
+                line-height: 1.05 !important;
                 text-align: center !important;
+                letter-spacing: -0.2px !important;
             }
             .in-grid-legend .legend-item[data-type="category"] span {
                 color: #ffffff !important;
@@ -405,24 +365,20 @@ window.PeriodicCanvasGrid = (function() {
                 color: inherit !important;
             }
             .in-grid-legend .legend-item[data-key="Solid"][data-type="state"] {
-                color: #0f172a !important;
-                background: #ffffff !important;
-                border: 1px solid #ffffff !important;
+                color: #ffffff !important;
             }
             .in-grid-legend .legend-item[data-key="Liquid"][data-type="state"] {
                 color: #00f0ff !important;
-                border: 1px solid #00f0ff !important;
             }
             .in-grid-legend .legend-item[data-key="Gas"][data-type="state"] {
                 color: #ff0055 !important;
-                border: 1px solid #ff0055 !important;
             }
             .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
-                color: #94a3b8 !important;
-                border: 1px dashed rgba(148, 163, 184, 0.7) !important;
+                color: #a1a1aa !important;
             }
+            
             .in-grid-legend .legend-item:hover, .in-grid-legend .legend-item:active {
-                filter: brightness(1.2) !important;
+                border-color: #ffffff !important;
                 box-shadow: 0 0 8px rgba(0, 212, 255, 0.8) !important;
             }
             .in-grid-legend .legend-item-active {
@@ -431,6 +387,94 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .legend-item-dimmed {
                 opacity: 0.35 !important;
                 filter: brightness(0.65) !important;
+            }
+            
+            .in-grid-legend .legend-col-metals {
+                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
+                padding-right: 4px !important;
+            }
+            .in-grid-legend .legend-col-metalloids {
+                border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
+                padding-right: 4px !important;
+            }
+            .in-grid-legend .metals-layout-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metals-top-row {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 1.5px !important;
+                flex: 2 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metals-col-sblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.25 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-col-dblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.35 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-col-pblock {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                flex: 1.25 !important;
+                min-width: 0 !important;
+            }
+            .in-grid-legend .metals-bottom-row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .metalloids-items {
+                flex-direction: column !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-col-nonmetals {
+                flex: 2 !important;
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+            }
+            .in-grid-legend .nonmetals-items {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .state-box .legend-box-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
+                justify-content: space-between !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-group-states {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 0 !important;
+            }
+            .in-grid-legend .legend-group-states .legend-group-items {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5px !important;
+                justify-content: space-between !important;
+                flex: 1 !important;
             }
             
             .in-grid-legend .heatmap-controller {
@@ -459,24 +503,6 @@ window.PeriodicCanvasGrid = (function() {
             .in-grid-legend .heatmap-scale { display: flex !important; flex-direction: column !important; gap: 2px !important; }
             .in-grid-legend .scale-btn { display: flex !important; align-items: center !important; gap: 2px !important; padding: 1px 3px !important; font-size: 0.40rem !important; border-radius: 2px !important; }
             .in-grid-legend .scale-btn svg { width: 10px !important; height: 10px !important; }
-
-            .hero-inspector-body { display: flex !important; gap: 6px !important; flex: 1 !important; min-height: 0 !important; align-items: stretch !important; }
-            .hero-card-tile { width: 66px !important; flex-shrink: 0 !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.5px solid #00d4ff !important; border-radius: 0px !important; padding: 2px 4px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; box-sizing: border-box !important; position: relative !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.7) !important; }
-            .hero-tile-top { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; font-family: monospace !important; font-size: 0.52rem !important; line-height: 1 !important; }
-            .hero-tile-z { font-weight: 800 !important; color: #38bdf8 !important; }
-            .hero-tile-mass { font-size: 0.44rem !important; color: rgba(255, 255, 255, 0.75) !important; }
-            .hero-tile-sym { font-size: 1.40rem !important; font-weight: 900 !important; text-align: center !important; line-height: 1 !important; margin: 1px 0 !important; font-family: system-ui, sans-serif !important; }
-            .hero-tile-name { font-size: 0.50rem !important; text-align: center !important; color: #f1f5f9 !important; font-weight: 700 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-            .hero-tile-config { font-size: 0.40rem !important; font-family: monospace !important; text-align: center !important; color: #94a3b8 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-            .hero-anatomy-callouts { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 2.5px !important; flex: 1 !important; min-width: 0 !important; font-size: 0.52rem !important; color: #cbd5e1 !important; }
-            .anatomy-callout-row { display: flex !important; align-items: center !important; gap: 3.5px !important; white-space: nowrap !important; }
-            .anatomy-callout-row .callout-tag { font-weight: 800 !important; font-family: monospace !important; color: #38bdf8 !important; min-width: 30px !important; }
-            .anatomy-callout-hint { font-size: 0.46rem !important; color: #94a3b8 !important; font-style: italic !important; margin-top: 2px !important; }
-            .hero-live-details { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 1.5px !important; flex: 1 !important; min-width: 0 !important; }
-            .hero-prop-row { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 4px !important; font-size: 0.48rem !important; line-height: 1.15 !important; }
-            .hero-prop-lbl { color: #94a3b8 !important; font-weight: 600 !important; }
-            .hero-prop-val { color: #f1f5f9 !important; font-family: monospace !important; font-weight: 700 !important; text-align: right !important; }
-            .hero-cat-pill { font-size: 0.46rem !important; font-weight: 700 !important; padding: 1px 4px !important; border-radius: 2px !important; text-transform: uppercase !important; }
             
             #view-main .grid-wrapper { touch-action: none !important; overflow: hidden !important; position: relative !important; }
         `;
@@ -1117,9 +1143,10 @@ window.PeriodicCanvasGrid = (function() {
                 borderAlpha = isSelected ? 1.0 : (isHovered ? 0.95 : 0.75);
             }
 
-            // Sharp rectangular card (r = 0)
+            // Square shape card with smooth tactile rounded corners
+            const cornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
             ctx.beginPath();
-            ctx.rect(x, y, w, h);
+            ctx.roundRect(x, y, w, h, cornerRadius);
 
             let cardGrad;
             if (activeHighlight && !isHighlighted) {
@@ -1391,8 +1418,9 @@ window.PeriodicCanvasGrid = (function() {
             const w = b.w;
             const h = b.h;
 
+            const phCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
             ctx.beginPath();
-            ctx.rect(x, y, w, h);
+            ctx.roundRect(x, y, w, h, phCornerRadius);
             ctx.fillStyle = hexToRgba(p.color, 0.22);
             ctx.fill();
 
@@ -1470,9 +1498,10 @@ window.PeriodicCanvasGrid = (function() {
         const h = b.h;
         const r = 4.5;
 
+        const selCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x, y, w, h);
+        ctx.roundRect(x, y, w, h, selCornerRadius);
 
         // Premium obsidian glass background with subtle cyan / purple gradient
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
@@ -1556,9 +1585,10 @@ window.PeriodicCanvasGrid = (function() {
         const h = b.h;
         const r = 4.5;
 
+        const selCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x, y, w, h);
+        ctx.roundRect(x, y, w, h, selCornerRadius);
 
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
         cardGrad.addColorStop(0, isFit ? 'rgba(16, 36, 56, 0.90)' : 'rgba(15, 23, 42, 0.75)');
