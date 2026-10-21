@@ -22019,8 +22019,8 @@ window.PeriodicCanvasGrid = (function() {
     let periodMarginLeft = 22;
     let hoveredZ = null;
 
-    // Dual Fit Mode ('horizontal' or 'whole')
-    let currentFitMode = 'horizontal';
+    // Dual Fit Mode ('whole' or 'horizontal')
+    let currentFitMode = 'whole';
 
     // Pinch-to-Zoom and Pan Transformation State
     let zoomScale = 1.0;
@@ -22166,12 +22166,10 @@ window.PeriodicCanvasGrid = (function() {
     }
 
     function cycleFitMode() {
-        if (currentFitMode === 'horizontal' || currentFitMode === 'horizontal-fill') {
-            currentFitMode = 'horizontal-square';
-        } else if (currentFitMode === 'horizontal-square') {
-            currentFitMode = 'whole';
+        if (currentFitMode === 'whole') {
+            currentFitMode = 'horizontal';
         } else {
-            currentFitMode = 'horizontal-fill';
+            currentFitMode = 'whole';
         }
         zoomScale = 1.0;
         panX = 0;
@@ -22181,11 +22179,16 @@ window.PeriodicCanvasGrid = (function() {
     }
 
     function toggleFitMode() {
+        // If zoomed in or panned, tapping Fit resets smoothly to 100% fit view
+        if (zoomScale > 1.03 || Math.abs(panX) > 4 || Math.abs(panY) > 4) {
+            snapToFitWithAnimation();
+            return;
+        }
         cycleFitMode();
     }
 
     function setFitMode(mode) {
-        currentFitMode = (mode === 'horizontal') ? 'horizontal-fill' : mode;
+        currentFitMode = (mode === 'horizontal' || mode === 'horizontal-fill') ? 'horizontal' : 'whole';
         zoomScale = 1.0;
         panX = 0;
         panY = 0;
@@ -22598,10 +22601,9 @@ window.PeriodicCanvasGrid = (function() {
 
     function snapToFitWithAnimation() {
         isSnapping = true;
-        targetZoomScale = Math.max(1.0, Math.min(3.5, zoomScale));
-        clampPan();
-        targetPanX = panX;
-        targetPanY = panY;
+        targetZoomScale = 1.0;
+        targetPanX = 0;
+        targetPanY = 0;
 
         function animateSnap() {
             if (!isSnapping) return;
@@ -22827,15 +22829,15 @@ window.PeriodicCanvasGrid = (function() {
 
     function recomputeGeometry() {
         gap = Math.max(2, Math.min(4, width / 340));
-        const topBarH = 24; // Compact clearance for top bar slider and temp readout
+        const topBarH = 22; // Compact clearance for top bar slider and temp readout
         
-        groupHeaderH = Math.max(16, Math.min(22, Math.round(height * 0.038)));
+        groupHeaderH = Math.max(14, Math.min(20, Math.round(height * 0.036)));
         periodMarginLeft = Math.max(18, Math.min(26, Math.round(width * 0.024)));
 
-        // Explicit table margins so table doesn't touch screen edges
+        // Explicit table margins so table doesn't touch screen edges (guarantees zero bottom clipping)
         const marginX = 6;
         const marginTop = 2;
-        const marginBottom = 4;
+        const marginBottom = 8;
         const tableAvailW = Math.max(100, width - 2 * marginX - periodMarginLeft);
         const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom - groupHeaderH);
         
@@ -22845,19 +22847,11 @@ window.PeriodicCanvasGrid = (function() {
         let calcW = 0;
         let calcH = 0;
 
-        if (currentFitMode === 'horizontal' || currentFitMode === 'horizontal-fill') {
-            // Mode 1: 100% Horizontal Fill (18 columns span width; cards fill available vertical space with 0 space leak)
-            calcW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
-            calcH = maxCellHByHeight;
-        } else if (currentFitMode === 'horizontal-square') {
-            // Mode 2: 100% Horizontal Square (18 columns span width; cards maintain clean ratio capped to available screen height)
-            calcW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
-            calcH = Math.min(calcW, maxCellHByHeight);
-        } else {
-            // Mode 3: Whole Table Fit (Fits entire table both width and height inside screen proportionally)
+        if (currentFitMode === 'whole') {
+            // Mode 1: Whole Table Fit (Fits entire table both width and height inside screen proportionally)
             const maxCellW = (tableAvailW - gap * 17) / 18;
             const maxCellH = maxCellHByHeight;
-            const fitRatio = 1.16;
+            const fitRatio = 1.12;
             if (maxCellW / maxCellH > fitRatio) {
                 calcH = Math.floor(maxCellH * 10) / 10;
                 calcW = Math.floor(calcH * fitRatio * 10) / 10;
@@ -22865,12 +22859,15 @@ window.PeriodicCanvasGrid = (function() {
                 calcW = Math.floor(maxCellW * 10) / 10;
                 calcH = Math.floor((calcW / fitRatio) * 10) / 10;
             }
+        } else {
+            // Mode 2: 100% Horizontal Fill (18 columns span width)
+            calcW = Math.floor(((tableAvailW - gap * 17) / 18) * 10) / 10;
+            calcH = maxCellHByHeight;
         }
 
-        // Apply MINIMUM LIMITS so the table stops shrinking on small / split screens
-        // This guarantees clear, legible element numbers, symbols, names, and values!
-        const MIN_CELL_W = 38;
-        const MIN_CELL_H = 38;
+        // Apply responsive bounds that prevent overflow on compact landscape phones
+        const MIN_CELL_W = 32;
+        const MIN_CELL_H = 28;
         cellW = Math.max(MIN_CELL_W, calcW);
         cellH = Math.max(MIN_CELL_H, calcH);
 
@@ -23554,20 +23551,12 @@ window.PeriodicCanvasGrid = (function() {
     }
 
     function drawFitModeElementBox() {
-        const isFit = (zoomScale <= 1.02 && Math.abs(panX) < 2 && Math.abs(panY) < 2);
-        let modeTitle = 'Fit: H-Fill';
-        if (currentFitMode === 'horizontal-square') {
-            modeTitle = 'Fit: H-Square';
-        } else if (currentFitMode === 'whole') {
-            modeTitle = 'Fit: Whole Table';
-        }
-
+        const isZoomedOrPanned = (zoomScale > 1.03 || Math.abs(panX) > 3 || Math.abs(panY) > 3);
         const b = getWideElementCardBounds(10);
         const x = b.x;
         const y = b.y;
         const w = b.w;
         const h = b.h;
-        const r = 4.5;
 
         const selCornerRadius = Math.max(2.5, Math.min(5, Math.min(w, h) * 0.085));
         ctx.save();
@@ -23575,54 +23564,79 @@ window.PeriodicCanvasGrid = (function() {
         ctx.roundRect(x, y, w, h, selCornerRadius);
 
         const cardGrad = ctx.createLinearGradient(x, y, x, y + h);
-        cardGrad.addColorStop(0, isFit ? 'rgba(16, 36, 56, 0.90)' : 'rgba(15, 23, 42, 0.75)');
-        cardGrad.addColorStop(1, isFit ? 'rgba(8, 18, 32, 0.90)' : 'rgba(9, 14, 26, 0.75)');
+        if (isZoomedOrPanned) {
+            cardGrad.addColorStop(0, 'rgba(234, 88, 12, 0.95)');
+            cardGrad.addColorStop(1, 'rgba(124, 45, 18, 0.95)');
+        } else if (currentFitMode === 'whole') {
+            cardGrad.addColorStop(0, 'rgba(16, 42, 66, 0.95)');
+            cardGrad.addColorStop(1, 'rgba(8, 22, 38, 0.95)');
+        } else {
+            cardGrad.addColorStop(0, 'rgba(20, 35, 60, 0.95)');
+            cardGrad.addColorStop(1, 'rgba(10, 18, 32, 0.95)');
+        }
         ctx.fillStyle = cardGrad;
         ctx.fill();
 
         // 2.5D Tactile Depth: Specular top highlight bevel line
-        ctx.fillStyle = isFit ? 'rgba(56, 189, 248, 0.40)' : 'rgba(255, 255, 255, 0.25)';
+        ctx.fillStyle = isZoomedOrPanned ? 'rgba(254, 215, 170, 0.50)' : 'rgba(56, 189, 248, 0.40)';
         ctx.fillRect(x + 1, y + 1, w - 2, 1.2);
 
         // 2.5D Tactile Depth: Bottom shadow lip
         ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
         ctx.fillRect(x + 1, y + h - 2, w - 2, 1.8);
 
-        ctx.strokeStyle = isFit ? 'rgba(56, 189, 248, 0.85)' : 'rgba(255, 255, 255, 0.25)';
-        ctx.lineWidth = isFit ? 1.1 : 1;
+        ctx.strokeStyle = isZoomedOrPanned ? 'rgba(249, 115, 22, 0.90)' : (currentFitMode === 'whole' ? 'rgba(56, 189, 248, 0.85)' : 'rgba(99, 102, 241, 0.85)');
+        ctx.lineWidth = 1.2;
         ctx.stroke();
 
         // 1. Top-Left Tag
         const fontSizeTag = Math.max(5.5, Math.min(7.5, h * 0.20));
         ctx.font = `800 ${fontSizeTag}px 'IBM Plex Mono', monospace, sans-serif`;
-        ctx.fillStyle = isFit ? '#38bdf8' : '#94a3b8';
+        ctx.fillStyle = isZoomedOrPanned ? '#fed7aa' : '#38bdf8';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
-        ctx.fillText('↔ FIT', x + 3.5, y + 2.5);
+        const tagText = isZoomedOrPanned ? '↺ RESET' : (currentFitMode === 'whole' ? '⛶ FIT' : '↔ FIT');
+        ctx.fillText(tagText, x + 3.5, y + 2.5);
 
-        // 2. Top-Right Tag
+        // 2. Top-Right Tag: Zoom percentage
         const fontSizeScale = Math.max(5, Math.min(7, h * 0.18));
         ctx.font = `700 ${fontSizeScale}px 'IBM Plex Mono', monospace, sans-serif`;
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = isZoomedOrPanned ? '#fdba74' : '#94a3b8';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'top';
         ctx.fillText(`${Math.round(zoomScale * 100)}%`, x + w - 3.5, y + 2.5);
 
         // 3. Center Main Symbol
-        const fontSizeSym = Math.max(7.5, Math.min(11.5, h * 0.35));
+        const fontSizeSym = Math.max(7.5, Math.min(11, h * 0.35));
         ctx.font = `800 ${fontSizeSym}px system-ui, -apple-system, sans-serif`;
-        ctx.fillStyle = isFit ? '#e0f2fe' : '#cbd5e1';
+        ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(modeTitle, x + w / 2, y + h * 0.50);
+        let mainTitle = '';
+        if (isZoomedOrPanned) {
+            mainTitle = '↺ Reset View';
+        } else if (currentFitMode === 'whole') {
+            mainTitle = '⛶ Whole Table';
+        } else {
+            mainTitle = '↔ Fit Width';
+        }
+        ctx.fillText(mainTitle, x + w / 2, y + h * 0.50);
 
         // 4. Bottom Subtitle
         const fontSizeSub = Math.max(4.5, Math.min(6.5, h * 0.17));
         ctx.font = `600 ${fontSizeSub}px 'IBM Plex Mono', monospace, sans-serif`;
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = isZoomedOrPanned ? '#fdba74' : '#94a3b8';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText('VIEWPORT SCALE', x + w / 2, y + h - 2.5);
+        let subTitle = '';
+        if (isZoomedOrPanned) {
+            subTitle = 'TAP TO FIT SCREEN';
+        } else if (currentFitMode === 'whole') {
+            subTitle = 'ALL 10 ROWS FIT';
+        } else {
+            subTitle = 'SPAN 18 COLUMNS';
+        }
+        ctx.fillText(subTitle, x + w / 2, y + h - 2.5);
 
         ctx.restore();
     }
@@ -23760,6 +23774,17 @@ window.PeriodicCanvasGrid = (function() {
 
         // 4. Tap on empty space: close all popups & deselect active legend highlight
         if (!clickedElement) {
+            const timeSinceLastEmptyTap = now - lastTapTime;
+            lastTapTime = now;
+            if (timeSinceLastEmptyTap < 350) {
+                // Double tap on empty canvas space smoothly resets zoom and centers the table!
+                if (window.NativeServices?.Haptics) {
+                    window.NativeServices.Haptics.selection();
+                }
+                snapToFitWithAnimation();
+                return;
+            }
+
             if (typeof window.clearLegendHighlightingForce === 'function') {
                 window.clearLegendHighlightingForce();
             }
