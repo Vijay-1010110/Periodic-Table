@@ -21,7 +21,19 @@ WS_URL = None
 
 def get_ws_url():
     global WS_URL
-    res = urllib.request.urlopen('http://localhost:9222/json').read()
+    try:
+        res = urllib.request.urlopen('http://localhost:9222/json', timeout=2).read()
+    except Exception:
+        proc = subprocess.run(['adb', 'shell', 'cat /proc/net/unix | grep -i devtools'], capture_output=True, text=True)
+        lines = proc.stdout.strip().splitlines()
+        for line in lines:
+            if '@webview_devtools_remote_' in line:
+                sock = '@' + line.split('@')[-1].strip()
+                subprocess.run(['adb', 'forward', 'tcp:9222', f'localabstract:{sock[1:]}'], check=True)
+                time.sleep(0.5)
+                break
+        res = urllib.request.urlopen('http://localhost:9222/json', timeout=3).read()
+
     targets = json.loads(res.decode('utf-8'))
     for t in targets:
         if 'localhost' in t.get('url', ''):

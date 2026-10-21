@@ -126,14 +126,15 @@
      */
     class EnvironmentSimulationEngine {
         constructor() {
-            this.temperatureK = 298.15;
-            this.pressureAtm = 1.0;
+            this.temperatureK = 1800.0;
+            this.pressureAtm = 50.0;
             this.currentPresetId = 'earth_stp';
             this.listeners = new Set();
-            this.activeElementId = 6; // Carbon default
+            this.activeElementId = 26; // Iron (Z=26) default for mockup
 
             // View Mode: 'split' | 'chamber' | 'diagram'
-            this.viewMode = 'split';
+            this.viewMode = 'diagram';
+            this.isDraggingDiagram = false;
 
             // Chamber Simulation State
             this.atoms = [];
@@ -155,9 +156,14 @@
         setViewMode(mode) {
             if (['split', 'chamber', 'diagram'].includes(mode)) {
                 this.viewMode = mode;
-                if (typeof window.renderTuningPanel === 'function') {
-                    window.renderTuningPanel('environment');
-                }
+                document.querySelectorAll('.env-mode-btn').forEach(btn => {
+                    if (btn.getAttribute('data-mode') === mode) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                this.notify();
             }
         }
 
@@ -319,64 +325,151 @@
         }
 
         setElement(z) {
-            this.activeElementId = parseInt(z, 10) || 6;
+            this.activeElementId = parseInt(z, 10) || 26;
             this.notify();
-            if (typeof window.renderGameDeck === 'function') {
-                window.renderGameDeck('environment');
-            }
         }
 
-        heat(deltaK = 150) {
+        setLogPressure(logP) {
+            const val = parseFloat(logP);
+            const p = Math.pow(10, Math.max(-6, Math.min(6, val)));
+            this.setPressure(p);
+        }
+
+        heat(deltaK = 200) {
             this.setTemperature(Math.min(35000, this.temperatureK + deltaK));
-            if (typeof window.renderGameDeck === 'function') {
-                window.renderGameDeck('environment');
-            }
         }
 
-        cool(deltaK = 150) {
+        cool(deltaK = 200) {
             this.setTemperature(Math.max(1, this.temperatureK - deltaK));
-            if (typeof window.renderGameDeck === 'function') {
-                window.renderGameDeck('environment');
-            }
         }
 
-        compress(factor = 2.0) {
+        compress(factor = 10.0) {
             this.setPressure(Math.min(1e11, this.pressureAtm * factor));
-            if (typeof window.renderGameDeck === 'function') {
-                window.renderGameDeck('environment');
-            }
         }
 
-        decompress(factor = 2.0) {
+        decompress(factor = 10.0) {
             this.setPressure(Math.max(1e-12, this.pressureAtm / factor));
-            if (typeof window.renderGameDeck === 'function') {
-                window.renderGameDeck('environment');
-            }
         }
 
         quickJumpPhase(phaseType) {
             const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1000, boil: 2500 };
-            const Tm = elData.melt ? Number(elData.melt) : 1000;
-            const Tb = elData.boil ? Number(elData.boil) : 2500;
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { melt: 1811, boil: 3134 };
+            const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
+            const Tb = elData.boilingPoint ? Number(elData.boilingPoint) : (elData.boil ? Number(elData.boil) : 3134);
+            const thermo = THERMO_ELEMENT_DB[this.activeElementId] || { Tt: Tm, Pt: 0.01, Tc: Tb * 1.5, Pc: 100 };
 
             if (phaseType === 'solid') {
-                this.setTemperature(Math.max(5, Tm * 0.45));
+                this.setTemperature(Math.max(10, Tm * 0.45));
                 this.setPressure(1.0);
             } else if (phaseType === 'liquid') {
                 this.setTemperature(Tm + (Tb - Tm) * 0.40);
                 this.setPressure(1.0);
             } else if (phaseType === 'gas') {
                 this.setTemperature(Tb * 1.35);
-                this.setPressure(1.0);
-            } else if (phaseType === 'plasma') {
-                this.setTemperature(18000);
-                this.setPressure(0.05);
+                this.setPressure(0.1);
+            } else if (phaseType === 'plasma' || phaseType === 'super') {
+                this.setTemperature(thermo.Tc * 1.15);
+                this.setPressure(thermo.Pc * 1.5);
+            } else if (phaseType === 'triple') {
+                this.setTemperature(thermo.Tt);
+                this.setPressure(thermo.Pt);
             }
 
+            this.notify();
             if (window.physicsAudio) {
                 window.physicsAudio.playPhaseTransitionSizzle?.(phaseType);
             }
+        }
+
+        updateDOMTelemetry(elData, phase) {
+            // 1. Element badge in right sidebar
+            const activeZ = document.getElementById('env-active-z');
+            const activeSym = document.getElementById('env-active-sym');
+            const activeName = document.getElementById('env-active-name');
+            if (activeZ) activeZ.textContent = elData.atomicNumber || this.activeElementId;
+            if (activeSym) activeSym.textContent = elData.symbol || 'Fe';
+            if (activeName) activeName.textContent = elData.name || 'Iron';
+
+            // 2. Phase Badge
+            const phaseTxt = document.getElementById('env-phase-text');
+            const phaseDot = document.getElementById('env-phase-dot');
+            const phaseBadge = document.getElementById('env-active-phase-badge');
+            if (phaseTxt) phaseTxt.textContent = (phase.state || 'SOLID').toUpperCase();
+            if (phaseDot && phase.color) {
+                phaseDot.style.background = phase.color;
+                phaseDot.style.boxShadow = '0 0 6px ' + phase.color;
+            }
+            if (phaseBadge && phase.color) {
+                phaseBadge.style.color = phase.color;
+                phaseBadge.style.borderColor = phase.color;
+            }
+
+            // 3. Telemetry (TEMP)
+            const tempK = document.getElementById('env-temp-k');
+            const tempC = document.getElementById('env-temp-c');
+            if (tempK) tempK.textContent = this.temperatureK.toFixed(1) + ' K';
+            if (tempC) tempC.textContent = (this.temperatureK - 273.15).toFixed(1) + ' °C';
+
+            // 4. Telemetry (PRESSURE)
+            const pressAtm = document.getElementById('env-press-atm');
+            const pressSi = document.getElementById('env-press-si');
+            if (pressAtm) {
+                const p = this.pressureAtm;
+                if (p < 0.001) {
+                    pressAtm.textContent = p.toExponential(2) + ' atm';
+                } else if (p > 1e6) {
+                    pressAtm.textContent = p.toExponential(2) + ' atm';
+                } else {
+                    pressAtm.textContent = p.toFixed(2) + ' atm';
+                }
+            }
+            if (pressSi) {
+                const pa = this.pressureAtm * 101325;
+                if (pa >= 1e9) {
+                    pressSi.textContent = (pa / 1e9).toFixed(2) + ' GPa';
+                } else if (pa >= 1e6) {
+                    pressSi.textContent = (pa / 1e6).toFixed(2) + ' MPa';
+                } else if (pa >= 1e3) {
+                    pressSi.textContent = (pa / 1e3).toFixed(1) + ' kPa';
+                } else {
+                    pressSi.textContent = pa.toFixed(1) + ' Pa';
+                }
+            }
+
+            // 5. Pressure Slider (Log P)
+            const pressSlider = document.getElementById('env-press-slider');
+            if (pressSlider && document.activeElement !== pressSlider) {
+                const logP = Math.max(-6, Math.min(6, Math.log10(Math.max(1e-12, this.pressureAtm))));
+                pressSlider.value = logP.toFixed(2);
+            }
+
+            // 6. Bottom Dock Info
+            const dockInfo = document.getElementById('env-dock-info');
+            if (dockInfo) {
+                const Tm = elData.meltingPoint ? Number(elData.meltingPoint) : (elData.melt ? Number(elData.melt) : 1811);
+                dockInfo.textContent = '1 atm Melt: ' + Tm + ' K';
+            }
+
+            // 7. Active element chips in dock
+            const chips = document.querySelectorAll('.env-dock-chip');
+            chips.forEach(chip => {
+                const z = parseInt(chip.getAttribute('data-z'), 10);
+                if (z === this.activeElementId) {
+                    chip.classList.add('active');
+                } else {
+                    chip.classList.remove('active');
+                }
+            });
+
+            // 8. Mode buttons in header
+            const modeBtns = document.querySelectorAll('.env-mode-btn');
+            modeBtns.forEach(btn => {
+                if (btn.getAttribute('data-mode') === this.viewMode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         }
 
         calculatePhase(elementData) {
@@ -394,8 +487,8 @@
                 deltaH_fus: 10.0
             };
 
-            const T_melt_1atm = elementData?.melt ? Number(elementData.melt) : 1000;
-            const T_boil_1atm = elementData?.boil ? Number(elementData.boil) : 2500;
+            const T_melt_1atm = elementData?.meltingPoint ? Number(elementData.meltingPoint) : (elementData?.melt ? Number(elementData.melt) : (thermo.Tt || 1811));
+            const T_boil_1atm = elementData?.boilingPoint ? Number(elementData.boilingPoint) : (elementData?.boil ? Number(elementData.boil) : (thermo.Tc || 3134));
 
             // 1. Plasma Regime
             if (T > 25000 || (T > 10000 && P < 0.01)) {
@@ -670,8 +763,11 @@
             this.lastFrameTime = now;
 
             const allElements = (typeof elementsData !== 'undefined' ? elementsData : (window.elementsData || []));
-            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { name: 'Carbon', symbol: 'C', melt: 3823, boil: 5100 };
+            const elData = allElements.find(e => e.atomicNumber === this.activeElementId) || { name: 'Iron', symbol: 'Fe', atomicNumber: 26, melt: 1811, boil: 3134 };
             const phase = this.calculatePhase(elData);
+
+            // Sync HTML Sidebar HUD & Bottom Dock Telemetry
+            this.updateDOMTelemetry(elData, phase);
 
             // Update Particle Chamber Simulation
             this.updateChamberPhysics(dt, clientW, clientH, phase);
@@ -685,18 +781,15 @@
 
             if (this.viewMode === 'chamber') {
                 this.renderChamberView(ctx, w, h, elData, phase, 0, w);
-            } else if (this.viewMode === 'diagram') {
-                this.renderDiagramView(ctx, w, h, elData, phase, 0, w);
-            } else {
-                // Split View: Chamber on Left (65%), P-T Phase Radar on Right (35%)
-                const chamberW = w * 0.65;
-                const radarW = w * 0.35;
+            } else if (this.viewMode === 'split') {
+                const chamberW = Math.floor(w * 0.45);
+                const diagramW = w - chamberW;
                 this.renderChamberView(ctx, w, h, elData, phase, 0, chamberW);
-                this.renderDiagramView(ctx, w, h, elData, phase, chamberW, radarW);
+                this.renderDiagramView(ctx, w, h, elData, phase, chamberW, diagramW);
+            } else {
+                // 'diagram' default: 100% of left card canvas
+                this.renderDiagramView(ctx, w, h, elData, phase, 0, w);
             }
-
-            // View Mode Switcher Pills (Top Center of Canvas)
-            this.renderViewSwitcherHUD(ctx, w, h);
 
             ctx.restore();
         }
@@ -967,12 +1060,15 @@
         }
 
         renderDiagramView(ctx, w, h, elData, phase, startX, diagramW) {
-            const padLeft = startX + 54;
-            const padRight = startX + diagramW - 16;
-            const padTop = 52;
-            const padBottom = 38;
+            const padLeft = startX + 66;
+            const padRight = startX + diagramW - 20;
+            const padTop = 32;
+            const padBottom = 40;
             const plotW = Math.max(100, padRight - padLeft);
             const plotH = Math.max(80, h - padTop - padBottom);
+
+            const pVal = this.pressureAtm;
+            const pText = pVal < 0.001 ? pVal.toExponential(2) + ' atm' : (pVal > 1e4 ? (pVal * 1.01325e-4).toFixed(2) + ' GPa' : pVal.toFixed(2) + ' atm');
 
             this.diagramPadLeft = padLeft;
             this.diagramPadRight = padRight;
@@ -980,27 +1076,20 @@
             this.diagramPadBottom = padBottom;
             this.lastDiagramH = h;
 
-            const Z = this.activeElementId;
+            const Z = this.activeElementId || 26;
             const thermo = THERMO_ELEMENT_DB[Z] || {
-                name: elData.name || 'Element',
-                Tt: elData.melt ? Number(elData.melt) : 1000,
+                name: elData.name || 'Iron',
+                Tt: elData.meltingPoint ? Number(elData.meltingPoint) : 1811,
                 Pt: 0.01,
-                Tc: elData.boil ? Number(elData.boil) * 1.5 : 3000,
+                Tc: elData.boilingPoint ? Number(elData.boilingPoint) * 1.5 : 9240,
                 Pc: 100,
                 P_metal: 1e7,
-                deltaH_vap: 150.0,
-                deltaH_fus: 10.0
+                deltaH_vap: 340.0,
+                deltaH_fus: 13.8
             };
 
-            const T_melt_1atm = elData.melt ? Number(elData.melt) : (thermo.Tt || 1000);
-            const T_boil_1atm = elData.boil ? Number(elData.boil) : (thermo.Tc * 0.7 || 2500);
-
-            // Responsive Adaptive Temperature Domain
             const minT = 0;
-            const maxT = Math.max(
-                this.temperatureK * 1.25,
-                Math.max(thermo.Tc * 1.35, Math.max(T_boil_1atm * 1.35, 350))
-            );
+            const maxT = Math.max(300, Math.ceil((thermo.Tc * 1.25) / 1000) * 1000);
             const minLogP = -6;
             const maxLogP = 6;
 
@@ -1010,18 +1099,73 @@
             this.diagramMaxLogP = maxLogP;
 
             const mapX = (t) => padLeft + (Math.max(0, Math.min(maxT, t)) / maxT) * plotW;
-            const mapY = (logP) => padTop + (1 - (Math.max(minLogP, Math.min(maxLogP, logP)) - minLogP) / (maxLogP - minLogP)) * plotH;
+            const mapY = (logP) => padTop + (1 - (Math.max(minLogP, Math.min(maxLogP, logP)) - minLogP) / 12) * plotH;
 
-            // 1. High-Tech Glassmorphism Background Card
-            ctx.fillStyle = 'rgba(8, 14, 28, 0.94)';
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.28)';
-            ctx.lineWidth = 1.2;
+            // --- Top Canvas Title Strip (inside canvas header, y = 18) ---
+            const titleSym = elData.symbol || 'Fe';
+            const titleZ = elData.atomicNumber || Z;
+            const titleName = elData.name || 'Iron';
+
+            ctx.font = 'bold 11px DM Sans, -apple-system, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#f8fafc';
+            const mainTitle = titleZ + ' ' + titleSym + ' (' + titleName + ') — P–T PHASE DIAGRAM';
+            ctx.fillText(mainTitle, padLeft, 18);
+
+            const titleW = ctx.measureText(mainTitle).width;
+            ctx.font = '9.5px DM Sans, sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText(' (Log P vs. Linear T)', padLeft + titleW, 18);
+
+            const totalTitleW = titleW + ctx.measureText(' (Log P vs. Linear T)').width;
+            const rightReserve = 145;
+            const availCenterSpace = (padRight - rightReserve) - (padLeft + totalTitleW + 15);
+
+            if (availCenterSpace >= 220) {
+                ctx.fillStyle = '#34d399';
+                ctx.font = 'bold 10px IBM Plex Mono, monospace';
+                ctx.fillText('▲ Triple Pt: ' + thermo.Tt.toFixed(0) + ' K', padLeft + totalTitleW + 20, 18);
+
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillText('★ Critical Pt: ' + thermo.Tc.toFixed(0) + ' K', padLeft + totalTitleW + 135, 18);
+            } else if (availCenterSpace >= 110) {
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = 'bold 10px IBM Plex Mono, monospace';
+                ctx.fillText('★ Critical: ' + thermo.Tc.toFixed(0) + ' K', padLeft + totalTitleW + 16, 18);
+            }
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 10px DM Sans, sans-serif';
+            ctx.fillText('👆 Tap or drag crosshair', padRight, 18);
+
+            // --- 1. Scientific Plot Background ---
+            const bgGrad = ctx.createLinearGradient(padLeft, padTop, padRight, padTop + plotH);
+            bgGrad.addColorStop(0, 'rgba(8, 14, 28, 0.96)');
+            bgGrad.addColorStop(1, 'rgba(3, 7, 18, 0.98)');
+            ctx.fillStyle = bgGrad;
             ctx.beginPath();
-            ctx.roundRect(startX + 6, 42, diagramW - 12, h - 86, 10);
+            ctx.roundRect(padLeft, padTop, plotW, plotH, 6);
             ctx.fill();
+
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.22)';
+            ctx.lineWidth = 1;
             ctx.stroke();
 
-            // 2. Generate Thermodynamic Boundary Points
+            // Precision Corner Brackets
+            const bLen = 12;
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 1.6;
+
+            ctx.beginPath();
+            ctx.moveTo(padLeft, padTop + bLen); ctx.lineTo(padLeft, padTop); ctx.lineTo(padLeft + bLen, padTop);
+            ctx.moveTo(padRight - bLen, padTop); ctx.lineTo(padRight, padTop); ctx.lineTo(padRight, padTop + bLen);
+            ctx.moveTo(padLeft, padTop + plotH - bLen); ctx.lineTo(padLeft, padTop + plotH); ctx.lineTo(padLeft + bLen, padTop + plotH);
+            ctx.moveTo(padRight - bLen, padTop + plotH); ctx.lineTo(padRight, padTop + plotH); ctx.lineTo(padRight, padTop + plotH - bLen);
+            ctx.stroke();
+
+            // --- 2. Thermodynamic Curves Calculation ---
             const dH_vap = (thermo.deltaH_vap || 150.0) * 1000;
             const dH_sub = ((thermo.deltaH_vap || 150.0) + (thermo.deltaH_fus || 10.0)) * 1000;
             const Tt = Math.max(1, thermo.Tt || 1000);
@@ -1032,7 +1176,7 @@
             const logPt = Math.log10(Pt);
             const logPc = Math.log10(Pc);
 
-            // A. Sublimation Curve Points (P from 10^-6 to Pt)
+            // Sublimation curve points
             const subPts = [];
             const subSteps = 24;
             for (let i = 0; i <= subSteps; i++) {
@@ -1043,7 +1187,7 @@
                 subPts.push({ x: mapX(t), y: mapY(lp), t, p, lp });
             }
 
-            // B. Melting / Fusion Curve Points (P from Pt to 10^6)
+            // Melting / Fusion curve points
             const meltPts = [];
             const meltSteps = 28;
             for (let i = 0; i <= meltSteps; i++) {
@@ -1054,7 +1198,7 @@
                 meltPts.push({ x: mapX(t), y: mapY(lp), t, p, lp });
             }
 
-            // C. Vaporization Curve Points (P from Pt to Pc)
+            // Vaporization curve points
             const vapPts = [];
             const vapSteps = 24;
             for (let i = 0; i <= vapSteps; i++) {
@@ -1067,123 +1211,130 @@
                 vapPts.push({ x: mapX(t), y: mapY(lp), t, p, lp });
             }
 
-            // 3. Clip plotting strictly to graph area
+            const scX = mapX(Tc);
+            const scY = mapY(logPc);
+
+            // --- 3. Plot Area Shading & Elements (Clipped) ---
             ctx.save();
             ctx.beginPath();
             ctx.rect(padLeft, padTop, plotW, plotH);
             ctx.clip();
 
-            // A. SOLID PHASE REGION SHADING (Icy Blue)
-            ctx.fillStyle = 'rgba(14, 165, 233, 0.16)';
+            // A. Solid Phase Shading
+            ctx.fillStyle = 'rgba(6, 182, 212, 0.16)';
             ctx.beginPath();
             ctx.moveTo(padLeft, padTop);
             ctx.lineTo(meltPts[meltPts.length - 1].x, padTop);
-            for (let i = meltPts.length - 1; i >= 0; i--) {
-                ctx.lineTo(meltPts[i].x, meltPts[i].y);
-            }
-            for (let i = subPts.length - 1; i >= 0; i--) {
-                ctx.lineTo(subPts[i].x, subPts[i].y);
-            }
+            for (let i = meltPts.length - 1; i >= 0; i--) ctx.lineTo(meltPts[i].x, meltPts[i].y);
+            for (let i = subPts.length - 1; i >= 0; i--) ctx.lineTo(subPts[i].x, subPts[i].y);
             ctx.lineTo(padLeft, mapY(minLogP));
             ctx.closePath();
             ctx.fill();
 
-            // B. LIQUID PHASE REGION SHADING (Emerald Turquoise)
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.17)';
+            // B. Liquid Phase Shading
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
             ctx.beginPath();
             ctx.moveTo(meltPts[meltPts.length - 1].x, padTop);
-            for (let i = meltPts.length - 1; i >= 0; i--) {
-                ctx.lineTo(meltPts[i].x, meltPts[i].y);
-            }
-            for (let i = 0; i < vapPts.length; i++) {
-                ctx.lineTo(vapPts[i].x, vapPts[i].y);
-            }
+            for (let i = meltPts.length - 1; i >= 0; i--) ctx.lineTo(meltPts[i].x, meltPts[i].y);
+            for (let i = 0; i < vapPts.length; i++) ctx.lineTo(vapPts[i].x, vapPts[i].y);
             ctx.lineTo(mapX(Tc), padTop);
             ctx.closePath();
             ctx.fill();
 
-            // C. GAS / VAPOR PHASE REGION SHADING (Warm Amber)
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+            // C. Gas / Vapor Phase Shading
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
             ctx.beginPath();
             ctx.moveTo(subPts[0].x, subPts[0].y);
-            for (let i = 0; i < subPts.length; i++) {
-                ctx.lineTo(subPts[i].x, subPts[i].y);
-            }
-            for (let i = 0; i < vapPts.length; i++) {
-                ctx.lineTo(vapPts[i].x, vapPts[i].y);
-            }
-            ctx.lineTo(padRight, mapY(logPc));
-            ctx.lineTo(padRight, mapY(minLogP));
+            for (let i = 0; i < subPts.length; i++) ctx.lineTo(subPts[i].x, subPts[i].y);
+            for (let i = 0; i < vapPts.length; i++) ctx.lineTo(vapPts[i].x, vapPts[i].y);
+            ctx.lineTo(mapX(Tc), padTop + plotH);
+            ctx.lineTo(padRight, padTop + plotH);
+            ctx.lineTo(subPts[0].x, padTop + plotH);
             ctx.closePath();
             ctx.fill();
 
-            // D. SUPERCRITICAL FLUID REGION SHADING (Cosmic Violet)
-            const scX = mapX(Tc);
-            const scY = mapY(logPc);
-            ctx.fillStyle = 'rgba(168, 85, 247, 0.18)';
-            ctx.fillRect(scX, padTop, padRight - scX, scY - padTop);
-
-            // 4. Region Watermark Text Labels
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = 'bold 12px var(--font-ui), sans-serif';
-
-            // Solid watermark
-            const solidLabelX = (padLeft + mapX(Tt)) * 0.45;
-            const solidLabelY = (padTop + mapY(minLogP)) * 0.45;
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
-            ctx.fillText('🧊 SOLID', solidLabelX, solidLabelY);
-
-            // Liquid watermark
-            const liqLabelX = (mapX(Tt) + mapX(Tc)) * 0.52;
-            const liqLabelY = (padTop + mapY(logPt)) * 0.50;
-            if (liqLabelX > solidLabelX + 30 && liqLabelX < padRight - 30) {
-                ctx.fillStyle = 'rgba(16, 185, 129, 0.45)';
-                ctx.fillText('💧 LIQUID', liqLabelX, liqLabelY);
+            // D. Supercritical Region Shading
+            if (scX < padRight && scY > padTop) {
+                ctx.fillStyle = 'rgba(168, 85, 247, 0.18)';
+                ctx.fillRect(scX, padTop, padRight - scX, scY - padTop);
             }
 
-            // Gas watermark
-            const gasLabelX = (mapX(Tt) + padRight) * 0.55;
-            const gasLabelY = (mapY(logPt) + mapY(minLogP)) * 0.52;
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.40)';
-            ctx.fillText('💨 GAS', gasLabelX, gasLabelY);
-
-            // Supercritical watermark
-            if (padRight - scX > 60) {
-                ctx.fillStyle = 'rgba(192, 132, 252, 0.45)';
-                ctx.font = 'bold 10px var(--font-ui), sans-serif';
-                ctx.fillText('🌀 SUPERCRITICAL', (scX + padRight) * 0.5, (padTop + scY) * 0.5);
-            }
-
-            // 5. Grid Lines & Axis Graduations
-            ctx.lineWidth = 1;
-            // Pressure horizontal grid lines
-            for (let lp = -6; lp <= 6; lp += 2) {
-                const y = mapY(lp);
-                ctx.strokeStyle = (lp === 0) ? 'rgba(251, 191, 36, 0.45)' : 'rgba(255, 255, 255, 0.08)';
-                ctx.setLineDash(lp === 0 ? [5, 4] : []);
+            // E. Grid Lines
+            // Horizontal lines for major orders: 10^6, 10^3, 10^0 (1 atm), 10^-3, 10^-6
+            const hOrders = [6, 3, 0, -3, -6];
+            for (const lp of hOrders) {
+                const gy = mapY(lp);
+                if (lp === 0) {
+                    ctx.setLineDash([5, 4]);
+                    ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+                    ctx.lineWidth = 1.2;
+                } else {
+                    ctx.setLineDash([]);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+                    ctx.lineWidth = 1;
+                }
                 ctx.beginPath();
-                ctx.moveTo(padLeft, y);
-                ctx.lineTo(padRight, y);
+                ctx.moveTo(padLeft, gy);
+                ctx.lineTo(padRight, gy);
                 ctx.stroke();
+
+                if (lp === 0) {
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.font = 'bold 9.5px IBM Plex Mono, monospace';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText('1.0 atm (Earth STP)', padRight - 10, gy - 3);
+                }
             }
             ctx.setLineDash([]);
 
-            // Temperature vertical grid lines
-            const tStep = maxT > 4000 ? 2000 : (maxT > 1000 ? 500 : (maxT > 300 ? 100 : 25));
-            for (let t = tStep; t < maxT; t += tStep) {
-                const x = mapX(t);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            // Vertical temperature grid lines
+            const tGridStep = maxT / 5;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+            ctx.lineWidth = 1;
+            for (let step = 1; step <= 5; step++) {
+                const gx = mapX(step * tGridStep);
                 ctx.beginPath();
-                ctx.moveTo(x, padTop);
-                ctx.lineTo(x, padTop + plotH);
+                ctx.moveTo(gx, padTop);
+                ctx.lineTo(gx, padTop + plotH);
                 ctx.stroke();
             }
 
-            // 6. Draw Glowing Phase Boundary Curves
+            // F. Region Name Badges inside Plot
+            ctx.font = 'bold 11px DM Sans, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Solid badge
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText('🧊 SOLID', padLeft + plotW * 0.15, padTop + plotH * 0.46);
+
+            // Liquid badge
+            ctx.fillStyle = '#34d399';
+            const liqX = (mapX(Tt) + scX) * 0.5;
+            const liqY = (padTop + mapY(logPt)) * 0.45;
+            if (liqX > padLeft + 60 && liqX < padRight - 60) {
+                ctx.fillText('💧 LIQUID', liqX, liqY);
+            }
+
+            // Gas badge
+            ctx.fillStyle = '#fbbf24';
+            const gasX = (mapX(Tt) + padRight) * 0.52;
+            const gasY = padTop + plotH * 0.68;
+            ctx.fillText('💨 GAS', gasX, gasY);
+
+            // Supercritical badge
+            if (padRight - scX > 60) {
+                ctx.fillStyle = '#c084fc';
+                ctx.fillText('🌀 SUPERCRITICAL', (scX + padRight) * 0.5, (padTop + scY) * 0.5);
+            }
+
+            // G. Boundary Curves
             // Sublimation Curve (Solid <-> Gas)
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2.2;
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2.4;
+            ctx.shadowColor = 'rgba(0, 229, 255, 0.5)';
+            ctx.shadowBlur = 6;
             ctx.beginPath();
             for (let i = 0; i < subPts.length; i++) {
                 if (i === 0) ctx.moveTo(subPts[i].x, subPts[i].y);
@@ -1191,9 +1342,11 @@
             }
             ctx.stroke();
 
-            // Melting / Fusion Curve (Solid <-> Liquid)
-            ctx.strokeStyle = '#00d4ff';
+            // Melting Curve (Solid <-> Liquid)
+            ctx.strokeStyle = '#00e5ff';
             ctx.lineWidth = 2.4;
+            ctx.shadowColor = 'rgba(0, 229, 255, 0.5)';
+            ctx.shadowBlur = 6;
             ctx.beginPath();
             for (let i = 0; i < meltPts.length; i++) {
                 if (i === 0) ctx.moveTo(meltPts[i].x, meltPts[i].y);
@@ -1203,18 +1356,21 @@
 
             // Vaporization Curve (Liquid <-> Gas)
             ctx.strokeStyle = '#f97316';
-            ctx.lineWidth = 2.4;
+            ctx.lineWidth = 2.6;
+            ctx.shadowColor = 'rgba(249, 115, 22, 0.6)';
+            ctx.shadowBlur = 8;
             ctx.beginPath();
             for (let i = 0; i < vapPts.length; i++) {
                 if (i === 0) ctx.moveTo(vapPts[i].x, vapPts[i].y);
                 else ctx.lineTo(vapPts[i].x, vapPts[i].y);
             }
             ctx.stroke();
+            ctx.shadowBlur = 0;
 
             // Supercritical Boundary Dashed Lines
             ctx.setLineDash([4, 4]);
-            ctx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.75)';
+            ctx.lineWidth = 1.6;
             ctx.beginPath();
             ctx.moveTo(scX, padTop);
             ctx.lineTo(scX, scY);
@@ -1222,60 +1378,60 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // 7. Standard 1 atm Isobar Labeling
-            const y1atm = mapY(0);
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 9px monospace';
-            ctx.textAlign = 'right';
-            ctx.fillText('1.0 atm (Earth STP)', padRight - 6, y1atm - 5);
+            // H. Landmarks (Triple Point & Critical Point)
+            const drawPill = (lx, ly, txt, color, isRight) => {
+                ctx.save();
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(lx, ly, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
 
-            // 8. Thermodynamic Landmarks (Triple Point & Critical Point)
-            // Triple Point Landmark
+                ctx.font = 'bold 9.5px IBM Plex Mono, monospace';
+                const tw = ctx.measureText(txt).width;
+                const pw = tw + 12;
+                const ph = 18;
+                let px = isRight ? (lx + 8) : (lx - pw - 8);
+                if (px < padLeft + 4) px = padLeft + 6;
+                if (px + pw > padRight - 4) px = padRight - pw - 6;
+
+                let py = ly - ph / 2;
+                if (py < padTop + 4) py = padTop + 4;
+                if (py + ph > padTop + plotH - 4) py = padTop + plotH - ph - 4;
+
+                ctx.fillStyle = 'rgba(10, 18, 34, 0.92)';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.roundRect(px, py, pw, ph, 4);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = color;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(txt, px + pw / 2, py + ph / 2);
+                ctx.restore();
+            };
+
             const tpX = mapX(Tt);
             const tpY = mapY(logPt);
-            ctx.fillStyle = '#38bdf8';
-            ctx.shadowColor = '#00d4ff';
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.moveTo(tpX, tpY - 5);
-            ctx.lineTo(tpX + 5, tpY);
-            ctx.lineTo(tpX, tpY + 5);
-            ctx.lineTo(tpX - 5, tpY);
-            ctx.closePath();
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            drawPill(tpX, tpY, '▲ Triple Pt (' + thermo.Tt.toFixed(0) + 'K)', '#34d399', true);
 
-            ctx.fillStyle = '#bae6fd';
-            ctx.font = 'bold 9px monospace';
-            ctx.textAlign = (tpX > padRight - 80) ? 'right' : 'left';
-            ctx.fillText(`◆ Triple Pt (${Tt.toFixed(0)}K)`, (tpX > padRight - 80) ? tpX - 8 : tpX + 8, tpY - 2);
+            drawPill(scX, scY, '★ Critical Pt (' + thermo.Tc.toFixed(0) + 'K)', '#fbbf24', false);
 
-            // Critical Point Landmark
-            const cpX = mapX(Tc);
-            const cpY = mapY(logPc);
-            ctx.fillStyle = '#f59e0b';
-            ctx.shadowColor = '#fbbf24';
-            ctx.shadowBlur = 12;
-            ctx.beginPath();
-            ctx.arc(cpX, cpY, 4.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            ctx.fillStyle = '#fde68a';
-            ctx.font = 'bold 9px monospace';
-            ctx.textAlign = (cpX > padRight - 90) ? 'right' : 'left';
-            ctx.fillText(`★ Critical Pt (${Tc.toFixed(0)}K)`, (cpX > padRight - 90) ? cpX - 8 : cpX + 8, cpY - 6);
-
-            // 9. Active State Pulsing Crosshairs & Marker
+            // I. Active Crosshair & Cursor
             const curT = Math.max(0, Math.min(maxT, this.temperatureK));
             const curLogP = Math.max(minLogP, Math.min(maxLogP, Math.log10(Math.max(1e-12, this.pressureAtm))));
             const curX = mapX(curT);
             const curY = mapY(curLogP);
 
-            // Crosshair projections
-            ctx.setLineDash([3, 3]);
-            ctx.strokeStyle = phase.color || '#00d4ff';
-            ctx.lineWidth = 1;
+            // Cyan Dashed Crosshairs
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(padLeft, curY);
             ctx.lineTo(curX, curY);
@@ -1283,106 +1439,113 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Pulsing target beacon
-            const pulse = (performance.now() % 1400) / 1400;
-            ctx.strokeStyle = phase.color || '#00d4ff';
-            ctx.lineWidth = 1.5;
-            ctx.globalAlpha = 1.0 - pulse;
+            // Glowing Cursor Dot
+            ctx.fillStyle = '#00e5ff';
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 12;
             ctx.beginPath();
-            ctx.arc(curX, curY, 6 + pulse * 14, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
-
-            ctx.fillStyle = phase.color || '#00d4ff';
-            ctx.shadowColor = phase.color || '#00d4ff';
-            ctx.shadowBlur = 14;
-            ctx.beginPath();
-            ctx.arc(curX, curY, 5.5, 0, Math.PI * 2);
+            ctx.arc(curX, curY, 6, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            ctx.restore(); // restore clip
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(curX, curY, 2.5, 0, Math.PI * 2);
+            ctx.fill();
 
-            // 10. Axis Numbers & Units (outside clip area)
-            // Y-Axis Labels
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = 'bold 9px monospace';
+            // Tooltip Pill above cursor (e.g., "1800K • 50.00 atm")
+            const tipText = Math.round(this.temperatureK) + 'K • ' + pText;
+            ctx.font = 'bold 10px IBM Plex Mono, monospace';
+            const tipW = ctx.measureText(tipText).width + 16;
+            const tipH = 20;
+            let tipX = curX - tipW / 2;
+            if (tipX < padLeft + 6) tipX = padLeft + 6;
+            if (tipX + tipW > padRight - 6) tipX = padRight - tipW - 6;
+            const tipY = (curY - 26 < padTop + 4) ? (curY + 12) : (curY - 26);
+
+            ctx.fillStyle = 'rgba(8, 14, 28, 0.94)';
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.roundRect(tipX, tipY, tipW, tipH, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(tipText, tipX + tipW / 2, tipY + tipH / 2);
+
+            ctx.restore(); // end plot clip
+
+            // --- 4. Y-Axis Ticks & Labels (Outside Plot on Left) ---
+            const yLabels = [
+                { lp: 6, txt: '1 Mbar' },
+                { lp: 3, txt: '1 kbar' },
+                { lp: 0, txt: '1 atm' },
+                { lp: -3, txt: '1 mbar' },
+                { lp: -6, txt: '1 μbar' }
+            ];
+
+            ctx.font = 'bold 10px IBM Plex Mono, monospace';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            const pLabels = [
-                { lp: 6, txt: '10⁶ (1 Mbar)' },
-                { lp: 3, txt: '10³ (1 kbar)' },
-                { lp: 0, txt: '10⁰ (1 atm)' },
-                { lp: -3, txt: '10⁻³ (1 mbar)' },
-                { lp: -6, txt: '10⁻⁶ (μbar)' }
-            ];
-            for (const item of pLabels) {
+
+            for (const item of yLabels) {
                 const y = mapY(item.lp);
-                ctx.fillText(item.txt, padLeft - 6, y);
+                if (item.lp === 0) {
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.fillText(item.txt, padLeft - 8, y);
+                } else {
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fillText(item.txt, padLeft - 8, y);
+                }
+
+                // Tick mark line
+                ctx.strokeStyle = (item.lp === 0) ? '#fbbf24' : 'rgba(255, 255, 255, 0.25)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(padLeft - 5, y);
+                ctx.lineTo(padLeft, y);
+                ctx.stroke();
             }
 
-            // Y-Axis Title (Vertical)
+            // Rotated Y-Axis Label
             ctx.save();
-            ctx.translate(startX + 14, padTop + plotH / 2);
+            ctx.translate(startX + 16, padTop + plotH / 2);
             ctx.rotate(-Math.PI / 2);
-            ctx.fillStyle = '#38bdf8';
-            ctx.font = 'bold 10px var(--font-ui), sans-serif';
+            ctx.fillStyle = '#00d4ff';
+            ctx.font = 'bold 11px DM Sans, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('PRESSURE P [atm]', 0, 0);
+            ctx.textBaseline = 'middle';
+            ctx.fillText('PRESSURE [atm]', 0, 0);
             ctx.restore();
 
-            // X-Axis Labels
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = 'bold 9px monospace';
+            // --- 5. X-Axis Ticks & Labels (Outside Plot at Bottom) ---
+            ctx.font = 'bold 9.5px IBM Plex Mono, monospace';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
-            for (let t = tStep; t <= maxT; t += tStep) {
+
+            for (let step = 0; step <= 5; step++) {
+                const t = step * tGridStep;
                 const x = mapX(t);
-                ctx.fillText(`${t}K`, x, padTop + plotH + 5);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText(Math.round(t) + 'K', x, padTop + plotH + 5);
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, padTop + plotH);
+                ctx.lineTo(x, padTop + plotH + 4);
+                ctx.stroke();
             }
 
             // X-Axis Title
-            ctx.fillStyle = '#38bdf8';
-            ctx.font = 'bold 10px var(--font-ui), sans-serif';
+            ctx.fillStyle = '#00d4ff';
+            ctx.font = 'bold 11px DM Sans, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('TEMPERATURE T [Kelvin]', padLeft + plotW / 2, padTop + plotH + 18);
-
-            // 11. Top Telemetry Header Badge
-            const headerY = 48;
-            ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
-
-            // Element Name & Symbol
-            ctx.fillStyle = '#f8fafc';
-            ctx.font = 'bold 12px var(--font-ui), sans-serif';
-            ctx.fillText(`📊 ${elData.name} (${elData.symbol}) · P–T PHASE DIAGRAM`, padLeft, headerY - 38);
-
-            // Current state pill in top right of diagram card
-            const pVal = this.pressureAtm;
-            const pText = pVal < 0.01 ? pVal.toExponential(2) : (pVal > 1e4 ? (pVal * 1.01325e-4).toFixed(1) + ' GPa' : pVal.toFixed(2) + ' atm');
-            const telemetryText = `${phase.badge || phase.state} | ${this.temperatureK.toFixed(1)} K (${(this.temperatureK - 273.15).toFixed(1)}°C) | ${pText}`;
-
-            ctx.font = 'bold 10px monospace';
-            const teleW = ctx.measureText(telemetryText).width + 16;
-            const teleX = padRight - teleW;
-
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-            ctx.beginPath();
-            ctx.roundRect(teleX, headerY - 42, teleW, 20, 4);
-            ctx.fill();
-            ctx.strokeStyle = phase.color || '#00d4ff';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.fillStyle = phase.color || '#38bdf8';
-            ctx.fillText(telemetryText, teleX + 8, headerY - 37);
-
-            // 12. Interactive Touch Hint at Bottom Right
-            ctx.fillStyle = '#64748b';
-            ctx.font = '9px var(--font-ui), sans-serif';
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText('👆 Tap or drag on diagram to set (T, P)', padRight, h - 46);
+            ctx.fillText('TEMPERATURE [K]', padLeft + plotW / 2, padTop + plotH + 20);
         }
     }
 

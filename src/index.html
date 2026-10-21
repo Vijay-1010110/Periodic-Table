@@ -1245,6 +1245,19 @@
                     </button>
                 </div>
 
+                <!-- View Switcher Modes for States of Matter -->
+                <div class="env-header-modes" id="env-header-modes" style="display:none;">
+                    <button class="env-mode-btn" data-mode="split" onclick="window.envSimulationEngine.setViewMode('split')">
+                        <span>◫</span> Split View
+                    </button>
+                    <button class="env-mode-btn" data-mode="chamber" onclick="window.envSimulationEngine.setViewMode('chamber')">
+                        <span>⚛</span> Atom Chamber
+                    </button>
+                    <button class="env-mode-btn active" data-mode="diagram" onclick="window.envSimulationEngine.setViewMode('diagram')">
+                        <span>📈</span> Phase Diagram
+                    </button>
+                </div>
+
                 <!-- Clean Top Action Strip -->
                 <div class="sim-top-actions">
                     <button id="sim-btn-playpause" class="sim-ctrl-btn" onclick="toggleSimPlayback()" title="Play / Pause Simulation">⏸️</button>
@@ -1255,26 +1268,152 @@
             </div>
 
             <div class="sim-workspace">
-                <div class="sim-viewport-stage">
+                <!-- Shared stage for general particle sims (fission, decay, molecules) -->
+                <div class="sim-viewport-stage" id="sim-general-stage">
                     <!-- Dynamic 1-Line Status Narrator Pill -->
                     <div class="sim-narrator-pill" id="sim-narrator-pill">
                         <span class="narrator-icon">💡</span>
                         <span class="narrator-msg" id="sim-narrator-msg">🎯 Aim neutron emitter &amp; tap "FIRE NEUTRON" (or tap nucleus) to start!</span>
                     </div>
 
-                    <!-- Canvases (Full-bleed 100% unobstructed) -->
                     <canvas id="chain-sim-canvas" class="sim-canvas"></canvas>
                     <canvas id="decay-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
                     <canvas id="molecule-sim-canvas" class="sim-canvas" style="display:none;"></canvas>
-                    <canvas id="env-phase-canvas" class="sim-canvas" style="display:none;"></canvas>
 
-                    <!-- Bottom Floating Game Controller Deck -->
-                    <div class="sim-game-deck" id="sim-game-deck">
-                        <!-- Populated dynamically by renderGameDeck() -->
+                    <!-- Bottom Floating Game Controller Deck for general sims -->
+                    <div class="sim-game-deck" id="sim-game-deck"></div>
+                </div>
+
+                <!-- Dedicated Scientific Instrument Suite for States of Matter / P-T Phase Lab -->
+                <div class="env-states-suite" id="env-states-suite" style="display:none;">
+                    <div class="env-main-row">
+                        <div class="env-canvas-card">
+                            <canvas id="env-phase-canvas" class="env-canvas"></canvas>
+                        </div>
+                        <div class="env-sidebar-card" id="env-sidebar-card">
+                            <!-- 1. Header: Element Badge & Phase Pill -->
+                            <div class="env-card-header">
+                                <div class="env-elem-badge" id="env-active-elem-badge">
+                                    <span class="env-z" id="env-active-z">26</span>
+                                    <span class="env-sym" id="env-active-sym">Fe</span>
+                                    <span class="env-name" id="env-active-name">Iron</span>
+                                </div>
+                                <div class="env-phase-badge" id="env-active-phase-badge">
+                                    <span class="env-phase-dot" id="env-phase-dot"></span>
+                                    <span class="env-phase-text" id="env-phase-text">SOLID</span>
+                                </div>
+                            </div>
+
+                            <!-- 2. Dual Telemetry Gauge -->
+                            <div class="env-telemetry-grid">
+                                <div class="env-telemetry-box">
+                                    <div class="env-telemetry-label">
+                                        <span>TEMP (T)</span>
+                                        <span class="env-telemetry-icon">🌡️</span>
+                                    </div>
+                                    <div class="env-telemetry-val" id="env-temp-k">1800.0 K</div>
+                                    <div class="env-telemetry-sub" id="env-temp-c">1526.8 °C</div>
+                                </div>
+                                <div class="env-telemetry-box">
+                                    <div class="env-telemetry-label">
+                                        <span>PRESSURE (P)</span>
+                                        <span class="env-telemetry-icon">⚡</span>
+                                    </div>
+                                    <div class="env-telemetry-val" id="env-press-atm">50.00 atm</div>
+                                    <div class="env-telemetry-sub" id="env-press-si">5.07 MPa</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Thermal Control -->
+                            <div class="env-section">
+                                <div class="env-section-header">
+                                    <span>THERMAL CONTROL</span>
+                                    <span class="env-section-hint">Tap or Scrub</span>
+                                </div>
+                                <div class="env-btn-row">
+                                    <button class="env-ctrl-btn cool" onclick="window.envSimulationEngine.cool(200)">
+                                        <span>❄️</span> -200 K
+                                    </button>
+                                    <button class="env-ctrl-btn heat" onclick="window.envSimulationEngine.heat(200)">
+                                        <span>🔥</span> +200 K
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 4. Pressure Control (Log P) - No Piston! -->
+                            <div class="env-section">
+                                <div class="env-section-header">
+                                    <span>PRESSURE CONTROL (LOG P)</span>
+                                    <div class="env-press-steppers">
+                                        <button class="env-stepper-btn" onclick="window.envSimulationEngine.decompress(10)" title="Decompress (÷10 Pressure)">÷10</button>
+                                        <button class="env-stepper-btn" onclick="window.envSimulationEngine.compress(10)" title="Compress (×10 Pressure)">×10</button>
+                                    </div>
+                                </div>
+                                <div class="env-slider-wrap">
+                                    <input type="range" class="env-press-slider" id="env-press-slider" min="-6" max="6" step="0.05" value="1.70" oninput="window.envSimulationEngine.setLogPressure(parseFloat(this.value))">
+                                </div>
+                            </div>
+
+                            <!-- 5. Quick 1-Tap Target Phase Jump -->
+                            <div class="env-section">
+                                <div class="env-section-header">
+                                    <span>QUICK PHASE JUMP</span>
+                                    <span class="env-section-hint">1-TAP TARGET</span>
+                                </div>
+                                <div class="env-target-grid">
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.quickJumpPhase('solid')">
+                                        <span>🧊</span> Solid
+                                    </button>
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.quickJumpPhase('liquid')">
+                                        <span>💧</span> Liquid
+                                    </button>
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.quickJumpPhase('gas')">
+                                        <span>💨</span> Gas
+                                    </button>
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.quickJumpPhase('plasma')">
+                                        <span>⚛️</span> Super
+                                    </button>
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.quickJumpPhase('triple')">
+                                        <span>▲</span> Triple
+                                    </button>
+                                    <button class="env-target-btn" onclick="window.envSimulationEngine.setPreset('earth_stp')">
+                                        <span>🌍</span> STP
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Element Dock -->
+                    <div class="env-bottom-dock" id="env-bottom-dock">
+                        <div class="env-dock-left">
+                            <span class="env-dock-tag">● ELEMENT:</span>
+                            <button class="env-dock-chip" data-z="6" onclick="window.envSimulationEngine.setElement(6)">
+                                6 C Carbon
+                            </button>
+                            <button class="env-dock-chip active" data-z="26" onclick="window.envSimulationEngine.setElement(26)">
+                                26 Fe Iron
+                            </button>
+                            <button class="env-dock-chip" data-z="79" onclick="window.envSimulationEngine.setElement(79)">
+                                79 Au Gold
+                            </button>
+                            <button class="env-dock-chip" data-z="1" onclick="window.envSimulationEngine.setElement(1)">
+                                1 H Hydrogen
+                            </button>
+                            <button class="env-dock-chip" data-z="8" onclick="window.envSimulationEngine.setElement(8)">
+                                8 O Oxygen
+                            </button>
+                            <button class="env-dock-chip" data-z="29" onclick="window.envSimulationEngine.setElement(29)">
+                                29 Cu Copper
+                            </button>
+                        </div>
+                        <div class="env-dock-right">
+                            <span class="env-dock-info" id="env-dock-info">1 atm Melt: 1811 K</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+            </section>
 
     </main>
 

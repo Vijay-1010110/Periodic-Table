@@ -473,19 +473,37 @@
             }
         });
 
-        // Switch Visible Canvases
+        // Toggle General Simulation Stage vs Dedicated States Instrument Suite
+        const generalStage = document.getElementById('sim-general-stage');
+        const statesSuite = document.getElementById('env-states-suite');
+        const envHeaderModes = document.getElementById('env-header-modes');
+
+        if (tabName === 'environment') {
+            if (generalStage) generalStage.style.display = 'none';
+            if (statesSuite) statesSuite.style.display = 'flex';
+            if (envHeaderModes) envHeaderModes.style.display = 'flex';
+        } else {
+            if (generalStage) generalStage.style.display = 'flex';
+            if (statesSuite) statesSuite.style.display = 'none';
+            if (envHeaderModes) envHeaderModes.style.display = 'none';
+        }
+
+        // Switch Visible Canvases inside general stage
         const canvases = {
             'chain_reaction': document.getElementById('chain-sim-canvas'),
             'decay': document.getElementById('decay-sim-canvas'),
-            'molecule': document.getElementById('molecule-sim-canvas'),
-            'environment': document.getElementById('env-phase-canvas')
+            'molecule': document.getElementById('molecule-sim-canvas')
         };
 
         for (const [key, c] of Object.entries(canvases)) {
             if (c) c.style.display = (key === tabName) ? 'block' : 'none';
         }
 
-        // Update dynamic status narrator pill for the active tab
+        // Update dynamic status narrator pill for the active tab (general sims only)
+        const narratorPill = document.getElementById('sim-narrator-pill') || document.querySelector('.sim-narrator-pill');
+        if (narratorPill) {
+            narratorPill.style.display = (tabName === 'environment') ? 'none' : 'flex';
+        }
         const msgEl = document.getElementById('sim-narrator-msg');
         if (msgEl) {
             if (tabName === 'chain_reaction') {
@@ -499,12 +517,16 @@
                 msgEl.textContent = '☢️ Quantum tunneling triggers spontaneous transmutation! Tap TRANSMUTE or tap nucleus.';
             } else if (tabName === 'molecule') {
                 msgEl.textContent = '🧬 Touch & drag atoms to stretch harmonic bonds; tap THERMAL JOLT to stimulate vibrations.';
-            } else if (tabName === 'environment') {
-                msgEl.textContent = '🌡️ Drag hydraulic piston down/up to compress/decompress; tap +200K / -200K to heat/cool!';
             }
         }
 
-        renderGameDeck(tabName);
+        if (tabName === 'environment') {
+            if (window.envSimulationEngine) {
+                window.envSimulationEngine.notify();
+            }
+        } else {
+            renderGameDeck(tabName);
+        }
     }
 
     function toggleSimPlayback() {
@@ -745,6 +767,12 @@
         } else if (tabName === 'environment') {
             const engine = window.envSimulationEngine;
             const activeZ = engine ? engine.activeElementId : 6;
+            const isDiagram = engine && engine.viewMode === 'diagram';
+            if (isDiagram) {
+                deck.classList.add('compact-diagram-deck');
+            } else {
+                deck.classList.remove('compact-diagram-deck');
+            }
 
             deck.innerHTML = `
                 <div class="sim-deck-left">
@@ -951,21 +979,7 @@
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // View mode HUD switcher pills at top left (generous thumb zone)
-                if (y <= 50 && window.envSimulationEngine) {
-                    if (x >= 10 && x <= 125) {
-                        window.envSimulationEngine.setViewMode('split');
-                        return;
-                    } else if (x > 125 && x <= 255) {
-                        window.envSimulationEngine.setViewMode('chamber');
-                        return;
-                    } else if (x > 255 && x <= 385) {
-                        window.envSimulationEngine.setViewMode('diagram');
-                        return;
-                    }
-                }
-
-                // 2. Check if user tapped inside the P-T Phase Diagram
+                // Check if user tapped inside the P-T Phase Diagram
                 if (window.envSimulationEngine && (window.envSimulationEngine.viewMode === 'split' || window.envSimulationEngine.viewMode === 'diagram')) {
                     if (window.envSimulationEngine.handleDiagramPointer(x, y)) {
                         window.envSimulationEngine.isDraggingDiagram = true;
@@ -974,8 +988,8 @@
                     }
                 }
 
-                // 3. Hydraulic Piston direct touch/drag
-                if (window.envSimulationEngine) {
+                // Piston drag in chamber or split view
+                if (window.envSimulationEngine && (window.envSimulationEngine.viewMode === 'chamber' || window.envSimulationEngine.viewMode === 'split')) {
                     if (window.envSimulationEngine.startPistonDrag(x, y)) {
                         try { envCanvas.setPointerCapture(e.pointerId); } catch (_) {}
                     }
@@ -1009,6 +1023,7 @@
                     }
                 }
             };
+
             envCanvas.addEventListener('pointerup', stopPiston);
             envCanvas.addEventListener('pointercancel', stopPiston);
         }
