@@ -31,6 +31,56 @@ const CPK_COLORS = {
 const compoundsData = 
 [
     {
+        "id": "water",
+        "name": "Water",
+        "formula": "H2O",
+        "iupacName": "Oxidane",
+        "type": "Inorganic",
+        "state": "Liquid",
+        "molarMass": 18.015,
+        "density": "1.00 g/cm³",
+        "meltingPoint": "0 °C",
+        "boilingPoint": "100 °C",
+        "description": "Essential chemical compound for all known forms of life. Highly polar molecule capable of forming hydrogen bonds.",
+        "elements": [
+            {
+                "atomicNumber": 1,
+                "symbol": "H",
+                "count": 2,
+                "massPercent": 11.19
+            },
+            {
+                "atomicNumber": 8,
+                "symbol": "O",
+                "count": 1,
+                "massPercent": 88.81
+            }
+        ],
+        "atoms": [
+            {
+                "elem": 8,
+                "symbol": "O",
+                "x": 0,
+                "y": -0.15,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": -0.76,
+                "y": 0.45,
+                "z": 0
+            },
+            {
+                "elem": 1,
+                "symbol": "H",
+                "x": 0.76,
+                "y": 0.45,
+                "z": 0
+            }
+        ]
+    },
+    {
         "id": "hydrochloricacid",
         "name": "Hydrochloric Acid",
         "formula": "HCl",

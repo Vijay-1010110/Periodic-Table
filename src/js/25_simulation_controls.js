@@ -513,7 +513,7 @@
             } else if (tabName === 'decay') {
                 msgEl.textContent = '☢️ Quantum tunneling triggers spontaneous transmutation! Tap TRANSMUTE or tap nucleus.';
             } else if (tabName === 'molecule') {
-                msgEl.textContent = '🧬 Touch & drag atoms to stretch harmonic bonds; tap THERMAL JOLT to stimulate vibrations.';
+                msgEl.textContent = '🧬 Drag atoms to strain & snap bonds; heat above 2500K for thermal cleavage; observe hydrogen bonding & reactions!';
             }
         }
 
@@ -732,31 +732,74 @@
             const engine = window.molecularDynamicsEngine;
             const curKey = engine ? engine.currentKey : 'H2O';
             const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
+            const press = (engine && typeof engine.pressureAtm === 'number') ? engine.pressureAtm : 1.0;
+
+            const popularChips = [
+                { id: 'H2O', label: '💧 H₂O' },
+                { id: 'CLUSTER_H2O', label: '❄️ 6× H₂O' },
+                { id: 'CO2', label: '🫧 CO₂' },
+                { id: 'CH4', label: '🔥 CH₄' },
+                { id: 'MIX_COMBUSTION', label: '💥 Combustion' },
+                { id: 'MIX_H2_O2', label: '⚡ 2H₂+O₂' },
+                { id: 'NaCl', label: '🧂 NaCl' },
+                { id: 'LATTICE_NACL', label: '🧊 NaCl Lattice' },
+                { id: 'HCl', label: '⚗️ HCl' },
+                { id: 'NaOH', label: '🧼 NaOH' },
+                { id: 'C6H6', label: '⬡ Benzene' },
+                { id: 'C2H5OH', label: '🍷 Ethanol' }
+            ];
+
+            const chipsHtml = popularChips.map(c => `
+                <button class="sim-deck-chip ${curKey === c.id ? 'active' : ''}" onclick="window.selectMoleculePreset('${c.id}')">
+                    ${c.label}
+                </button>
+            `).join('');
+
+            const presets = window.MOLECULE_PRESETS || {};
+            const categories = {};
+            for (const [key, p] of Object.entries(presets)) {
+                const cat = p.category || 'General';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push({ key, name: p.name });
+            }
+
+            let selectHtml = `<select class="sim-deck-select" onchange="window.selectMoleculePreset(this.value)" title="All 30+ Molecules & Clusters">`;
+            for (const [catName, list] of Object.entries(categories)) {
+                selectHtml += `<optgroup label="${catName}">`;
+                for (const item of list) {
+                    selectHtml += `<option value="${item.key}" ${curKey === item.key ? 'selected' : ''}>${item.name}</option>`;
+                }
+                selectHtml += `</optgroup>`;
+            }
+            selectHtml += `</select>`;
 
             deck.innerHTML = `
                 <div class="sim-deck-left">
-                    <button class="sim-deck-chip ${curKey === 'H2O' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('H2O')">
-                        💧 H₂O Water
-                    </button>
-                    <button class="sim-deck-chip ${curKey === 'CO2' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('CO2')">
-                        🫧 CO₂ Carbon
-                    </button>
-                    <button class="sim-deck-chip ${curKey === 'CH4' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('CH4')">
-                        🔥 CH₄ Methane
-                    </button>
-                    <button class="sim-deck-chip ${curKey === 'C6H6' ? 'active' : ''}" onclick="window.molecularDynamicsEngine.loadPreset('C6H6')">
-                        ⬡ Benzene
-                    </button>
+                    ${selectHtml}
+                    ${chipsHtml}
                 </div>
                 <div class="sim-deck-right">
                     <div class="sim-deck-slider-group">
                         <span class="sim-deck-slider-label">Temp: <b id="deck-temp-val">${temp.toFixed(0)} K</b></span>
-                        <input type="range" class="sim-deck-slider" min="10" max="1000" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; window.molecularDynamicsEngine.setTemperature(this.value);">
+                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(this.value); }">
                     </div>
-                    <button class="sim-deck-hero-btn warn" onclick="window.molecularDynamicsEngine.applyImpulse(0, 0, -320)">
+                    <div class="sim-deck-slider-group">
+                        <span class="sim-deck-slider-label">P: <b id="deck-press-val">${press.toFixed(1)} atm</b></span>
+                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(this.value); }">
+                    </div>
+                    <button class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
                         <span>💥</span> JOLT
                     </button>
-                    <button class="sim-deck-tool-btn" onclick="window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey)" title="Reset Rest Shape">
+                    <select class="sim-deck-select" onchange="if(this.value && window.molecularDynamicsEngine){ window.molecularDynamicsEngine.injectAtom(this.value); this.value=''; }" title="Inject Reactive Atom / Radical">
+                        <option value="">➕ Inject...</option>
+                        <option value="H">+ H (Hydrogen)</option>
+                        <option value="O">+ O (Oxygen)</option>
+                        <option value="C">+ C (Carbon)</option>
+                        <option value="N">+ N (Nitrogen)</option>
+                        <option value="Cl">+ Cl (Chlorine)</option>
+                        <option value="Na">+ Na (Sodium)</option>
+                    </select>
+                    <button class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
                         <span>🔄</span> Reset
                     </button>
                 </div>
@@ -872,19 +915,27 @@
             `;
         } else if (tab === 'molecule') {
             if (iconEl) iconEl.textContent = '🧬';
-            if (headEl) headEl.textContent = 'Molecular Dynamics & Bond Physics';
+            if (headEl) headEl.textContent = 'Molecular Dynamics & Chemical Reaction Engine';
             bodyEl.innerHTML = `
                 <div class="sim-guide-card">
-                    <h4>🌊 1. Harmonic Chemical Bonds</h4>
-                    <p>Covalent bonds between atoms behave like quantum mechanical springs. Atoms constantly vibrate around their equilibrium bond lengths and bond angles.</p>
+                    <h4>🌊 1. Anharmonic Morse Potentials & Yield Rupture</h4>
+                    <p>Chemical bonds follow Morse potential curves <strong>V(r) = De(1 - e^-a(r-re))²</strong>. If you stretch a bond with your finger or collide atoms violently past yield strain (>80%), the bond snaps into reactive free radicals!</p>
                 </div>
                 <div class="sim-guide-card">
-                    <h4>🔥 2. Thermal Kinetic Motion (E ~ kBT)</h4>
-                    <p>Temperature is simply the average kinetic energy of molecular vibration and rotation. Higher temperatures cause atoms to jiggle faster and with larger amplitudes.</p>
+                    <h4>🔥 2. Thermal Dissociation (Pyrolysis at T > 2500 K)</h4>
+                    <p>Why didn't water break before? Real water requires high thermal kinetic energy to overcome O-H bond dissociation energy (460 kJ/mol). Raising temperature to 3000 K - 5000 K causes thermal agitation to rip bonds apart into H• and OH• radicals!</p>
                 </div>
                 <div class="sim-guide-card">
-                    <h4>👆 3. Interactive Touch Strain</h4>
-                    <p>Drag any atom with your finger to stretch or bend its bonds. When you let go, watch the restoring forces oscillate the molecule back to its lowest energy geometry!</p>
+                    <h4>✨ 3. Radical Recombination & Reaction Synthesis</h4>
+                    <p>Free radicals or open-valence atoms that collide under favorable kinetics dynamically form new chemical bonds! Experiment with explosive mixes like <strong>2H₂ + O₂ → 2H₂O</strong> or <strong>CH₄ + 2O₂ → CO₂ + 2H₂O</strong>.</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>❄️ 4. Intermolecular Hydrogen Bonds & Ionic Lattices</h4>
+                    <p>Partial polar charges (δ⁺/δ⁻) generate pulsing cyan hydrogen bonds in water clusters (locking into rigid ice at &lt;273 K and flowing as liquid up to 373 K). Alternating Na⁺ and Cl⁻ ions naturally self-assemble into cubic rock-salt crystal grids!</p>
+                </div>
+                <div class="sim-guide-card">
+                    <h4>🌍 5. Pressure & Volume Compression</h4>
+                    <p>Adjusting pressure physically moves the chamber boundary walls inward, dramatically increasing collision density and accelerating chemical recombination (Le Chatelier's principle).</p>
                 </div>
             `;
         } else if (tab === 'environment') {
