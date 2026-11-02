@@ -1044,6 +1044,9 @@ function openElementOrIsotopeByQuery(query, isIsotopeModal = false) {
 function setupUI() {
     if (window.PeriodicaNativeSlider || window.NativeSliderBridge) {
         document.body.classList.add('has-native-slider');
+        if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.resize === 'function') {
+            window.PeriodicCanvasGrid.resize();
+        }
     }
     syncNativeSliderVisibility();
 
@@ -3029,7 +3032,7 @@ function renderLegend() {
         </div>
         
         <div class="legend-box state-box">
-            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State at Current Temp ℹ️</div>
+            <div class="legend-box-title" onclick="openCardAnatomyModal()" title="Click to view Element Box Guide">State of Matter ℹ️</div>
             <div class="legend-box-content">
                 <div class="legend-group legend-group-states">
                     <div class="legend-group-items">
@@ -4457,6 +4460,9 @@ function syncNativeSliderVisibility() {
     if (bridge) {
         if (typeof document !== 'undefined' && document.body) {
             document.body.classList.add('has-native-slider');
+            if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.resize === 'function') {
+                window.PeriodicCanvasGrid.resize();
+            }
         }
         const mobileLeftNav = document.getElementById('mobile-left-nav');
         const isExpanded = !!(mobileLeftNav && mobileLeftNav.classList.contains('expanded'));

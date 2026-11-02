@@ -34,6 +34,10 @@ window.PeriodicCanvasGrid = (function() {
     let groupHeaderH = 20;
     let periodMarginLeft = 22;
     let hoveredZ = null;
+    let voidX = 0;
+    let voidY = 0;
+    let voidW = 0;
+    let voidH = 0;
 
     // Dual Fit Mode ('whole' or 'horizontal')
     let currentFitMode = 'whole';
@@ -305,26 +309,31 @@ window.PeriodicCanvasGrid = (function() {
                 flex-direction: column !important;
                 justify-content: flex-start !important;
             }
-            .in-grid-legend .category-box { flex: 3 !important; min-width: 0 !important; }
+            .in-grid-legend .category-box { flex: 2.35 !important; min-width: 0 !important; }
             .in-grid-legend .state-box { flex: 1 !important; min-width: 0 !important; }
             .in-grid-legend .legend-box-title {
-                font-size: 0.44rem !important;
+                font-size: 0.40rem !important;
                 font-weight: 800 !important;
                 margin-bottom: 2px !important;
                 text-align: center !important;
                 color: #00d4ff !important;
-                letter-spacing: 0.5px !important;
+                letter-spacing: 0.4px !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
             .in-grid-legend .legend-group-title {
-                font-size: 0.40rem !important;
+                font-size: 0.38rem !important;
                 font-weight: 700 !important;
                 margin-bottom: 2px !important;
                 text-align: center !important;
                 color: rgba(255, 255, 255, 0.85) !important;
                 text-transform: uppercase !important;
                 white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                letter-spacing: 0.3px !important;
                 cursor: pointer !important;
                 transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease !important;
             }
@@ -385,13 +394,30 @@ window.PeriodicCanvasGrid = (function() {
                 filter: brightness(0.65) !important;
             }
             
+            .in-grid-legend .category-box .legend-box-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+                gap: 2px !important;
+            }
             .in-grid-legend .legend-col-metals {
+                flex: 4.8 !important;
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
                 border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
+                padding-right: 3px !important;
+                margin-right: 2px !important;
             }
             .in-grid-legend .legend-col-metalloids {
+                flex: 1.35 !important;
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
                 border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-                padding-right: 4px !important;
+                padding-right: 3px !important;
+                margin-right: 2px !important;
             }
             .in-grid-legend .metals-layout-grid {
                 display: flex !important;
@@ -439,10 +465,11 @@ window.PeriodicCanvasGrid = (function() {
                 min-height: 0 !important;
             }
             .in-grid-legend .legend-col-nonmetals {
-                flex: 2 !important;
+                flex: 2.35 !important;
                 min-width: 0 !important;
                 display: flex !important;
                 flex-direction: column !important;
+                padding-left: 1px !important;
                 gap: 1.5px !important;
             }
             .in-grid-legend .nonmetals-items {
@@ -543,8 +570,32 @@ window.PeriodicCanvasGrid = (function() {
         // Setup touch gestures & pointer click handling
         setupTouchGestures();
         window.addEventListener('resize', handleResize, { passive: true });
+        window.addEventListener('orientationchange', () => {
+            setTimeout(handleResize, 100);
+            setTimeout(handleResize, 300);
+        }, { passive: true });
+
+        if (window.ResizeObserver && container) {
+            try {
+                let roTimer = null;
+                const ro = new ResizeObserver(() => {
+                    if (roTimer) return;
+                    roTimer = requestAnimationFrame(() => {
+                        roTimer = null;
+                        handleResize();
+                    });
+                });
+                ro.observe(container);
+            } catch (e) {
+                console.warn('ResizeObserver error:', e);
+            }
+        }
 
         handleResize();
+        setTimeout(handleResize, 50);
+        setTimeout(handleResize, 150);
+        setTimeout(handleResize, 350);
+        setTimeout(handleResize, 750);
         isInitialized = true;
         render();
     }
@@ -846,7 +897,7 @@ window.PeriodicCanvasGrid = (function() {
         // Explicit table margins so table doesn't touch screen edges (guarantees zero bottom clipping)
         const marginX = 6;
         const marginTop = 2;
-        const marginBottom = 8;
+        const marginBottom = 4;
         const tableAvailW = Math.max(100, width - 2 * marginX - periodMarginLeft);
         const tableAvailH = Math.max(100, height - topBarH - marginTop - marginBottom - groupHeaderH);
         
@@ -892,12 +943,12 @@ window.PeriodicCanvasGrid = (function() {
             : (topBarH + marginTop + groupHeaderH);
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
-        const legendMarginX = Math.min(14, cellW * 0.3);
-        const legendMarginY = Math.min(8, cellH * 0.2);
-        const voidX = Math.round(offsetX + 2 * (cellW + gap) + legendMarginX);
-        const voidY = Math.round(offsetY + legendMarginY);
-        const voidW = Math.round(10 * cellW + 9 * gap - 2 * legendMarginX);
-        const voidH = Math.round(3 * cellH + 2 * gap - 2 * legendMarginY);
+        const legendMarginX = Math.min(8, Math.round(cellW * 0.15));
+        const legendMarginY = Math.min(4, Math.round(cellH * 0.10));
+        voidX = Math.round(offsetX + 2 * (cellW + gap) + legendMarginX);
+        voidY = Math.round(offsetY + legendMarginY);
+        voidW = Math.round(10 * cellW + 9 * gap - 2 * legendMarginX);
+        voidH = Math.round(3 * cellH + 2 * gap - 2 * legendMarginY);
 
         const legends = document.querySelectorAll('#in-grid-legend');
         legends.forEach(leg => {
@@ -907,13 +958,24 @@ window.PeriodicCanvasGrid = (function() {
             leg.style.setProperty('height', `${voidH}px`, 'important');
             leg.style.setProperty('max-width', `${voidW}px`, 'important');
             leg.style.setProperty('max-height', `${voidH}px`, 'important');
+            if (zoomScale !== 1.0 || panX !== 0 || panY !== 0) {
+                const originX = width / 2 - voidX;
+                const originY = height / 2 - voidY;
+                leg.style.setProperty('transform-origin', `${originX}px ${originY}px`, 'important');
+                leg.style.setProperty('transform', `translate3d(${panX}px, ${panY}px, 0px) scale(${zoomScale})`, 'important');
+            } else {
+                leg.style.setProperty('transform', 'none', 'important');
+            }
         });
     }
 
-    function handleResize() {
+    function handleResize(force = false) {
         if (!container || !canvas) return;
         const rect = container.getBoundingClientRect();
         if (rect.width <= 0 || rect.height <= 0) return;
+        if (!force && Math.abs(width - rect.width) < 1 && Math.abs(height - rect.height) < 1) {
+            return;
+        }
 
         width = rect.width;
         height = rect.height;
@@ -968,8 +1030,10 @@ window.PeriodicCanvasGrid = (function() {
         const legends = document.querySelectorAll('#in-grid-legend');
         legends.forEach(leg => {
             if (zoomScale !== 1.0 || panX !== 0 || panY !== 0) {
+                const originX = width / 2 - voidX;
+                const originY = height / 2 - voidY;
+                leg.style.setProperty('transform-origin', `${originX}px ${originY}px`, 'important');
                 leg.style.setProperty('transform', `translate3d(${panX}px, ${panY}px, 0px) scale(${zoomScale})`, 'important');
-                leg.style.setProperty('transform-origin', 'center center', 'important');
             } else {
                 leg.style.setProperty('transform', 'none', 'important');
             }
@@ -1453,8 +1517,10 @@ window.PeriodicCanvasGrid = (function() {
             splash.classList.add('fade-out');
             setTimeout(() => {
                 splash.style.display = 'none';
+                handleResize();
             }, 380);
         }
+        handleResize();
     }
     window.dismissSplashScreen = dismissSplashScreen;
 

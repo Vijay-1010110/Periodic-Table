@@ -667,7 +667,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .in-grid-legend .category-box {
-    flex: 3 !important;
+    flex: 2.35 !important;
     min-width: 0 !important;
 }
 
@@ -2002,13 +2002,16 @@ body.has-native-slider #temp-custom-slider {
         white-space: nowrap !important;
     }
     .in-grid-legend .legend-group-title {
-        font-size: 0.36rem !important;
+        font-size: 0.38rem !important;
         font-weight: 700 !important;
         color: #94a3b8 !important;
         text-transform: uppercase !important;
-        margin-bottom: 1px !important;
+        margin-bottom: 2px !important;
         cursor: pointer !important;
         white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        letter-spacing: 0.3px !important;
         text-align: center !important;
     }
     .in-grid-legend .legend-item {
@@ -2123,15 +2126,33 @@ body.has-native-slider #temp-custom-slider {
         width: 100% !important;
     }
 
+    .in-grid-legend .category-box .legend-box-content {
+        display: flex !important;
+        flex-direction: row !important;
+        flex: 1 !important;
+        min-height: 0 !important;
+        gap: 2px !important;
+    }
+    .in-grid-legend .legend-col-metals {
+        flex: 4.8 !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
+        padding-right: 3px !important;
+        margin-right: 2px !important;
+    }
+
     /* Column 2: Metalloids (10%) */
     .in-grid-legend .legend-col-metalloids {
-        flex: 1.2 !important;
+        flex: 1.35 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 1.5px !important;
         border-right: 1px solid rgba(0, 212, 255, 0.28) !important;
-        padding-right: 4px !important;
+        padding-right: 3px !important;
+        margin-right: 2px !important;
     }
     .in-grid-legend .metalloids-items {
         flex: 1 !important;
@@ -2142,10 +2163,11 @@ body.has-native-slider #temp-custom-slider {
 
     /* Column 3: Non-Metals (20%) */
     .in-grid-legend .legend-col-nonmetals {
-        flex: 2 !important;
+        flex: 2.35 !important;
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
+        padding-left: 1px !important;
         gap: 1.5px !important;
     }
     .in-grid-legend .nonmetals-items {
