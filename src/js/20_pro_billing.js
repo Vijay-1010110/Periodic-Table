@@ -1,6 +1,6 @@
 /**
 
- * Periodica 3D - Pro Billing, Gating & Engagement Engine (v4.4.0)
+ * Periodica 3D - Pro Billing, Gating & Engagement Engine (v4.5.0)
 
  * Handles:
 
