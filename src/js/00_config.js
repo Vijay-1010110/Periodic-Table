@@ -50,7 +50,7 @@ window.AppConfig = {
         enableAds: false, // 100% Ad-Free Experience
         enableSubscriptions: false,
         enableLocalNotifications: true,
-        enableHaptics: true,
+        enableHaptics: false, // Vibrations completely disabled
         enableShareSheet: true,
         enableSmartOrientation: true, // Locks narrow phones to landscape; unlocks foldables & tablets
         enableAppUpdates: false // In-App & Push update notifications

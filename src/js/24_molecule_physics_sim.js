@@ -997,9 +997,6 @@
                     if (window.physicsAudio) {
                         window.physicsAudio.playBondReleaseSnap();
                     }
-                    if (navigator.vibrate) {
-                        navigator.vibrate(20);
-                    }
                     continue;
                 }
 

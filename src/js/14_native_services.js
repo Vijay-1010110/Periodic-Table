@@ -14,42 +14,22 @@ window.NativeServices = (function() {
     let clickCounter = 0;
 
     /* ==========================================================================
-       1. HAPTIC FEEDBACK (Native Vibration)
+       1. HAPTIC FEEDBACK (Vibration Completely Disabled)
        ========================================================================== */
-    const Haptics = {
-        async impact(style = 'LIGHT') {
-            if (!config.features?.enableHaptics) return;
-            try {
-                if (window.Capacitor?.Plugins?.Haptics) {
-                    const HapticsPlugin = window.Capacitor.Plugins.Haptics;
-                    await HapticsPlugin.impact({ style: style });
-                } else if ('vibrate' in navigator) {
-                    navigator.vibrate(style === 'HEAVY' ? 35 : (style === 'MEDIUM' ? 20 : 10));
-                }
-            } catch (e) { /* ignore */ }
-        },
-
-        async selection() {
-            if (!config.features?.enableHaptics) return;
-            try {
-                if (window.Capacitor?.Plugins?.Haptics) {
-                    await window.Capacitor.Plugins.Haptics.selectionStart();
-                } else if ('vibrate' in navigator) {
-                    navigator.vibrate(8);
-                }
-            } catch (e) { /* ignore */ }
-        },
-
-        async notification(type = 'SUCCESS') {
-            if (!config.features?.enableHaptics) return;
-            try {
-                if (window.Capacitor?.Plugins?.Haptics) {
-                    await window.Capacitor.Plugins.Haptics.notification({ type: type });
-                } else if ('vibrate' in navigator) {
-                    navigator.vibrate(type === 'ERROR' ? [30, 40, 30] : [15, 30]);
-                }
-            } catch (e) { /* ignore */ }
+    // Override navigator.vibrate to ensure zero vibration across the entire application
+    try {
+        if (typeof navigator !== 'undefined') {
+            navigator.vibrate = function() { return false; };
         }
+    } catch (e) { /* ignore */ }
+
+    const Haptics = {
+        async impact() {},
+        async selection() {},
+        async notification() {},
+        async light() {},
+        async medium() {},
+        async heavy() {}
     };
 
     /* ==========================================================================
