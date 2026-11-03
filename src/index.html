@@ -1684,23 +1684,22 @@
 
 
 
-                    <!-- 3D Molecular Viewer -->
-
-                    <div class="molecule-3d-card">
-
+                                        <!-- Molecular 3D & Bohr Model Viewer -->
+                    <div class="molecule-3d-card" id="compound-viewer-card">
                         <div class="molecule-card-header">
-
-                            <span>3D Molecular Model</span>
-
-                            <span style="font-size: 0.75rem; opacity: 0.7;">Drag to rotate</span>
-
+                            <div class="comp-viewer-tabs">
+                                <button type="button" class="comp-viewer-tab-btn active" id="comp-tab-3d" onclick="switchCompoundViewer('3d')" title="View 3D Interactive Ball-and-Stick Molecule">
+                                    <span>🌐</span> 3D Molecule
+                                </button>
+                                <button type="button" class="comp-viewer-tab-btn" id="comp-tab-bohr" onclick="switchCompoundViewer('bohr')" title="View Atomic Bohr Model with Electron Shells & Bonds">
+                                    <span>⚛️</span> Bohr Model
+                                </button>
+                            </div>
+                            <span id="comp-viewer-hint" style="font-size: 0.74rem; opacity: 0.75; font-family: var(--font-mono); color: #38bdf8;">Drag to rotate</span>
                         </div>
-
                         <div id="molecule-canvas-container"></div>
-
+                        <div id="compound-bohr-container" class="compound-bohr-container" style="display: none;"></div>
                     </div>
-
-
 
                     <!-- Element Composition Section -->
 

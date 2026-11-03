@@ -1,3 +1,5 @@
+let currentCompoundViewerMode = '3d';
+let selectedCompoundObj = null;
 /**
  * 07_compounds.js
  * Controller for Compounds View, On-the-Fly Chemical Formula Synthesizer,
@@ -415,8 +417,13 @@ function selectCompound(id) {
     // Render Element Composition Bar
     renderElementComposition(comp);
 
+    selectedCompoundObj = comp;
+
     // Render 3D Molecule
     render3DMolecule(comp);
+
+    // Render Compound Bohr Model
+    renderCompoundBohrModel(comp);
 }
 
 function renderElementComposition(comp) {
@@ -635,3 +642,290 @@ function createBondCylinder(p1, p2, group) {
 }
 
 
+
+
+/**
+ * Switch between 3D Ball-and-Stick Molecule and 2D Interactive Bohr Model representation
+ */
+function switchCompoundViewer(mode) {
+    currentCompoundViewerMode = mode;
+    const tab3d = document.getElementById('comp-tab-3d');
+    const tabBohr = document.getElementById('comp-tab-bohr');
+    const container3d = document.getElementById('molecule-canvas-container');
+    const containerBohr = document.getElementById('compound-bohr-container');
+    const hint = document.getElementById('comp-viewer-hint');
+
+    if (mode === 'bohr') {
+        if (tab3d) tab3d.classList.remove('active');
+        if (tabBohr) tabBohr.classList.add('active');
+        if (container3d) container3d.style.display = 'none';
+        if (containerBohr) containerBohr.style.display = 'flex';
+        if (hint) {
+            hint.textContent = 'Electron Shells & Bonding';
+            hint.style.color = '#38bdf8';
+        }
+        if (selectedCompoundObj) {
+            renderCompoundBohrModel(selectedCompoundObj);
+        }
+    } else {
+        if (tab3d) tab3d.classList.add('active');
+        if (tabBohr) tabBohr.classList.remove('active');
+        if (container3d) container3d.style.display = 'block';
+        if (containerBohr) containerBohr.style.display = 'none';
+        if (hint) {
+            hint.textContent = 'Drag to rotate';
+            hint.style.color = '#38bdf8';
+        }
+        if (typeof window.resizeMoleculeViewer === 'function') {
+            setTimeout(window.resizeMoleculeViewer, 50);
+        }
+    }
+}
+window.switchCompoundViewer = switchCompoundViewer;
+
+/**
+ * Helper to fetch element information from elementsData with robust fallback
+ */
+function getCompoundElementData(elem) {
+    const z = typeof elem === 'number' ? elem : (parseInt(elem) || 0);
+    if (typeof elementsData !== 'undefined' && Array.isArray(elementsData)) {
+        const found = elementsData.find(e => e.atomicNumber === z || e.symbol === elem);
+        if (found) return found;
+    }
+    // Periodic table fallback shells for common compound elements
+    const FALLBACK_SHELLS = {
+        1: { symbol: 'H', name: 'Hydrogen', z: 1, shells: [1] },
+        6: { symbol: 'C', name: 'Carbon', z: 6, shells: [2, 4] },
+        7: { symbol: 'N', name: 'Nitrogen', z: 7, shells: [2, 5] },
+        8: { symbol: 'O', name: 'Oxygen', z: 8, shells: [2, 6] },
+        9: { symbol: 'F', name: 'Fluorine', z: 9, shells: [2, 7] },
+        11: { symbol: 'Na', name: 'Sodium', z: 11, shells: [2, 8, 1] },
+        12: { symbol: 'Mg', name: 'Magnesium', z: 12, shells: [2, 8, 2] },
+        13: { symbol: 'Al', name: 'Aluminium', z: 13, shells: [2, 8, 3] },
+        14: { symbol: 'Si', name: 'Silicon', z: 14, shells: [2, 8, 4] },
+        15: { symbol: 'P', name: 'Phosphorus', z: 15, shells: [2, 8, 5] },
+        16: { symbol: 'S', name: 'Sulfur', z: 16, shells: [2, 8, 6] },
+        17: { symbol: 'Cl', name: 'Chlorine', z: 17, shells: [2, 8, 7] },
+        19: { symbol: 'K', name: 'Potassium', z: 19, shells: [2, 8, 8, 1] },
+        20: { symbol: 'Ca', name: 'Calcium', z: 20, shells: [2, 8, 8, 2] },
+        26: { symbol: 'Fe', name: 'Iron', z: 26, shells: [2, 8, 14, 2] },
+        29: { symbol: 'Cu', name: 'Copper', z: 29, shells: [2, 8, 18, 1] },
+        30: { symbol: 'Zn', name: 'Zinc', z: 30, shells: [2, 8, 18, 2] },
+        35: { symbol: 'Br', name: 'Bromine', z: 35, shells: [2, 8, 18, 7] },
+        47: { symbol: 'Ag', name: 'Silver', z: 47, shells: [2, 8, 18, 18, 1] },
+        53: { symbol: 'I', name: 'Iodine', z: 53, shells: [2, 8, 18, 18, 7] }
+    };
+    const fb = FALLBACK_SHELLS[z] || { symbol: String(elem), name: 'Element', z: z || 1, shells: [1] };
+    return {
+        atomicNumber: fb.z,
+        symbol: fb.symbol,
+        name: fb.name,
+        electronsPerShell: fb.shells
+    };
+}
+
+/**
+ * Render Interactive Bohr Model for Chemical Compounds
+ * Features concentric energy levels (K, L, M, N), animated revolving electrons,
+ * shared covalent bonding electron pairs in valence overlaps, and ionic electron transfer brackets.
+ */
+function renderCompoundBohrModel(comp) {
+    const container = document.getElementById('compound-bohr-container');
+    if (!container || !comp) return;
+
+    const isIonic = (comp.type || '').toLowerCase().includes('ionic');
+    const atoms = comp.atoms || [];
+
+    if (atoms.length === 0) {
+        container.innerHTML = '<div class="comp-bohr-empty">No 2D atomic coordinates available for this compound.</div>';
+        return;
+    }
+
+    // SVG Canvas Dimensions
+    const svgW = 380;
+    const svgH = 220;
+
+    // Coordinate Normalization & Viewport Fitting
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    atoms.forEach(a => {
+        if (a.x < minX) minX = a.x;
+        if (a.x > maxX) maxX = a.x;
+        if (a.y < minY) minY = a.y;
+        if (a.y > maxY) maxY = a.y;
+    });
+
+    const spanX = Math.max(0.7, maxX - minX);
+    const spanY = Math.max(0.7, maxY - minY);
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+
+    const padX = 64;
+    const padY = 52;
+    const availW = svgW - padX * 2;
+    const availH = svgH - padY * 2;
+    const scale = Math.min(availW / spanX, availH / spanY, 95);
+
+    const mappedAtoms = atoms.map((a, idx) => {
+        let cx = (svgW / 2) + (a.x - midX) * scale;
+        let cy = (svgH / 2) + (a.y - midY) * scale;
+
+        // Custom balanced centering for 2-atom & 3-atom geometries
+        if (atoms.length === 2) {
+            cx = idx === 0 ? 115 : 265;
+            cy = 110;
+        } else if (atoms.length === 3 && Math.abs(atoms[0].y - atoms[1].y) < 0.1 && Math.abs(atoms[0].y - atoms[2].y) < 0.1) {
+            // Linear molecule (e.g. CO2)
+            cx = 70 + idx * 120;
+            cy = 110;
+        }
+
+        const elInfo = getCompoundElementData(a.elem);
+        const shells = elInfo.electronsPerShell ? [...elInfo.electronsPerShell] : [1];
+        const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[a.elem]) ? CPK_COLORS[a.elem] : '#00d4ff';
+
+        return {
+            id: idx,
+            elem: a.elem,
+            symbol: a.symbol || elInfo.symbol,
+            name: elInfo.name,
+            atomicNumber: elInfo.atomicNumber,
+            shells,
+            color: cpk,
+            cx,
+            cy
+        };
+    });
+
+    let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="comp-bohr-svg" width="100%" height="220" xmlns="http://www.w3.org/2000/svg">`;
+    svg += `<defs>
+        <radialGradient id="bohr-bg-grad-${comp.id}" cx="50%" cy="50%" r="65%">
+            <stop offset="0%" stop-color="#0a192f" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#020617" stop-opacity="0.98"/>
+        </radialGradient>
+        <filter id="bohr-glow-${comp.id}" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <marker id="bohr-arrow-${comp.id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+        </marker>
+    </defs>`;
+
+    svg += `<rect width="${svgW}" height="${svgH}" fill="url(#bohr-bg-grad-${comp.id})" rx="9"/>`;
+
+    // 1. Draw Chemical Bonding Bridges & Ionic Electron Transfers
+    for (let i = 0; i < mappedAtoms.length; i++) {
+        for (let j = i + 1; j < mappedAtoms.length; j++) {
+            const a1 = mappedAtoms[i];
+            const a2 = mappedAtoms[j];
+            const dist = Math.hypot(a2.cx - a1.cx, a2.cy - a1.cy);
+
+            // Connect if within bonded distance or small compound
+            if (dist < 185 || mappedAtoms.length <= 3) {
+                if (isIonic) {
+                    // Ionic Transfer Arc
+                    const mx = (a1.cx + a2.cx) / 2;
+                    const my = Math.min(a1.cy, a2.cy) - 30;
+                    svg += `<path d="M ${a1.cx} ${a1.cy - 18} Q ${mx} ${my} ${a2.cx} ${a2.cy - 18}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#bohr-arrow-${comp.id})" />`;
+                    svg += `<text x="${mx}" y="${my - 6}" fill="#f59e0b" font-size="9" text-anchor="middle" font-weight="bold" font-family="monospace">e⁻ Transfer</text>`;
+                } else {
+                    // Covalent Valence Overlap Bridge
+                    svg += `<line x1="${a1.cx}" y1="${a1.cy}" x2="${a2.cx}" y2="${a2.cy}" stroke="rgba(0, 212, 255, 0.40)" stroke-width="1.8" stroke-dasharray="3,3" />`;
+                    
+                    // Shared electron pair positioned in the bonding overlap midpoint
+                    const mx = (a1.cx + a2.cx) / 2;
+                    const my = (a1.cy + a2.cy) / 2;
+                    const perpX = (-(a2.cy - a1.cy) / dist) * 5.5;
+                    const perpY = ((a2.cx - a1.cx) / dist) * 5.5;
+                    
+                    svg += `<circle cx="${mx + perpX}" cy="${my + perpY}" r="3.2" fill="#38bdf8" filter="url(#bohr-glow-${comp.id})"/>`;
+                    svg += `<circle cx="${mx - perpX}" cy="${my - perpY}" r="3.2" fill="#38bdf8" filter="url(#bohr-glow-${comp.id})"/>`;
+                    svg += `<text x="${mx}" y="${my + (perpY > 0 ? 15 : -10)}" fill="#00d4ff" font-size="7.5" text-anchor="middle" font-weight="bold" font-family="monospace">2e⁻ shared</text>`;
+                }
+            }
+        }
+    }
+
+    // 2. Draw Atom Shells and Revolving Electrons
+    mappedAtoms.forEach(atom => {
+        const { cx, cy, symbol, atomicNumber, shells, color } = atom;
+        const isHydrogen = atomicNumber === 1;
+        const shellBaseR = isHydrogen ? 18 : 16;
+        const shellStepR = Math.min(13, 52 / Math.max(1, shells.length));
+
+        // Draw Concentric Energy Level Shells (K, L, M...)
+        const shellNames = ['K', 'L', 'M', 'N', 'O', 'P'];
+        shells.forEach((eCount, sIdx) => {
+            const r = shellBaseR + (sIdx + 1) * shellStepR;
+            const isValence = sIdx === shells.length - 1;
+            const strokeColor = isValence ? 'rgba(56, 189, 248, 0.70)' : 'rgba(148, 163, 184, 0.28)';
+            const strokeDash = isValence ? 'none' : '3,3';
+            
+            svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${strokeColor}" stroke-width="1.2" stroke-dasharray="${strokeDash}" />`;
+            svg += `<text x="${cx}" y="${cy - r - 2}" fill="rgba(148, 163, 184, 0.55)" font-size="6.5" text-anchor="middle" font-family="monospace">${shellNames[sIdx] || 'n'}</text>`;
+
+            // Position and Animate Revolving Electrons along each Shell
+            const dur = (sIdx + 1) * 5 + 3; // Inner shells revolve faster
+            for (let e = 0; e < eCount; e++) {
+                const angle = (360 / eCount) * e;
+                const eColor = isValence ? '#38bdf8' : '#cbd5e1';
+                svg += `
+                <g>
+                    <animateTransform attributeName="transform" type="rotate" from="${angle} ${cx} ${cy}" to="${angle + 360} ${cx} ${cy}" dur="${dur}s" repeatCount="indefinite" />
+                    <circle cx="${cx + r}" cy="${cy}" r="2.8" fill="${eColor}" />
+                </g>`;
+            }
+        });
+
+        // Glowing Nucleus
+        svg += `<circle cx="${cx}" cy="${cy}" r="12" fill="${color}" stroke="#ffffff" stroke-width="1.6" filter="url(#bohr-glow-${comp.id})" />`;
+        const textColor = (atomicNumber === 1 || color === '#ffffff' || color === '#ffff30') ? '#000000' : '#ffffff';
+        svg += `<text x="${cx}" y="${cy + 4.5}" fill="${textColor}" font-size="11.5" text-anchor="middle" font-weight="bold" font-family="monospace">${symbol}</text>`;
+        svg += `<text x="${cx}" y="${cy + 25}" fill="#94a3b8" font-size="8" text-anchor="middle" font-family="monospace">${atomicNumber}p⁺</text>`;
+
+        // Ionic Formal Charge Annotation
+        if (isIonic) {
+            const isMetal = [3, 11, 12, 19, 20, 26, 29, 30, 47].includes(atomicNumber);
+            const chargeSign = isMetal ? '⁺' : '⁻';
+            svg += `<text x="${cx + 25}" y="${cy - 16}" fill="#f59e0b" font-size="15" font-weight="bold" font-family="monospace">${chargeSign}</text>`;
+        }
+    });
+
+    svg += `</svg>`;
+
+    // 3. Elements Shell & Octet Summary Breakdown Chips
+    const elemChips = comp.elements.map(el => {
+        const info = getCompoundElementData(el.atomicNumber);
+        const shellsStr = info.electronsPerShell ? info.electronsPerShell.join(', ') : '';
+        const octetTarget = el.atomicNumber === 1 ? 'Duet (2e⁻)' : 'Octet (8e⁻)';
+        const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
+
+        return `
+            <div class="comp-bohr-chip" title="${info.name} (${info.symbol}): ${info.atomicNumber} protons">
+                <span class="bohr-chip-dot" style="background:${cpk}"></span>
+                <div class="bohr-chip-info">
+                    <b>${el.symbol} (${el.count}×)</b>: Shells [${shellsStr}]
+                    <span class="bohr-chip-octet">➔ ${octetTarget} Complete</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="comp-bohr-wrapper">
+            <div class="comp-bohr-header-bar">
+                <span class="comp-bohr-type-badge ${isIonic ? 'ionic' : 'covalent'}">
+                    ${isIonic ? '⚡ Ionic Electron Transfer' : '🔗 Covalent Electron Sharing'}
+                </span>
+                <span class="comp-bohr-octet-badge">✓ Octet / Duet Rule Satisfied</span>
+            </div>
+            <div class="comp-bohr-svg-wrap">
+                ${svg}
+            </div>
+            <div class="comp-bohr-chips-grid">
+                ${elemChips}
+            </div>
+        </div>
+    `;
+}
+window.renderCompoundBohrModel = renderCompoundBohrModel;

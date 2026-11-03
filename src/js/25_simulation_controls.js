@@ -767,13 +767,23 @@
                     </button>
                 </div>
                 <div class="sim-deck-right">
-                    <div class="sim-deck-slider-group">
-                        <span class="sim-deck-slider-label">Temp: <b id="deck-temp-val">${temp.toFixed(0)} K</b></span>
-                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(Number(this.value)); }">
+                    <div class="sim-deck-counter-group" title="Adjust Temperature (K)">
+                        <span class="sim-deck-counter-label">Temp:</span>
+                        <button type="button" class="sim-deck-step-btn" onclick="window.stepMoleculeTemp(-50)" title="Decrease Temp by 50K">−</button>
+                        <div class="sim-deck-input-wrap">
+                            <input type="number" id="deck-temp-input" class="sim-deck-num-input" min="50" max="5000" step="10" value="${Math.round(temp)}" onchange="window.setMoleculeTempDirect(this.value)" oninput="window.setMoleculeTempDirect(this.value)">
+                            <span class="sim-deck-input-unit">K</span>
+                        </div>
+                        <button type="button" class="sim-deck-step-btn" onclick="window.stepMoleculeTemp(50)" title="Increase Temp by 50K">+</button>
                     </div>
-                    <div class="sim-deck-slider-group">
-                        <span class="sim-deck-slider-label">P: <b id="deck-press-val">${press.toFixed(1)} atm</b></span>
-                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(Number(this.value)); }">
+                    <div class="sim-deck-counter-group" title="Adjust Pressure (atm)">
+                        <span class="sim-deck-counter-label">P:</span>
+                        <button type="button" class="sim-deck-step-btn" onclick="window.stepMoleculePress(-0.5)" title="Decrease Pressure by 0.5 atm">−</button>
+                        <div class="sim-deck-input-wrap">
+                            <input type="number" id="deck-press-input" class="sim-deck-num-input" min="0.01" max="50" step="0.1" value="${press.toFixed(1)}" onchange="window.setMoleculePressDirect(this.value)" oninput="window.setMoleculePressDirect(this.value)">
+                            <span class="sim-deck-input-unit">atm</span>
+                        </div>
+                        <button type="button" class="sim-deck-step-btn" onclick="window.stepMoleculePress(0.5)" title="Increase Pressure by 0.5 atm">+</button>
                     </div>
                     <button type="button" class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
                         <span>💥</span> JOLT
@@ -794,7 +804,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
+                    <button type="button" class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); const ti = document.getElementById('deck-temp-input'); if(ti) ti.value = Math.round(window.molecularDynamicsEngine.temperatureK || 298); const pi = document.getElementById('deck-press-input'); if(pi) pi.value = (window.molecularDynamicsEngine.pressureAtm || 1.0).toFixed(1); }" title="Reset Rest Shape">
                         <span>🔄</span> Reset
                     </button>
                 </div>
@@ -1286,6 +1296,44 @@
         }
     }
 
+    function stepMoleculeTemp(delta) {
+        if (!window.molecularDynamicsEngine) return;
+        const cur = window.molecularDynamicsEngine.temperatureK || 298;
+        const next = Math.max(50, Math.min(5000, Math.round(cur + delta)));
+        window.molecularDynamicsEngine.setTemperature(next);
+        const input = document.getElementById('deck-temp-input');
+        if (input) input.value = next;
+    }
+
+    function setMoleculeTempDirect(val) {
+        if (!window.molecularDynamicsEngine) return;
+        const num = Number(val);
+        if (!isNaN(num) && num >= 50 && num <= 5000) {
+            window.molecularDynamicsEngine.setTemperature(num);
+        }
+    }
+
+    function stepMoleculePress(delta) {
+        if (!window.molecularDynamicsEngine) return;
+        const cur = window.molecularDynamicsEngine.pressureAtm || 1.0;
+        const next = Math.max(0.01, Math.min(50.0, +(cur + delta).toFixed(1)));
+        window.molecularDynamicsEngine.setPressure(next);
+        const input = document.getElementById('deck-press-input');
+        if (input) input.value = next.toFixed(1);
+    }
+
+    function setMoleculePressDirect(val) {
+        if (!window.molecularDynamicsEngine) return;
+        const num = Number(val);
+        if (!isNaN(num) && num >= 0.01 && num <= 50.0) {
+            window.molecularDynamicsEngine.setPressure(num);
+        }
+    }
+
+    window.stepMoleculeTemp = stepMoleculeTemp;
+    window.setMoleculeTempDirect = setMoleculeTempDirect;
+    window.stepMoleculePress = stepMoleculePress;
+    window.setMoleculePressDirect = setMoleculePressDirect;
     window.toggleMoleculeBondLabels = toggleMoleculeBondLabels;
     window.explainBondType = explainBondType;
     window.selectMoleculePreset = selectMoleculePreset;
