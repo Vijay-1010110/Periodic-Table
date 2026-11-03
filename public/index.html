@@ -10256,8 +10256,8 @@ body.is-pro-user .nav-pro-pill {
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.2);
     width: 100%;
-    max-width: 620px;
-    max-height: 92vh;
+    max-width: 820px;
+    max-height: 94vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -10989,6 +10989,147 @@ body.is-pro-user .nav-pro-pill {
 .comp-3d-overlay {
     /* override any previous block overlay */
     max-width: none !important;
+}
+
+
+/* ==========================================================================
+   PRO Promotion Poster & Visual Feature Showcase Gallery
+   ========================================================================== */
+.pro-showcase-poster {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 4px 0 6px 0;
+}
+
+.pro-showcase-header {
+    text-align: center;
+    padding: 2px 4px;
+}
+
+.pro-showcase-tagline {
+    font-size: 0.72rem;
+    color: #38bdf8;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.pro-showcase-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 680px) {
+    .pro-showcase-cards {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .pro-showcase-card {
+        min-width: 220px;
+        flex: 0 0 78%;
+        scroll-snap-align: center;
+    }
+}
+
+.pro-showcase-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.pro-showcase-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.25);
+}
+
+.pro-showcase-img-wrap {
+    width: 100%;
+    height: 112px;
+    background: #020617;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pro-showcase-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.pro-showcase-card:hover .pro-showcase-img {
+    transform: scale(1.04);
+}
+
+.pro-showcase-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    text-transform: uppercase;
+}
+
+.pro-showcase-badge.cloud {
+    background: rgba(6, 182, 212, 0.35);
+    color: #22d3ee;
+    border: 1px solid rgba(6, 182, 212, 0.6);
+}
+
+.pro-showcase-badge.mol {
+    background: rgba(168, 85, 247, 0.35);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.6);
+}
+
+.pro-showcase-badge.bohr {
+    background: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.6);
+}
+
+.pro-showcase-info {
+    padding: 6px 8px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-grow: 1;
+}
+
+.pro-showcase-title {
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.pro-showcase-desc {
+    font-size: 0.60rem;
+    color: #94a3b8;
+    line-height: 1.3;
+    margin: 0;
 }
 
 /* 02_simulations.css */
@@ -128053,6 +128194,51 @@ window.OrbitalViewer = {
 
 
 
+                
+                <!-- ==================== PRO VISUAL SHOWCASE POSTER ==================== -->
+                <div class="pro-showcase-poster">
+                    <div class="pro-showcase-header">
+                        <span class="pro-showcase-tagline">✨ INCLUDED IN PRO: INTERACTIVE 3D & ATOMIC VISUALIZERS</span>
+                    </div>
+                    <div class="pro-showcase-cards">
+                        <!-- 1. 3D Quantum Probability Cloud -->
+                        <div class="pro-showcase-card">
+                            <div class="pro-showcase-img-wrap">
+                                <img src="assets/showcase/promo_probability_cloud.png" alt="3D Quantum Probability Cloud" class="pro-showcase-img" loading="lazy" />
+                                <span class="pro-showcase-badge cloud">⚡ Quantum Cloud</span>
+                            </div>
+                            <div class="pro-showcase-info">
+                                <h4 class="pro-showcase-title">3D Probability Clouds</h4>
+                                <p class="pro-showcase-desc">Atomic spherical harmonic wavefunctions, subshells (s, p, d, f) & nodal probability slicing.</p>
+                            </div>
+                        </div>
+
+                        <!-- 2. 3D Molecular Construction -->
+                        <div class="pro-showcase-card">
+                            <div class="pro-showcase-img-wrap">
+                                <img src="assets/showcase/promo_3d_molecule.png" alt="3D Molecular Construction" class="pro-showcase-img" loading="lazy" />
+                                <span class="pro-showcase-badge mol">🧬 3D Molecules</span>
+                            </div>
+                            <div class="pro-showcase-info">
+                                <h4 class="pro-showcase-title">3D Molecular Lab</h4>
+                                <p class="pro-showcase-desc">Photorealistic rotating 3D structures, CPK element colors, bond cylinders & stoichiometric %.</p>
+                            </div>
+                        </div>
+
+                        <!-- 3. Bohr Bonding Orbitals -->
+                        <div class="pro-showcase-card">
+                            <div class="pro-showcase-img-wrap">
+                                <img src="assets/showcase/promo_bohr_orbital.png" alt="Bohr Bonding Orbitals" class="pro-showcase-img" loading="lazy" />
+                                <span class="pro-showcase-badge bohr">🔗 Bonding Orbitals</span>
+                            </div>
+                            <div class="pro-showcase-info">
+                                <h4 class="pro-showcase-title">Bohr Bonding Models</h4>
+                                <p class="pro-showcase-desc">Continuous shared covalent envelopes, paired electron bonds, octet validation & ionic transfers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pro-features-grid">
 
                     <div class="pro-feat-item">
@@ -128189,7 +128375,7 @@ window.OrbitalViewer = {
 
                     <div class="pro-pricing-meta">
 
-                        <span class="pro-pricing-badge">✓ Lifetime License • No Ads • No Subscription</span>
+                        <span class="pro-pricing-badge">✓ ONE-TIME PURCHASE • NO SUBSCRIPTIONS • LIFETIME ACCESS • NO ADS</span>
 
                         <span class="pro-pricing-heading">One-Time Lifetime Unlock</span>
 
@@ -128207,7 +128393,7 @@ window.OrbitalViewer = {
 
                 <button class="pro-btn-buy" onclick="purchasePro()">
 
-                    <span>⭐</span> Unlock Lifetime Pro on Google Play
+                    <span>⭐</span> Unlock Lifetime Pro (One-Time Purchase)
 
                 </button>
 
