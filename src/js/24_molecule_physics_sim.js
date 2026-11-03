@@ -952,12 +952,12 @@
             // Pressure chamber contraction bounds
             // High pressure contracts the chamber walls inward, increasing collision rate!
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
-            const chamberInsetX = Math.max(16, (this.width * 0.28) * pressRatio);
-            const chamberInsetY = Math.max(16, (this.height * 0.24) * pressRatio);
+            const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
+            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
-            const maxY = this.height - chamberInsetY;
+            const maxY = this.height - Math.max(54, (this.height * 0.18) * pressRatio);
 
             // 1. Hooke / Morse Potential Bond Forces & Bond Dissociation
             for (const bond of this.bonds) {
@@ -1207,12 +1207,12 @@
 
             // 2. Movable Chamber Walls (Pressure Indication)
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
-            const chamberInsetX = Math.max(16, (this.width * 0.28) * pressRatio);
-            const chamberInsetY = Math.max(16, (this.height * 0.24) * pressRatio);
+            const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
+            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
-            const maxY = this.height - chamberInsetY;
+            const maxY = this.height - Math.max(54, (this.height * 0.18) * pressRatio);
 
             ctx.strokeStyle = `rgba(0, 212, 255, ${0.15 + pressRatio * 0.35})`;
             ctx.lineWidth = 1.5;
@@ -1350,53 +1350,25 @@
                 ctx.fillText(atom.element, atom.x, atom.y);
             }
 
-            // 7. Telemetry HUD Overlay
-            const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
-            const hudW = Math.min(270, w * 0.46);
-            const hudH = 104;
-            const hudX = 14;
-            const hudY = 14;
+            // 7. Dynamic Status Sync to Narrator Pill (Zero Canvas HUD Overlap)
+            const narratorMsg = document.getElementById('sim-narrator-msg');
+            if (narratorMsg && window.simPlaybackController && window.simPlaybackController.activeTab === 'molecule') {
+                const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
+                let phaseDesc = 'Liquid Fluid';
+                if (this.temperatureK < 273) {
+                    phaseDesc = 'Solid Ice';
+                } else if (this.temperatureK > 2400) {
+                    phaseDesc = 'Pyrolysis Plasma';
+                } else if (this.temperatureK > 373) {
+                    phaseDesc = 'Vapor / Gas';
+                }
 
-            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
-            ctx.fill();
-            ctx.stroke();
-
-            // Preset Title & State
-            ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            ctx.fillText(`🧬 ${preset.name}`, hudX + 10, hudY + 8);
-
-            // Phase / Thermal State Classification
-            let phaseDesc = 'Liquid Fluid (H-Bonds Active)';
-            if (this.temperatureK < 273) {
-                phaseDesc = 'Solid / Ice Lattice (Locked)';
-            } else if (this.temperatureK > 2400) {
-                phaseDesc = 'Thermal Pyrolysis / Radical Plasma';
-            } else if (this.temperatureK > 373) {
-                phaseDesc = 'Vapor / Gas Phase (Free Kinetic)';
-            }
-
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '10.5px monospace';
-            ctx.fillText(`Phase: ${phaseDesc}`, hudX + 10, hudY + 28);
-            ctx.fillText(`Temp: ${this.temperatureK.toFixed(0)} K | Press: ${this.pressureAtm.toFixed(1)} atm`, hudX + 10, hudY + 46);
-
-            const activeBondsCount = this.bonds.filter(b => !b.broken).length;
-            ctx.fillText(`Bonds: ${activeBondsCount} active | H-Bonds: ${this.hBonds.length}`, hudX + 10, hudY + 64);
-
-            // Latest Reaction Event Notification Pill
-            if (this.recentEvents.length > 0) {
-                ctx.fillStyle = '#38bdf8';
-                ctx.font = 'bold 9.5px monospace';
-                const latest = this.recentEvents[0];
-                const displayMsg = latest.length > 38 ? latest.substring(0, 36) + '...' : latest;
-                ctx.fillText(displayMsg, hudX + 10, hudY + 84);
+                const activeBondsCount = this.bonds.filter(b => !b.broken).length;
+                if (this.recentEvents.length > 0) {
+                    narratorMsg.textContent = `${preset.name.split('(')[0].trim()} · ${phaseDesc} · ${this.recentEvents[0]}`;
+                } else {
+                    narratorMsg.textContent = `${preset.name.split('(')[0].trim()} · ${phaseDesc} (${activeBondsCount} bonds) · Drag atoms to strain & snap bonds`;
+                }
             }
 
             ctx.restore();

@@ -10714,9 +10714,7 @@ body.is-pro-user .nav-pro-pill {
     padding: 5px 10px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 212, 255, 0.18);
     pointer-events: auto;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible !important;
 }
 
 .sim-game-deck::-webkit-scrollbar {
@@ -11545,6 +11543,380 @@ body.is-pro-user .nav-pro-pill {
 
 /* Bottom Element Dock removed per user instruction */
 
+
+
+/* ==================== MOLECULAR SIMULATION CONTROLS & LIBRARY ==================== */
+.mol-main-picker-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.28), rgba(168, 85, 247, 0.28));
+    border: 1.5px solid #00d4ff;
+    color: #ffffff;
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mol-main-picker-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(168, 85, 247, 0.4));
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.5);
+}
+
+.mol-main-picker-btn:active {
+    transform: scale(0.96);
+}
+
+.mol-picker-caret {
+    font-size: 0.65rem;
+    color: #00d4ff;
+    margin-left: 2px;
+}
+
+.mol-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Custom Inject Popover */
+.mol-inject-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.mol-inject-popover {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    z-index: 5000 !important;
+    min-width: 210px;
+    background: rgba(11, 18, 33, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(0, 212, 255, 0.45);
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85), 0 0 18px rgba(0, 212, 255, 0.25);
+}
+
+.mol-inject-popover::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(11, 18, 33, 0.98) transparent transparent transparent;
+}
+
+.mol-inject-title {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mol-inject-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.mol-inject-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mol-inject-chip:hover, .mol-inject-chip:active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+    color: #ffffff;
+    transform: scale(0.98);
+}
+
+.mol-inject-chip .atom-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-h { background: #f8fafc; box-shadow: 0 0 6px rgba(255, 255, 255, 0.6); }
+.dot-o { background: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.6); }
+.dot-c { background: #64748b; box-shadow: 0 0 6px rgba(100, 116, 139, 0.6); }
+.dot-n { background: #8b5cf6; box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
+.dot-cl { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.6); }
+.dot-na { background: #a855f7; box-shadow: 0 0 6px rgba(168, 85, 247, 0.6); }
+
+/* Molecule Library Modal */
+.mol-library-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100000 !important;
+    background: rgba(3, 7, 18, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    animation: fadeIn 0.18s ease-out;
+}
+
+.mol-library-modal-card {
+    background: #090e1a;
+    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border-radius: 14px;
+    width: 95vw;
+    max-width: 840px;
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 212, 255, 0.2);
+    overflow: hidden;
+}
+
+.mol-library-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(15, 23, 42, 0.88);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.mol-library-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mol-lib-icon {
+    font-size: 1.3rem;
+}
+
+.mol-library-modal-title h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #f1f5f9;
+}
+
+.mol-lib-sub {
+    margin: 2px 0 0 0;
+    font-size: 0.68rem;
+    color: #94a3b8;
+}
+
+.mol-library-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.mol-library-modal-close:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mol-library-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(10, 16, 30, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+}
+.mol-library-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.mol-lib-tab-btn {
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-size: 0.70rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mol-lib-tab-btn:hover {
+    background: rgba(0, 212, 255, 0.15);
+    color: #ffffff;
+}
+
+.mol-lib-tab-btn.active {
+    background: #00d4ff;
+    border-color: #00d4ff;
+    color: #020617;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+
+.mol-library-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 212, 255, 0.3) transparent;
+}
+
+.mol-library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 8px;
+}
+
+.mol-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mol-card:hover {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.mol-card:active {
+    transform: scale(0.98);
+}
+
+.mol-card.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.22), rgba(168, 85, 247, 0.22));
+    border: 1.5px solid #00d4ff;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.35);
+}
+
+.mol-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.mol-formula {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #38bdf8;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.3px;
+}
+
+.mol-badge-cat {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    letter-spacing: 0.3px;
+}
+
+.mol-badge-cat.cat-Atmospheric { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
+.mol-badge-cat.cat-AcidsBases { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
+.mol-badge-cat.cat-SaltsCrystals { background: rgba(168, 85, 247, 0.18); color: #c084fc; }
+.mol-badge-cat.cat-Organics { background: rgba(251, 146, 60, 0.18); color: #fb923c; }
+.mol-badge-cat.cat-StateChambers { background: rgba(34, 197, 94, 0.18); color: #4ade80; }
+
+.mol-name {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.mol-desc {
+    font-size: 0.64rem;
+    color: #94a3b8;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mol-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.62rem;
+}
+
+.mol-atoms-count {
+    color: #64748b;
+    font-family: var(--font-mono, monospace);
+}
+
+.mol-active-tag {
+    color: #00d4ff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.mol-load-tag {
+    color: #94a3b8;
+    font-weight: 700;
+}
+.mol-card:hover .mol-load-tag {
+    color: #00d4ff;
+}
 
 </style>
 
@@ -120673,12 +121045,12 @@ window.OrbitalViewer = {
             // Pressure chamber contraction bounds
             // High pressure contracts the chamber walls inward, increasing collision rate!
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
-            const chamberInsetX = Math.max(16, (this.width * 0.28) * pressRatio);
-            const chamberInsetY = Math.max(16, (this.height * 0.24) * pressRatio);
+            const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
+            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
-            const maxY = this.height - chamberInsetY;
+            const maxY = this.height - Math.max(54, (this.height * 0.18) * pressRatio);
 
             // 1. Hooke / Morse Potential Bond Forces & Bond Dissociation
             for (const bond of this.bonds) {
@@ -120928,12 +121300,12 @@ window.OrbitalViewer = {
 
             // 2. Movable Chamber Walls (Pressure Indication)
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
-            const chamberInsetX = Math.max(16, (this.width * 0.28) * pressRatio);
-            const chamberInsetY = Math.max(16, (this.height * 0.24) * pressRatio);
+            const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
+            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
-            const maxY = this.height - chamberInsetY;
+            const maxY = this.height - Math.max(54, (this.height * 0.18) * pressRatio);
 
             ctx.strokeStyle = `rgba(0, 212, 255, ${0.15 + pressRatio * 0.35})`;
             ctx.lineWidth = 1.5;
@@ -121071,53 +121443,25 @@ window.OrbitalViewer = {
                 ctx.fillText(atom.element, atom.x, atom.y);
             }
 
-            // 7. Telemetry HUD Overlay
-            const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
-            const hudW = Math.min(270, w * 0.46);
-            const hudH = 104;
-            const hudX = 14;
-            const hudY = 14;
+            // 7. Dynamic Status Sync to Narrator Pill (Zero Canvas HUD Overlap)
+            const narratorMsg = document.getElementById('sim-narrator-msg');
+            if (narratorMsg && window.simPlaybackController && window.simPlaybackController.activeTab === 'molecule') {
+                const preset = MOLECULE_PRESETS[this.currentKey] || MOLECULE_PRESETS['H2O'];
+                let phaseDesc = 'Liquid Fluid';
+                if (this.temperatureK < 273) {
+                    phaseDesc = 'Solid Ice';
+                } else if (this.temperatureK > 2400) {
+                    phaseDesc = 'Pyrolysis Plasma';
+                } else if (this.temperatureK > 373) {
+                    phaseDesc = 'Vapor / Gas';
+                }
 
-            ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
-            ctx.fill();
-            ctx.stroke();
-
-            // Preset Title & State
-            ctx.fillStyle = '#00d4ff';
-            ctx.font = 'bold 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            ctx.fillText(`🧬 ${preset.name}`, hudX + 10, hudY + 8);
-
-            // Phase / Thermal State Classification
-            let phaseDesc = 'Liquid Fluid (H-Bonds Active)';
-            if (this.temperatureK < 273) {
-                phaseDesc = 'Solid / Ice Lattice (Locked)';
-            } else if (this.temperatureK > 2400) {
-                phaseDesc = 'Thermal Pyrolysis / Radical Plasma';
-            } else if (this.temperatureK > 373) {
-                phaseDesc = 'Vapor / Gas Phase (Free Kinetic)';
-            }
-
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '10.5px monospace';
-            ctx.fillText(`Phase: ${phaseDesc}`, hudX + 10, hudY + 28);
-            ctx.fillText(`Temp: ${this.temperatureK.toFixed(0)} K | Press: ${this.pressureAtm.toFixed(1)} atm`, hudX + 10, hudY + 46);
-
-            const activeBondsCount = this.bonds.filter(b => !b.broken).length;
-            ctx.fillText(`Bonds: ${activeBondsCount} active | H-Bonds: ${this.hBonds.length}`, hudX + 10, hudY + 64);
-
-            // Latest Reaction Event Notification Pill
-            if (this.recentEvents.length > 0) {
-                ctx.fillStyle = '#38bdf8';
-                ctx.font = 'bold 9.5px monospace';
-                const latest = this.recentEvents[0];
-                const displayMsg = latest.length > 38 ? latest.substring(0, 36) + '...' : latest;
-                ctx.fillText(displayMsg, hudX + 10, hudY + 84);
+                const activeBondsCount = this.bonds.filter(b => !b.broken).length;
+                if (this.recentEvents.length > 0) {
+                    narratorMsg.textContent = `${preset.name.split('(')[0].trim()} · ${phaseDesc} · ${this.recentEvents[0]}`;
+                } else {
+                    narratorMsg.textContent = `${preset.name.split('(')[0].trim()} · ${phaseDesc} (${activeBondsCount} bonds) · Drag atoms to strain & snap bonds`;
+                }
             }
 
             ctx.restore();
@@ -121868,73 +122212,64 @@ window.OrbitalViewer = {
             const curKey = engine ? engine.currentKey : 'H2O';
             const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
             const press = (engine && typeof engine.pressureAtm === 'number') ? engine.pressureAtm : 1.0;
+            const presets = window.MOLECULE_PRESETS || {};
+            const curPreset = presets[curKey] || presets['H2O'] || { name: 'Water (H₂O)' };
 
-            const popularChips = [
+            const formulaMatch = curPreset.name.match(/\(([^)]+)\)/);
+            const formula = formulaMatch ? formulaMatch[1] : curKey;
+
+            const quickChips = [
                 { id: 'H2O', label: '💧 H₂O' },
-                { id: 'CLUSTER_H2O', label: '❄️ 6× H₂O' },
-                { id: 'CO2', label: '🫧 CO₂' },
                 { id: 'CH4', label: '🔥 CH₄' },
-                { id: 'MIX_COMBUSTION', label: '💥 Combustion' },
-                { id: 'MIX_H2_O2', label: '⚡ 2H₂+O₂' },
                 { id: 'NaCl', label: '🧂 NaCl' },
-                { id: 'LATTICE_NACL', label: '🧊 NaCl Lattice' },
-                { id: 'HCl', label: '⚗️ HCl' },
-                { id: 'NaOH', label: '🧼 NaOH' },
-                { id: 'C6H6', label: '⬡ Benzene' },
-                { id: 'C2H5OH', label: '🍷 Ethanol' }
+                { id: 'MIX_COMBUSTION', label: '💥 Mix' }
             ];
 
-            const chipsHtml = popularChips.map(c => `
-                <button class="sim-deck-chip ${curKey === c.id ? 'active' : ''}" onclick="window.selectMoleculePreset('${c.id}')">
+            const chipsHtml = quickChips.map(c => `
+                <button type="button" class="sim-deck-chip ${curKey === c.id ? 'active' : ''}" onclick="window.selectMoleculePreset('${c.id}')">
                     ${c.label}
                 </button>
             `).join('');
 
-            const presets = window.MOLECULE_PRESETS || {};
-            const categories = {};
-            for (const [key, p] of Object.entries(presets)) {
-                const cat = p.category || 'General';
-                if (!categories[cat]) categories[cat] = [];
-                categories[cat].push({ key, name: p.name });
-            }
-
-            let selectHtml = `<select class="sim-deck-select" onchange="window.selectMoleculePreset(this.value)" title="All 30+ Molecules & Clusters">`;
-            for (const [catName, list] of Object.entries(categories)) {
-                selectHtml += `<optgroup label="${catName}">`;
-                for (const item of list) {
-                    selectHtml += `<option value="${item.key}" ${curKey === item.key ? 'selected' : ''}>${item.name}</option>`;
-                }
-                selectHtml += `</optgroup>`;
-            }
-            selectHtml += `</select>`;
-
             deck.innerHTML = `
                 <div class="sim-deck-left">
-                    ${selectHtml}
+                    <button type="button" class="sim-deck-hero-btn primary mol-main-picker-btn" onclick="window.openMoleculeLibraryModal()" title="Browse all 33+ molecules, crystals & reactions">
+                        <span>🧬</span> <b>${formula}</b> <span class="mol-picker-caret">▾</span>
+                    </button>
                     ${chipsHtml}
+                    <button type="button" class="sim-deck-chip small mol-more-btn" onclick="window.openMoleculeLibraryModal()" title="View full 33+ molecule catalog">
+                        <span>📚</span> 33+
+                    </button>
                 </div>
                 <div class="sim-deck-right">
                     <div class="sim-deck-slider-group">
                         <span class="sim-deck-slider-label">Temp: <b id="deck-temp-val">${temp.toFixed(0)} K</b></span>
-                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(this.value); }">
+                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(Number(this.value)); }">
                     </div>
                     <div class="sim-deck-slider-group">
                         <span class="sim-deck-slider-label">P: <b id="deck-press-val">${press.toFixed(1)} atm</b></span>
-                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(this.value); }">
+                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(Number(this.value)); }">
                     </div>
-                    <button class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
+                    <button type="button" class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
                         <span>💥</span> JOLT
                     </button>
-                    <select class="sim-deck-select" onchange="if(this.value && window.molecularDynamicsEngine){ window.molecularDynamicsEngine.injectAtom(this.value); this.value=''; }" title="Inject Reactive Atom / Radical">
-                        <option value="">➕ Inject...</option>
-                        <option value="H">+ H (Hydrogen)</option>
-                        <option value="O">+ O (Oxygen)</option>
-                        <option value="C">+ C (Carbon)</option>
-                        <option value="N">+ N (Nitrogen)</option>
-                        <option value="Cl">+ Cl (Chlorine)</option>
-                        <option value="Na">+ Na (Sodium)</option>
-                    </select>
-                    <button class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
+                    <div class="mol-inject-wrapper">
+                        <button type="button" class="sim-deck-tool-btn" id="mol-inject-btn" onclick="window.toggleMoleculeInjectPopover(event)" title="Inject Reactive Atom / Radical">
+                            <span>➕</span> Inject ▾
+                        </button>
+                        <div id="mol-inject-popover" class="mol-inject-popover" style="display:none;" onclick="event.stopPropagation()">
+                            <div class="mol-inject-title">Inject Atom / Radical</div>
+                            <div class="mol-inject-grid">
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('H')"><span class="atom-dot dot-h"></span><b>+ H</b> Hydrogen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('O')"><span class="atom-dot dot-o"></span><b>+ O</b> Oxygen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('C')"><span class="atom-dot dot-c"></span><b>+ C</b> Carbon</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('N')"><span class="atom-dot dot-n"></span><b>+ N</b> Nitrogen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('Cl')"><span class="atom-dot dot-cl"></span><b>+ Cl</b> Chlorine</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('Na')"><span class="atom-dot dot-na"></span><b>+ Na</b> Sodium</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
                         <span>🔄</span> Reset
                     </button>
                 </div>
@@ -122240,6 +122575,149 @@ window.OrbitalViewer = {
         }
     }
 
+    /**
+     * Molecular Simulation Preset & Modal Handlers
+     */
+    function selectMoleculePreset(key) {
+        if (!key) return;
+        if (window.molecularDynamicsEngine) {
+            window.molecularDynamicsEngine.loadPreset(key);
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+        if (window.physicsAudio) {
+            window.physicsAudio.playNeutronGun();
+        }
+        renderGameDeck('molecule');
+        closeMoleculeLibraryModal();
+    }
+
+    function openMoleculeLibraryModal(filterCategory) {
+        const modal = document.getElementById('mol-library-modal');
+        if (!modal) return;
+        window._molLibFilter = filterCategory || 'ALL';
+        renderMoleculeLibraryGrid();
+        modal.style.display = 'flex';
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.impact('light');
+        }
+    }
+
+    function closeMoleculeLibraryModal() {
+        const modal = document.getElementById('mol-library-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function setMoleculeLibraryFilter(cat) {
+        window._molLibFilter = cat;
+        renderMoleculeLibraryGrid();
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+    }
+
+    function renderMoleculeLibraryGrid() {
+        const grid = document.getElementById('mol-library-grid');
+        const tabsContainer = document.getElementById('mol-library-tabs');
+        if (!grid) return;
+
+        const presets = window.MOLECULE_PRESETS || {};
+        const engine = window.molecularDynamicsEngine;
+        const curKey = engine ? engine.currentKey : 'H2O';
+        const filter = window._molLibFilter || 'ALL';
+
+        const catMap = {
+            'ALL': { label: '🌟 All', count: Object.keys(presets).length },
+            'Atmospheric': { label: '💧 Atmospheric', count: 0 },
+            'Acids & Bases': { label: '⚗️ Acids & Bases', count: 0 },
+            'Salts & Crystals': { label: '🧂 Salts & Crystals', count: 0 },
+            'Organics': { label: '🔥 Organics & Fuels', count: 0 },
+            'State Chambers': { label: '💥 Reactions & Chambers', count: 0 }
+        };
+
+        for (const p of Object.values(presets)) {
+            const c = p.category || 'Atmospheric';
+            if (catMap[c]) catMap[c].count++;
+        }
+
+        if (tabsContainer) {
+            tabsContainer.innerHTML = Object.entries(catMap).map(([catKey, data]) => `
+                <button type="button" class="mol-lib-tab-btn ${filter === catKey ? 'active' : ''}" onclick="window.setMoleculeLibraryFilter('${catKey}')">
+                    ${data.label} (${data.count})
+                </button>
+            `).join('');
+        }
+
+        const filteredEntries = Object.entries(presets).filter(([k, p]) => {
+            if (filter === 'ALL') return true;
+            return (p.category || 'Atmospheric') === filter;
+        });
+
+        grid.innerHTML = filteredEntries.map(([key, p]) => {
+            const isActive = (curKey === key);
+            const rawCat = p.category || 'Atmospheric';
+            const catClass = 'cat-' + rawCat.replace(/[^a-zA-Z0-9]/g, '');
+            const formulaMatch = p.name.match(/\(([^)]+)\)/);
+            const formula = formulaMatch ? formulaMatch[1] : key;
+            const cleanName = p.name.replace(/\([^)]+\)/, '').trim();
+
+            return `
+                <div class="mol-card ${isActive ? 'active' : ''}" onclick="window.selectMoleculePreset('${key}')">
+                    <div class="mol-card-top">
+                        <span class="mol-formula">${formula}</span>
+                        <span class="mol-badge-cat ${catClass}">${rawCat}</span>
+                    </div>
+                    <div class="mol-name">${cleanName}</div>
+                    <div class="mol-desc">${p.desc || ''}</div>
+                    <div class="mol-card-footer">
+                        <span class="mol-atoms-count">${p.atoms.length} atoms · ${p.bonds.length} bonds</span>
+                        ${isActive ? '<span class="mol-active-tag">✓ ACTIVE</span>' : '<span class="mol-load-tag">LOAD ➔</span>'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleMoleculeInjectPopover(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const pop = document.getElementById('mol-inject-popover');
+        if (!pop) return;
+        const isShown = pop.style.display === 'block';
+        pop.style.display = isShown ? 'none' : 'block';
+        if (!isShown && window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+    }
+
+    function injectAtomAndClose(element) {
+        if (window.molecularDynamicsEngine) {
+            window.molecularDynamicsEngine.injectAtom(element);
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.impact('medium');
+        }
+        if (window.physicsAudio) {
+            window.physicsAudio.playNeutronGun();
+        }
+        const pop = document.getElementById('mol-inject-popover');
+        if (pop) pop.style.display = 'none';
+    }
+
+    // Close inject popover when clicking anywhere outside
+    document.addEventListener('pointerdown', (e) => {
+        const pop = document.getElementById('mol-inject-popover');
+        const btn = document.getElementById('mol-inject-btn');
+        if (pop && pop.style.display !== 'none') {
+            if (!pop.contains(e.target) && !btn?.contains(e.target)) {
+                pop.style.display = 'none';
+            }
+        }
+    });
+
     // Initialize UI on DOM Ready
     window.addEventListener('DOMContentLoaded', () => {
         setupCanvasInteractions();
@@ -122255,6 +122733,13 @@ window.OrbitalViewer = {
     window.toggleSimAudio = toggleSimAudio;
     window.renderGameDeck = renderGameDeck;
     window.renderTuningPanel = renderTuningPanel;
+    window.selectMoleculePreset = selectMoleculePreset;
+    window.openMoleculeLibraryModal = openMoleculeLibraryModal;
+    window.closeMoleculeLibraryModal = closeMoleculeLibraryModal;
+    window.setMoleculeLibraryFilter = setMoleculeLibraryFilter;
+    window.renderMoleculeLibraryGrid = renderMoleculeLibraryGrid;
+    window.toggleMoleculeInjectPopover = toggleMoleculeInjectPopover;
+    window.injectAtomAndClose = injectAtomAndClose;
 
     // Attach to Global Scope
     window.PhysicsAudioSynthesizer = PhysicsAudioSynthesizer;
@@ -125012,6 +125497,26 @@ window.OrbitalViewer = {
     </div>
 
 
+
+    <!-- Molecule Library & Reaction Chamber Selection Modal -->
+    <div id="mol-library-modal" class="mol-library-modal-backdrop" style="display:none;" onclick="if(event.target===this){closeMoleculeLibraryModal();}">
+        <div class="mol-library-modal-card">
+            <div class="mol-library-modal-header">
+                <div class="mol-library-modal-title">
+                    <span class="mol-lib-icon">🧬</span>
+                    <div>
+                        <h3 id="mol-library-heading">Molecule & Reaction Library</h3>
+                        <p class="mol-lib-sub">Select from 33 quantum-modeled molecules, crystalline lattices & reactions</p>
+                    </div>
+                </div>
+                <button class="mol-library-modal-close" onclick="closeMoleculeLibraryModal()">&times;</button>
+            </div>
+            <div class="mol-library-tabs" id="mol-library-tabs"></div>
+            <div class="mol-library-body" id="mol-library-body">
+                <div class="mol-library-grid" id="mol-library-grid"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Wikipedia Modal -->
 

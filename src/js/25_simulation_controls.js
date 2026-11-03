@@ -733,73 +733,64 @@
             const curKey = engine ? engine.currentKey : 'H2O';
             const temp = (engine && typeof engine.temperatureK === 'number') ? engine.temperatureK : 298;
             const press = (engine && typeof engine.pressureAtm === 'number') ? engine.pressureAtm : 1.0;
+            const presets = window.MOLECULE_PRESETS || {};
+            const curPreset = presets[curKey] || presets['H2O'] || { name: 'Water (H₂O)' };
 
-            const popularChips = [
+            const formulaMatch = curPreset.name.match(/\(([^)]+)\)/);
+            const formula = formulaMatch ? formulaMatch[1] : curKey;
+
+            const quickChips = [
                 { id: 'H2O', label: '💧 H₂O' },
-                { id: 'CLUSTER_H2O', label: '❄️ 6× H₂O' },
-                { id: 'CO2', label: '🫧 CO₂' },
                 { id: 'CH4', label: '🔥 CH₄' },
-                { id: 'MIX_COMBUSTION', label: '💥 Combustion' },
-                { id: 'MIX_H2_O2', label: '⚡ 2H₂+O₂' },
                 { id: 'NaCl', label: '🧂 NaCl' },
-                { id: 'LATTICE_NACL', label: '🧊 NaCl Lattice' },
-                { id: 'HCl', label: '⚗️ HCl' },
-                { id: 'NaOH', label: '🧼 NaOH' },
-                { id: 'C6H6', label: '⬡ Benzene' },
-                { id: 'C2H5OH', label: '🍷 Ethanol' }
+                { id: 'MIX_COMBUSTION', label: '💥 Mix' }
             ];
 
-            const chipsHtml = popularChips.map(c => `
-                <button class="sim-deck-chip ${curKey === c.id ? 'active' : ''}" onclick="window.selectMoleculePreset('${c.id}')">
+            const chipsHtml = quickChips.map(c => `
+                <button type="button" class="sim-deck-chip ${curKey === c.id ? 'active' : ''}" onclick="window.selectMoleculePreset('${c.id}')">
                     ${c.label}
                 </button>
             `).join('');
 
-            const presets = window.MOLECULE_PRESETS || {};
-            const categories = {};
-            for (const [key, p] of Object.entries(presets)) {
-                const cat = p.category || 'General';
-                if (!categories[cat]) categories[cat] = [];
-                categories[cat].push({ key, name: p.name });
-            }
-
-            let selectHtml = `<select class="sim-deck-select" onchange="window.selectMoleculePreset(this.value)" title="All 30+ Molecules & Clusters">`;
-            for (const [catName, list] of Object.entries(categories)) {
-                selectHtml += `<optgroup label="${catName}">`;
-                for (const item of list) {
-                    selectHtml += `<option value="${item.key}" ${curKey === item.key ? 'selected' : ''}>${item.name}</option>`;
-                }
-                selectHtml += `</optgroup>`;
-            }
-            selectHtml += `</select>`;
-
             deck.innerHTML = `
                 <div class="sim-deck-left">
-                    ${selectHtml}
+                    <button type="button" class="sim-deck-hero-btn primary mol-main-picker-btn" onclick="window.openMoleculeLibraryModal()" title="Browse all 33+ molecules, crystals & reactions">
+                        <span>🧬</span> <b>${formula}</b> <span class="mol-picker-caret">▾</span>
+                    </button>
                     ${chipsHtml}
+                    <button type="button" class="sim-deck-chip small mol-more-btn" onclick="window.openMoleculeLibraryModal()" title="View full 33+ molecule catalog">
+                        <span>📚</span> 33+
+                    </button>
                 </div>
                 <div class="sim-deck-right">
                     <div class="sim-deck-slider-group">
                         <span class="sim-deck-slider-label">Temp: <b id="deck-temp-val">${temp.toFixed(0)} K</b></span>
-                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(this.value); }">
+                        <input type="range" class="sim-deck-slider" min="50" max="5000" step="50" value="${temp}" oninput="document.getElementById('deck-temp-val').textContent=this.value+' K'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setTemperature(Number(this.value)); }">
                     </div>
                     <div class="sim-deck-slider-group">
                         <span class="sim-deck-slider-label">P: <b id="deck-press-val">${press.toFixed(1)} atm</b></span>
-                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(this.value); }">
+                        <input type="range" class="sim-deck-slider" min="0.01" max="50" step="0.5" value="${press}" oninput="document.getElementById('deck-press-val').textContent=Number(this.value).toFixed(1)+' atm'; if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.setPressure(Number(this.value)); }">
                     </div>
-                    <button class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
+                    <button type="button" class="sim-deck-hero-btn warn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.applyImpulse(0, 0, -380); }" title="Thermal Spark / Kinetic Jolt">
                         <span>💥</span> JOLT
                     </button>
-                    <select class="sim-deck-select" onchange="if(this.value && window.molecularDynamicsEngine){ window.molecularDynamicsEngine.injectAtom(this.value); this.value=''; }" title="Inject Reactive Atom / Radical">
-                        <option value="">➕ Inject...</option>
-                        <option value="H">+ H (Hydrogen)</option>
-                        <option value="O">+ O (Oxygen)</option>
-                        <option value="C">+ C (Carbon)</option>
-                        <option value="N">+ N (Nitrogen)</option>
-                        <option value="Cl">+ Cl (Chlorine)</option>
-                        <option value="Na">+ Na (Sodium)</option>
-                    </select>
-                    <button class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
+                    <div class="mol-inject-wrapper">
+                        <button type="button" class="sim-deck-tool-btn" id="mol-inject-btn" onclick="window.toggleMoleculeInjectPopover(event)" title="Inject Reactive Atom / Radical">
+                            <span>➕</span> Inject ▾
+                        </button>
+                        <div id="mol-inject-popover" class="mol-inject-popover" style="display:none;" onclick="event.stopPropagation()">
+                            <div class="mol-inject-title">Inject Atom / Radical</div>
+                            <div class="mol-inject-grid">
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('H')"><span class="atom-dot dot-h"></span><b>+ H</b> Hydrogen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('O')"><span class="atom-dot dot-o"></span><b>+ O</b> Oxygen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('C')"><span class="atom-dot dot-c"></span><b>+ C</b> Carbon</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('N')"><span class="atom-dot dot-n"></span><b>+ N</b> Nitrogen</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('Cl')"><span class="atom-dot dot-cl"></span><b>+ Cl</b> Chlorine</button>
+                                <button type="button" class="mol-inject-chip" onclick="window.injectAtomAndClose('Na')"><span class="atom-dot dot-na"></span><b>+ Na</b> Sodium</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="sim-deck-tool-btn" onclick="if(window.molecularDynamicsEngine){ window.molecularDynamicsEngine.loadPreset(window.molecularDynamicsEngine.currentKey); }" title="Reset Rest Shape">
                         <span>🔄</span> Reset
                     </button>
                 </div>
@@ -1105,6 +1096,149 @@
         }
     }
 
+    /**
+     * Molecular Simulation Preset & Modal Handlers
+     */
+    function selectMoleculePreset(key) {
+        if (!key) return;
+        if (window.molecularDynamicsEngine) {
+            window.molecularDynamicsEngine.loadPreset(key);
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+        if (window.physicsAudio) {
+            window.physicsAudio.playNeutronGun();
+        }
+        renderGameDeck('molecule');
+        closeMoleculeLibraryModal();
+    }
+
+    function openMoleculeLibraryModal(filterCategory) {
+        const modal = document.getElementById('mol-library-modal');
+        if (!modal) return;
+        window._molLibFilter = filterCategory || 'ALL';
+        renderMoleculeLibraryGrid();
+        modal.style.display = 'flex';
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.impact('light');
+        }
+    }
+
+    function closeMoleculeLibraryModal() {
+        const modal = document.getElementById('mol-library-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function setMoleculeLibraryFilter(cat) {
+        window._molLibFilter = cat;
+        renderMoleculeLibraryGrid();
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+    }
+
+    function renderMoleculeLibraryGrid() {
+        const grid = document.getElementById('mol-library-grid');
+        const tabsContainer = document.getElementById('mol-library-tabs');
+        if (!grid) return;
+
+        const presets = window.MOLECULE_PRESETS || {};
+        const engine = window.molecularDynamicsEngine;
+        const curKey = engine ? engine.currentKey : 'H2O';
+        const filter = window._molLibFilter || 'ALL';
+
+        const catMap = {
+            'ALL': { label: '🌟 All', count: Object.keys(presets).length },
+            'Atmospheric': { label: '💧 Atmospheric', count: 0 },
+            'Acids & Bases': { label: '⚗️ Acids & Bases', count: 0 },
+            'Salts & Crystals': { label: '🧂 Salts & Crystals', count: 0 },
+            'Organics': { label: '🔥 Organics & Fuels', count: 0 },
+            'State Chambers': { label: '💥 Reactions & Chambers', count: 0 }
+        };
+
+        for (const p of Object.values(presets)) {
+            const c = p.category || 'Atmospheric';
+            if (catMap[c]) catMap[c].count++;
+        }
+
+        if (tabsContainer) {
+            tabsContainer.innerHTML = Object.entries(catMap).map(([catKey, data]) => `
+                <button type="button" class="mol-lib-tab-btn ${filter === catKey ? 'active' : ''}" onclick="window.setMoleculeLibraryFilter('${catKey}')">
+                    ${data.label} (${data.count})
+                </button>
+            `).join('');
+        }
+
+        const filteredEntries = Object.entries(presets).filter(([k, p]) => {
+            if (filter === 'ALL') return true;
+            return (p.category || 'Atmospheric') === filter;
+        });
+
+        grid.innerHTML = filteredEntries.map(([key, p]) => {
+            const isActive = (curKey === key);
+            const rawCat = p.category || 'Atmospheric';
+            const catClass = 'cat-' + rawCat.replace(/[^a-zA-Z0-9]/g, '');
+            const formulaMatch = p.name.match(/\(([^)]+)\)/);
+            const formula = formulaMatch ? formulaMatch[1] : key;
+            const cleanName = p.name.replace(/\([^)]+\)/, '').trim();
+
+            return `
+                <div class="mol-card ${isActive ? 'active' : ''}" onclick="window.selectMoleculePreset('${key}')">
+                    <div class="mol-card-top">
+                        <span class="mol-formula">${formula}</span>
+                        <span class="mol-badge-cat ${catClass}">${rawCat}</span>
+                    </div>
+                    <div class="mol-name">${cleanName}</div>
+                    <div class="mol-desc">${p.desc || ''}</div>
+                    <div class="mol-card-footer">
+                        <span class="mol-atoms-count">${p.atoms.length} atoms · ${p.bonds.length} bonds</span>
+                        ${isActive ? '<span class="mol-active-tag">✓ ACTIVE</span>' : '<span class="mol-load-tag">LOAD ➔</span>'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleMoleculeInjectPopover(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const pop = document.getElementById('mol-inject-popover');
+        if (!pop) return;
+        const isShown = pop.style.display === 'block';
+        pop.style.display = isShown ? 'none' : 'block';
+        if (!isShown && window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.selection();
+        }
+    }
+
+    function injectAtomAndClose(element) {
+        if (window.molecularDynamicsEngine) {
+            window.molecularDynamicsEngine.injectAtom(element);
+        }
+        if (window.NativeServices?.Haptics) {
+            window.NativeServices.Haptics.impact('medium');
+        }
+        if (window.physicsAudio) {
+            window.physicsAudio.playNeutronGun();
+        }
+        const pop = document.getElementById('mol-inject-popover');
+        if (pop) pop.style.display = 'none';
+    }
+
+    // Close inject popover when clicking anywhere outside
+    document.addEventListener('pointerdown', (e) => {
+        const pop = document.getElementById('mol-inject-popover');
+        const btn = document.getElementById('mol-inject-btn');
+        if (pop && pop.style.display !== 'none') {
+            if (!pop.contains(e.target) && !btn?.contains(e.target)) {
+                pop.style.display = 'none';
+            }
+        }
+    });
+
     // Initialize UI on DOM Ready
     window.addEventListener('DOMContentLoaded', () => {
         setupCanvasInteractions();
@@ -1120,6 +1254,13 @@
     window.toggleSimAudio = toggleSimAudio;
     window.renderGameDeck = renderGameDeck;
     window.renderTuningPanel = renderTuningPanel;
+    window.selectMoleculePreset = selectMoleculePreset;
+    window.openMoleculeLibraryModal = openMoleculeLibraryModal;
+    window.closeMoleculeLibraryModal = closeMoleculeLibraryModal;
+    window.setMoleculeLibraryFilter = setMoleculeLibraryFilter;
+    window.renderMoleculeLibraryGrid = renderMoleculeLibraryGrid;
+    window.toggleMoleculeInjectPopover = toggleMoleculeInjectPopover;
+    window.injectAtomAndClose = injectAtomAndClose;
 
     // Attach to Global Scope
     window.PhysicsAudioSynthesizer = PhysicsAudioSynthesizer;
