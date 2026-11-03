@@ -10916,6 +10916,81 @@ body.is-pro-user .nav-pro-pill {
     padding: 1px 4px !important;
 }
 
+/* ==========================================================================
+   Non-blocking 3D & Bohr Model Indicator Headers
+   ========================================================================== */
+.comp-bohr-header-bar {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 10px !important;
+    background: rgba(10, 16, 30, 0.88) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    font-size: 0.70rem !important;
+    min-height: 32px !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.comp-bohr-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.comp-bohr-top-legend {
+    display: none !important; /* Completely removed absolute overlay so it never blocks the structure */
+}
+
+/* 3D Top Strip: pinned to top edge, ultra-slim, 100% open center */
+.comp-3d-top-strip {
+    position: absolute !important;
+    top: 6px !important;
+    left: 8px !important;
+    right: 8px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    background: rgba(10, 16, 30, 0.75) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 6px !important;
+    padding: 0 8px !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    max-width: none !important;
+}
+
+.comp-3d-strip-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.comp-3d-strip-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.comp-3d-strip-badge {
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    font-family: var(--font-mono, monospace) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+}
+
+.comp-3d-overlay {
+    /* override any previous block overlay */
+    max-width: none !important;
+}
+
 /* 02_simulations.css */
 /**
  * PERIODICA 3D - Simulation Lab & Physics Suite Styles
@@ -99237,6 +99312,44 @@ function createBondCylinder(p1, p2, group, order = 1) {
 /**
  * Top-left overlay for 3D Molecule View detailing element colors and bond types
  */
+
+/**
+ * Render still, paired Bohr shell electrons (zero spinning animation for clear textbook inspection)
+ */
+function renderStillShellElectrons(cx, cy, r, count, isValence = false, isIonicTransferred = false, compId = '') {
+    let svg = '';
+    if (count === 1) {
+        svg += `<circle cx="${cx.toFixed(1)}" cy="${(cy - r).toFixed(1)}" r="2.8" fill="${isValence ? '#00f5d4' : '#e2e8f0'}" />`;
+    } else if (count === 2) {
+        // 2 static electrons paired at top and bottom
+        svg += `<circle cx="${cx.toFixed(1)}" cy="${(cy - r).toFixed(1)}" r="2.8" fill="${isValence ? '#00f5d4' : '#e2e8f0'}" />`;
+        svg += `<circle cx="${cx.toFixed(1)}" cy="${(cy + r).toFixed(1)}" r="2.8" fill="${isValence ? '#00f5d4' : '#e2e8f0'}" />`;
+    } else if (count === 8) {
+        // 4 static pairs at 0, 90, 180, 270 deg
+        const pairAngles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+        const dTheta = 0.16;
+        pairAngles.forEach((baseA, pIdx) => {
+            [baseA - dTheta, baseA + dTheta].forEach((a, eIdx) => {
+                const isTransfer = isIonicTransferred && pIdx === 0 && eIdx === 1;
+                const col = isTransfer ? '#f59e0b' : (isValence ? '#00f5d4' : '#cbd5e1');
+                const radius = isTransfer ? 3.6 : 2.8;
+                const ex = cx + Math.cos(a) * r;
+                const ey = cy + Math.sin(a) * r;
+                svg += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="${radius}" fill="${col}" ${isTransfer ? `filter="url(#bohr-glow-${compId})"` : ''} />`;
+            });
+        });
+    } else {
+        for (let i = 0; i < count; i++) {
+            const a = (2 * Math.PI / count) * i - Math.PI / 2;
+            const ex = cx + Math.cos(a) * r;
+            const ey = cy + Math.sin(a) * r;
+            svg += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="2.8" fill="${isValence ? '#00f5d4' : '#cbd5e1'}" />`;
+        }
+    }
+    return svg;
+}
+
+
 function updateCompound3DLegend(comp) {
     const container = document.getElementById('molecule-canvas-container');
     if (!container || !comp) return;
@@ -99245,7 +99358,7 @@ function updateCompound3DLegend(comp) {
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'comp-3d-overlay';
-        overlay.className = 'comp-3d-overlay';
+        overlay.className = 'comp-3d-top-strip';
         container.appendChild(overlay);
     }
 
@@ -99257,11 +99370,11 @@ function updateCompound3DLegend(comp) {
         const info = getCompoundElementData(el.atomicNumber);
         const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
         return `
-            <div class="comp-3d-el-chip" title="${info.name}">
+            <span class="comp-3d-el-chip" title="${info.name}">
                 <span class="comp-3d-color-dot" style="background:${cpk}"></span>
                 <span class="comp-3d-el-symbol">${el.symbol}</span>
                 <span class="comp-3d-el-name">${info.name}</span>
-            </div>
+            </span>
         `;
     }).join('');
 
@@ -99272,25 +99385,23 @@ function updateCompound3DLegend(comp) {
 
     let bondChips = '';
     if (isIonic) {
-        bondChips = '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon ionic">⚡</span> Ionic Pair</div>';
+        bondChips = '<span class="comp-3d-bond-item"><span class="comp-3d-bond-icon ionic">⚡</span> Ionic Pair</span>';
     } else {
-        bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon single">━</span> Single (1 cyl)</div>';
+        bondChips += '<span class="comp-3d-bond-item"><span class="comp-3d-bond-icon single">━</span> Single (1 cyl)</span>';
         if (hasDouble) {
-            bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon double">═</span> Double (2 cyl)</div>';
+            bondChips += '<span class="comp-3d-bond-item"><span class="comp-3d-bond-icon double">═</span> Double (2 cyl)</span>';
         }
         if (hasTriple) {
-            bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon triple">☰</span> Triple (3 cyl)</div>';
+            bondChips += '<span class="comp-3d-bond-item"><span class="comp-3d-bond-icon triple">☰</span> Triple (3 cyl)</span>';
         }
     }
 
     overlay.innerHTML = `
-        <div class="comp-3d-badge ${bond.badgeClass}">${bond.title}</div>
-        <div class="comp-3d-legend-group">
-            <span class="comp-3d-group-label">ELEMENTS:</span>
-            <div class="comp-3d-elements-row">${elChips}</div>
+        <div class="comp-3d-strip-left">
+            <span class="comp-3d-badge ${bond.badgeClass}">${bond.title}</span>
         </div>
-        <div class="comp-3d-legend-group">
-            <span class="comp-3d-group-label">BONDS:</span>
+        <div class="comp-3d-strip-right">
+            <div class="comp-3d-elements-row">${elChips}</div>
             <div class="comp-3d-bonds-row">${bondChips}</div>
         </div>
     `;
@@ -99396,6 +99507,13 @@ function getCompoundElementData(elem) {
  * CO2 double bonds, N2/HCN triple bonds, and NaCl ionic transfer), clear high-contrast core orbits,
  * revolving core electrons, distinct shared pairs vs non-bonding lone pairs, and top-left bond indicators.
  */
+
+/**
+ * Render Advanced STILL Bohr Model for Chemical Compounds
+ * Features continuous shared valence bonding shells (CH4 4-lobed contour, H2O bent envelope,
+ * CO2 double bonds, N2/HCN triple bonds, and NaCl ionic transfer), completely still/calm paired electrons,
+ * crisp high-contrast core orbits, and a clean non-overlapping header bar that never blocks the structure.
+ */
 function renderCompoundBohrModel(comp) {
     const container = document.getElementById('compound-bohr-container');
     if (!container || !comp) return;
@@ -99436,12 +99554,12 @@ function renderCompoundBohrModel(comp) {
 
     // High-Precision Benchmark Layouts
     if (f === 'CH4') {
-        const ccx = 205, ccy = 110;
+        const ccx = 190, ccy = 110;
         const hDist = 58;
         const hR = 17;
         const coreR = 20;
 
-        // 1. Continuous 4-lobed Shared Valence Shell connecting Carbon with all 4 Hydrogens in one string
+        // 1. Continuous 4-lobed Shared Valence Shell connecting Carbon with all 4 Hydrogens
         const pathCH4 = `
             M ${ccx - hR} ${ccy - hDist}
             Q ${ccx} ${ccy - hDist - 20} ${ccx + hR} ${ccy - hDist}
@@ -99457,24 +99575,17 @@ function renderCompoundBohrModel(comp) {
 
         svg += `<path d="${pathCH4}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
 
-        // 2. Carbon Core Orbit K (clearly visible & labeled)
+        // 2. Carbon Core Orbit K (crisp dashed line & still core electrons)
         svg += `<circle cx="${ccx}" cy="${ccy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
         svg += `<text x="${ccx}" y="${ccy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
-        for (let e = 0; e < 2; e++) {
-            const a = e * 180;
-            svg += `
-                <g>
-                    <animateTransform attributeName="transform" type="rotate" from="${a} ${ccx} ${ccy}" to="${a + 360} ${ccx} ${ccy}" dur="6s" repeatCount="indefinite" />
-                    <circle cx="${ccx + coreR}" cy="${ccy}" r="2.8" fill="#e2e8f0" />
-                </g>`;
-        }
+        svg += renderStillShellElectrons(ccx, ccy, coreR, 2, false, false, comp.id);
 
         // Carbon Nucleus
         svg += `<circle cx="${ccx}" cy="${ccy}" r="11" fill="#909090" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<text x="${ccx}" y="${ccy + 4}" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">C</text>`;
         svg += `<text x="${ccx}" y="${ccy + 19}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">6p⁺</text>`;
 
-        // 4 Hydrogens & Shared Electron Pairs (2e⁻ in each lobe)
+        // 4 Hydrogens & STILL Shared Electron Pairs (2e⁻ in each lobe)
         const hAtoms = [
             { name: 'H1', cx: ccx, cy: ccy - hDist, angle: -Math.PI / 2 },
             { name: 'H2', cx: ccx + hDist, cy: ccy, angle: 0 },
@@ -99488,22 +99599,22 @@ function renderCompoundBohrModel(comp) {
             svg += `<text x="${h.cx}" y="${h.cy + 3.5}" fill="#0f172a" font-size="9" font-weight="bold" text-anchor="middle" font-family="monospace">H</text>`;
             svg += `<text x="${h.cx}" y="${h.cy + (h.cy > ccy ? 17 : -12)}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">1p⁺</text>`;
 
-            // Shared 2e⁻ pair in continuous valence lobe
+            // Still shared 2e⁻ pair sitting quietly inside the continuous valence lobe
             const mx = (ccx + h.cx) / 2;
             const my = (ccy + h.cy) / 2;
             const px = -Math.sin(h.angle) * 5;
             const py = Math.cos(h.angle) * 5;
 
-            svg += `<circle cx="${mx + px}" cy="${my + py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
-            svg += `<circle cx="${mx - px}" cy="${my - py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${(mx + px).toFixed(1)}" cy="${(my + py).toFixed(1)}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${(mx - px).toFixed(1)}" cy="${(my - py).toFixed(1)}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
         });
 
         svg += `<text x="${ccx}" y="19" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">Continuous 8e⁻ Shared Valence Shell (4× 2e⁻ Octet)</text>`;
 
     } else if (f === 'H2O') {
-        const ocx = 205, ocy = 120;
-        const h1x = 150, h1y = 72;
-        const h2x = 260, h2y = 72;
+        const ocx = 190, ocy = 120;
+        const h1x = 135, h1y = 72;
+        const h2x = 245, h2y = 72;
         const coreR = 20;
 
         // Continuous 2-lobed shared valence shell with lower lone-pair dome
@@ -99520,24 +99631,17 @@ function renderCompoundBohrModel(comp) {
 
         svg += `<path d="${pathH2O}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
 
-        // Oxygen Core Orbit K (clearly visible & labeled)
+        // Oxygen Core Orbit K
         svg += `<circle cx="${ocx}" cy="${ocy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
         svg += `<text x="${ocx}" y="${ocy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
-        for (let e = 0; e < 2; e++) {
-            const a = e * 180;
-            svg += `
-                <g>
-                    <animateTransform attributeName="transform" type="rotate" from="${a} ${ocx} ${ocy}" to="${a + 360} ${ocx} ${ocy}" dur="6s" repeatCount="indefinite" />
-                    <circle cx="${ocx + coreR}" cy="${ocy}" r="2.8" fill="#e2e8f0" />
-                </g>`;
-        }
+        svg += renderStillShellElectrons(ocx, ocy, coreR, 2, false, false, comp.id);
 
         // Oxygen Nucleus
         svg += `<circle cx="${ocx}" cy="${ocy}" r="12" fill="#ff0d0d" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<text x="${ocx}" y="${ocy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">O</text>`;
         svg += `<text x="${ocx}" y="${ocy + 20}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">8p⁺</text>`;
 
-        // Hydrogens & Shared electron pairs (2e⁻ each)
+        // Hydrogens & STILL shared electron pairs (2e⁻ each)
         [[h1x, h1y], [h2x, h2y]].forEach(([hx, hy]) => {
             svg += `<circle cx="${hx}" cy="${hy}" r="9" fill="#ffffff" stroke="#38bdf8" stroke-width="1.4" filter="url(#bohr-glow-${comp.id})" />`;
             svg += `<text x="${hx}" y="${hy + 3.5}" fill="#0f172a" font-size="9" font-weight="bold" text-anchor="middle" font-family="monospace">H</text>`;
@@ -99550,11 +99654,11 @@ function renderCompoundBohrModel(comp) {
             const px = (-dy / dist) * 5;
             const py = (dx / dist) * 5;
 
-            svg += `<circle cx="${mx + px}" cy="${my + py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
-            svg += `<circle cx="${mx - px}" cy="${my - py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${(mx + px).toFixed(1)}" cy="${(my + py).toFixed(1)}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${(mx - px).toFixed(1)}" cy="${(my - py).toFixed(1)}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
         });
 
-        // 2 Non-bonding Lone Pairs on Oxygen's lower valence arc (in purple #c084fc)
+        // 2 STILL Non-bonding Lone Pairs on Oxygen's lower valence arc (in purple #c084fc)
         svg += `<circle cx="${ocx - 22}" cy="${ocy + 32}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<circle cx="${ocx - 14}" cy="${ocy + 36}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<circle cx="${ocx + 14}" cy="${ocy + 36}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
@@ -99562,9 +99666,9 @@ function renderCompoundBohrModel(comp) {
         svg += `<text x="${ocx}" y="${ocy + 49}" fill="#c084fc" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">2× Lone Pairs (4e⁻)</text>`;
 
     } else if (f === 'CO2') {
-        const ccx = 205, ccy = 110;
-        const o1x = 95, o1y = 110;
-        const o2x = 315, o2y = 110;
+        const ccx = 190, ccy = 110;
+        const o1x = 80, o1y = 110;
+        const o2x = 300, o2y = 110;
         const coreR = 19;
 
         // Continuous Double-Bond Shared Valence Shell
@@ -99578,18 +99682,11 @@ function renderCompoundBohrModel(comp) {
 
         svg += `<path d="${pathCO2}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
 
-        // Core Shells (K=2) for all 3 atoms (clearly visible!)
+        // Core Shells (K=2) for all 3 atoms (crisp & still)
         [o1x, ccx, o2x].forEach(x => {
             svg += `<circle cx="${x}" cy="${ccy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
             svg += `<text x="${x}" y="${ccy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
-            for (let e = 0; e < 2; e++) {
-                const a = e * 180;
-                svg += `
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="${a} ${x} ${ccy}" to="${a + 360} ${x} ${ccy}" dur="6s" repeatCount="indefinite" />
-                        <circle cx="${x + coreR}" cy="${ccy}" r="2.8" fill="#e2e8f0" />
-                    </g>`;
-            }
+            svg += renderStillShellElectrons(x, ccy, coreR, 2, false, false, comp.id);
         });
 
         // Nuclei
@@ -99602,14 +99699,14 @@ function renderCompoundBohrModel(comp) {
         svg += `<circle cx="${o2x}" cy="${ccy}" r="12" fill="#ff0d0d" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<text x="${o2x}" y="${ccy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">O</text>`;
 
-        // Double Bond 1: 4 shared electrons between O1 and C
+        // STILL Double Bond 1: 4 shared electrons between O1 and C
         const m1x = (o1x + ccx) / 2;
         [[-8, -8], [-8, 8], [8, -8], [8, 8]].forEach(([ox, oy]) => {
             svg += `<circle cx="${m1x + ox}" cy="${ccy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
         });
         svg += `<text x="${m1x}" y="${ccy + 24}" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">4e⁻ shared (O=C)</text>`;
 
-        // Double Bond 2: 4 shared electrons between C and O2
+        // STILL Double Bond 2: 4 shared electrons between C and O2
         const m2x = (ccx + o2x) / 2;
         [[-8, -8], [-8, 8], [8, -8], [8, 8]].forEach(([ox, oy]) => {
             svg += `<circle cx="${m2x + ox}" cy="${ccy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
@@ -99625,7 +99722,7 @@ function renderCompoundBohrModel(comp) {
         });
 
     } else if (f === 'N2' || f === 'CO' || f === 'HCN') {
-        const a1x = 150, a2x = 260, cy = 110;
+        const a1x = 135, a2x = 245, cy = 110;
         const coreR = 19;
         const isN2 = f === 'N2';
         const sym1 = isN2 ? 'N' : (f === 'CO' ? 'C' : 'C');
@@ -99648,14 +99745,7 @@ function renderCompoundBohrModel(comp) {
         [a1x, a2x].forEach(x => {
             svg += `<circle cx="${x}" cy="${cy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
             svg += `<text x="${x}" y="${cy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
-            for (let e = 0; e < 2; e++) {
-                const a = e * 180;
-                svg += `
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="${a} ${x} ${cy}" to="${a + 360} ${x} ${cy}" dur="6s" repeatCount="indefinite" />
-                        <circle cx="${x + coreR}" cy="${cy}" r="2.8" fill="#e2e8f0" />
-                    </g>`;
-            }
+            svg += renderStillShellElectrons(x, cy, coreR, 2, false, false, comp.id);
         });
 
         // Nuclei
@@ -99665,7 +99755,7 @@ function renderCompoundBohrModel(comp) {
         svg += `<circle cx="${a2x}" cy="${cy}" r="12" fill="${col2}" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
         svg += `<text x="${a2x}" y="${cy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">${sym2}</text>`;
 
-        // Triple Bond: 6 shared electrons (3 pairs) in overlap
+        // STILL Triple Bond: 6 shared electrons (3 pairs) in overlap
         const mx = (a1x + a2x) / 2;
         [[-6, -14], [6, -14], [-6, 0], [6, 0], [-6, 14], [6, 14]].forEach(([ox, oy]) => {
             svg += `<circle cx="${mx + ox}" cy="${cy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
@@ -99679,14 +99769,14 @@ function renderCompoundBohrModel(comp) {
         svg += `<circle cx="${a2x + 22}" cy="${cy + 5}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
 
     } else if (isIonic) {
-        // Ionic Compound (e.g. NaCl, MgO)
-        const m1x = 135, m2x = 275, cy = 110;
+        // Ionic Compound (e.g. NaCl, MgO) - 100% UNOBSTRUCTED VIEW
+        const m1x = 120, m2x = 260, cy = 110;
         const cat = comp.elements ? comp.elements[0] : { atomicNumber: 11, symbol: 'Na' };
         const an = comp.elements ? comp.elements[1] : { atomicNumber: 17, symbol: 'Cl' };
         const catInfo = getCompoundElementData(cat.atomicNumber);
         const anInfo = getCompoundElementData(an.atomicNumber);
 
-        // Cation Shells (stable remaining filled shells, e.g. Na+ has K=2, L=8)
+        // Cation Shells (stable filled core shells, e.g. Na+ has K=2, L=8)
         const catShells = [2, 8];
         const catR = [18, 30];
         const catNames = ['K', 'L'];
@@ -99694,14 +99784,7 @@ function renderCompoundBohrModel(comp) {
             const r = catR[idx];
             svg += `<circle cx="${m1x}" cy="${cy}" r="${r}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
             svg += `<text x="${m1x}" y="${cy - r - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">${catNames[idx]}</text>`;
-            for (let e = 0; e < cnt; e++) {
-                const a = (360 / cnt) * e;
-                svg += `
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="${a} ${m1x} ${cy}" to="${a + 360} ${m1x} ${cy}" dur="${(idx + 1) * 4}s" repeatCount="indefinite" />
-                        <circle cx="${m1x + r}" cy="${cy}" r="2.8" fill="#cbd5e1" />
-                    </g>`;
-            }
+            svg += renderStillShellElectrons(m1x, cy, r, cnt, false, false, comp.id);
         });
 
         // Cation Nucleus
@@ -99713,7 +99796,7 @@ function renderCompoundBohrModel(comp) {
         svg += `<path d="M ${m1x + 38} ${cy - 38} L ${m1x + 44} ${cy - 38} L ${m1x + 44} ${cy + 38} L ${m1x + 38} ${cy + 38}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
         svg += `<text x="${m1x + 48}" y="${cy - 28}" fill="#f59e0b" font-size="13" font-weight="bold" font-family="monospace">⁺</text>`;
 
-        // Anion Shells (K=2, L=8, M=8 full octet!)
+        // Anion Shells (K=2, L=8, M=8 full octet with transferred electron highlighted in gold!)
         const anShells = [2, 8, 8];
         const anR = [18, 30, 42];
         const anNames = ['K', 'L', 'M'];
@@ -99723,17 +99806,7 @@ function renderCompoundBohrModel(comp) {
             const stroke = isVal ? '#00f5d4' : 'rgba(148, 163, 184, 0.82)';
             svg += `<circle cx="${m2x}" cy="${cy}" r="${r}" fill="none" stroke="${stroke}" stroke-width="${isVal ? 2.0 : 1.6}" stroke-dasharray="${isVal ? 'none' : '3,2'}" />`;
             svg += `<text x="${m2x}" y="${cy - r - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">${anNames[idx]}</text>`;
-            for (let e = 0; e < cnt; e++) {
-                const a = (360 / cnt) * e;
-                const isTransferred = isVal && e === cnt - 1;
-                const eCol = isTransferred ? '#f59e0b' : (isVal ? '#00f5d4' : '#cbd5e1');
-                const eR = isTransferred ? 3.8 : 2.8;
-                svg += `
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="${a} ${m2x} ${cy}" to="${a + 360} ${m2x} ${cy}" dur="${(idx + 1) * 4}s" repeatCount="indefinite" />
-                        <circle cx="${m2x + r}" cy="${cy}" r="${eR}" fill="${eCol}" ${isTransferred ? `filter="url(#bohr-glow-${comp.id})"` : ''} />
-                    </g>`;
-            }
+            svg += renderStillShellElectrons(m2x, cy, r, cnt, isVal, isVal, comp.id);
         });
 
         // Anion Nucleus
@@ -99745,14 +99818,14 @@ function renderCompoundBohrModel(comp) {
         svg += `<path d="M ${m2x + 50} ${cy - 50} L ${m2x + 56} ${cy - 50} L ${m2x + 56} ${cy + 50} L ${m2x + 50} ${cy + 50}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
         svg += `<text x="${m2x + 60}" y="${cy - 38}" fill="#f59e0b" font-size="13" font-weight="bold" font-family="monospace">⁻</text>`;
 
-        // Arched Electron Transfer Vector
+        // Arched Electron Transfer Vector (High, clear arch completely unobstructed)
         const arcMidX = (m1x + m2x) / 2;
         const arcMidY = cy - 54;
         svg += `<path d="M ${m1x + 25} ${cy - 20} Q ${arcMidX} ${arcMidY} ${m2x - 30} ${cy - 35}" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#bohr-arrow-${comp.id})" />`;
         svg += `<text x="${arcMidX}" y="${arcMidY - 6}" fill="#f59e0b" font-size="8.5" font-weight="bold" text-anchor="middle" font-family="monospace">e⁻ Transfer ➔</text>`;
 
     } else {
-        // General Multi-Atom Molecule Handler
+        // General Multi-Atom Molecule Handler (STILL electrons)
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         atoms.forEach(a => {
             if (a.x < minX) minX = a.x;
@@ -99769,7 +99842,7 @@ function renderCompoundBohrModel(comp) {
         const scale = Math.min((svgW - padX * 2) / spanX, (svgH - padY * 2) / spanY, 80);
 
         const mappedAtoms = atoms.map((a, idx) => {
-            const cx = (svgW / 2 + 15) + (a.x - midX) * scale;
+            const cx = (svgW / 2) + (a.x - midX) * scale;
             const cy = (svgH / 2) + (a.y - midY) * scale;
             const elInfo = getCompoundElementData(a.elem);
             const shells = elInfo.electronsPerShell ? [...elInfo.electronsPerShell] : [1];
@@ -99794,18 +99867,18 @@ function renderCompoundBohrModel(comp) {
                     const bridgePath = `M ${a1.cx + px} ${a1.cy + py} L ${a2.cx + px} ${a2.cy + py} L ${a2.cx - px} ${a2.cy - py} L ${a1.cx - px} ${a1.cy - py} Z`;
                     svg += `<path d="${bridgePath}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="1.8" filter="url(#bohr-valence-glow-${comp.id})" />`;
 
-                    // Shared electron pair
+                    // Still shared electron pair
                     const mx = (a1.cx + a2.cx) / 2;
                     const my = (a1.cy + a2.cy) / 2;
                     const epx = -uy * 5;
                     const epy = ux * 5;
-                    svg += `<circle cx="${mx + epx}" cy="${my + epy}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
-                    svg += `<circle cx="${mx - epx}" cy="${my - epy}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+                    svg += `<circle cx="${(mx + epx).toFixed(1)}" cy="${(my + epy).toFixed(1)}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+                    svg += `<circle cx="${(mx - epx).toFixed(1)}" cy="${(my - epy).toFixed(1)}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
                 }
             }
         }
 
-        // Atom Core Shells & Nuclei
+        // Atom Core Shells & Nuclei with STILL electrons
         mappedAtoms.forEach(atom => {
             const { cx, cy, symbol, atomicNumber, shells, color } = atom;
             const coreR = 16;
@@ -99813,15 +99886,7 @@ function renderCompoundBohrModel(comp) {
             // Core Shell
             svg += `<circle cx="${cx}" cy="${cy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
             svg += `<text x="${cx}" y="${cy - coreR - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
-
-            for (let e = 0; e < Math.min(2, shells[0] || 1); e++) {
-                const a = e * 180;
-                svg += `
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="${a} ${cx} ${cy}" to="${a + 360} ${cx} ${cy}" dur="6s" repeatCount="indefinite" />
-                        <circle cx="${cx + coreR}" cy="${cy}" r="2.5" fill="#e2e8f0" />
-                    </g>`;
-            }
+            svg += renderStillShellElectrons(cx, cy, coreR, Math.min(2, shells[0] || 1), false, false, comp.id);
 
             // Nucleus
             svg += `<circle cx="${cx}" cy="${cy}" r="11" fill="${color}" stroke="#ffffff" stroke-width="1.4" filter="url(#bohr-glow-${comp.id})" />`;
@@ -99852,25 +99917,21 @@ function renderCompoundBohrModel(comp) {
 
     const hasLone = f === 'H2O' || f === 'NH3' || f === 'HCL' || f === 'CO2' || f === 'N2' || f === 'CO';
 
+    // CLEAN HEADER BAR: Bond indicator and legend are placed in the header ABOVE the canvas, NEVER blocking the SVG structure!
     container.innerHTML = `
-        <div class="comp-bohr-wrapper" style="position: relative;">
-            <!-- Top-Left Bohr Model Bond & Orbit Legend -->
-            <div class="comp-bohr-top-legend">
-                <div class="comp-bohr-bond-badge ${bond.badgeClass}">${bond.title}</div>
+        <div class="comp-bohr-wrapper">
+            <div class="comp-bohr-header-bar">
+                <div class="comp-bohr-header-left">
+                    <span class="comp-bohr-bond-badge ${bond.badgeClass}">${bond.title}</span>
+                    <span class="comp-bohr-octet-badge">✓ Octet / Duet Satisfied</span>
+                </div>
                 <div class="comp-bohr-legend-pills">
                     <span class="bohr-legend-pill"><span class="pill-dot valence"></span> Shared Valence</span>
-                    <span class="bohr-legend-pill"><span class="pill-dot core"></span> Core (K, L)</span>
+                    <span class="bohr-legend-pill"><span class="pill-dot core"></span> Core Orbit</span>
                     <span class="bohr-legend-pill"><span class="pill-dot shared"></span> Shared e⁻</span>
                     ${hasLone ? '<span class="bohr-legend-pill"><span class="pill-dot lone"></span> Lone Pair</span>' : ''}
                     ${isIonic ? '<span class="bohr-legend-pill"><span class="pill-dot transfer"></span> e⁻ Transfer</span>' : ''}
                 </div>
-            </div>
-
-            <div class="comp-bohr-header-bar">
-                <span class="comp-bohr-type-badge ${isIonic ? 'ionic' : 'covalent'}">
-                    ${isIonic ? '⚡ Ionic Electron Transfer' : '🔗 Covalent Shared Valence Orbitals'}
-                </span>
-                <span class="comp-bohr-octet-badge">✓ Octet / Duet Satisfied</span>
             </div>
             <div class="comp-bohr-svg-wrap">
                 ${svg}
