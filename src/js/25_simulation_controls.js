@@ -501,6 +501,10 @@
         if (narratorPill) {
             narratorPill.style.display = (tabName === 'environment') ? 'none' : 'flex';
         }
+        const bondLegend = document.getElementById('mol-bond-legend');
+        if (bondLegend) {
+            bondLegend.style.display = (tabName === 'molecule') ? 'flex' : 'none';
+        }
         const msgEl = document.getElementById('sim-narrator-msg');
         if (msgEl) {
             if (tabName === 'chain_reaction') {
@@ -1254,6 +1258,36 @@
     window.toggleSimAudio = toggleSimAudio;
     window.renderGameDeck = renderGameDeck;
     window.renderTuningPanel = renderTuningPanel;
+    function toggleMoleculeBondLabels() {
+        if (!window.molecularDynamicsEngine) return;
+        const eng = window.molecularDynamicsEngine;
+        eng.showBondLabels = !eng.showBondLabels;
+        const textEl = document.getElementById('mol-bond-names-toggle-text');
+        if (textEl) {
+            textEl.textContent = eng.showBondLabels ? 'Names: ON' : 'Names: OFF';
+        }
+        const msgEl = document.getElementById('sim-narrator-msg');
+        if (msgEl) {
+            msgEl.textContent = eng.showBondLabels
+                ? '🏷️ Bond Names ON: Displaying chemical bond formulas & strain tags on canvas'
+                : '🏷️ Bond Names OFF: Minimalist view without in-canvas bond formulas';
+        }
+    }
+
+    function explainBondType(type) {
+        const msgEl = document.getElementById('sim-narrator-msg');
+        if (!msgEl) return;
+        if (type === 'covalent') {
+            msgEl.textContent = '⚪ Solid White Line = Covalent Bond: Stable electron sharing (e.g. C-H, O-H) maintaining molecular structure.';
+        } else if (type === 'strain') {
+            msgEl.textContent = '🔴 Solid Red Line = Thermal Strain: Heat or stretching exceeds 45% strain—bond is nearing dissociation/snap!';
+        } else if (type === 'hbond') {
+            msgEl.textContent = '🔵 Dotted Cyan Line = Hydrogen Bond: Electrostatic dipole attraction between polar δ+ H and δ- O/N atoms.';
+        }
+    }
+
+    window.toggleMoleculeBondLabels = toggleMoleculeBondLabels;
+    window.explainBondType = explainBondType;
     window.selectMoleculePreset = selectMoleculePreset;
     window.openMoleculeLibraryModal = openMoleculeLibraryModal;
     window.closeMoleculeLibraryModal = closeMoleculeLibraryModal;

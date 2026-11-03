@@ -820,6 +820,7 @@
             this.recentEvents = [];      // Reaction / Rupture event log
             this.nextAtomId = 100;
             this.nextBondId = 100;
+            this.showBondLabels = true;
 
             this.loadPreset('H2O');
         }
@@ -953,7 +954,7 @@
             // High pressure contracts the chamber walls inward, increasing collision rate!
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
             const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
-            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
+            const chamberInsetY = Math.max(66, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
@@ -975,16 +976,26 @@
                 const delta = dist - bond.targetLen;
                 bond.strain = Math.abs(delta) / bond.targetLen;
 
-                // Morse Potential Anharmonic Spring Force:
-                // F = -2 * a * De * (1 - exp(-a * delta)) * exp(-a * delta)
-                const aParam = 0.038;
-                const expVal = Math.exp(-aParam * delta);
-                let forceMag = 2 * aParam * (bond.De * 140) * (1 - expVal) * expVal;
+                // Angle constraints only maintain geometry with a Hooke spring; they never render or break
+                if (bond.isAngleConstraint) {
+                    const springForce = delta * (bond.k || 120);
+                    const fx = (dx / dist) * springForce;
+                    const fy = (dy / dist) * springForce;
+                    atomA.applyForce(fx, fy);
+                    atomB.applyForce(-fx, -fy);
+                    continue;
+                }
+
+                // Robust Hooke's Law Covalent Spring Force (AMBER/CHARMM harmonic bond model)
+                // Linear restoring force maintains stable molecular geometry and realistic vibrational resonance:
+                const springK = bond.k || (bond.De ? bond.De * 85 : 380);
+                let forceMag = delta * springK;
 
                 // Yield Strain & Thermal Dissociation Threshold
-                // O-H bond energy De is 4.8. Higher temp (>2400K) causes thermal agitation to overcome binding energy.
+                // O-H bond energy De is 4.8. Higher temp (>2200K) causes thermal agitation to overcome binding energy.
+                const isBeingPulled = atomA.isDragged || atomB.isDragged;
                 const thermalBreakChance = Math.max(0, (this.temperatureK - 2200) / 2800);
-                const isOverstrained = dist > bond.targetLen * 1.68; // Mechanical stretch yield
+                const isOverstrained = (isBeingPulled && dist > bond.targetLen * 1.85) || (this.temperatureK > 2200 && dist > bond.targetLen * 2.2);
                 const isThermallyDissociated = (this.temperatureK > 2400) && (Math.random() < (thermalBreakChance * 0.08) / (bond.De / 4.0));
 
                 if (isOverstrained || isThermallyDissociated) {
@@ -1014,7 +1025,7 @@
                 atomB.applyForce(-(dx / dist) * dampingMag, -(dy / dist) * dampingMag);
             }
 
-            // 2. Intermolecular Forces (Hydrogen Bonds & Ionic Coulomb Attractions)
+            // 2. Intermolecular Forces (Repulsion, Coulomb & Reactions)
             this.hBonds = [];
             for (let i = 0; i < this.atoms.length; i++) {
                 for (let j = i + 1; j < this.atoms.length; j++) {
@@ -1037,32 +1048,10 @@
                         continue;
                     }
 
-                    // Check if already covalently bonded
+                    // Check if covalently bonded
                     const isCovalentlyBonded = this.bonds.some(b => !b.broken && ((b.a === a1.id && b.b === a2.id) || (b.a === a2.id && b.b === a1.id)));
 
-                    // B) Hydrogen Bonding Detection & Attraction (H bonded to O/N/F attracting nearby O/N/F)
-                    const isHbondPair = (!isCovalentlyBonded) && (
-                        (a1.element === 'H' && a1.charge > 0.15 && (a2.element === 'O' || a2.element === 'N' || a2.element === 'F') && a2.charge < -0.2) ||
-                        (a2.element === 'H' && a2.charge > 0.15 && (a1.element === 'O' || a1.element === 'N' || a1.element === 'F') && a1.charge < -0.2)
-                    );
-
-                    if (isHbondPair && dist > minDist && dist < 110) {
-                        // Hydrogen bonds are fragile: strong at cryogenic/liquid (T < 373K), disrupted in hot vapor/gas
-                        const hBondStability = Math.max(0, 1.0 - (this.temperatureK - 273) / 250);
-                        if (hBondStability > 0.05) {
-                            const optHdist = 52;
-                            const hDelta = dist - optHdist;
-                            const hForce = hDelta * 55 * hBondStability;
-                            const hfx = (dx / dist) * hForce;
-                            const hfy = (dy / dist) * hForce;
-                            a1.applyForce(hfx, hfy);
-                            a2.applyForce(-hfx, -hfy);
-
-                            this.hBonds.push({ a1, a2, dist, strength: hBondStability });
-                        }
-                    }
-
-                    // C) Ionic Coulombic Attraction / Repulsion (e.g. Na+ and Cl-)
+                    // B) Ionic Coulombic Attraction / Repulsion (e.g. Na+ and Cl-)
                     if (Math.abs(a1.charge) > 0.4 && Math.abs(a2.charge) > 0.4) {
                         const coulombK = 480.0;
                         const qProduct = a1.charge * a2.charge;
@@ -1074,7 +1063,7 @@
                         a2.applyForce(cfx, cfy);
                     }
 
-                    // D) Dynamic Chemical Reaction & Synthesis (Recombination of Free Radicals)
+                    // C) Dynamic Chemical Reaction & Synthesis (Recombination of Free Radicals)
                     // If both atoms have open valences and collide with sufficient contact energy:
                     if (!isCovalentlyBonded && dist < minDist + 12) {
                         const activeA = this.countActiveBonds(a1.id);
@@ -1109,11 +1098,58 @@
                 }
             }
 
+            // 2b. Realistic Single-Donor Hydrogen Bonding
+            // In physical chemistry, each polar H atom (charge > +0.15) coordinates to at most ONE closest electronegative partner (O/N/F):
+            const hBondStability = Math.max(0, 1.0 - (this.temperatureK - 273) / 250);
+            if (hBondStability > 0.05) {
+                const polarHydrogens = this.atoms.filter(a => a.element === 'H' && a.charge > 0.15);
+                const polarAcceptors = this.atoms.filter(a => (a.element === 'O' || a.element === 'N' || a.element === 'F') && a.charge < -0.2);
+
+                for (const hAtom of polarHydrogens) {
+                    let bestAcceptor = null;
+                    let bestDist = 95.0;
+
+                    for (const acc of polarAcceptors) {
+                        // Exclude same intact molecule
+                        const isBonded = this.bonds.some(b => !b.broken && ((b.a === hAtom.id && b.b === acc.id) || (b.a === acc.id && b.b === hAtom.id)));
+                        if (isBonded) continue;
+                        const shareNeighbor = this.bonds.some(b1 => !b1.broken && (b1.a === hAtom.id || b1.b === hAtom.id) &&
+                            this.bonds.some(b2 => !b2.broken && (b2.a === acc.id || b2.b === acc.id) &&
+                                ((b1.a === b2.a && b1.a !== hAtom.id) || (b1.a === b2.b && b1.a !== hAtom.id) || (b1.b === b2.a && b1.b !== hAtom.id) || (b1.b === b2.b && b1.b !== hAtom.id))
+                            )
+                        );
+                        if (shareNeighbor) continue;
+
+                        const d = Math.hypot(acc.x - hAtom.x, acc.y - hAtom.y);
+                        const minD = hAtom.radius + acc.radius + 4;
+                        if (d >= minD && d < bestDist) {
+                            bestDist = d;
+                            bestAcceptor = acc;
+                        }
+                    }
+
+                    if (bestAcceptor) {
+                        const dx = bestAcceptor.x - hAtom.x;
+                        const dy = bestAcceptor.y - hAtom.y;
+                        const optHdist = 50;
+                        const hDelta = bestDist - optHdist;
+                        const hForce = hDelta * 55 * hBondStability;
+                        const hfx = (dx / bestDist) * hForce;
+                        const hfy = (dy / bestDist) * hForce;
+                        hAtom.applyForce(hfx, hfy);
+                        bestAcceptor.applyForce(-hfx, -hfy);
+
+                        this.hBonds.push({ a1: hAtom, a2: bestAcceptor, dist: bestDist, strength: hBondStability });
+                    }
+                }
+            }
+
             // 3. Maxwell-Boltzmann Thermal Agitation (Langevin Kicks)
-            // Agitation force scales with sqrt(T / mass)
-            const thermalFactor = Math.sqrt(this.temperatureK) * 3.5;
+            // Agitation force scales with sqrt(T / 298K) and inverse square root of atomic mass:
+            const tempRatio = Math.sqrt(this.temperatureK / 298.0);
             for (const atom of this.atoms) {
-                const kickStrength = thermalFactor * Math.sqrt(12.0 / atom.mass) * 20.0;
+                // Calibrated kick: gentle lifelike vibration at 298K (~1-2px), violent bond-breaking kicks at >2200K
+                const kickStrength = tempRatio * Math.sqrt(12.0 / Math.max(1.0, atom.mass)) * 140.0;
                 const kx = (Math.random() - 0.5) * kickStrength;
                 const ky = (Math.random() - 0.5) * kickStrength;
                 atom.applyForce(kx, ky);
@@ -1205,7 +1241,7 @@
             // 2. Movable Chamber Walls (Pressure Indication)
             const pressRatio = Math.min(1.0, Math.log10(Math.max(0.01, this.pressureAtm) / 0.01) / 3.7);
             const chamberInsetX = Math.max(20, (this.width * 0.22) * pressRatio);
-            const chamberInsetY = Math.max(34, (this.height * 0.18) * pressRatio);
+            const chamberInsetY = Math.max(66, (this.height * 0.18) * pressRatio);
             const minX = chamberInsetX;
             const maxX = this.width - chamberInsetX;
             const minY = chamberInsetY;
@@ -1243,7 +1279,7 @@
 
             // 4. Render Covalent Bonds (3D Glowing Spring Cylinders)
             for (const bond of this.bonds) {
-                if (bond.broken) continue;
+                if (bond.broken || bond.isAngleConstraint) continue;
                 const a1 = this.atoms.find(a => a.id === bond.a);
                 const a2 = this.atoms.find(a => a.id === bond.b);
                 if (!a1 || !a2) continue;
@@ -1298,6 +1334,104 @@
                     ctx.moveTo(a1.x, a1.y);
                     ctx.lineTo(a2.x, a2.y);
                     ctx.stroke();
+                }
+            }
+
+            // 4b. Render Dynamic Bond Names & Identifiers
+            if (this.showBondLabels !== false) {
+                // Label Intermolecular Hydrogen Bonds (Dotted Lines)
+                let hLabelsDrawn = 0;
+                for (const hb of this.hBonds) {
+                    if (hLabelsDrawn >= 4) break;
+                    const hDist = Math.hypot(hb.a2.x - hb.a1.x, hb.a2.y - hb.a1.y);
+                    if (hDist < 42) continue;
+                    const mx = (hb.a1.x + hb.a2.x) / 2;
+                    const my = (hb.a1.y + hb.a2.y) / 2;
+                    const otherElement = (hb.a1.element === 'H') ? hb.a2.element : hb.a1.element;
+                    const label = 'H\u00B7\u00B7\u00B7' + otherElement + ' H-Bond';
+                    hLabelsDrawn++;
+
+                    ctx.save();
+                    ctx.font = 'bold 8.5px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const tw = ctx.measureText(label).width;
+
+                    ctx.fillStyle = 'rgba(6, 20, 38, 0.90)';
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([2, 2]);
+                    ctx.beginPath();
+                    ctx.roundRect(mx - tw / 2 - 4, my - 6.5, tw + 8, 13, 3);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.fillText(label, mx, my);
+                    ctx.restore();
+                }
+
+                // Label Covalent Bonds
+                for (const bond of this.bonds) {
+                    if (bond.broken || bond.isAngleConstraint) continue;
+                    const a1 = this.atoms.find(a => a.id === bond.a);
+                    const a2 = this.atoms.find(a => a.id === bond.b);
+                    if (!a1 || !a2) continue;
+
+                    const dx = a2.x - a1.x;
+                    const dy = a2.y - a1.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 34) continue;
+
+                    const mx = (a1.x + a2.x) / 2;
+                    const my = (a1.y + a2.y) / 2;
+                    const strain = Math.abs(dist - bond.targetLen) / bond.targetLen;
+
+                    const glue = bond.order === 3 ? '\u2261' : (bond.order === 2 ? '=' : '-');
+                    let label = `${a1.element}${glue}${a2.element}`;
+                    const isStrained = strain > 0.45;
+                    const isModerate = strain > 0.22 && !isStrained;
+
+                    if (isStrained) {
+                        label += ` Strained ${(strain * 100).toFixed(0)}%`;
+                    } else if (bond.order === 2) {
+                        label += ` Double`;
+                    } else if (bond.order === 3) {
+                        label += ` Triple`;
+                    } else {
+                        label += ` Covalent`;
+                    }
+
+                    ctx.save();
+                    ctx.font = 'bold 8.5px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const tw = ctx.measureText(label).width;
+
+                    if (isStrained) {
+                        ctx.fillStyle = 'rgba(55, 10, 15, 0.92)';
+                        ctx.strokeStyle = '#ef4444';
+                        ctx.shadowColor = '#ef4444';
+                        ctx.shadowBlur = 4;
+                    } else if (isModerate) {
+                        ctx.fillStyle = 'rgba(45, 25, 8, 0.90)';
+                        ctx.strokeStyle = '#f59e0b';
+                    } else {
+                        ctx.fillStyle = 'rgba(10, 16, 30, 0.88)';
+                        ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+                    }
+
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.roundRect(mx - tw / 2 - 4, my - 6.5, tw + 8, 13, 3);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = isStrained ? '#fca5a5' : (isModerate ? '#fcd34d' : '#f1f5f9');
+                    ctx.shadowBlur = 0;
+                    ctx.fillText(label, mx, my);
+                    ctx.restore();
                 }
             }
 
