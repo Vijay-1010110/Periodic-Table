@@ -5595,6 +5595,7 @@ body.has-native-slider #temp-custom-slider {
     background: radial-gradient(circle, rgba(15, 30, 50, 0.5) 0%, rgba(5, 10, 20, 0.8) 100%);
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
     cursor: grab;
 }
 
@@ -10575,4 +10576,287 @@ body.is-pro-user .nav-pro-pill {
     text-align: center;
     color: #94a3b8;
     font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   3D Molecule & Bohr Model Overlays & Indicators
+   ========================================================================== */
+.comp-3d-overlay {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    max-width: 230px;
+}
+
+.comp-3d-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    padding: 2px 6px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.comp-3d-badge.covalent-single {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #38bdf8;
+}
+
+.comp-3d-badge.covalent-double {
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #c084fc;
+}
+
+.comp-3d-badge.covalent-triple {
+    background: rgba(236, 72, 153, 0.18);
+    border: 1px solid rgba(236, 72, 153, 0.45);
+    color: #f472b6;
+}
+
+.comp-3d-badge.ionic {
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: #fbbf24;
+}
+
+.comp-3d-legend-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comp-3d-group-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    font-family: var(--font-mono, monospace);
+}
+
+.comp-3d-elements-row,
+.comp-3d-bonds-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.comp-3d-el-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.65rem;
+    color: #e2e8f0;
+}
+
+.comp-3d-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.comp-3d-el-symbol {
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.comp-3d-el-name {
+    color: #94a3b8;
+    font-size: 0.60rem;
+}
+
+.comp-3d-bond-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.64rem;
+    color: #cbd5e1;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.comp-3d-bond-icon {
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+.comp-3d-bond-icon.single { color: #e2e8f0; }
+.comp-3d-bond-icon.double { color: #c084fc; }
+.comp-3d-bond-icon.triple { color: #f472b6; }
+.comp-3d-bond-icon.ionic { color: #fbbf24; }
+
+/* Bohr Top-Left Legend */
+.comp-bohr-top-legend {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    max-width: 250px;
+}
+
+.comp-bohr-bond-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    padding: 2px 6px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.comp-bohr-bond-badge.covalent-single {
+    background: rgba(0, 245, 212, 0.15);
+    border: 1px solid rgba(0, 245, 212, 0.4);
+    color: #00f5d4;
+}
+
+.comp-bohr-bond-badge.covalent-double {
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #c084fc;
+}
+
+.comp-bohr-bond-badge.covalent-triple {
+    background: rgba(236, 72, 153, 0.18);
+    border: 1px solid rgba(236, 72, 153, 0.45);
+    color: #f472b6;
+}
+
+.comp-bohr-bond-badge.ionic {
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: #fbbf24;
+}
+
+.comp-bohr-legend-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.bohr-legend-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    color: #cbd5e1;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bohr-legend-pill .pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.bohr-legend-pill .pill-dot.valence {
+    background: #00f5d4;
+    box-shadow: 0 0 5px #00f5d4;
+}
+
+.bohr-legend-pill .pill-dot.core {
+    background: #94a3b8;
+    border: 1px dashed #ffffff;
+}
+
+.bohr-legend-pill .pill-dot.shared {
+    background: #00f5d4;
+}
+
+.bohr-legend-pill .pill-dot.lone {
+    background: #c084fc;
+    box-shadow: 0 0 4px #c084fc;
+}
+
+.bohr-legend-pill .pill-dot.transfer {
+    background: #f59e0b;
+    box-shadow: 0 0 4px #f59e0b;
+}
+
+.comp-3d-overlay {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.72) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 7px !important;
+    padding: 4px 7px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    max-width: 180px !important;
+}
+
+.comp-bohr-top-legend {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.78) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 7px !important;
+    padding: 4px 7px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    max-width: 195px !important;
+}
+
+.comp-3d-badge, .comp-bohr-bond-badge {
+    font-size: 0.64rem !important;
+    padding: 1px 5px !important;
+}
+
+.comp-3d-el-chip, .comp-3d-bond-item, .bohr-legend-pill {
+    font-size: 0.60rem !important;
+    padding: 1px 4px !important;
 }

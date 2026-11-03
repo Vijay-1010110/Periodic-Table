@@ -5650,6 +5650,7 @@ body.has-native-slider #temp-custom-slider {
     background: radial-gradient(circle, rgba(15, 30, 50, 0.5) 0%, rgba(5, 10, 20, 0.8) 100%);
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
     cursor: grab;
 }
 
@@ -10630,6 +10631,289 @@ body.is-pro-user .nav-pro-pill {
     text-align: center;
     color: #94a3b8;
     font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   3D Molecule & Bohr Model Overlays & Indicators
+   ========================================================================== */
+.comp-3d-overlay {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    max-width: 230px;
+}
+
+.comp-3d-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    padding: 2px 6px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.comp-3d-badge.covalent-single {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #38bdf8;
+}
+
+.comp-3d-badge.covalent-double {
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #c084fc;
+}
+
+.comp-3d-badge.covalent-triple {
+    background: rgba(236, 72, 153, 0.18);
+    border: 1px solid rgba(236, 72, 153, 0.45);
+    color: #f472b6;
+}
+
+.comp-3d-badge.ionic {
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: #fbbf24;
+}
+
+.comp-3d-legend-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comp-3d-group-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    font-family: var(--font-mono, monospace);
+}
+
+.comp-3d-elements-row,
+.comp-3d-bonds-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.comp-3d-el-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.65rem;
+    color: #e2e8f0;
+}
+
+.comp-3d-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.comp-3d-el-symbol {
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.comp-3d-el-name {
+    color: #94a3b8;
+    font-size: 0.60rem;
+}
+
+.comp-3d-bond-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.64rem;
+    color: #cbd5e1;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.comp-3d-bond-icon {
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+.comp-3d-bond-icon.single { color: #e2e8f0; }
+.comp-3d-bond-icon.double { color: #c084fc; }
+.comp-3d-bond-icon.triple { color: #f472b6; }
+.comp-3d-bond-icon.ionic { color: #fbbf24; }
+
+/* Bohr Top-Left Legend */
+.comp-bohr-top-legend {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    max-width: 250px;
+}
+
+.comp-bohr-bond-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    padding: 2px 6px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.comp-bohr-bond-badge.covalent-single {
+    background: rgba(0, 245, 212, 0.15);
+    border: 1px solid rgba(0, 245, 212, 0.4);
+    color: #00f5d4;
+}
+
+.comp-bohr-bond-badge.covalent-double {
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    color: #c084fc;
+}
+
+.comp-bohr-bond-badge.covalent-triple {
+    background: rgba(236, 72, 153, 0.18);
+    border: 1px solid rgba(236, 72, 153, 0.45);
+    color: #f472b6;
+}
+
+.comp-bohr-bond-badge.ionic {
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: #fbbf24;
+}
+
+.comp-bohr-legend-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.bohr-legend-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    color: #cbd5e1;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bohr-legend-pill .pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.bohr-legend-pill .pill-dot.valence {
+    background: #00f5d4;
+    box-shadow: 0 0 5px #00f5d4;
+}
+
+.bohr-legend-pill .pill-dot.core {
+    background: #94a3b8;
+    border: 1px dashed #ffffff;
+}
+
+.bohr-legend-pill .pill-dot.shared {
+    background: #00f5d4;
+}
+
+.bohr-legend-pill .pill-dot.lone {
+    background: #c084fc;
+    box-shadow: 0 0 4px #c084fc;
+}
+
+.bohr-legend-pill .pill-dot.transfer {
+    background: #f59e0b;
+    box-shadow: 0 0 4px #f59e0b;
+}
+
+.comp-3d-overlay {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.72) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 7px !important;
+    padding: 4px 7px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    max-width: 180px !important;
+}
+
+.comp-bohr-top-legend {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(10, 16, 30, 0.78) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 7px !important;
+    padding: 4px 7px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    max-width: 195px !important;
+}
+
+.comp-3d-badge, .comp-bohr-bond-badge {
+    font-size: 0.64rem !important;
+    padding: 1px 5px !important;
+}
+
+.comp-3d-el-chip, .comp-3d-bond-item, .bohr-legend-pill {
+    font-size: 0.60rem !important;
+    padding: 1px 4px !important;
 }
 
 /* 02_simulations.css */
@@ -98650,7 +98934,7 @@ function initMoleculeViewer() {
 
     molScene = new THREE.Scene();
     molCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    molCamera.position.z = 6;
+    molCamera.position.set(0, 0, 4.5);
 
     molRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     molRenderer.setSize(width, height);
@@ -98749,6 +99033,93 @@ function initMoleculeViewer() {
     window.addEventListener('resize', resizeMol);
 }
 
+
+/**
+ * Analyze compound chemistry and return bond classification details
+ */
+function getCompoundBondDetails(comp) {
+    if (!comp) return { type: 'single', title: '🔗 Single Covalent', badgeClass: 'covalent-single', defaultOrder: 1, desc: '' };
+    const f = (comp.formula || '').toUpperCase();
+    const id = (comp.id || '').toLowerCase();
+    const type = (comp.type || '').toLowerCase();
+    const isIonic = type.includes('ionic') || id === 'sodiumchloride' || id === 'magnesiumoxide' || id === 'ironiiioxide' || id === 'aluminumoxide' || id === 'zincoxide';
+
+    if (isIonic) {
+        return {
+            type: 'ionic',
+            title: '⚡ Ionic Bond (Ion Pair)',
+            badgeClass: 'ionic',
+            defaultOrder: 1,
+            desc: 'Complete valence electron transfer: metal loses electron to non-metal, forming stable electrostatic octets.'
+        };
+    }
+    if (f === 'N2' || f === 'CO' || f === 'HCN') {
+        const bondTitle = f === 'N2' ? '🔗 Triple Covalent (1× N≡N Bond)' : (f === 'CO' ? '🔗 Triple Covalent (1× C≡O Bond)' : '🔗 Triple Covalent (1× C≡N Bond)');
+        return {
+            type: 'triple',
+            title: bondTitle,
+            badgeClass: 'covalent-triple',
+            defaultOrder: 3,
+            desc: 'Three shared electron pairs (6e⁻) in continuous overlapping σ and 2× π bonding molecular orbitals.'
+        };
+    }
+    if (f === 'CO2' || f === 'O2' || f === 'SO2' || f === 'SO3' || f === 'CH2O' || f === 'C2H4') {
+        const doubleCount = f === 'CO2' ? '2× C=O' : (f === 'O2' ? '1× O=O' : (f === 'SO2' ? '2× S=O' : (f === 'C2H4' ? '1× C=C' : '1× C=O')));
+        return {
+            type: 'double',
+            title: `🔗 Double Covalent (${doubleCount} Bonds)`,
+            badgeClass: 'covalent-double',
+            defaultOrder: 2,
+            desc: 'Two shared electron pairs (4e⁻ per double bond) forming continuous shared valence envelopes.'
+        };
+    }
+    const isPolar = f === 'H2O' || f === 'NH3' || f === 'HCL';
+    const numBonds = (comp.atoms && comp.atoms.length > 1) ? comp.atoms.length - 1 : 1;
+    const bondName = f === 'CH4' ? '4× C–H' : (f === 'H2O' ? '2× O–H' : (f === 'NH3' ? '3× N–H' : (f === 'HCL' ? '1× H–Cl' : `${numBonds}×`)));
+    return {
+        type: 'single',
+        title: isPolar ? `🔗 Polar Covalent (${bondName} Bonds)` : `🔗 Single Covalent (${bondName} Bonds)`,
+        badgeClass: 'covalent-single',
+        defaultOrder: 1,
+        desc: `${numBonds} shared electron pair${numBonds > 1 ? 's' : ''} (2e⁻ each) in continuous shared valence shells.`
+    };
+}
+
+/**
+ * Determine bond order between two specific atoms in a compound
+ */
+function getBondOrderBetweenAtoms(comp, elemA, elemB, dist) {
+    if (!comp) return 1;
+    const f = (comp.formula || '').toUpperCase();
+    const id = (comp.id || '').toLowerCase();
+    const isIonic = (comp.type || '').toLowerCase().includes('ionic') || id === 'sodiumchloride' || id === 'magnesiumoxide';
+    if (isIonic) return 1;
+
+    // Hydrogen only ever forms single bonds
+    if (elemA === 1 || elemB === 1) return 1;
+    // Halogens (F, Cl, Br, I) form single bonds in typical compounds
+    if ([9, 17, 35, 53].includes(elemA) || [9, 17, 35, 53].includes(elemB)) return 1;
+
+    // Specific triple bond compounds: N2, CO, HCN
+    if (f === 'N2') return 3;
+    if (f === 'CO') return 3;
+    if (f === 'HCN' && ((elemA === 6 && elemB === 7) || (elemA === 7 && elemB === 6))) return 3;
+
+    // Specific double bond compounds:
+    if (f === 'CO2' && ((elemA === 6 && elemB === 8) || (elemA === 8 && elemB === 6))) return 2;
+    if (f === 'O2') return 2;
+    if (f === 'SO2' && ((elemA === 16 && elemB === 8) || (elemA === 8 && elemB === 16))) return 2;
+    if (f === 'SO3' && ((elemA === 16 && elemB === 8) || (elemA === 8 && elemB === 16))) return 2;
+    if (f === 'CH2O' && ((elemA === 6 && elemB === 8) || (elemA === 8 && elemB === 6))) return 2;
+    if (f === 'C2H4' && elemA === 6 && elemB === 6) return 2;
+    if (f === 'CH3COCH3' && ((elemA === 6 && elemB === 8) || (elemA === 8 && elemB === 6))) return 2;
+    if (f === 'CH3COOH' && ((elemA === 6 && elemB === 8) || (elemA === 8 && elemB === 6)) && dist < 1.35) return 2;
+    if (f === 'CH4N2O' && ((elemA === 6 && elemB === 8) || (elemA === 8 && elemB === 6))) return 2;
+
+    return 1;
+}
+
+
 function render3DMolecule(comp) {
     if (!molGroup || !comp || !comp.atoms) return;
 
@@ -98762,12 +99133,13 @@ function render3DMolecule(comp) {
 
     const atoms = comp.atoms;
     const atomSpheres = [];
+    const f = (comp.formula || '').toUpperCase();
 
     // Render Atom Spheres
     atoms.forEach(a => {
         const radius = a.elem === 1 ? 0.28 : (a.elem === 6 ? 0.42 : (a.elem === 8 ? 0.38 : (a.elem === 7 ? 0.40 : 0.45)));
         const geom = new THREE.SphereGeometry(radius, 32, 32);
-        const hexColor = CPK_COLORS[a.elem] || '#00d4ff';
+        const hexColor = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[a.elem]) ? CPK_COLORS[a.elem] : '#00d4ff';
         const mat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(hexColor),
             roughness: 0.3,
@@ -98780,46 +99152,151 @@ function render3DMolecule(comp) {
         atomSpheres.push({ mesh: sphere, pos: new THREE.Vector3(a.x, a.y, a.z), elem: a.elem });
     });
 
-    // Render Bonds between nearby atoms
+    // Render Bonds between nearby atoms with dynamic bond order (single, double, triple)
     for (let i = 0; i < atomSpheres.length; i++) {
         for (let j = i + 1; j < atomSpheres.length; j++) {
-            const p1 = atomSpheres[i].pos;
-            const p2 = atomSpheres[j].pos;
+            const a1 = atomSpheres[i];
+            const a2 = atomSpheres[j];
+
+            // In chemistry, Hydrogens do not bond with other Hydrogens unless molecule is H2
+            if (a1.elem === 1 && a2.elem === 1 && f !== 'H2') continue;
+
+            const p1 = a1.pos;
+            const p2 = a2.pos;
             const dist = p1.distanceTo(p2);
 
-            // Create bond if distance is within covalent bond threshold
-            if (dist > 0.4 && dist < 1.85) {
-                createBondCylinder(p1, p2, molGroup);
+            // Connect within covalent bond threshold
+            if (dist > 0.4 && dist < 2.05) {
+                const order = getBondOrderBetweenAtoms(comp, a1.elem, a2.elem, dist);
+                createBondCylinder(p1, p2, molGroup, order);
             }
         }
     }
 
     // Reset rotation
     molGroup.rotation.set(0, 0, 0);
+
+    // Update 3D Top-Left Indicator Overlay (Color Legend & Bond Types)
+    updateCompound3DLegend(comp);
 }
-
-function createBondCylinder(p1, p2, group) {
-    const direction = new THREE.Vector3().subVectors(p2, p1);
-    const orientation = new THREE.Matrix4();
-    orientation.lookAt(p1, p2, new THREE.Object3D().up);
-
-    const length = direction.length();
-    const geom = new THREE.CylinderGeometry(0.08, 0.08, length, 16);
-    const mat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.4, metalness: 0.1 });
-
-    const cylinder = new THREE.Mesh(geom, mat);
-    cylinder.position.copy(p1).add(p2).multiplyScalar(0.5);
-    cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
-
-    group.add(cylinder);
-}
-
-
-
 
 /**
- * Switch between 3D Ball-and-Stick Molecule and 2D Interactive Bohr Model representation
+ * Render single, double (2 parallel cylinders), or triple (3 parallel cylinders) bond
  */
+function createBondCylinder(p1, p2, group, order = 1) {
+    const dir = new THREE.Vector3().subVectors(p2, p1);
+    const length = dir.length();
+    if (length < 0.01) return;
+
+    const dirNorm = dir.clone().normalize();
+    const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+
+    // Calculate orthogonal perpendicular vector for parallel cylinders
+    let up = new THREE.Vector3(0, 1, 0);
+    if (Math.abs(dirNorm.dot(up)) > 0.88) {
+        up = new THREE.Vector3(1, 0, 0);
+    }
+    const perp = new THREE.Vector3().crossVectors(dirNorm, up).normalize();
+
+    const mat = new THREE.MeshStandardMaterial({
+        color: 0xdde6ed,
+        roughness: 0.35,
+        metalness: 0.2
+    });
+
+    if (order === 2) {
+        // Double Bond: 2 parallel cylinders
+        const geom = new THREE.CylinderGeometry(0.052, 0.052, length, 16);
+        const offsets = [-0.088, 0.088];
+        offsets.forEach(off => {
+            const cylinder = new THREE.Mesh(geom, mat);
+            cylinder.position.copy(mid).addScaledVector(perp, off);
+            cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirNorm);
+            group.add(cylinder);
+        });
+    } else if (order === 3) {
+        // Triple Bond: 3 parallel cylinders
+        const geom = new THREE.CylinderGeometry(0.046, 0.046, length, 16);
+        const offsets = [-0.125, 0, 0.125];
+        offsets.forEach(off => {
+            const cylinder = new THREE.Mesh(geom, mat);
+            cylinder.position.copy(mid).addScaledVector(perp, off);
+            cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirNorm);
+            group.add(cylinder);
+        });
+    } else {
+        // Single Bond: 1 central cylinder
+        const geom = new THREE.CylinderGeometry(0.075, 0.075, length, 16);
+        const cylinder = new THREE.Mesh(geom, mat);
+        cylinder.position.copy(mid);
+        cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirNorm);
+        group.add(cylinder);
+    }
+}
+
+/**
+ * Top-left overlay for 3D Molecule View detailing element colors and bond types
+ */
+function updateCompound3DLegend(comp) {
+    const container = document.getElementById('molecule-canvas-container');
+    if (!container || !comp) return;
+
+    let overlay = document.getElementById('comp-3d-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'comp-3d-overlay';
+        overlay.className = 'comp-3d-overlay';
+        container.appendChild(overlay);
+    }
+
+    const bond = getCompoundBondDetails(comp);
+    const elements = comp.elements || [];
+
+    // Element color chips
+    const elChips = elements.map(el => {
+        const info = getCompoundElementData(el.atomicNumber);
+        const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
+        return `
+            <div class="comp-3d-el-chip" title="${info.name}">
+                <span class="comp-3d-color-dot" style="background:${cpk}"></span>
+                <span class="comp-3d-el-symbol">${el.symbol}</span>
+                <span class="comp-3d-el-name">${info.name}</span>
+            </div>
+        `;
+    }).join('');
+
+    // Bond representations
+    const hasDouble = bond.defaultOrder === 2;
+    const hasTriple = bond.defaultOrder === 3;
+    const isIonic = bond.type === 'ionic';
+
+    let bondChips = '';
+    if (isIonic) {
+        bondChips = '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon ionic">⚡</span> Ionic Pair</div>';
+    } else {
+        bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon single">━</span> Single (1 cyl)</div>';
+        if (hasDouble) {
+            bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon double">═</span> Double (2 cyl)</div>';
+        }
+        if (hasTriple) {
+            bondChips += '<div class="comp-3d-bond-item"><span class="comp-3d-bond-icon triple">☰</span> Triple (3 cyl)</div>';
+        }
+    }
+
+    overlay.innerHTML = `
+        <div class="comp-3d-badge ${bond.badgeClass}">${bond.title}</div>
+        <div class="comp-3d-legend-group">
+            <span class="comp-3d-group-label">ELEMENTS:</span>
+            <div class="comp-3d-elements-row">${elChips}</div>
+        </div>
+        <div class="comp-3d-legend-group">
+            <span class="comp-3d-group-label">BONDS:</span>
+            <div class="comp-3d-bonds-row">${bondChips}</div>
+        </div>
+    `;
+}
+
+
 function switchCompoundViewer(mode) {
     currentCompoundViewerMode = mode;
     const tab3d = document.getElementById('comp-tab-3d');
@@ -98849,8 +99326,18 @@ function switchCompoundViewer(mode) {
             hint.textContent = 'Drag to rotate';
             hint.style.color = '#38bdf8';
         }
+        if (selectedCompoundObj) {
+            render3DMolecule(selectedCompoundObj);
+        }
+        if (typeof window.startMoleculeViewer === 'function') {
+            window.startMoleculeViewer();
+        }
         if (typeof window.resizeMoleculeViewer === 'function') {
+            window.resizeMoleculeViewer();
             setTimeout(window.resizeMoleculeViewer, 50);
+        }
+        if (typeof molRenderer !== 'undefined' && molScene && molCamera) {
+            molRenderer.render(molScene, molCamera);
         }
     }
 }
@@ -98902,80 +99389,41 @@ function getCompoundElementData(elem) {
  * Features concentric energy levels (K, L, M, N), animated revolving electrons,
  * shared covalent bonding electron pairs in valence overlaps, and ionic electron transfer brackets.
  */
+
+/**
+ * Render Advanced Bohr Model for Chemical Compounds
+ * Features continuous shared valence bonding shells (CH4 4-lobed contour, H2O bent envelope,
+ * CO2 double bonds, N2/HCN triple bonds, and NaCl ionic transfer), clear high-contrast core orbits,
+ * revolving core electrons, distinct shared pairs vs non-bonding lone pairs, and top-left bond indicators.
+ */
 function renderCompoundBohrModel(comp) {
     const container = document.getElementById('compound-bohr-container');
     if (!container || !comp) return;
 
-    const isIonic = (comp.type || '').toLowerCase().includes('ionic');
     const atoms = comp.atoms || [];
-
     if (atoms.length === 0) {
         container.innerHTML = '<div class="comp-bohr-empty">No 2D atomic coordinates available for this compound.</div>';
         return;
     }
 
-    // SVG Canvas Dimensions
     const svgW = 380;
     const svgH = 220;
-
-    // Coordinate Normalization & Viewport Fitting
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    atoms.forEach(a => {
-        if (a.x < minX) minX = a.x;
-        if (a.x > maxX) maxX = a.x;
-        if (a.y < minY) minY = a.y;
-        if (a.y > maxY) maxY = a.y;
-    });
-
-    const spanX = Math.max(0.7, maxX - minX);
-    const spanY = Math.max(0.7, maxY - minY);
-    const midX = (minX + maxX) / 2;
-    const midY = (minY + maxY) / 2;
-
-    const padX = 64;
-    const padY = 52;
-    const availW = svgW - padX * 2;
-    const availH = svgH - padY * 2;
-    const scale = Math.min(availW / spanX, availH / spanY, 95);
-
-    const mappedAtoms = atoms.map((a, idx) => {
-        let cx = (svgW / 2) + (a.x - midX) * scale;
-        let cy = (svgH / 2) + (a.y - midY) * scale;
-
-        // Custom balanced centering for 2-atom & 3-atom geometries
-        if (atoms.length === 2) {
-            cx = idx === 0 ? 115 : 265;
-            cy = 110;
-        } else if (atoms.length === 3 && Math.abs(atoms[0].y - atoms[1].y) < 0.1 && Math.abs(atoms[0].y - atoms[2].y) < 0.1) {
-            // Linear molecule (e.g. CO2)
-            cx = 70 + idx * 120;
-            cy = 110;
-        }
-
-        const elInfo = getCompoundElementData(a.elem);
-        const shells = elInfo.electronsPerShell ? [...elInfo.electronsPerShell] : [1];
-        const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[a.elem]) ? CPK_COLORS[a.elem] : '#00d4ff';
-
-        return {
-            id: idx,
-            elem: a.elem,
-            symbol: a.symbol || elInfo.symbol,
-            name: elInfo.name,
-            atomicNumber: elInfo.atomicNumber,
-            shells,
-            color: cpk,
-            cx,
-            cy
-        };
-    });
+    const f = (comp.formula || '').toUpperCase();
+    const id = (comp.id || '').toLowerCase();
+    const bond = getCompoundBondDetails(comp);
+    const isIonic = bond.type === 'ionic';
 
     let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="comp-bohr-svg" width="100%" height="220" xmlns="http://www.w3.org/2000/svg">`;
     svg += `<defs>
         <radialGradient id="bohr-bg-grad-${comp.id}" cx="50%" cy="50%" r="65%">
-            <stop offset="0%" stop-color="#0a192f" stop-opacity="0.85"/>
+            <stop offset="0%" stop-color="#0a192f" stop-opacity="0.88"/>
             <stop offset="100%" stop-color="#020617" stop-opacity="0.98"/>
         </radialGradient>
         <filter id="bohr-glow-${comp.id}" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.0" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="bohr-valence-glow-${comp.id}" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
@@ -98986,88 +99434,406 @@ function renderCompoundBohrModel(comp) {
 
     svg += `<rect width="${svgW}" height="${svgH}" fill="url(#bohr-bg-grad-${comp.id})" rx="9"/>`;
 
-    // 1. Draw Chemical Bonding Bridges & Ionic Electron Transfers
-    for (let i = 0; i < mappedAtoms.length; i++) {
-        for (let j = i + 1; j < mappedAtoms.length; j++) {
-            const a1 = mappedAtoms[i];
-            const a2 = mappedAtoms[j];
-            const dist = Math.hypot(a2.cx - a1.cx, a2.cy - a1.cy);
+    // High-Precision Benchmark Layouts
+    if (f === 'CH4') {
+        const ccx = 205, ccy = 110;
+        const hDist = 58;
+        const hR = 17;
+        const coreR = 20;
 
-            // Connect if within bonded distance or small compound
-            if (dist < 185 || mappedAtoms.length <= 3) {
-                if (isIonic) {
-                    // Ionic Transfer Arc
-                    const mx = (a1.cx + a2.cx) / 2;
-                    const my = Math.min(a1.cy, a2.cy) - 30;
-                    svg += `<path d="M ${a1.cx} ${a1.cy - 18} Q ${mx} ${my} ${a2.cx} ${a2.cy - 18}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#bohr-arrow-${comp.id})" />`;
-                    svg += `<text x="${mx}" y="${my - 6}" fill="#f59e0b" font-size="9" text-anchor="middle" font-weight="bold" font-family="monospace">e⁻ Transfer</text>`;
-                } else {
-                    // Covalent Valence Overlap Bridge
-                    svg += `<line x1="${a1.cx}" y1="${a1.cy}" x2="${a2.cx}" y2="${a2.cy}" stroke="rgba(0, 212, 255, 0.40)" stroke-width="1.8" stroke-dasharray="3,3" />`;
-                    
-                    // Shared electron pair positioned in the bonding overlap midpoint
-                    const mx = (a1.cx + a2.cx) / 2;
-                    const my = (a1.cy + a2.cy) / 2;
-                    const perpX = (-(a2.cy - a1.cy) / dist) * 5.5;
-                    const perpY = ((a2.cx - a1.cx) / dist) * 5.5;
-                    
-                    svg += `<circle cx="${mx + perpX}" cy="${my + perpY}" r="3.2" fill="#38bdf8" filter="url(#bohr-glow-${comp.id})"/>`;
-                    svg += `<circle cx="${mx - perpX}" cy="${my - perpY}" r="3.2" fill="#38bdf8" filter="url(#bohr-glow-${comp.id})"/>`;
-                    svg += `<text x="${mx}" y="${my + (perpY > 0 ? 15 : -10)}" fill="#00d4ff" font-size="7.5" text-anchor="middle" font-weight="bold" font-family="monospace">2e⁻ shared</text>`;
-                }
-            }
-        }
-    }
+        // 1. Continuous 4-lobed Shared Valence Shell connecting Carbon with all 4 Hydrogens in one string
+        const pathCH4 = `
+            M ${ccx - hR} ${ccy - hDist}
+            Q ${ccx} ${ccy - hDist - 20} ${ccx + hR} ${ccy - hDist}
+            Q ${ccx + 28} ${ccy - 28} ${ccx + hDist} ${ccy - hR}
+            Q ${ccx + hDist + 20} ${ccy} ${ccx + hDist} ${ccy + hR}
+            Q ${ccx + 28} ${ccy + 28} ${ccx + hR} ${ccy + hDist}
+            Q ${ccx} ${ccy + hDist + 20} ${ccx - hR} ${ccy + hDist}
+            Q ${ccx - 28} ${ccy + 28} ${ccx - hDist} ${ccy + hR}
+            Q ${ccx - hDist - 20} ${ccy} ${ccx - hDist} ${ccy - hR}
+            Q ${ccx - 28} ${ccy - 28} ${ccx - hR} ${ccy - hDist}
+            Z
+        `.replace(/\s+/g, ' ');
 
-    // 2. Draw Atom Shells and Revolving Electrons
-    mappedAtoms.forEach(atom => {
-        const { cx, cy, symbol, atomicNumber, shells, color } = atom;
-        const isHydrogen = atomicNumber === 1;
-        const shellBaseR = isHydrogen ? 18 : 16;
-        const shellStepR = Math.min(13, 52 / Math.max(1, shells.length));
+        svg += `<path d="${pathCH4}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
 
-        // Draw Concentric Energy Level Shells (K, L, M...)
-        const shellNames = ['K', 'L', 'M', 'N', 'O', 'P'];
-        shells.forEach((eCount, sIdx) => {
-            const r = shellBaseR + (sIdx + 1) * shellStepR;
-            const isValence = sIdx === shells.length - 1;
-            const strokeColor = isValence ? 'rgba(56, 189, 248, 0.70)' : 'rgba(148, 163, 184, 0.28)';
-            const strokeDash = isValence ? 'none' : '3,3';
-            
-            svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${strokeColor}" stroke-width="1.2" stroke-dasharray="${strokeDash}" />`;
-            svg += `<text x="${cx}" y="${cy - r - 2}" fill="rgba(148, 163, 184, 0.55)" font-size="6.5" text-anchor="middle" font-family="monospace">${shellNames[sIdx] || 'n'}</text>`;
-
-            // Position and Animate Revolving Electrons along each Shell
-            const dur = (sIdx + 1) * 5 + 3; // Inner shells revolve faster
-            for (let e = 0; e < eCount; e++) {
-                const angle = (360 / eCount) * e;
-                const eColor = isValence ? '#38bdf8' : '#cbd5e1';
-                svg += `
+        // 2. Carbon Core Orbit K (clearly visible & labeled)
+        svg += `<circle cx="${ccx}" cy="${ccy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+        svg += `<text x="${ccx}" y="${ccy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
+        for (let e = 0; e < 2; e++) {
+            const a = e * 180;
+            svg += `
                 <g>
-                    <animateTransform attributeName="transform" type="rotate" from="${angle} ${cx} ${cy}" to="${angle + 360} ${cx} ${cy}" dur="${dur}s" repeatCount="indefinite" />
-                    <circle cx="${cx + r}" cy="${cy}" r="2.8" fill="${eColor}" />
+                    <animateTransform attributeName="transform" type="rotate" from="${a} ${ccx} ${ccy}" to="${a + 360} ${ccx} ${ccy}" dur="6s" repeatCount="indefinite" />
+                    <circle cx="${ccx + coreR}" cy="${ccy}" r="2.8" fill="#e2e8f0" />
                 </g>`;
+        }
+
+        // Carbon Nucleus
+        svg += `<circle cx="${ccx}" cy="${ccy}" r="11" fill="#909090" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${ccx}" y="${ccy + 4}" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">C</text>`;
+        svg += `<text x="${ccx}" y="${ccy + 19}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">6p⁺</text>`;
+
+        // 4 Hydrogens & Shared Electron Pairs (2e⁻ in each lobe)
+        const hAtoms = [
+            { name: 'H1', cx: ccx, cy: ccy - hDist, angle: -Math.PI / 2 },
+            { name: 'H2', cx: ccx + hDist, cy: ccy, angle: 0 },
+            { name: 'H3', cx: ccx, cy: ccy + hDist, angle: Math.PI / 2 },
+            { name: 'H4', cx: ccx - hDist, cy: ccy, angle: Math.PI }
+        ];
+
+        hAtoms.forEach(h => {
+            // Nucleus
+            svg += `<circle cx="${h.cx}" cy="${h.cy}" r="9" fill="#ffffff" stroke="#38bdf8" stroke-width="1.4" filter="url(#bohr-glow-${comp.id})" />`;
+            svg += `<text x="${h.cx}" y="${h.cy + 3.5}" fill="#0f172a" font-size="9" font-weight="bold" text-anchor="middle" font-family="monospace">H</text>`;
+            svg += `<text x="${h.cx}" y="${h.cy + (h.cy > ccy ? 17 : -12)}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">1p⁺</text>`;
+
+            // Shared 2e⁻ pair in continuous valence lobe
+            const mx = (ccx + h.cx) / 2;
+            const my = (ccy + h.cy) / 2;
+            const px = -Math.sin(h.angle) * 5;
+            const py = Math.cos(h.angle) * 5;
+
+            svg += `<circle cx="${mx + px}" cy="${my + py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${mx - px}" cy="${my - py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+        });
+
+        svg += `<text x="${ccx}" y="19" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">Continuous 8e⁻ Shared Valence Shell (4× 2e⁻ Octet)</text>`;
+
+    } else if (f === 'H2O') {
+        const ocx = 205, ocy = 120;
+        const h1x = 150, h1y = 72;
+        const h2x = 260, h2y = 72;
+        const coreR = 20;
+
+        // Continuous 2-lobed shared valence shell with lower lone-pair dome
+        const pathH2O = `
+            M ${h1x - 16} ${h1y}
+            Q ${h1x} ${h1y - 19} ${h1x + 16} ${h1y}
+            Q ${ocx} ${ocy - 26} ${h2x - 16} ${h2y}
+            Q ${h2x} ${h2y - 19} ${h2x + 16} ${h2y}
+            Q ${ocx + 48} ${ocy} ${ocx + 38} ${ocy + 28}
+            Q ${ocx} ${ocy + 48} ${ocx - 38} ${ocy + 28}
+            Q ${ocx - 48} ${ocy} ${h1x - 16} ${h1y}
+            Z
+        `.replace(/\s+/g, ' ');
+
+        svg += `<path d="${pathH2O}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
+
+        // Oxygen Core Orbit K (clearly visible & labeled)
+        svg += `<circle cx="${ocx}" cy="${ocy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+        svg += `<text x="${ocx}" y="${ocy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
+        for (let e = 0; e < 2; e++) {
+            const a = e * 180;
+            svg += `
+                <g>
+                    <animateTransform attributeName="transform" type="rotate" from="${a} ${ocx} ${ocy}" to="${a + 360} ${ocx} ${ocy}" dur="6s" repeatCount="indefinite" />
+                    <circle cx="${ocx + coreR}" cy="${ocy}" r="2.8" fill="#e2e8f0" />
+                </g>`;
+        }
+
+        // Oxygen Nucleus
+        svg += `<circle cx="${ocx}" cy="${ocy}" r="12" fill="#ff0d0d" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${ocx}" y="${ocy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">O</text>`;
+        svg += `<text x="${ocx}" y="${ocy + 20}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">8p⁺</text>`;
+
+        // Hydrogens & Shared electron pairs (2e⁻ each)
+        [[h1x, h1y], [h2x, h2y]].forEach(([hx, hy]) => {
+            svg += `<circle cx="${hx}" cy="${hy}" r="9" fill="#ffffff" stroke="#38bdf8" stroke-width="1.4" filter="url(#bohr-glow-${comp.id})" />`;
+            svg += `<text x="${hx}" y="${hy + 3.5}" fill="#0f172a" font-size="9" font-weight="bold" text-anchor="middle" font-family="monospace">H</text>`;
+            svg += `<text x="${hx}" y="${hy - 13}" fill="#94a3b8" font-size="6.5" text-anchor="middle" font-family="monospace">1p⁺</text>`;
+
+            const mx = (ocx + hx) / 2;
+            const my = (ocy + hy) / 2;
+            const dx = hx - ocx, dy = hy - ocy;
+            const dist = Math.hypot(dx, dy);
+            const px = (-dy / dist) * 5;
+            const py = (dx / dist) * 5;
+
+            svg += `<circle cx="${mx + px}" cy="${my + py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+            svg += `<circle cx="${mx - px}" cy="${my - py}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+        });
+
+        // 2 Non-bonding Lone Pairs on Oxygen's lower valence arc (in purple #c084fc)
+        svg += `<circle cx="${ocx - 22}" cy="${ocy + 32}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${ocx - 14}" cy="${ocy + 36}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${ocx + 14}" cy="${ocy + 36}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${ocx + 22}" cy="${ocy + 32}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${ocx}" y="${ocy + 49}" fill="#c084fc" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">2× Lone Pairs (4e⁻)</text>`;
+
+    } else if (f === 'CO2') {
+        const ccx = 205, ccy = 110;
+        const o1x = 95, o1y = 110;
+        const o2x = 315, o2y = 110;
+        const coreR = 19;
+
+        // Continuous Double-Bond Shared Valence Shell
+        const pathCO2 = `
+            M ${o1x} 78
+            Q ${o1x - 30} 110 ${o1x} 142
+            L ${o2x} 142
+            Q ${o2x + 30} 110 ${o2x} 78
+            Z
+        `.replace(/\s+/g, ' ');
+
+        svg += `<path d="${pathCO2}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
+
+        // Core Shells (K=2) for all 3 atoms (clearly visible!)
+        [o1x, ccx, o2x].forEach(x => {
+            svg += `<circle cx="${x}" cy="${ccy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+            svg += `<text x="${x}" y="${ccy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
+            for (let e = 0; e < 2; e++) {
+                const a = e * 180;
+                svg += `
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" from="${a} ${x} ${ccy}" to="${a + 360} ${x} ${ccy}" dur="6s" repeatCount="indefinite" />
+                        <circle cx="${x + coreR}" cy="${ccy}" r="2.8" fill="#e2e8f0" />
+                    </g>`;
             }
         });
 
-        // Glowing Nucleus
-        svg += `<circle cx="${cx}" cy="${cy}" r="12" fill="${color}" stroke="#ffffff" stroke-width="1.6" filter="url(#bohr-glow-${comp.id})" />`;
-        const textColor = (atomicNumber === 1 || color === '#ffffff' || color === '#ffff30') ? '#000000' : '#ffffff';
-        svg += `<text x="${cx}" y="${cy + 4.5}" fill="${textColor}" font-size="11.5" text-anchor="middle" font-weight="bold" font-family="monospace">${symbol}</text>`;
-        svg += `<text x="${cx}" y="${cy + 25}" fill="#94a3b8" font-size="8" text-anchor="middle" font-family="monospace">${atomicNumber}p⁺</text>`;
+        // Nuclei
+        svg += `<circle cx="${o1x}" cy="${ccy}" r="12" fill="#ff0d0d" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${o1x}" y="${ccy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">O</text>`;
 
-        // Ionic Formal Charge Annotation
-        if (isIonic) {
-            const isMetal = [3, 11, 12, 19, 20, 26, 29, 30, 47].includes(atomicNumber);
-            const chargeSign = isMetal ? '⁺' : '⁻';
-            svg += `<text x="${cx + 25}" y="${cy - 16}" fill="#f59e0b" font-size="15" font-weight="bold" font-family="monospace">${chargeSign}</text>`;
+        svg += `<circle cx="${ccx}" cy="${ccy}" r="11" fill="#909090" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${ccx}" y="${ccy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">C</text>`;
+
+        svg += `<circle cx="${o2x}" cy="${ccy}" r="12" fill="#ff0d0d" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${o2x}" y="${ccy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">O</text>`;
+
+        // Double Bond 1: 4 shared electrons between O1 and C
+        const m1x = (o1x + ccx) / 2;
+        [[-8, -8], [-8, 8], [8, -8], [8, 8]].forEach(([ox, oy]) => {
+            svg += `<circle cx="${m1x + ox}" cy="${ccy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+        });
+        svg += `<text x="${m1x}" y="${ccy + 24}" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">4e⁻ shared (O=C)</text>`;
+
+        // Double Bond 2: 4 shared electrons between C and O2
+        const m2x = (ccx + o2x) / 2;
+        [[-8, -8], [-8, 8], [8, -8], [8, 8]].forEach(([ox, oy]) => {
+            svg += `<circle cx="${m2x + ox}" cy="${ccy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+        });
+        svg += `<text x="${m2x}" y="${ccy + 24}" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">4e⁻ shared (C=O)</text>`;
+
+        // Lone pairs on outer ends of Oxygens
+        [[-20, -12], [-20, 12]].forEach(([ox, oy]) => {
+            svg += `<circle cx="${o1x + ox}" cy="${ccy + oy}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        });
+        [[20, -12], [20, 12]].forEach(([ox, oy]) => {
+            svg += `<circle cx="${o2x + ox}" cy="${ccy + oy}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        });
+
+    } else if (f === 'N2' || f === 'CO' || f === 'HCN') {
+        const a1x = 150, a2x = 260, cy = 110;
+        const coreR = 19;
+        const isN2 = f === 'N2';
+        const sym1 = isN2 ? 'N' : (f === 'CO' ? 'C' : 'C');
+        const sym2 = isN2 ? 'N' : (f === 'CO' ? 'O' : 'N');
+        const col1 = isN2 ? '#3050f8' : (f === 'CO' ? '#909090' : '#909090');
+        const col2 = isN2 ? '#3050f8' : (f === 'CO' ? '#ff0d0d' : '#3050f8');
+
+        // Continuous Shared Valence Envelope
+        const pathTriple = `
+            M ${a1x} 76
+            Q ${a1x - 32} ${cy} ${a1x} 144
+            L ${a2x} 144
+            Q ${a2x + 32} ${cy} ${a2x} 76
+            Z
+        `.replace(/\s+/g, ' ');
+
+        svg += `<path d="${pathTriple}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="2.2" filter="url(#bohr-valence-glow-${comp.id})" />`;
+
+        // Core Shells
+        [a1x, a2x].forEach(x => {
+            svg += `<circle cx="${x}" cy="${cy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+            svg += `<text x="${x}" y="${cy - coreR - 3}" fill="#cbd5e1" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
+            for (let e = 0; e < 2; e++) {
+                const a = e * 180;
+                svg += `
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" from="${a} ${x} ${cy}" to="${a + 360} ${x} ${cy}" dur="6s" repeatCount="indefinite" />
+                        <circle cx="${x + coreR}" cy="${cy}" r="2.8" fill="#e2e8f0" />
+                    </g>`;
+            }
+        });
+
+        // Nuclei
+        svg += `<circle cx="${a1x}" cy="${cy}" r="12" fill="${col1}" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${a1x}" y="${cy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">${sym1}</text>`;
+
+        svg += `<circle cx="${a2x}" cy="${cy}" r="12" fill="${col2}" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${a2x}" y="${cy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">${sym2}</text>`;
+
+        // Triple Bond: 6 shared electrons (3 pairs) in overlap
+        const mx = (a1x + a2x) / 2;
+        [[-6, -14], [6, -14], [-6, 0], [6, 0], [-6, 14], [6, 14]].forEach(([ox, oy]) => {
+            svg += `<circle cx="${mx + ox}" cy="${cy + oy}" r="3.2" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+        });
+        svg += `<text x="${mx}" y="${cy + 26}" fill="#00f5d4" font-size="7.5" font-weight="bold" text-anchor="middle" font-family="monospace">6e⁻ shared (3 pairs)</text>`;
+
+        // Lone pair on each outer end
+        svg += `<circle cx="${a1x - 22}" cy="${cy - 5}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${a1x - 22}" cy="${cy + 5}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${a2x + 22}" cy="${cy - 5}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<circle cx="${a2x + 22}" cy="${cy + 5}" r="3.2" fill="#c084fc" filter="url(#bohr-glow-${comp.id})" />`;
+
+    } else if (isIonic) {
+        // Ionic Compound (e.g. NaCl, MgO)
+        const m1x = 135, m2x = 275, cy = 110;
+        const cat = comp.elements ? comp.elements[0] : { atomicNumber: 11, symbol: 'Na' };
+        const an = comp.elements ? comp.elements[1] : { atomicNumber: 17, symbol: 'Cl' };
+        const catInfo = getCompoundElementData(cat.atomicNumber);
+        const anInfo = getCompoundElementData(an.atomicNumber);
+
+        // Cation Shells (stable remaining filled shells, e.g. Na+ has K=2, L=8)
+        const catShells = [2, 8];
+        const catR = [18, 30];
+        const catNames = ['K', 'L'];
+        catShells.forEach((cnt, idx) => {
+            const r = catR[idx];
+            svg += `<circle cx="${m1x}" cy="${cy}" r="${r}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+            svg += `<text x="${m1x}" y="${cy - r - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">${catNames[idx]}</text>`;
+            for (let e = 0; e < cnt; e++) {
+                const a = (360 / cnt) * e;
+                svg += `
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" from="${a} ${m1x} ${cy}" to="${a + 360} ${m1x} ${cy}" dur="${(idx + 1) * 4}s" repeatCount="indefinite" />
+                        <circle cx="${m1x + r}" cy="${cy}" r="2.8" fill="#cbd5e1" />
+                    </g>`;
+            }
+        });
+
+        // Cation Nucleus
+        svg += `<circle cx="${m1x}" cy="${cy}" r="12" fill="${(typeof CPK_COLORS !== 'undefined' && CPK_COLORS[cat.atomicNumber]) ? CPK_COLORS[cat.atomicNumber] : '#ab5cf2'}" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${m1x}" y="${cy + 4.5}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">${catInfo.symbol}</text>`;
+
+        // Square brackets for Cation [Na]+
+        svg += `<path d="M ${m1x - 38} ${cy - 38} L ${m1x - 44} ${cy - 38} L ${m1x - 44} ${cy + 38} L ${m1x - 38} ${cy + 38}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
+        svg += `<path d="M ${m1x + 38} ${cy - 38} L ${m1x + 44} ${cy - 38} L ${m1x + 44} ${cy + 38} L ${m1x + 38} ${cy + 38}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
+        svg += `<text x="${m1x + 48}" y="${cy - 28}" fill="#f59e0b" font-size="13" font-weight="bold" font-family="monospace">⁺</text>`;
+
+        // Anion Shells (K=2, L=8, M=8 full octet!)
+        const anShells = [2, 8, 8];
+        const anR = [18, 30, 42];
+        const anNames = ['K', 'L', 'M'];
+        anShells.forEach((cnt, idx) => {
+            const r = anR[idx];
+            const isVal = idx === anShells.length - 1;
+            const stroke = isVal ? '#00f5d4' : 'rgba(148, 163, 184, 0.82)';
+            svg += `<circle cx="${m2x}" cy="${cy}" r="${r}" fill="none" stroke="${stroke}" stroke-width="${isVal ? 2.0 : 1.6}" stroke-dasharray="${isVal ? 'none' : '3,2'}" />`;
+            svg += `<text x="${m2x}" y="${cy - r - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">${anNames[idx]}</text>`;
+            for (let e = 0; e < cnt; e++) {
+                const a = (360 / cnt) * e;
+                const isTransferred = isVal && e === cnt - 1;
+                const eCol = isTransferred ? '#f59e0b' : (isVal ? '#00f5d4' : '#cbd5e1');
+                const eR = isTransferred ? 3.8 : 2.8;
+                svg += `
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" from="${a} ${m2x} ${cy}" to="${a + 360} ${m2x} ${cy}" dur="${(idx + 1) * 4}s" repeatCount="indefinite" />
+                        <circle cx="${m2x + r}" cy="${cy}" r="${eR}" fill="${eCol}" ${isTransferred ? `filter="url(#bohr-glow-${comp.id})"` : ''} />
+                    </g>`;
+            }
+        });
+
+        // Anion Nucleus
+        svg += `<circle cx="${m2x}" cy="${cy}" r="12" fill="${(typeof CPK_COLORS !== 'undefined' && CPK_COLORS[an.atomicNumber]) ? CPK_COLORS[an.atomicNumber] : '#1ff01f'}" stroke="#ffffff" stroke-width="1.5" filter="url(#bohr-glow-${comp.id})" />`;
+        svg += `<text x="${m2x}" y="${cy + 4.5}" fill="#0f172a" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">${anInfo.symbol}</text>`;
+
+        // Square brackets for Anion [Cl]-
+        svg += `<path d="M ${m2x - 50} ${cy - 50} L ${m2x - 56} ${cy - 50} L ${m2x - 56} ${cy + 50} L ${m2x - 50} ${cy + 50}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
+        svg += `<path d="M ${m2x + 50} ${cy - 50} L ${m2x + 56} ${cy - 50} L ${m2x + 56} ${cy + 50} L ${m2x + 50} ${cy + 50}" fill="none" stroke="#f59e0b" stroke-width="1.8" />`;
+        svg += `<text x="${m2x + 60}" y="${cy - 38}" fill="#f59e0b" font-size="13" font-weight="bold" font-family="monospace">⁻</text>`;
+
+        // Arched Electron Transfer Vector
+        const arcMidX = (m1x + m2x) / 2;
+        const arcMidY = cy - 54;
+        svg += `<path d="M ${m1x + 25} ${cy - 20} Q ${arcMidX} ${arcMidY} ${m2x - 30} ${cy - 35}" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#bohr-arrow-${comp.id})" />`;
+        svg += `<text x="${arcMidX}" y="${arcMidY - 6}" fill="#f59e0b" font-size="8.5" font-weight="bold" text-anchor="middle" font-family="monospace">e⁻ Transfer ➔</text>`;
+
+    } else {
+        // General Multi-Atom Molecule Handler
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        atoms.forEach(a => {
+            if (a.x < minX) minX = a.x;
+            if (a.x > maxX) maxX = a.x;
+            if (a.y < minY) minY = a.y;
+            if (a.y > maxY) maxY = a.y;
+        });
+        const spanX = Math.max(0.7, maxX - minX);
+        const spanY = Math.max(0.7, maxY - minY);
+        const midX = (minX + maxX) / 2;
+        const midY = (minY + maxY) / 2;
+        const padX = 64;
+        const padY = 52;
+        const scale = Math.min((svgW - padX * 2) / spanX, (svgH - padY * 2) / spanY, 80);
+
+        const mappedAtoms = atoms.map((a, idx) => {
+            const cx = (svgW / 2 + 15) + (a.x - midX) * scale;
+            const cy = (svgH / 2) + (a.y - midY) * scale;
+            const elInfo = getCompoundElementData(a.elem);
+            const shells = elInfo.electronsPerShell ? [...elInfo.electronsPerShell] : [1];
+            const cpk = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[a.elem]) ? CPK_COLORS[a.elem] : '#00d4ff';
+            return { id: idx, elem: a.elem, symbol: elInfo.symbol, atomicNumber: elInfo.atomicNumber, shells, color: cpk, cx, cy };
+        });
+
+        // Continuous Valence Overlap Connectors between bonded atoms
+        for (let i = 0; i < mappedAtoms.length; i++) {
+            for (let j = i + 1; j < mappedAtoms.length; j++) {
+                const a1 = mappedAtoms[i];
+                const a2 = mappedAtoms[j];
+                if (a1.elem === 1 && a2.elem === 1 && f !== 'H2') continue;
+
+                const dist = Math.hypot(a2.cx - a1.cx, a2.cy - a1.cy);
+
+                if (dist < 130 || mappedAtoms.length <= 4) {
+                    const ux = (a2.cx - a1.cx) / dist;
+                    const uy = (a2.cy - a1.cy) / dist;
+                    const px = -uy * 14;
+                    const py = ux * 14;
+                    const bridgePath = `M ${a1.cx + px} ${a1.cy + py} L ${a2.cx + px} ${a2.cy + py} L ${a2.cx - px} ${a2.cy - py} L ${a1.cx - px} ${a1.cy - py} Z`;
+                    svg += `<path d="${bridgePath}" fill="rgba(0, 245, 212, 0.08)" stroke="#00f5d4" stroke-width="1.8" filter="url(#bohr-valence-glow-${comp.id})" />`;
+
+                    // Shared electron pair
+                    const mx = (a1.cx + a2.cx) / 2;
+                    const my = (a1.cy + a2.cy) / 2;
+                    const epx = -uy * 5;
+                    const epy = ux * 5;
+                    svg += `<circle cx="${mx + epx}" cy="${my + epy}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+                    svg += `<circle cx="${mx - epx}" cy="${my - epy}" r="3" fill="#00f5d4" filter="url(#bohr-valence-glow-${comp.id})" />`;
+                }
+            }
         }
-    });
+
+        // Atom Core Shells & Nuclei
+        mappedAtoms.forEach(atom => {
+            const { cx, cy, symbol, atomicNumber, shells, color } = atom;
+            const coreR = 16;
+
+            // Core Shell
+            svg += `<circle cx="${cx}" cy="${cy}" r="${coreR}" fill="none" stroke="rgba(148, 163, 184, 0.82)" stroke-width="1.6" stroke-dasharray="3,2" />`;
+            svg += `<text x="${cx}" y="${cy - coreR - 2}" fill="#cbd5e1" font-size="6.5" font-weight="bold" text-anchor="middle" font-family="monospace">K</text>`;
+
+            for (let e = 0; e < Math.min(2, shells[0] || 1); e++) {
+                const a = e * 180;
+                svg += `
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" from="${a} ${cx} ${cy}" to="${a + 360} ${cx} ${cy}" dur="6s" repeatCount="indefinite" />
+                        <circle cx="${cx + coreR}" cy="${cy}" r="2.5" fill="#e2e8f0" />
+                    </g>`;
+            }
+
+            // Nucleus
+            svg += `<circle cx="${cx}" cy="${cy}" r="11" fill="${color}" stroke="#ffffff" stroke-width="1.4" filter="url(#bohr-glow-${comp.id})" />`;
+            const textColor = (atomicNumber === 1 || color === '#ffffff' || color === '#ffff30') ? '#000000' : '#ffffff';
+            svg += `<text x="${cx}" y="${cy + 4}" fill="${textColor}" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">${symbol}</text>`;
+        });
+    }
 
     svg += `</svg>`;
 
-    // 3. Elements Shell & Octet Summary Breakdown Chips
-    const elemChips = comp.elements.map(el => {
+    // Elements Shell & Octet Summary Breakdown Chips
+    const elemChips = (comp.elements || []).map(el => {
         const info = getCompoundElementData(el.atomicNumber);
         const shellsStr = info.electronsPerShell ? info.electronsPerShell.join(', ') : '';
         const octetTarget = el.atomicNumber === 1 ? 'Duet (2e⁻)' : 'Octet (8e⁻)';
@@ -99084,13 +99850,27 @@ function renderCompoundBohrModel(comp) {
         `;
     }).join('');
 
+    const hasLone = f === 'H2O' || f === 'NH3' || f === 'HCL' || f === 'CO2' || f === 'N2' || f === 'CO';
+
     container.innerHTML = `
-        <div class="comp-bohr-wrapper">
+        <div class="comp-bohr-wrapper" style="position: relative;">
+            <!-- Top-Left Bohr Model Bond & Orbit Legend -->
+            <div class="comp-bohr-top-legend">
+                <div class="comp-bohr-bond-badge ${bond.badgeClass}">${bond.title}</div>
+                <div class="comp-bohr-legend-pills">
+                    <span class="bohr-legend-pill"><span class="pill-dot valence"></span> Shared Valence</span>
+                    <span class="bohr-legend-pill"><span class="pill-dot core"></span> Core (K, L)</span>
+                    <span class="bohr-legend-pill"><span class="pill-dot shared"></span> Shared e⁻</span>
+                    ${hasLone ? '<span class="bohr-legend-pill"><span class="pill-dot lone"></span> Lone Pair</span>' : ''}
+                    ${isIonic ? '<span class="bohr-legend-pill"><span class="pill-dot transfer"></span> e⁻ Transfer</span>' : ''}
+                </div>
+            </div>
+
             <div class="comp-bohr-header-bar">
                 <span class="comp-bohr-type-badge ${isIonic ? 'ionic' : 'covalent'}">
-                    ${isIonic ? '⚡ Ionic Electron Transfer' : '🔗 Covalent Electron Sharing'}
+                    ${isIonic ? '⚡ Ionic Electron Transfer' : '🔗 Covalent Shared Valence Orbitals'}
                 </span>
-                <span class="comp-bohr-octet-badge">✓ Octet / Duet Rule Satisfied</span>
+                <span class="comp-bohr-octet-badge">✓ Octet / Duet Satisfied</span>
             </div>
             <div class="comp-bohr-svg-wrap">
                 ${svg}
@@ -99101,6 +99881,7 @@ function renderCompoundBohrModel(comp) {
         </div>
     `;
 }
+
 window.renderCompoundBohrModel = renderCompoundBohrModel;
 
 // 08_reactions.js
