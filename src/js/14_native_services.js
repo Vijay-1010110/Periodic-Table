@@ -331,6 +331,7 @@ window.NativeServices = (function() {
                             },
                             channelId: config.notifications?.channelId || 'periodica_daily',
                             smallIcon: 'ic_stat_icon',
+                            largeIcon: 'ic_launcher',
                             iconColor: '#00d4ff'
                         }
                     ]
@@ -372,6 +373,7 @@ window.NativeServices = (function() {
                                 schedule: { at: new Date(Date.now() + 800) },
                                 channelId: config.updates?.notificationChannelId || 'periodica_updates',
                                 smallIcon: 'ic_stat_icon',
+                                largeIcon: 'ic_launcher',
                                 iconColor: isMandatory ? '#ef4444' : '#00d4ff',
                                 extra: {
                                     action: 'open_update',
