@@ -12,6 +12,10 @@ let currentElecProperty = 'configuration';
 
 window.currentElecProperty = currentElecProperty;
 
+let currentIsoProperty = 'decayMode';
+
+window.currentIsoProperty = currentIsoProperty;
+
 let currentView = 'main';
 
 const heatmapConfigs = {
@@ -2117,7 +2121,13 @@ function setupUI() {
                 e.stopPropagation();
             }
             const viewId = e.currentTarget.dataset.view || e.target.closest('[data-view]')?.dataset.view;
-            if (viewId) switchView(viewId, true);
+            if (viewId) {
+                if (viewId !== 'main' && window.isProUser && !window.isProUser()) {
+                    if (window.openProPaywallModal) window.openProPaywallModal(viewId);
+                    return false;
+                }
+                switchView(viewId, true);
+            }
         };
 
         btn.addEventListener('click', handleNav);
@@ -2232,17 +2242,25 @@ function setupUI() {
 
         item.addEventListener('click', (e) => {
 
-            document.querySelectorAll('.elec-prop-item').forEach(p => p.classList.remove('active'));
-
             const target = e.currentTarget;
 
-            target.classList.add('active');
+            if (typeof setElectronProperty === 'function') {
 
-            currentElecProperty = target.dataset.prop;
+                setElectronProperty(target.dataset.prop);
 
-            window.currentElecProperty = currentElecProperty;
+            } else {
 
-            updateGridVisuals();
+                document.querySelectorAll('.elec-prop-item').forEach(p => p.classList.remove('active'));
+
+                target.classList.add('active');
+
+                currentElecProperty = target.dataset.prop;
+
+                window.currentElecProperty = currentElecProperty;
+
+                updateGridVisuals();
+
+            }
 
         });
 
@@ -3566,7 +3584,41 @@ function renderGrid() {
 
             const isElec = (currentView === 'electrons');
 
-            const mainLabel = isElec ? 'Configuration' : 'Decay Modes';
+            const elecLabels = {
+
+                'configuration': 'Configuration',
+
+                'expanded': 'Expanded',
+
+                'oxidation': 'Oxidation',
+
+                'energyLevel': 'Energy Shells',
+
+                'quantum': 'Quantum Numbers',
+
+                'block': 'Orbital Block',
+
+                'valence': 'Valence e⁻'
+
+            };
+
+            const isoLabels = {
+
+                'decayMode': 'Decay Modes',
+
+                'stability': 'Stability',
+
+                'isoCount': 'Isotope Count',
+
+                'halfLife': 'Half-Life',
+
+                'category': 'Category'
+
+            };
+
+            const activeKey = isElec ? (window.currentElecProperty || currentElecProperty || 'configuration') : (window.currentIsoProperty || currentIsoProperty || 'decayMode');
+
+            const mainLabel = isElec ? (elecLabels[activeKey] || 'Configuration') : (isoLabels[activeKey] || 'Decay Modes');
 
             const subLabel = isElec ? 'ELECTRON VIEW TYPE' : 'ISOTOPE VIEW TYPE';
 
@@ -4216,7 +4268,7 @@ function updateGridVisuals(force = false) {
 
                    isIsotopes ? '#isotopes-grid' : '#electrons-grid';
 
-    const activeProp = isMain ? currentProperty : currentElecProperty;
+    const activeProp = isMain ? currentProperty : (isIsotopes ? (window.currentIsoProperty || currentIsoProperty || 'decayMode') : currentElecProperty);
 
     
 
@@ -4404,17 +4456,161 @@ function updateGridVisuals(force = false) {
 
 
 
-        if (isMain || isIsotopes) {
+        if (isIsotopes) {
 
-            if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
+            const isos = (typeof isotopeData !== 'undefined' && isotopeData[item.z]) ? isotopeData[item.z] : [];
+
+            const isoProp = window.currentIsoProperty || currentIsoProperty || 'decayMode';
+
+            const hasStable = isos.some(iso => (typeof isActuallyStable === 'function' ? isActuallyStable(iso) : (iso && iso.isStable && (!iso.decayMode || iso.decayMode === 'Stable'))));
+
+
+
+            const uMap = {
+
+                'ysec': 1e-24, 'zsec': 1e-21, 'asec': 1e-18, 'psec': 1e-12, 'nsec': 1e-9,
+
+                'usec': 1e-6, 'msec': 1e-3, 'sec': 1, 's': 1, 'minute': 60, 'm': 60,
+
+                'hour': 3600, 'h': 3600, 'day': 86400, 'd': 86400, 'year': 3.15576e7, 'yr': 3.15576e7,
+
+                'kyear': 3.15576e10, 'Myear': 3.15576e13, 'Gyear': 3.15576e16, 'Tyear': 3.15576e19,
+
+                'Pyear': 3.15576e22, 'Eyear': 3.15576e25, 'Zyear': 3.15576e28, 'Yyear': 3.15576e31
+
+            };
+
+            let bestSec = -1;
+
+            let repIso = null;
+
+            for (let k = 0; k < isos.length; k++) {
+
+                const iso = isos[k];
+
+                const val = iso.halfLife;
+
+                const u = iso.halfLifeUnit;
+
+                if (val !== null && val !== undefined && u && uMap[u]) {
+
+                    const sec = val * uMap[u];
+
+                    if (sec > bestSec) {
+
+                        bestSec = sec;
+
+                        repIso = iso;
+
+                    }
+
+                }
+
+            }
+
+            if (!repIso && isos.length > 0) repIso = isos[0];
+
+
+
+            if (isoProp === 'stability') {
+
+                if (hasStable) {
+
+                    color = '#22c55e';
+
+                    valText = 'STABLE';
+
+                } else if (item.z === 83 || item.z === 90 || item.z === 92 || bestSec > 3.15576e15) {
+
+                    color = '#f59e0b';
+
+                    valText = 'PRIMORDIAL';
+
+                } else {
+
+                    color = '#ef4444';
+
+                    valText = 'RADIOACTIVE';
+
+                }
+
+            } else if (isoProp === 'decayMode') {
+
+                if (hasStable) {
+
+                    color = '#4ade80';
+
+                    valText = 'Stable';
+
+                } else if (repIso && repIso.decayMode) {
+
+                    const mode = repIso.decayMode;
+
+                    color = typeof getDecayColor === 'function' ? getDecayColor(mode) : '#f87171';
+
+                    const tag = typeof getDecayCompactTag === 'function' ? getDecayCompactTag(mode, false) : (mode.split(' ')[0] || 'DEC');
+
+                    const hlStr = typeof formatCompactHalfLife === 'function' ? formatCompactHalfLife(repIso) : '';
+
+                    valText = `${tag} ${hlStr}`.trim();
+
+                } else {
+
+                    color = '#94a3b8';
+
+                    valText = 'Unstable';
+
+                }
+
+            } else if (isoProp === 'isoCount') {
+
+                const count = isos.length;
+
+                color = getHeatmapColor(count, { minColor: '#06b6d4', maxColor: '#ec4899', scale: 'linear', min: 3, max: 40 });
+
+                valText = `${count} iso`;
+
+            } else if (isoProp === 'halfLife') {
+
+                if (hasStable) {
+
+                    color = '#00f0ff';
+
+                    valText = 'Stable';
+
+                } else if (repIso) {
+
+                    const sec = Math.max(1e-12, bestSec > 0 ? bestSec : 1e-3);
+
+                    const logSec = Math.log10(sec);
+
+                    color = getHeatmapColor(logSec, { minColor: '#ef4444', maxColor: '#22c55e', scale: 'linear', min: -3, max: 17 });
+
+                    valText = typeof formatCompactHalfLife === 'function' ? formatCompactHalfLife(repIso) : `${repIso.halfLife || ''} ${repIso.halfLifeUnit || ''}`;
+
+                } else {
+
+                    color = '#64748b';
+
+                    valText = '-';
+
+                }
+
+            } else {
 
                 color = categoryColors[normalizedCategory] || '#333';
 
-                if (isIsotopes) {
+                valText = `${isos.length} iso`;
 
-                    valText = (typeof isotopeData !== 'undefined' && isotopeData[item.z]) ? `${isotopeData[item.z].length} iso` : '0';
+            }
 
-                } else if (currentProperty === 'wiki') {
+        } else if (isMain) {
+
+            if (currentProperty === 'category' || currentProperty === 'wiki') {
+
+                color = categoryColors[normalizedCategory] || '#333';
+
+                if (currentProperty === 'wiki') {
 
                     valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
 
@@ -4506,8 +4702,6 @@ function updateGridVisuals(force = false) {
 
                 
 
-                // If it's an exception, try to pick out the anomalous terms for the grid cell instead of blindly picking the last two
-
                 let displayStr = '';
 
                 if (isException) {
@@ -4551,6 +4745,24 @@ function updateGridVisuals(force = false) {
                 color = lColors[qn.l] || '#333';
 
                 valText = `n=${qn.n} l=${qn.l} m=${qn.m}`;
+
+            } else if (activeProp === 'block') {
+
+                const bColors = { s: '#00d4ff', p: '#22c55e', d: '#6366f1', f: '#a855f7' };
+
+                color = bColors[elData.block] || '#64748b';
+
+                valText = elData.block ? elData.block.toUpperCase() + '-block' : '';
+
+            } else if (activeProp === 'valence') {
+
+                const shells = elData.electronsPerShell || [];
+
+                const valElec = shells.length > 0 ? shells[shells.length - 1] : 0;
+
+                color = getHeatmapColor(valElec, { minColor: '#38bdf8', maxColor: '#f59e0b', scale: 'linear', min: 1, max: 8 });
+
+                valText = `${valElec} val e⁻`;
 
             }
 
@@ -4648,11 +4860,17 @@ function updateGridVisuals(force = false) {
 
         if(valSpan) {
 
-            if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum')) {
+            if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum' || activeProp === 'block' || activeProp === 'valence')) {
 
                 valSpan.innerHTML = valText;
 
-                valSpan.style.fontSize = activeProp === 'quantum' ? '0.48rem' : '0.55rem';
+                valSpan.style.fontSize = activeProp === 'quantum' ? '0.48rem' : (activeProp === 'expanded' ? '0.46rem' : '0.55rem');
+
+            } else if (currentView === 'isotopes') {
+
+                valSpan.innerHTML = valText;
+
+                valSpan.style.fontSize = (window.currentIsoProperty === 'decayMode' || window.currentIsoProperty === 'stability') ? '0.46rem' : '0.52rem';
 
             } else {
 
@@ -4664,6 +4882,29 @@ function updateGridVisuals(force = false) {
 
         }
 
+    });
+
+    const elecLabels = {
+        'configuration': 'Configuration',
+        'expanded': 'Expanded',
+        'oxidation': 'Oxidation',
+        'energyLevel': 'Energy Shells',
+        'quantum': 'Quantum Numbers',
+        'block': 'Orbital Block',
+        'valence': 'Valence e⁻'
+    };
+    const isoLabels = {
+        'decayMode': 'Decay Modes',
+        'stability': 'Stability',
+        'isoCount': 'Isotope Count',
+        'halfLife': 'Half-Life',
+        'category': 'Category'
+    };
+    document.querySelectorAll('#electrons-grid .table-type-title').forEach(el => {
+        el.innerText = elecLabels[window.currentElecProperty || currentElecProperty] || 'Configuration';
+    });
+    document.querySelectorAll('#isotopes-grid .table-type-title').forEach(el => {
+        el.innerText = isoLabels[window.currentIsoProperty || currentIsoProperty] || 'Decay Modes';
     });
 
     window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
@@ -8218,7 +8459,237 @@ document.addEventListener('keydown', (e) => {
 
 
 
+const TAB_VIEW_CONFIGS = {
+
+    'main': {
+
+        title: '🎛️ Select Property View',
+
+        subtitle: 'Color table by property without clicking individual elements',
+
+        getActive: () => window.currentProperty || currentProperty || 'category',
+
+        onSelect: (key) => setTableProperty(key),
+
+        options: [
+
+            { key: 'category', icon: '🌈', name: 'Standard Category', desc: 'Alkali, Transition, Nonmetals, Halogens, Noble Gases' },
+
+            { key: 'atomicMass', icon: '⚖️', name: 'Atomic Mass', desc: 'Standard atomic weight in unified mass units (u)' },
+
+            { key: 'state', icon: '🌡️', name: 'State of Matter', desc: 'Physical state at current temperature (Solid/Liquid/Gas)' },
+
+            { key: 'electronegativity', icon: '⚡', name: 'Electronegativity', desc: 'Pauling scale electronegativity heatmap gradient' },
+
+            { key: 'atomicRadius', icon: '⭕', name: 'Atomic Radius', desc: 'Empirical atomic radius in picometers (pm)' },
+
+            { key: 'ionizationEnergy', icon: '💥', name: 'Ionization Energy', desc: 'First ionization energy in kJ/mol' },
+
+            { key: 'electronAffinity', icon: '🧲', name: 'Electron Affinity', desc: 'Energy change on electron attachment in kJ/mol' },
+
+            { key: 'meltingPoint', icon: '🔥', name: 'Melting Point', desc: 'Phase transition temperature (Solid to Liquid in K)' },
+
+            { key: 'boilingPoint', icon: '💨', name: 'Boiling Point', desc: 'Vaporization temperature (Liquid to Gas in K)' },
+
+            { key: 'density', icon: '🧊', name: 'Density', desc: 'Mass per unit volume (g/cm³ at STP)' },
+
+            { key: 'block', icon: '🧱', name: 'Orbital Block', desc: 'Electronic valence subshell blocks (s, p, d, f)' },
+
+            { key: 'energyLevels', icon: '🪐', name: 'Energy Levels / Shells', desc: 'Number of occupied electron shells (1–7)' },
+
+            { key: 'discoveryYear', icon: '⏳', name: 'Discovery Year', desc: 'Timeline of element discovery antiquity to modern' },
+
+            { key: 'hardness', icon: '💎', name: 'Mohs Hardness', desc: 'Mineral scratch hardness on Mohs scale (0.5–10)' },
+
+            { key: 'modulus', icon: '🛡️', name: 'Bulk Modulus', desc: 'Resistance to uniform compression in GPa' },
+
+            { key: 'conductivity', icon: '🔌', name: 'Thermal Conductivity', desc: 'Heat conduction rate in W/(m·K)' },
+
+            { key: 'heat', icon: '♨️', name: 'Specific Heat', desc: 'Heat capacity in J/(g·K)' },
+
+            { key: 'abundance', icon: '🌌', name: 'Universe Abundance', desc: 'Cosmic mass fraction relative to silicon' }
+
+        ]
+
+    },
+
+    'properties': null,
+
+    'electrons': {
+
+        title: '⚛️ Select Electron View',
+
+        subtitle: 'Visualize electron configurations, shells, and quantum states',
+
+        getActive: () => window.currentElecProperty || currentElecProperty || 'configuration',
+
+        onSelect: (key) => setElectronProperty(key),
+
+        options: [
+
+            { key: 'configuration', icon: '⚛️', name: 'Noble Gas Configuration', desc: 'Ground-state noble gas shorthand configuration' },
+
+            { key: 'expanded', icon: '📜', name: 'Expanded Configuration', desc: 'Complete subshell orbital filling (1s² 2s² 2p⁶...)' },
+
+            { key: 'oxidation', icon: '🔢', name: 'Oxidation States', desc: 'Common positive and negative oxidation states' },
+
+            { key: 'energyLevel', icon: '🪐', name: 'Energy Levels / Shells', desc: 'Occupied electron principal shells (K, L, M, N...)' },
+
+            { key: 'quantum', icon: '🔮', name: 'Quantum Numbers', desc: 'Valence electron principal (n) and orbital (l) quantum states' },
+
+            { key: 'block', icon: '🧱', name: 'Orbital Block', desc: 'Electronic subshell classification (s, p, d, f)' },
+
+            { key: 'valence', icon: '💫', name: 'Valence Electrons', desc: 'Number of outer-shell valence electrons' }
+
+        ]
+
+    },
+
+    'isotopes': {
+
+        title: '☢️ Select Isotope View',
+
+        subtitle: 'Analyze nuclear stability, decay pathways, and isotopes',
+
+        getActive: () => window.currentIsoProperty || currentIsoProperty || 'decayMode',
+
+        onSelect: (key) => setIsotopeProperty(key),
+
+        options: [
+
+            { key: 'decayMode', icon: '☢️', name: 'Primary Decay Mode', desc: 'Dominant decay pathway of radioactive isotopes (α, β⁻, β⁺, SF)' },
+
+            { key: 'stability', icon: '🛡️', name: 'Nuclear Stability', desc: 'Stable elements (green) vs strictly radioactive (red/orange)' },
+
+            { key: 'isoCount', icon: '📊', name: 'Isotope Count', desc: 'Total number of recognized isotopes per element' },
+
+            { key: 'halfLife', icon: '⏱️', name: 'Half-Life Spectrum', desc: 'Logarithmic half-life of most stable radioactive isotope' },
+
+            { key: 'category', icon: '🌈', name: 'Standard Category', desc: 'Chemical classification reference overlay' }
+
+        ]
+
+    },
+
+    'compounds': {
+
+        title: '🧪 Select Compound Filter',
+
+        subtitle: 'Filter molecular structures by bonding type and chemical class',
+
+        getActive: () => {
+
+            const activeBtn = document.querySelector('.compound-filter-btn.active');
+
+            return activeBtn ? activeBtn.getAttribute('data-type') : 'All';
+
+        },
+
+        onSelect: (key) => {
+
+            const btn = document.querySelector(`.compound-filter-btn[data-type="${key}"]`);
+
+            if (btn) btn.click();
+
+        },
+
+        options: [
+
+            { key: 'All', icon: '🧪', name: 'All Compounds', desc: 'Show all molecular and crystalline chemical compounds' },
+
+            { key: 'Covalent', icon: '🔗', name: 'Covalent Molecules', desc: 'Compounds with shared electron covalent bonds' },
+
+            { key: 'Ionic', icon: '⚡', name: 'Ionic Salts', desc: 'Compounds formed by electrostatic attraction between ions' },
+
+            { key: 'Organic', icon: '🌿', name: 'Organic Compounds', desc: 'Carbon-based molecules, hydrocarbons, and biomolecules' },
+
+            { key: 'Acid', icon: '🧪', name: 'Acids', desc: 'Proton donors and electron pair acceptors' },
+
+            { key: 'Base', icon: '🧴', name: 'Bases', desc: 'Proton acceptors and alkaline substances' },
+
+            { key: 'Gas', icon: '💨', name: 'Gases', desc: 'Compounds that are gaseous at standard temperature and pressure' },
+
+            { key: 'Liquid', icon: '💧', name: 'Liquids', desc: 'Compounds in liquid state at standard room temperature' },
+
+            { key: 'Solid', icon: '🧊', name: 'Solids', desc: 'Crystalline and amorphous solid substances at STP' }
+
+        ]
+
+    },
+
+    'reactions': {
+
+        title: '⚡ Select Reaction Mode',
+
+        subtitle: 'Switch reaction stoichiometry and simulation tools',
+
+        getActive: () => {
+
+            const practice = document.getElementById('rxn-mode-practice-btn');
+
+            return practice && practice.classList.contains('active') ? 'practice' : 'solver';
+
+        },
+
+        onSelect: (key) => {
+
+            if (typeof setReactionMode === 'function') setReactionMode(key);
+
+        },
+
+        options: [
+
+            { key: 'solver', icon: '⚖️', name: 'Equation Balancer & Solver', desc: 'Automatically balance chemical equations and compute stoichiometry' },
+
+            { key: 'practice', icon: '🎯', name: 'Reaction Practice & Predict', desc: 'Interactive practice mode to predict products and test reaction skills' }
+
+        ]
+
+    },
+
+    'crystals': {
+
+        title: '💎 Select Crystal Lattice View',
+
+        subtitle: 'Toggle unit cell geometry and supercell lattice network',
+
+        getActive: () => {
+
+            const supercell = document.getElementById('btn-mode-supercell');
+
+            return supercell && supercell.classList.contains('active') ? 'supercell' : 'unitcell';
+
+        },
+
+        onSelect: (key) => {
+
+            const btn = document.getElementById(key === 'supercell' ? 'btn-mode-supercell' : 'btn-mode-unitcell');
+
+            if (btn) btn.click();
+
+        },
+
+        options: [
+
+            { key: 'unitcell', icon: '📦', name: 'Unit Cell (1×1×1)', desc: 'Fundamental repeating unit of the crystal lattice' },
+
+            { key: 'supercell', icon: '🕸️', name: 'Lattice Network (2×2×2)', desc: 'Extended 3D periodic lattice structure showing symmetry planes' }
+
+        ]
+
+    }
+
+};
+
+TAB_VIEW_CONFIGS['properties'] = TAB_VIEW_CONFIGS['main'];
+
+window.TAB_VIEW_CONFIGS = TAB_VIEW_CONFIGS;
+
+
+
 let _tableTypeModalOpenTime = 0;
+
+
 
 function openTableTypeModal() {
 
@@ -8228,19 +8699,61 @@ function openTableTypeModal() {
 
     _tableTypeModalOpenTime = Date.now();
 
-    document.querySelectorAll('.table-type-opt').forEach(opt => {
 
-        if (opt.dataset.prop === currentProperty) {
 
-            opt.classList.add('active');
+    const view = currentView || 'main';
 
-        } else {
+    const config = TAB_VIEW_CONFIGS[view] || TAB_VIEW_CONFIGS['main'];
 
-            opt.classList.remove('active');
 
-        }
 
-    });
+    // Update Header Title
+
+    const titleEl = modal.querySelector('.table-type-header h3');
+
+    if (titleEl) {
+
+        titleEl.innerHTML = config.title;
+
+    }
+
+
+
+    // Populate Grid Options
+
+    const grid = modal.querySelector('.table-type-grid');
+
+    if (grid) {
+
+        const activeKey = config.getActive();
+
+        grid.innerHTML = config.options.map(opt => {
+
+            const isActive = opt.key === activeKey;
+
+            return `
+
+                <button class="table-type-opt ${isActive ? 'active' : ''}" data-prop="${opt.key}" onclick="handleTableViewOptionSelect('${view}', '${opt.key}')">
+
+                    <span class="type-icon">${opt.icon}</span>
+
+                    <div class="type-info">
+
+                        <span class="type-name">${opt.name}</span>
+
+                        <span class="type-desc">${opt.desc}</span>
+
+                    </div>
+
+                </button>
+
+            `;
+
+        }).join('');
+
+    }
+
+
 
     const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
 
@@ -8258,9 +8771,27 @@ window.openTableTypeModal = openTableTypeModal;
 
 
 
-function closeTableTypeModal(e) {
+function handleTableViewOptionSelect(viewId, propKey) {
 
-    if (Date.now() - _tableTypeModalOpenTime < 350) {
+    const cfg = TAB_VIEW_CONFIGS[viewId] || TAB_VIEW_CONFIGS['main'];
+
+    if (cfg && typeof cfg.onSelect === 'function') {
+
+        cfg.onSelect(propKey);
+
+    }
+
+    closeTableTypeModal(null, true);
+
+}
+
+window.handleTableViewOptionSelect = handleTableViewOptionSelect;
+
+
+
+function closeTableTypeModal(e, force = false) {
+
+    if (!force && Date.now() - _tableTypeModalOpenTime < 350) {
 
         return;
 
@@ -8275,6 +8806,113 @@ function closeTableTypeModal(e) {
 }
 
 window.closeTableTypeModal = closeTableTypeModal;
+
+
+
+function setElectronProperty(propKey) {
+
+    if (!propKey) return;
+
+    currentElecProperty = propKey;
+
+    window.currentElecProperty = propKey;
+
+
+
+    document.querySelectorAll('.elec-prop-item').forEach(p => {
+
+        if (p.dataset.prop === propKey) p.classList.add('active');
+
+        else p.classList.remove('active');
+
+    });
+
+
+
+    const elecLabels = {
+
+        'configuration': 'Configuration',
+
+        'expanded': 'Expanded',
+
+        'oxidation': 'Oxidation',
+
+        'energyLevel': 'Energy Shells',
+
+        'quantum': 'Quantum Numbers',
+
+        'block': 'Orbital Block',
+
+        'valence': 'Valence e⁻'
+
+    };
+
+    const title = elecLabels[propKey] || propKey;
+
+    document.querySelectorAll('#electrons-grid .table-type-title').forEach(el => {
+
+        el.innerText = title;
+
+    });
+
+
+
+    closeTableTypeModal(null, true);
+
+    updateGridVisuals();
+
+    syncNativeSliderVisibility();
+
+}
+
+window.setElectronProperty = setElectronProperty;
+
+
+
+function setIsotopeProperty(propKey) {
+
+    if (!propKey) return;
+
+    currentIsoProperty = propKey;
+
+    window.currentIsoProperty = propKey;
+
+
+
+    const isoLabels = {
+
+        'decayMode': 'Decay Modes',
+
+        'stability': 'Stability',
+
+        'isoCount': 'Isotope Count',
+
+        'halfLife': 'Half-Life',
+
+        'category': 'Category'
+
+    };
+
+    const title = isoLabels[propKey] || propKey;
+
+    document.querySelectorAll('#isotopes-grid .table-type-title').forEach(el => {
+
+        el.innerText = title;
+
+    });
+
+
+
+    closeTableTypeModal(null, true);
+
+    updateGridVisuals();
+
+    syncNativeSliderVisibility();
+
+}
+
+window.setIsotopeProperty = setIsotopeProperty;
+
 
 
 
@@ -9267,7 +9905,19 @@ function setTableProperty(propKey) {
 
         'density': 'Density',
 
-        'block': 'Orbital Block'
+        'block': 'Orbital Block',
+
+        'energyLevels': 'Energy Levels',
+
+        'hardness': 'Mohs Hardness',
+
+        'modulus': 'Bulk Modulus',
+
+        'conductivity': 'Thermal Cond',
+
+        'heat': 'Specific Heat',
+
+        'abundance': 'Abundance'
 
     };
 
@@ -9278,6 +9928,8 @@ function setTableProperty(propKey) {
     const btnTop = document.getElementById('btn-table-type-top');
 
     if (btnTop) btnTop.innerHTML = `🎛️ ${label} ▾`;
+
+    document.querySelectorAll('#main-grid .table-type-title').forEach(el => el.innerText = label);
 
 
 

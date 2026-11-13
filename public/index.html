@@ -548,7 +548,7 @@ body.has-native-slider #temp-custom-slider {
 
 /* Standard Cell Content */
 .cell-num { position: absolute; top: 1px; left: 2px; font-family: var(--font-mono); font-size: 0.44rem; color: #fff; line-height: 1; }
-.cell-sym { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #fff; line-height: 1; margin-top: 1px; }
+.cell-sym { font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #fff; line-height: 1; margin-top: 1px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.85); -webkit-text-stroke: 0.35px rgba(0, 0, 0, 0.75); }
 .cell-name { font-size: 0.36rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 96%; text-align: center; color: #fff; margin-top: 0px; line-height: 1.05; }
 .cell-value { font-family: var(--font-mono); font-size: 0.36rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: 96%; text-align: center; color: #fff; margin-top: 0px; line-height: 1.05; }
 
@@ -2799,35 +2799,37 @@ body.has-native-slider #temp-custom-slider {
         cursor: pointer !important;
         transition: all 0.15s ease !important;
         box-sizing: border-box !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
-        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1.5px solid #334155 !important;
+        background: #1e293b !important;
         user-select: none !important;
     }
 
     #iso-in-grid-legend .iso-stability-card.stable-card {
-        background: linear-gradient(135deg, rgba(74, 222, 128, 0.22) 0%, rgba(74, 222, 128, 0.08) 100%) !important;
-        border-color: rgba(74, 222, 128, 0.55) !important;
-        box-shadow: 0 0 8px rgba(74, 222, 128, 0.2) !important;
+        background: linear-gradient(180deg, #15803d 0%, #166534 50%, #14532d 100%) !important;
+        border-color: #4ade80 !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(74, 222, 128, 0.3) !important;
     }
 
     #iso-in-grid-legend .iso-stability-card.stable-card:hover,
     #iso-in-grid-legend .iso-stability-card.stable-card.active {
-        background: rgba(74, 222, 128, 0.32) !important;
-        border-color: #4ade80 !important;
-        box-shadow: 0 0 12px rgba(74, 222, 128, 0.45) !important;
+        background: linear-gradient(180deg, #16a34a 0%, #15803d 50%, #166534 100%) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 14px #4ade80, inset 0 0 6px #ffffff !important;
+        transform: translateY(-1px) !important;
     }
 
     #iso-in-grid-legend .iso-stability-card.radio-card {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 100%) !important;
-        border-color: rgba(239, 68, 68, 0.55) !important;
-        box-shadow: 0 0 8px rgba(239, 68, 68, 0.2) !important;
+        background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #7f1d1d 100%) !important;
+        border-color: #f87171 !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(239, 68, 68, 0.3) !important;
     }
 
     #iso-in-grid-legend .iso-stability-card.radio-card:hover,
     #iso-in-grid-legend .iso-stability-card.radio-card.active {
-        background: rgba(239, 68, 68, 0.32) !important;
-        border-color: #ef4444 !important;
-        box-shadow: 0 0 12px rgba(239, 68, 68, 0.45) !important;
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 14px #ef4444, inset 0 0 6px #ffffff !important;
+        transform: translateY(-1px) !important;
     }
 
     #iso-in-grid-legend .iso-stab-header {
@@ -2889,8 +2891,8 @@ body.has-native-slider #temp-custom-slider {
         justify-content: center !important;
         padding: 2px 5px !important;
         border-radius: 5px !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
-        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1.5px solid #334155 !important;
+        background: #1e293b !important;
         cursor: pointer !important;
         transition: all 0.15s ease !important;
         box-sizing: border-box !important;
@@ -2901,10 +2903,10 @@ body.has-native-slider #temp-custom-slider {
 
     #iso-in-grid-legend .iso-mode-card:hover,
     #iso-in-grid-legend .iso-mode-card.active {
-        border-color: var(--mode-color) !important;
-        background: rgba(255, 255, 255, 0.16) !important;
-        box-shadow: 0 0 12px var(--mode-color) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 12px var(--mode-color), inset 0 0 6px #ffffff !important;
         transform: translateY(-1px) !important;
+        filter: brightness(1.25) !important;
     }
 
     #iso-in-grid-legend .iso-mode-top {
@@ -5447,39 +5449,91 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .compound-filter-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.75);
+    background: #1e293b !important;
+    border: 1.5px solid #334155 !important;
+    color: #e2e8f0 !important;
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: 8px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
     font-family: var(--font-ui);
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .compound-filter-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
+    background: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
 }
 
-.compound-filter-btn.active {
-    background: rgba(0, 212, 255, 0.2);
-    border-color: #00d4ff;
-    color: #00d4ff;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
+.compound-filter-btn.active,
+.compound-filter-btn[data-type="All"].active {
+    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
-.compound-filter-btn[data-type="Covalent"].active { background: rgba(0, 212, 255, 0.25); border-color: #00d4ff; color: #00d4ff; }
-.compound-filter-btn[data-type="Ionic"].active { background: rgba(168, 85, 247, 0.25); border-color: #a855f7; color: #c084fc; }
-.compound-filter-btn[data-type="Organic"].active { background: rgba(16, 185, 129, 0.25); border-color: #10b981; color: #34d399; }
-.compound-filter-btn[data-type="Acid"].active { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #f87171; }
-.compound-filter-btn[data-type="Base"].active { background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fbbf24; }
+.compound-filter-btn[data-type="Covalent"].active {
+    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Ionic"].active {
+    background: linear-gradient(180deg, #7e22ce 0%, #6b21a8 100%) !important;
+    border-color: #c084fc !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(192, 132, 252, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Organic"].active {
+    background: linear-gradient(180deg, #15803d 0%, #166534 100%) !important;
+    border-color: #4ade80 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Acid"].active {
+    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    border-color: #f87171 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Base"].active {
+    background: linear-gradient(180deg, #c2410c 0%, #9a3412 100%) !important;
+    border-color: #fb923c !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Solid"].active {
+    background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%) !important;
+    border-color: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.compound-filter-btn[data-type="Liquid"].active {
+    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.compound-filter-btn[data-type="Gas"].active {
+    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    border-color: #f87171 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
 
 .compounds-grid-container {
     display: grid;
@@ -5494,29 +5548,29 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .compound-card {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border: 1.5px solid #334155;
+    border-radius: 8px;
     padding: 16px;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     gap: 8px;
     position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .compound-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(0, 212, 255, 0.4);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    background: rgba(20, 32, 55, 0.75);
+    border-color: #00d4ff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .compound-card.active {
-    border-color: #00d4ff;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-    background: rgba(0, 212, 255, 0.08);
+    border-color: #00f0ff !important;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), inset 0 0 8px rgba(0, 240, 255, 0.3) !important;
+    transform: scale(1.02);
 }
 
 .compound-card-header {
@@ -5584,10 +5638,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-header-card {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
 }
 
 .comp-header-top {
@@ -5628,10 +5683,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .molecule-3d-card {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
 }
 
 .molecule-card-header {
@@ -5659,10 +5715,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-section-card {
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
 }
 
 .comp-section-card h4 {
@@ -5719,10 +5776,10 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-prop-item {
-    background: rgba(255, 255, 255, 0.03);
+    background: #0f172a !important;
     padding: 8px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1.2px solid #334155 !important;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -7173,9 +7230,58 @@ body.perf-mode .element-cell::after {
     display: none !important;
 }
 
+/* Settings Toggle Switches */
+.settings-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+.settings-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.settings-switch-thumb {
+    position: absolute;
+    inset: 0;
+    border-radius: 26px;
+    background: #1e2a3a;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: background 0.25s ease, border-color 0.25s ease;
+    pointer-events: none;
+}
+.settings-switch-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #64748b;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
+    pointer-events: none;
+}
+.settings-switch input:checked + .settings-switch-thumb {
+    background: #0284c7 !important;
+    border-color: rgba(0, 212, 255, 0.6) !important;
+}
+.settings-switch input:checked + .settings-switch-thumb .settings-switch-knob {
+    transform: translateX(22px) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.5) !important;
+}
+
 /* Perf toggle knob ON state - controlled via JS */
-body.perf-mode #perf-toggle-thumb  { background: rgba(0, 212, 255, 0.25) !important; border-color: rgba(0, 212, 255, 0.5) !important; }
-body.perf-mode #perf-toggle-knob   { transform: translateX(20px) !important; background: #00d4ff !important; }
+body.perf-mode #perf-toggle-thumb  { background: #0284c7 !important; border-color: rgba(0, 212, 255, 0.6) !important; }
+body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; background: #ffffff !important; }
 
 /* Distinct Unknown State Legend Indicator */
 .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
@@ -13081,8 +13187,13 @@ window.NavigationManager = (function() {
         // 1-pro. Pro Paywall Modal
         const proModal = document.getElementById('pro-paywall-modal');
         if (proModal && proModal.style.display !== 'none' && proModal.style.display !== '') {
+            // Guard against edge-swipe accidental back gestures immediately upon opening
+            if (Date.now() - (window._lastPaywallOpenTime || 0) < 800) {
+                console.log('[Paywall] Ignored back gesture within 800ms dwell window');
+                return true;
+            }
             if (typeof window.closeProPaywallModal === 'function') {
-                window.closeProPaywallModal();
+                window.closeProPaywallModal(true);
             } else {
                 proModal.style.display = 'none';
             }
@@ -25866,7 +25977,23 @@ window.PeriodicCanvasGrid = (function() {
 
                 numColor = `rgba(255, 255, 255, ${textDim ? 0.20 : (isSelected || isHovered ? 1.0 : 0.90)})`;
 
-                symColorDirect = textDim ? hexToRgba(stateColor, 0.25) : (isSelected ? (stateCode === 0 ? '#ffffff' : stateColor) : stateColor);
+                // Adaptive high-contrast protection for chemical symbols over colored backgrounds
+                let rawSym = isSelected ? (stateCode === 0 ? '#ffffff' : stateColor) : stateColor;
+                const [sr, sg, sb] = hexToRgbComponents(rawSym);
+                const colorDistance = Math.sqrt((sr - rgbComp[0]) ** 2 + (sg - rgbComp[1]) ** 2 + (sb - rgbComp[2]) ** 2);
+                if (colorDistance < 130) {
+                    if (stateCode === 2) {
+                        // Gas: On red / crimson / pink tiles (e.g. Alkali metals in Col 1, Halogens), lift to luminous soft rose-white
+                        rawSym = (rgbComp[0] > 140 && rgbComp[2] < 140) ? '#ffe4ea' : '#ff9ebb';
+                    } else if (stateCode === 1) {
+                        // Liquid: On cyan / blue / teal tiles, lift to luminous ice-cyan
+                        rawSym = '#e0fcff';
+                    } else if (stateCode === 0) {
+                        // Solid: On light tiles
+                        rawSym = '#0f172a';
+                    }
+                }
+                symColorDirect = textDim ? hexToRgba(rawSym, 0.25) : rawSym;
 
                 nameColor = `rgba(255, 255, 255, ${textDim ? 0.18 : (isSelected || isHovered ? 1.0 : 0.95)})`;
 
@@ -25898,31 +26025,42 @@ window.PeriodicCanvasGrid = (function() {
 
             ctx.textBaseline = 'top';
 
+            ctx.shadowColor = isBrightCard ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.85)';
+            ctx.shadowBlur = 1.5;
             ctx.fillText(`${i}`, x + 3, y + 2, w * 0.45);
+            ctx.shadowBlur = 0;
 
 
 
-            // 2. Chemical Symbol (Centered, Bold, State-Colored)
+            // 2. Chemical Symbol (Centered, Bold, State-Colored, Crisp Contrasting Outline)
 
             ctx.font = `800 ${fontSizeSym}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif`;
-
-            ctx.fillStyle = symColorDirect;
 
             ctx.textAlign = 'center';
 
             ctx.textBaseline = 'middle';
 
-            if (isSelected) {
+            // High-legibility crisp stroke outline to separate symbol glyph from any background hue
+            const outlineW = Math.max(1.8, fontSizeSym * 0.13);
+            ctx.strokeStyle = isBrightCard ? 'rgba(255, 255, 255, 0.88)' : 'rgba(8, 12, 22, 0.92)';
+            ctx.lineWidth = outlineW;
+            ctx.lineJoin = 'round';
+            ctx.miterLimit = 2;
+            ctx.strokeText(el.symbol, x + w / 2, y + h * 0.44, maxTextW);
 
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+            // Subtle drop shadow for depth and pop
+            ctx.shadowColor = isBrightCard ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.90)';
+            ctx.shadowBlur = isSelected ? 5 : 2.5;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 1;
 
-                ctx.shadowBlur = 4;
-
-            }
+            ctx.fillStyle = symColorDirect;
 
             ctx.fillText(el.symbol, x + w / 2, y + h * 0.44, maxTextW);
 
             ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
 
 
 
@@ -25950,7 +26088,10 @@ window.PeriodicCanvasGrid = (function() {
 
             }
 
+            ctx.shadowColor = isBrightCard ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.85)';
+            ctx.shadowBlur = 1.5;
             ctx.fillText(displayName, x + w / 2, y + h * 0.69, maxTextW);
+            ctx.shadowBlur = 0;
 
 
 
@@ -25978,7 +26119,10 @@ window.PeriodicCanvasGrid = (function() {
 
             }
 
+            ctx.shadowColor = isBrightCard ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.85)';
+            ctx.shadowBlur = 1.5;
             ctx.fillText(displayVal, x + w / 2, y + h - 1, maxTextW);
+            ctx.shadowBlur = 0;
 
         }
 
@@ -103724,6 +103868,10 @@ let currentElecProperty = 'configuration';
 
 window.currentElecProperty = currentElecProperty;
 
+let currentIsoProperty = 'decayMode';
+
+window.currentIsoProperty = currentIsoProperty;
+
 let currentView = 'main';
 
 const heatmapConfigs = {
@@ -105821,28 +105969,22 @@ function setupUI() {
         let lastTap = 0;
 
         const handleNav = (e) => {
-
             const now = Date.now();
-
             if (now - lastTap < 250) return;
-
             lastTap = now;
-
-            const viewId = e.currentTarget.dataset.view || e.target.closest('[data-view]')?.dataset.view;
-
-            if (viewId) switchView(viewId, true);
-
-        };
-
-        btn.addEventListener('pointerdown', (e) => {
-
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-
-                handleNav(e);
-
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-
-        });
+            const viewId = e.currentTarget.dataset.view || e.target.closest('[data-view]')?.dataset.view;
+            if (viewId) {
+                if (viewId !== 'main' && window.isProUser && !window.isProUser()) {
+                    if (window.openProPaywallModal) window.openProPaywallModal(viewId);
+                    return false;
+                }
+                switchView(viewId, true);
+            }
+        };
 
         btn.addEventListener('click', handleNav);
 
@@ -105956,17 +106098,25 @@ function setupUI() {
 
         item.addEventListener('click', (e) => {
 
-            document.querySelectorAll('.elec-prop-item').forEach(p => p.classList.remove('active'));
-
             const target = e.currentTarget;
 
-            target.classList.add('active');
+            if (typeof setElectronProperty === 'function') {
 
-            currentElecProperty = target.dataset.prop;
+                setElectronProperty(target.dataset.prop);
 
-            window.currentElecProperty = currentElecProperty;
+            } else {
 
-            updateGridVisuals();
+                document.querySelectorAll('.elec-prop-item').forEach(p => p.classList.remove('active'));
+
+                target.classList.add('active');
+
+                currentElecProperty = target.dataset.prop;
+
+                window.currentElecProperty = currentElecProperty;
+
+                updateGridVisuals();
+
+            }
 
         });
 
@@ -107290,7 +107440,41 @@ function renderGrid() {
 
             const isElec = (currentView === 'electrons');
 
-            const mainLabel = isElec ? 'Configuration' : 'Decay Modes';
+            const elecLabels = {
+
+                'configuration': 'Configuration',
+
+                'expanded': 'Expanded',
+
+                'oxidation': 'Oxidation',
+
+                'energyLevel': 'Energy Shells',
+
+                'quantum': 'Quantum Numbers',
+
+                'block': 'Orbital Block',
+
+                'valence': 'Valence e⁻'
+
+            };
+
+            const isoLabels = {
+
+                'decayMode': 'Decay Modes',
+
+                'stability': 'Stability',
+
+                'isoCount': 'Isotope Count',
+
+                'halfLife': 'Half-Life',
+
+                'category': 'Category'
+
+            };
+
+            const activeKey = isElec ? (window.currentElecProperty || currentElecProperty || 'configuration') : (window.currentIsoProperty || currentIsoProperty || 'decayMode');
+
+            const mainLabel = isElec ? (elecLabels[activeKey] || 'Configuration') : (isoLabels[activeKey] || 'Decay Modes');
 
             const subLabel = isElec ? 'ELECTRON VIEW TYPE' : 'ISOTOPE VIEW TYPE';
 
@@ -107940,7 +108124,7 @@ function updateGridVisuals(force = false) {
 
                    isIsotopes ? '#isotopes-grid' : '#electrons-grid';
 
-    const activeProp = isMain ? currentProperty : currentElecProperty;
+    const activeProp = isMain ? currentProperty : (isIsotopes ? (window.currentIsoProperty || currentIsoProperty || 'decayMode') : currentElecProperty);
 
     
 
@@ -108128,17 +108312,161 @@ function updateGridVisuals(force = false) {
 
 
 
-        if (isMain || isIsotopes) {
+        if (isIsotopes) {
 
-            if (isIsotopes || currentProperty === 'category' || currentProperty === 'wiki') {
+            const isos = (typeof isotopeData !== 'undefined' && isotopeData[item.z]) ? isotopeData[item.z] : [];
+
+            const isoProp = window.currentIsoProperty || currentIsoProperty || 'decayMode';
+
+            const hasStable = isos.some(iso => (typeof isActuallyStable === 'function' ? isActuallyStable(iso) : (iso && iso.isStable && (!iso.decayMode || iso.decayMode === 'Stable'))));
+
+
+
+            const uMap = {
+
+                'ysec': 1e-24, 'zsec': 1e-21, 'asec': 1e-18, 'psec': 1e-12, 'nsec': 1e-9,
+
+                'usec': 1e-6, 'msec': 1e-3, 'sec': 1, 's': 1, 'minute': 60, 'm': 60,
+
+                'hour': 3600, 'h': 3600, 'day': 86400, 'd': 86400, 'year': 3.15576e7, 'yr': 3.15576e7,
+
+                'kyear': 3.15576e10, 'Myear': 3.15576e13, 'Gyear': 3.15576e16, 'Tyear': 3.15576e19,
+
+                'Pyear': 3.15576e22, 'Eyear': 3.15576e25, 'Zyear': 3.15576e28, 'Yyear': 3.15576e31
+
+            };
+
+            let bestSec = -1;
+
+            let repIso = null;
+
+            for (let k = 0; k < isos.length; k++) {
+
+                const iso = isos[k];
+
+                const val = iso.halfLife;
+
+                const u = iso.halfLifeUnit;
+
+                if (val !== null && val !== undefined && u && uMap[u]) {
+
+                    const sec = val * uMap[u];
+
+                    if (sec > bestSec) {
+
+                        bestSec = sec;
+
+                        repIso = iso;
+
+                    }
+
+                }
+
+            }
+
+            if (!repIso && isos.length > 0) repIso = isos[0];
+
+
+
+            if (isoProp === 'stability') {
+
+                if (hasStable) {
+
+                    color = '#22c55e';
+
+                    valText = 'STABLE';
+
+                } else if (item.z === 83 || item.z === 90 || item.z === 92 || bestSec > 3.15576e15) {
+
+                    color = '#f59e0b';
+
+                    valText = 'PRIMORDIAL';
+
+                } else {
+
+                    color = '#ef4444';
+
+                    valText = 'RADIOACTIVE';
+
+                }
+
+            } else if (isoProp === 'decayMode') {
+
+                if (hasStable) {
+
+                    color = '#4ade80';
+
+                    valText = 'Stable';
+
+                } else if (repIso && repIso.decayMode) {
+
+                    const mode = repIso.decayMode;
+
+                    color = typeof getDecayColor === 'function' ? getDecayColor(mode) : '#f87171';
+
+                    const tag = typeof getDecayCompactTag === 'function' ? getDecayCompactTag(mode, false) : (mode.split(' ')[0] || 'DEC');
+
+                    const hlStr = typeof formatCompactHalfLife === 'function' ? formatCompactHalfLife(repIso) : '';
+
+                    valText = `${tag} ${hlStr}`.trim();
+
+                } else {
+
+                    color = '#94a3b8';
+
+                    valText = 'Unstable';
+
+                }
+
+            } else if (isoProp === 'isoCount') {
+
+                const count = isos.length;
+
+                color = getHeatmapColor(count, { minColor: '#06b6d4', maxColor: '#ec4899', scale: 'linear', min: 3, max: 40 });
+
+                valText = `${count} iso`;
+
+            } else if (isoProp === 'halfLife') {
+
+                if (hasStable) {
+
+                    color = '#00f0ff';
+
+                    valText = 'Stable';
+
+                } else if (repIso) {
+
+                    const sec = Math.max(1e-12, bestSec > 0 ? bestSec : 1e-3);
+
+                    const logSec = Math.log10(sec);
+
+                    color = getHeatmapColor(logSec, { minColor: '#ef4444', maxColor: '#22c55e', scale: 'linear', min: -3, max: 17 });
+
+                    valText = typeof formatCompactHalfLife === 'function' ? formatCompactHalfLife(repIso) : `${repIso.halfLife || ''} ${repIso.halfLifeUnit || ''}`;
+
+                } else {
+
+                    color = '#64748b';
+
+                    valText = '-';
+
+                }
+
+            } else {
 
                 color = categoryColors[normalizedCategory] || '#333';
 
-                if (isIsotopes) {
+                valText = `${isos.length} iso`;
 
-                    valText = (typeof isotopeData !== 'undefined' && isotopeData[item.z]) ? `${isotopeData[item.z].length} iso` : '0';
+            }
 
-                } else if (currentProperty === 'wiki') {
+        } else if (isMain) {
+
+            if (currentProperty === 'category' || currentProperty === 'wiki') {
+
+                color = categoryColors[normalizedCategory] || '#333';
+
+                if (currentProperty === 'wiki') {
 
                     valText = `<span style="font-size: 0.55rem; text-decoration: underline; cursor: pointer; color: rgba(255,255,255,0.8); display: inline-block; margin-top: 1px;" onclick="event.stopPropagation(); if (window.openWikiModal) window.openWikiModal('${elData.name}')">Wiki ↗</span>`;
 
@@ -108230,8 +108558,6 @@ function updateGridVisuals(force = false) {
 
                 
 
-                // If it's an exception, try to pick out the anomalous terms for the grid cell instead of blindly picking the last two
-
                 let displayStr = '';
 
                 if (isException) {
@@ -108275,6 +108601,24 @@ function updateGridVisuals(force = false) {
                 color = lColors[qn.l] || '#333';
 
                 valText = `n=${qn.n} l=${qn.l} m=${qn.m}`;
+
+            } else if (activeProp === 'block') {
+
+                const bColors = { s: '#00d4ff', p: '#22c55e', d: '#6366f1', f: '#a855f7' };
+
+                color = bColors[elData.block] || '#64748b';
+
+                valText = elData.block ? elData.block.toUpperCase() + '-block' : '';
+
+            } else if (activeProp === 'valence') {
+
+                const shells = elData.electronsPerShell || [];
+
+                const valElec = shells.length > 0 ? shells[shells.length - 1] : 0;
+
+                color = getHeatmapColor(valElec, { minColor: '#38bdf8', maxColor: '#f59e0b', scale: 'linear', min: 1, max: 8 });
+
+                valText = `${valElec} val e⁻`;
 
             }
 
@@ -108372,11 +108716,17 @@ function updateGridVisuals(force = false) {
 
         if(valSpan) {
 
-            if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum')) {
+            if (currentView === 'electrons' && (activeProp === 'configuration' || activeProp === 'expanded' || activeProp === 'energyLevel' || activeProp === 'quantum' || activeProp === 'block' || activeProp === 'valence')) {
 
                 valSpan.innerHTML = valText;
 
-                valSpan.style.fontSize = activeProp === 'quantum' ? '0.48rem' : '0.55rem';
+                valSpan.style.fontSize = activeProp === 'quantum' ? '0.48rem' : (activeProp === 'expanded' ? '0.46rem' : '0.55rem');
+
+            } else if (currentView === 'isotopes') {
+
+                valSpan.innerHTML = valText;
+
+                valSpan.style.fontSize = (window.currentIsoProperty === 'decayMode' || window.currentIsoProperty === 'stability') ? '0.46rem' : '0.52rem';
 
             } else {
 
@@ -108388,6 +108738,29 @@ function updateGridVisuals(force = false) {
 
         }
 
+    });
+
+    const elecLabels = {
+        'configuration': 'Configuration',
+        'expanded': 'Expanded',
+        'oxidation': 'Oxidation',
+        'energyLevel': 'Energy Shells',
+        'quantum': 'Quantum Numbers',
+        'block': 'Orbital Block',
+        'valence': 'Valence e⁻'
+    };
+    const isoLabels = {
+        'decayMode': 'Decay Modes',
+        'stability': 'Stability',
+        'isoCount': 'Isotope Count',
+        'halfLife': 'Half-Life',
+        'category': 'Category'
+    };
+    document.querySelectorAll('#electrons-grid .table-type-title').forEach(el => {
+        el.innerText = elecLabels[window.currentElecProperty || currentElecProperty] || 'Configuration';
+    });
+    document.querySelectorAll('#isotopes-grid .table-type-title').forEach(el => {
+        el.innerText = isoLabels[window.currentIsoProperty || currentIsoProperty] || 'Decay Modes';
     });
 
     window.lastStateCounts = { Solid: solidCount, Liquid: liquidCount, Gas: gasCount, Unknown: unknownCount };
@@ -111942,7 +112315,237 @@ document.addEventListener('keydown', (e) => {
 
 
 
+const TAB_VIEW_CONFIGS = {
+
+    'main': {
+
+        title: '🎛️ Select Property View',
+
+        subtitle: 'Color table by property without clicking individual elements',
+
+        getActive: () => window.currentProperty || currentProperty || 'category',
+
+        onSelect: (key) => setTableProperty(key),
+
+        options: [
+
+            { key: 'category', icon: '🌈', name: 'Standard Category', desc: 'Alkali, Transition, Nonmetals, Halogens, Noble Gases' },
+
+            { key: 'atomicMass', icon: '⚖️', name: 'Atomic Mass', desc: 'Standard atomic weight in unified mass units (u)' },
+
+            { key: 'state', icon: '🌡️', name: 'State of Matter', desc: 'Physical state at current temperature (Solid/Liquid/Gas)' },
+
+            { key: 'electronegativity', icon: '⚡', name: 'Electronegativity', desc: 'Pauling scale electronegativity heatmap gradient' },
+
+            { key: 'atomicRadius', icon: '⭕', name: 'Atomic Radius', desc: 'Empirical atomic radius in picometers (pm)' },
+
+            { key: 'ionizationEnergy', icon: '💥', name: 'Ionization Energy', desc: 'First ionization energy in kJ/mol' },
+
+            { key: 'electronAffinity', icon: '🧲', name: 'Electron Affinity', desc: 'Energy change on electron attachment in kJ/mol' },
+
+            { key: 'meltingPoint', icon: '🔥', name: 'Melting Point', desc: 'Phase transition temperature (Solid to Liquid in K)' },
+
+            { key: 'boilingPoint', icon: '💨', name: 'Boiling Point', desc: 'Vaporization temperature (Liquid to Gas in K)' },
+
+            { key: 'density', icon: '🧊', name: 'Density', desc: 'Mass per unit volume (g/cm³ at STP)' },
+
+            { key: 'block', icon: '🧱', name: 'Orbital Block', desc: 'Electronic valence subshell blocks (s, p, d, f)' },
+
+            { key: 'energyLevels', icon: '🪐', name: 'Energy Levels / Shells', desc: 'Number of occupied electron shells (1–7)' },
+
+            { key: 'discoveryYear', icon: '⏳', name: 'Discovery Year', desc: 'Timeline of element discovery antiquity to modern' },
+
+            { key: 'hardness', icon: '💎', name: 'Mohs Hardness', desc: 'Mineral scratch hardness on Mohs scale (0.5–10)' },
+
+            { key: 'modulus', icon: '🛡️', name: 'Bulk Modulus', desc: 'Resistance to uniform compression in GPa' },
+
+            { key: 'conductivity', icon: '🔌', name: 'Thermal Conductivity', desc: 'Heat conduction rate in W/(m·K)' },
+
+            { key: 'heat', icon: '♨️', name: 'Specific Heat', desc: 'Heat capacity in J/(g·K)' },
+
+            { key: 'abundance', icon: '🌌', name: 'Universe Abundance', desc: 'Cosmic mass fraction relative to silicon' }
+
+        ]
+
+    },
+
+    'properties': null,
+
+    'electrons': {
+
+        title: '⚛️ Select Electron View',
+
+        subtitle: 'Visualize electron configurations, shells, and quantum states',
+
+        getActive: () => window.currentElecProperty || currentElecProperty || 'configuration',
+
+        onSelect: (key) => setElectronProperty(key),
+
+        options: [
+
+            { key: 'configuration', icon: '⚛️', name: 'Noble Gas Configuration', desc: 'Ground-state noble gas shorthand configuration' },
+
+            { key: 'expanded', icon: '📜', name: 'Expanded Configuration', desc: 'Complete subshell orbital filling (1s² 2s² 2p⁶...)' },
+
+            { key: 'oxidation', icon: '🔢', name: 'Oxidation States', desc: 'Common positive and negative oxidation states' },
+
+            { key: 'energyLevel', icon: '🪐', name: 'Energy Levels / Shells', desc: 'Occupied electron principal shells (K, L, M, N...)' },
+
+            { key: 'quantum', icon: '🔮', name: 'Quantum Numbers', desc: 'Valence electron principal (n) and orbital (l) quantum states' },
+
+            { key: 'block', icon: '🧱', name: 'Orbital Block', desc: 'Electronic subshell classification (s, p, d, f)' },
+
+            { key: 'valence', icon: '💫', name: 'Valence Electrons', desc: 'Number of outer-shell valence electrons' }
+
+        ]
+
+    },
+
+    'isotopes': {
+
+        title: '☢️ Select Isotope View',
+
+        subtitle: 'Analyze nuclear stability, decay pathways, and isotopes',
+
+        getActive: () => window.currentIsoProperty || currentIsoProperty || 'decayMode',
+
+        onSelect: (key) => setIsotopeProperty(key),
+
+        options: [
+
+            { key: 'decayMode', icon: '☢️', name: 'Primary Decay Mode', desc: 'Dominant decay pathway of radioactive isotopes (α, β⁻, β⁺, SF)' },
+
+            { key: 'stability', icon: '🛡️', name: 'Nuclear Stability', desc: 'Stable elements (green) vs strictly radioactive (red/orange)' },
+
+            { key: 'isoCount', icon: '📊', name: 'Isotope Count', desc: 'Total number of recognized isotopes per element' },
+
+            { key: 'halfLife', icon: '⏱️', name: 'Half-Life Spectrum', desc: 'Logarithmic half-life of most stable radioactive isotope' },
+
+            { key: 'category', icon: '🌈', name: 'Standard Category', desc: 'Chemical classification reference overlay' }
+
+        ]
+
+    },
+
+    'compounds': {
+
+        title: '🧪 Select Compound Filter',
+
+        subtitle: 'Filter molecular structures by bonding type and chemical class',
+
+        getActive: () => {
+
+            const activeBtn = document.querySelector('.compound-filter-btn.active');
+
+            return activeBtn ? activeBtn.getAttribute('data-type') : 'All';
+
+        },
+
+        onSelect: (key) => {
+
+            const btn = document.querySelector(`.compound-filter-btn[data-type="${key}"]`);
+
+            if (btn) btn.click();
+
+        },
+
+        options: [
+
+            { key: 'All', icon: '🧪', name: 'All Compounds', desc: 'Show all molecular and crystalline chemical compounds' },
+
+            { key: 'Covalent', icon: '🔗', name: 'Covalent Molecules', desc: 'Compounds with shared electron covalent bonds' },
+
+            { key: 'Ionic', icon: '⚡', name: 'Ionic Salts', desc: 'Compounds formed by electrostatic attraction between ions' },
+
+            { key: 'Organic', icon: '🌿', name: 'Organic Compounds', desc: 'Carbon-based molecules, hydrocarbons, and biomolecules' },
+
+            { key: 'Acid', icon: '🧪', name: 'Acids', desc: 'Proton donors and electron pair acceptors' },
+
+            { key: 'Base', icon: '🧴', name: 'Bases', desc: 'Proton acceptors and alkaline substances' },
+
+            { key: 'Gas', icon: '💨', name: 'Gases', desc: 'Compounds that are gaseous at standard temperature and pressure' },
+
+            { key: 'Liquid', icon: '💧', name: 'Liquids', desc: 'Compounds in liquid state at standard room temperature' },
+
+            { key: 'Solid', icon: '🧊', name: 'Solids', desc: 'Crystalline and amorphous solid substances at STP' }
+
+        ]
+
+    },
+
+    'reactions': {
+
+        title: '⚡ Select Reaction Mode',
+
+        subtitle: 'Switch reaction stoichiometry and simulation tools',
+
+        getActive: () => {
+
+            const practice = document.getElementById('rxn-mode-practice-btn');
+
+            return practice && practice.classList.contains('active') ? 'practice' : 'solver';
+
+        },
+
+        onSelect: (key) => {
+
+            if (typeof setReactionMode === 'function') setReactionMode(key);
+
+        },
+
+        options: [
+
+            { key: 'solver', icon: '⚖️', name: 'Equation Balancer & Solver', desc: 'Automatically balance chemical equations and compute stoichiometry' },
+
+            { key: 'practice', icon: '🎯', name: 'Reaction Practice & Predict', desc: 'Interactive practice mode to predict products and test reaction skills' }
+
+        ]
+
+    },
+
+    'crystals': {
+
+        title: '💎 Select Crystal Lattice View',
+
+        subtitle: 'Toggle unit cell geometry and supercell lattice network',
+
+        getActive: () => {
+
+            const supercell = document.getElementById('btn-mode-supercell');
+
+            return supercell && supercell.classList.contains('active') ? 'supercell' : 'unitcell';
+
+        },
+
+        onSelect: (key) => {
+
+            const btn = document.getElementById(key === 'supercell' ? 'btn-mode-supercell' : 'btn-mode-unitcell');
+
+            if (btn) btn.click();
+
+        },
+
+        options: [
+
+            { key: 'unitcell', icon: '📦', name: 'Unit Cell (1×1×1)', desc: 'Fundamental repeating unit of the crystal lattice' },
+
+            { key: 'supercell', icon: '🕸️', name: 'Lattice Network (2×2×2)', desc: 'Extended 3D periodic lattice structure showing symmetry planes' }
+
+        ]
+
+    }
+
+};
+
+TAB_VIEW_CONFIGS['properties'] = TAB_VIEW_CONFIGS['main'];
+
+window.TAB_VIEW_CONFIGS = TAB_VIEW_CONFIGS;
+
+
+
 let _tableTypeModalOpenTime = 0;
+
+
 
 function openTableTypeModal() {
 
@@ -111952,19 +112555,61 @@ function openTableTypeModal() {
 
     _tableTypeModalOpenTime = Date.now();
 
-    document.querySelectorAll('.table-type-opt').forEach(opt => {
 
-        if (opt.dataset.prop === currentProperty) {
 
-            opt.classList.add('active');
+    const view = currentView || 'main';
 
-        } else {
+    const config = TAB_VIEW_CONFIGS[view] || TAB_VIEW_CONFIGS['main'];
 
-            opt.classList.remove('active');
 
-        }
 
-    });
+    // Update Header Title
+
+    const titleEl = modal.querySelector('.table-type-header h3');
+
+    if (titleEl) {
+
+        titleEl.innerHTML = config.title;
+
+    }
+
+
+
+    // Populate Grid Options
+
+    const grid = modal.querySelector('.table-type-grid');
+
+    if (grid) {
+
+        const activeKey = config.getActive();
+
+        grid.innerHTML = config.options.map(opt => {
+
+            const isActive = opt.key === activeKey;
+
+            return `
+
+                <button class="table-type-opt ${isActive ? 'active' : ''}" data-prop="${opt.key}" onclick="handleTableViewOptionSelect('${view}', '${opt.key}')">
+
+                    <span class="type-icon">${opt.icon}</span>
+
+                    <div class="type-info">
+
+                        <span class="type-name">${opt.name}</span>
+
+                        <span class="type-desc">${opt.desc}</span>
+
+                    </div>
+
+                </button>
+
+            `;
+
+        }).join('');
+
+    }
+
+
 
     const bridge = window.PeriodicaNativeSlider || window.NativeSliderBridge;
 
@@ -111982,9 +112627,27 @@ window.openTableTypeModal = openTableTypeModal;
 
 
 
-function closeTableTypeModal(e) {
+function handleTableViewOptionSelect(viewId, propKey) {
 
-    if (Date.now() - _tableTypeModalOpenTime < 350) {
+    const cfg = TAB_VIEW_CONFIGS[viewId] || TAB_VIEW_CONFIGS['main'];
+
+    if (cfg && typeof cfg.onSelect === 'function') {
+
+        cfg.onSelect(propKey);
+
+    }
+
+    closeTableTypeModal(null, true);
+
+}
+
+window.handleTableViewOptionSelect = handleTableViewOptionSelect;
+
+
+
+function closeTableTypeModal(e, force = false) {
+
+    if (!force && Date.now() - _tableTypeModalOpenTime < 350) {
 
         return;
 
@@ -111999,6 +112662,113 @@ function closeTableTypeModal(e) {
 }
 
 window.closeTableTypeModal = closeTableTypeModal;
+
+
+
+function setElectronProperty(propKey) {
+
+    if (!propKey) return;
+
+    currentElecProperty = propKey;
+
+    window.currentElecProperty = propKey;
+
+
+
+    document.querySelectorAll('.elec-prop-item').forEach(p => {
+
+        if (p.dataset.prop === propKey) p.classList.add('active');
+
+        else p.classList.remove('active');
+
+    });
+
+
+
+    const elecLabels = {
+
+        'configuration': 'Configuration',
+
+        'expanded': 'Expanded',
+
+        'oxidation': 'Oxidation',
+
+        'energyLevel': 'Energy Shells',
+
+        'quantum': 'Quantum Numbers',
+
+        'block': 'Orbital Block',
+
+        'valence': 'Valence e⁻'
+
+    };
+
+    const title = elecLabels[propKey] || propKey;
+
+    document.querySelectorAll('#electrons-grid .table-type-title').forEach(el => {
+
+        el.innerText = title;
+
+    });
+
+
+
+    closeTableTypeModal(null, true);
+
+    updateGridVisuals();
+
+    syncNativeSliderVisibility();
+
+}
+
+window.setElectronProperty = setElectronProperty;
+
+
+
+function setIsotopeProperty(propKey) {
+
+    if (!propKey) return;
+
+    currentIsoProperty = propKey;
+
+    window.currentIsoProperty = propKey;
+
+
+
+    const isoLabels = {
+
+        'decayMode': 'Decay Modes',
+
+        'stability': 'Stability',
+
+        'isoCount': 'Isotope Count',
+
+        'halfLife': 'Half-Life',
+
+        'category': 'Category'
+
+    };
+
+    const title = isoLabels[propKey] || propKey;
+
+    document.querySelectorAll('#isotopes-grid .table-type-title').forEach(el => {
+
+        el.innerText = title;
+
+    });
+
+
+
+    closeTableTypeModal(null, true);
+
+    updateGridVisuals();
+
+    syncNativeSliderVisibility();
+
+}
+
+window.setIsotopeProperty = setIsotopeProperty;
+
 
 
 
@@ -112738,13 +113508,18 @@ function setupMobileLeftNav() {
 
             lastTap = now;
 
-            if (e) e.stopPropagation();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
 
             const view = item.dataset.view || item.closest('[data-view]')?.dataset.view;
 
             if (view) {
 
                 if (view !== 'main' && window.isProUser && !window.isProUser()) {
+
+                    if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
 
                     if (window.openProPaywallModal) window.openProPaywallModal(view);
 
@@ -112775,16 +113550,6 @@ function setupMobileLeftNav() {
             syncNativeSliderVisibility();
 
         };
-
-        item.addEventListener('pointerdown', (e) => {
-
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-
-                handleMobileNav(e);
-
-            }
-
-        });
 
         item.addEventListener('click', handleMobileNav);
 
@@ -112996,7 +113761,19 @@ function setTableProperty(propKey) {
 
         'density': 'Density',
 
-        'block': 'Orbital Block'
+        'block': 'Orbital Block',
+
+        'energyLevels': 'Energy Levels',
+
+        'hardness': 'Mohs Hardness',
+
+        'modulus': 'Bulk Modulus',
+
+        'conductivity': 'Thermal Cond',
+
+        'heat': 'Specific Heat',
+
+        'abundance': 'Abundance'
 
     };
 
@@ -113007,6 +113784,8 @@ function setTableProperty(propKey) {
     const btnTop = document.getElementById('btn-table-type-top');
 
     if (btnTop) btnTop.innerHTML = `🎛️ ${label} ▾`;
+
+    document.querySelectorAll('#main-grid .table-type-title').forEach(el => el.innerText = label);
 
 
 
@@ -113273,165 +114052,98 @@ function detectDeviceTier() {
 
 
 function applyPerfMode(enable, savePreference = false) {
-
     if (enable) {
-
         document.body.classList.add('perf-mode');
-
     } else {
-
         document.body.classList.remove('perf-mode');
-
     }
-
-
 
     // Update toggle UI
-
     const toggle = document.getElementById('perf-mode-toggle');
-
     if (toggle) toggle.checked = enable;
 
-
-
-    // Persist preference (not for mobile — mobile is always on)
-
-    if (savePreference) {
-
-        localStorage.setItem('perfModeOverride', enable ? '1' : '0');
-
+    const note = document.getElementById('perf-toggle-note');
+    if (note) {
+        note.textContent = enable
+            ? 'Optimized visuals active: GPU blur and heavy shadows reduced for maximum 60fps smoothness.'
+            : 'Full visuals active: glassmorphism, glow effects and shaders enabled.';
     }
 
+    // Persist preference
+    if (savePreference) {
+        localStorage.setItem('perfModeOverride', enable ? '1' : '0');
+    }
 }
+window.applyPerfMode = applyPerfMode;
 
+function applyMcpMode(enable, savePreference = false) {
+    const toggle = document.getElementById('mcp-mode-toggle');
+    if (toggle) toggle.checked = enable;
 
+    if (window.PeriodicaMCP && typeof window.PeriodicaMCP.toggle === 'function') {
+        window.PeriodicaMCP.toggle(enable);
+    } else if (savePreference) {
+        localStorage.setItem('periodica_mcp_enabled', enable ? 'true' : 'false');
+    }
+}
+window.applyMcpMode = applyMcpMode;
 
 function initPerfModeUI() {
-
     const { tier, isMobile, cores, mem, gpu } = detectDeviceTier();
 
-
-
     // Badge
-
     const badge = document.getElementById('perf-tier-badge');
-
     if (badge) {
-
         const labels = { mobile: ['MOBILE', '#00d4ff', 'rgba(0,212,255,0.15)'],
-
                          budget: ['BUDGET', '#f59e0b', 'rgba(245,158,11,0.15)'],
-
                          mid:    ['MID-RANGE', '#a78bfa', 'rgba(167,139,250,0.15)'],
-
                          high:   ['HIGH-END', '#10b981', 'rgba(16,185,129,0.15)'] };
-
         const [label, color, bg] = labels[tier] || labels.high;
-
         badge.textContent = label;
-
         badge.style.cssText += `color:${color}; background:${bg}; border:1px solid ${color}44;`;
-
     }
-
-
 
     // Device info panel
-
     const infoEl = document.getElementById('device-info-list');
-
     if (infoEl) {
-
         const rows = [
-
             ['Device Type', isMobile ? 'Mobile / Tablet' : 'Desktop / Laptop'],
-
             ['CPU Cores', cores > 0 ? `${cores} logical cores` : 'Not available'],
-
             ['RAM', mem > 0 ? `~${mem} GB` : 'Not exposed by browser'],
-
             ['GPU', gpu !== 'unknown' ? gpu.substring(0, 60) : 'Not available'],
-
             ['Screen', `${window.screen.width}×${window.screen.height} @ ${window.devicePixelRatio}x`],
-
         ];
-
         infoEl.innerHTML = rows.map(([k, v]) =>
-
             `<div style="display:flex; gap:8px;"><span style="color:#64748b; min-width:90px;">${k}:</span><span style="color:#94a3b8; word-break:break-word;">${v}</span></div>`
-
         ).join('');
-
     }
 
-
-
-    // Mobile toggle — disable & lock to ON
-
+    // Performance toggle — accessible & responsive on all devices!
     const toggle = document.getElementById('perf-mode-toggle');
-
-    const note   = document.getElementById('perf-toggle-note');
-
-    if (isMobile) {
-
-        if (toggle) { toggle.checked = true; toggle.disabled = true; }
-
-        if (note) note.textContent = 'Mobile always runs in Optimized mode and cannot be disabled.';
-
-    } else {
-
-        if (toggle) toggle.disabled = false;
-
+    if (toggle) {
+        toggle.disabled = false;
         const stored = localStorage.getItem('perfModeOverride');
-
-        const isOn = stored !== null ? stored === '1' : (tier === 'budget' || tier === 'mid');
-
-        if (toggle) toggle.checked = isOn;
-
-        if (note) {
-
-            note.textContent = stored !== null
-
-                ? 'Manual override active.'
-
-                : `Auto-detected as ${tier.toUpperCase()} tier — Optimized mode ${isOn ? 'enabled' : 'disabled'} by default.`;
-
-        }
-
+        const isOn = stored !== null ? stored === '1' : (isMobile || tier === 'budget' || tier === 'mid');
+        toggle.checked = isOn;
+        applyPerfMode(isOn, false);
     }
 
+    // MCP toggle — initialize to current MCP state
+    const mcpToggle = document.getElementById('mcp-mode-toggle');
+    if (mcpToggle) {
+        const isMcpOn = localStorage.getItem('periodica_mcp_enabled') !== 'false';
+        mcpToggle.checked = isMcpOn;
+    }
 }
 
-
-
 function setupPerfModeOnLoad() {
-
     const { tier, isMobile } = detectDeviceTier();
-
-    if (isMobile) {
-
-        // Mobile: always on (CSS @media rules already handle it; add body class for uniformity)
-
-        applyPerfMode(true);
-
-        return;
-
-    }
-
     const stored = localStorage.getItem('perfModeOverride');
-
     if (stored !== null) {
-
         applyPerfMode(stored === '1');
-
-    } else {
-
-        // Auto: enable for budget/mid
-
-        applyPerfMode(tier === 'budget' || tier === 'mid');
-
+        return;
     }
-
+    applyPerfMode(isMobile || tier === 'budget' || tier === 'mid');
 }
 
 
@@ -116816,7 +117528,7 @@ window.OrbitalViewer = {
 
  * Handles:
 
- * 1. Google Play In-App Billing (Play Billing Library v7) Integration
+ * 1. Google Play In-App Billing (Play Billing Library v8.0.0) Integration
 
  * 2. Feature Gating (Free: Properties View, Pro: Orbitals, Isotopes, Compounds, Reactions, Crystals, Compare, Quiz, Heatmaps)
 
@@ -116848,17 +117560,7 @@ window.OrbitalViewer = {
 
     function isProUser() {
 
-        const val = localStorage.getItem(PRO_STORAGE_KEY);
-
-        if (val === null || val === undefined) {
-
-            localStorage.setItem(PRO_STORAGE_KEY, 'true');
-
-            return true;
-
-        }
-
-        return val === 'true';
+        return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
 
     }
 
@@ -117026,6 +117728,8 @@ window.OrbitalViewer = {
 
         if (!modal) return;
 
+        window._lastPaywallOpenTime = Date.now();
+
 
 
         // Hide native slider over paywall
@@ -117126,10 +117830,16 @@ window.OrbitalViewer = {
 
 
 
-    function closeProPaywallModal() {
-
+    function closeProPaywallModal(force = false) {
+        if (!force) {
+            console.warn('[Paywall] Ignored unforced closeProPaywallModal call');
+            return;
+        }
+        if (Date.now() - (window._lastPaywallOpenTime || 0) < 400) {
+            console.warn('[Paywall] Ignored closeProPaywallModal within 400ms dwell window');
+            return;
+        }
         const modal = document.getElementById('pro-paywall-modal');
-
         if (modal) modal.style.display = 'none';
 
 
@@ -117164,18 +117874,16 @@ window.OrbitalViewer = {
 
 
 
-    function handleTierBadgeClick() {
-
-        if (isProUser()) {
-
-            alert('👑 Periodica 3D Pro is active on your device! All features and visualizers are permanently unlocked.');
-
-        } else {
-
-            openProPaywallModal('badge');
-
+    function handleTierBadgeClick(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-
+        if (isProUser()) {
+            alert('👑 Periodica 3D Pro is active on your device! All features and visualizers are permanently unlocked.');
+        } else {
+            openProPaywallModal('badge');
+        }
     }
 
 
@@ -117236,19 +117944,7 @@ window.OrbitalViewer = {
 
     window.onNativeProStatus = function (isPro) {
 
-        if (isPro) {
-
-            setProUser(true, false);
-
-        } else if (isProUser()) {
-
-            updateTierUI();
-
-        } else {
-
-            setProUser(false, false);
-
-        }
+        setProUser(!!isPro, false);
 
     };
 
@@ -117263,6 +117959,8 @@ window.OrbitalViewer = {
             alert('🎉 Purchases restored successfully! Periodica 3D Pro is now active.');
 
         } else {
+
+            setProUser(false, false);
 
             alert('ℹ️ No previous Google Play purchase was found for your logged-in Google account.');
 
@@ -117280,6 +117978,10 @@ window.OrbitalViewer = {
 
             alert('🎉 Thank you for supporting Periodica 3D! Pro features are permanently unlocked.');
 
+        } else if (status === 'pending') {
+
+            alert('⏳ ' + (msg || 'Payment is pending confirmation from Google Play. Pro will unlock automatically once confirmed.'));
+
         } else if (status === 'cancelled') {
 
             // User cancelled Google Play purchase sheet
@@ -117287,6 +117989,8 @@ window.OrbitalViewer = {
         } else if (status === 'error') {
 
             console.warn('[Billing Error]', msg);
+
+            alert('⚠️ Purchase could not be completed: ' + (msg || 'Please verify your Google Play connection and try again.'));
 
         }
 
@@ -124951,7 +125655,7 @@ window.OrbitalViewer = {
 
         </button>
 
-        <div id="sidebar-tier-widget" class="sidebar-tier-widget free" onclick="handleTierBadgeClick()" title="Periodica Tier">
+        <div id="sidebar-tier-widget" class="sidebar-tier-widget free" onclick="handleTierBadgeClick(event)" title="Periodica Tier">
 
             <div class="sidebar-tier-icon">⭐</div>
 
@@ -125121,7 +125825,7 @@ window.OrbitalViewer = {
 
             <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v4.5.0</span>
 
-            <span id="top-tier-badge" class="tier-badge-pill free" onclick="handleTierBadgeClick()" title="Periodica Tier">FREE</span>
+            <span id="top-tier-badge" class="tier-badge-pill free" onclick="handleTierBadgeClick(event)" title="Periodica Tier">FREE</span>
 
         </div>
 
@@ -127488,16 +128192,11 @@ window.OrbitalViewer = {
 
                     <span style="font-size:0.85rem; color:#e2e8f0;">Optimized Visuals</span>
 
-                    <label id="perf-toggle-label" style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle Optimized Mode">
-
-                        <input type="checkbox" id="perf-mode-toggle" style="opacity:0; width:0; height:0; position:absolute;" onchange="applyPerfMode(this.checked, true)">
-
-                        <span id="perf-toggle-thumb" style="position:absolute; inset:0; border-radius:26px; background:#1e2a3a; border:1px solid rgba(255,255,255,0.15); transition:background 0.25s;">
-
-                            <span style="position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#475569; transition:transform 0.25s, background 0.25s;" id="perf-toggle-knob"></span>
-
+                    <label class="settings-switch" id="perf-toggle-label" title="Toggle Optimized Mode">
+                        <input type="checkbox" id="perf-mode-toggle" onchange="applyPerfMode(this.checked, true)">
+                        <span class="settings-switch-thumb" id="perf-toggle-thumb">
+                            <span class="settings-switch-knob" id="perf-toggle-knob"></span>
                         </span>
-
                     </label>
 
                 </div>
@@ -127530,16 +128229,11 @@ window.OrbitalViewer = {
 
                     <span style="font-size:0.85rem; color:#e2e8f0;">Enable AI Remote Navigation</span>
 
-                    <label style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle AI Remote Navigation">
-
-                        <input type="checkbox" id="mcp-mode-toggle" checked style="opacity:0; width:0; height:0; position:absolute;" onchange="if(window.PeriodicaMCP) window.PeriodicaMCP.toggle(this.checked)">
-
-                        <span style="position:absolute; inset:0; border-radius:26px; background:#0284c7; border:1px solid rgba(0,212,255,0.4); transition:background 0.25s;">
-
-                            <span style="position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:#ffffff; transition:transform 0.25s;" id="mcp-toggle-knob"></span>
-
+                    <label class="settings-switch" id="mcp-toggle-label" title="Toggle AI Remote Navigation">
+                        <input type="checkbox" id="mcp-mode-toggle" checked onchange="applyMcpMode(this.checked, true)">
+                        <span class="settings-switch-thumb" id="mcp-toggle-thumb">
+                            <span class="settings-switch-knob" id="mcp-toggle-knob"></span>
                         </span>
-
                     </label>
 
                 </div>
@@ -127570,7 +128264,7 @@ window.OrbitalViewer = {
 
                         <span>App Version</span>
 
-                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Periodica 3D v4.3.2</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Periodica 3D v4.5.0</span>
 
                     </div>
 
@@ -128168,9 +128862,9 @@ window.OrbitalViewer = {
 
     <!-- ===================== PERIODICA 3D PRO PAYWALL MODAL ===================== -->
 
-    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this)closeProPaywallModal()">
+    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;">
 
-        <div class="pro-modal-card">
+        <div class="pro-modal-card" onclick="event.stopPropagation()">
 
             <div class="pro-modal-header">
 
@@ -128182,7 +128876,7 @@ window.OrbitalViewer = {
 
                 </div>
 
-                <button class="pro-modal-close-btn" onclick="closeProPaywallModal()" aria-label="Close Pro Modal">&times;</button>
+                <button class="pro-modal-close-btn" onclick="closeProPaywallModal(true)" aria-label="Close Pro Modal">&times;</button>
 
             </div>
 
@@ -128403,7 +129097,7 @@ window.OrbitalViewer = {
 
                     <button class="pro-btn-secondary" onclick="restorePurchases()">🔄 Restore Purchases</button>
 
-                    <button class="pro-btn-secondary" onclick="closeProPaywallModal()">Back to Free Table ➔</button>
+                    <button class="pro-btn-secondary" onclick="closeProPaywallModal(true)">Back to Free Table ➔</button>
 
                 </div>
 

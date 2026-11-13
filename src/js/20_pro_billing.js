@@ -307,14 +307,15 @@
 
 
     function closeProPaywallModal(force = false) {
-
-        if (!force && (Date.now() - (window._lastPaywallOpenTime || 0) < 600)) {
-            console.log('[Paywall] Ignored premature close within 600ms of open');
+        if (!force) {
+            console.warn('[Paywall] Ignored unforced closeProPaywallModal call');
             return;
         }
-
+        if (Date.now() - (window._lastPaywallOpenTime || 0) < 400) {
+            console.warn('[Paywall] Ignored closeProPaywallModal within 400ms dwell window');
+            return;
+        }
         const modal = document.getElementById('pro-paywall-modal');
-
         if (modal) modal.style.display = 'none';
 
 
