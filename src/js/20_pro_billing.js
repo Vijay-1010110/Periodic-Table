@@ -349,18 +349,16 @@
 
 
 
-    function handleTierBadgeClick() {
-
-        if (isProUser()) {
-
-            alert('👑 Periodica 3D Pro is active on your device! All features and visualizers are permanently unlocked.');
-
-        } else {
-
-            openProPaywallModal('badge');
-
+    function handleTierBadgeClick(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-
+        if (isProUser()) {
+            alert('👑 Periodica 3D Pro is active on your device! All features and visualizers are permanently unlocked.');
+        } else {
+            openProPaywallModal('badge');
+        }
     }
 
 

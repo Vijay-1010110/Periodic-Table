@@ -136,8 +136,13 @@ window.NavigationManager = (function() {
         // 1-pro. Pro Paywall Modal
         const proModal = document.getElementById('pro-paywall-modal');
         if (proModal && proModal.style.display !== 'none' && proModal.style.display !== '') {
+            // Guard against edge-swipe accidental back gestures immediately upon opening
+            if (Date.now() - (window._lastPaywallOpenTime || 0) < 800) {
+                console.log('[Paywall] Ignored back gesture within 800ms dwell window');
+                return true;
+            }
             if (typeof window.closeProPaywallModal === 'function') {
-                window.closeProPaywallModal();
+                window.closeProPaywallModal(true);
             } else {
                 proModal.style.display = 'none';
             }

@@ -2109,17 +2109,15 @@ function setupUI() {
         let lastTap = 0;
 
         const handleNav = (e) => {
-
             const now = Date.now();
-
             if (now - lastTap < 250) return;
-
             lastTap = now;
-
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const viewId = e.currentTarget.dataset.view || e.target.closest('[data-view]')?.dataset.view;
-
             if (viewId) switchView(viewId, true);
-
         };
 
         btn.addEventListener('click', handleNav);
@@ -9016,7 +9014,10 @@ function setupMobileLeftNav() {
 
             lastTap = now;
 
-            if (e) e.stopPropagation();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
 
             const view = item.dataset.view || item.closest('[data-view]')?.dataset.view;
 

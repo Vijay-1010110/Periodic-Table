@@ -384,7 +384,7 @@
 
         </button>
 
-        <div id="sidebar-tier-widget" class="sidebar-tier-widget free" onclick="handleTierBadgeClick()" title="Periodica Tier">
+        <div id="sidebar-tier-widget" class="sidebar-tier-widget free" onclick="handleTierBadgeClick(event)" title="Periodica Tier">
 
             <div class="sidebar-tier-icon">⭐</div>
 
@@ -554,7 +554,7 @@
 
             <span class="version-badge" title="Periodic Table App Version" style="font-size: 0.68rem; font-family: var(--font-mono); background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(0, 212, 255, 0.4); color: #00d4ff; padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);">v4.5.0</span>
 
-            <span id="top-tier-badge" class="tier-badge-pill free" onclick="handleTierBadgeClick()" title="Periodica Tier">FREE</span>
+            <span id="top-tier-badge" class="tier-badge-pill free" onclick="handleTierBadgeClick(event)" title="Periodica Tier">FREE</span>
 
         </div>
 
@@ -3591,9 +3591,9 @@
 
     <!-- ===================== PERIODICA 3D PRO PAYWALL MODAL ===================== -->
 
-    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this && (Date.now() - (window._lastPaywallOpenTime || 0) > 600))closeProPaywallModal()">
+    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;">
 
-        <div class="pro-modal-card">
+        <div class="pro-modal-card" onclick="event.stopPropagation()">
 
             <div class="pro-modal-header">
 
