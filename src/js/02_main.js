@@ -2122,16 +2122,6 @@ function setupUI() {
 
         };
 
-        btn.addEventListener('pointerdown', (e) => {
-
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-
-                handleNav(e);
-
-            }
-
-        });
-
         btn.addEventListener('click', handleNav);
 
     });
@@ -9034,6 +9024,8 @@ function setupMobileLeftNav() {
 
                 if (view !== 'main' && window.isProUser && !window.isProUser()) {
 
+                    if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
+
                     if (window.openProPaywallModal) window.openProPaywallModal(view);
 
                     return;
@@ -9063,16 +9055,6 @@ function setupMobileLeftNav() {
             syncNativeSliderVisibility();
 
         };
-
-        item.addEventListener('pointerdown', (e) => {
-
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-
-                handleMobileNav(e);
-
-            }
-
-        });
 
         item.addEventListener('click', handleMobileNav);
 

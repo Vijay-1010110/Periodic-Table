@@ -4,7 +4,7 @@
 
  * Handles:
 
- * 1. Google Play In-App Billing (Play Billing Library v7) Integration
+ * 1. Google Play In-App Billing (Play Billing Library v8.0.0) Integration
 
  * 2. Feature Gating (Free: Properties View, Pro: Orbitals, Isotopes, Compounds, Reactions, Crystals, Compare, Quiz, Heatmaps)
 
@@ -36,17 +36,7 @@
 
     function isProUser() {
 
-        const val = localStorage.getItem(PRO_STORAGE_KEY);
-
-        if (val === null || val === undefined) {
-
-            localStorage.setItem(PRO_STORAGE_KEY, 'true');
-
-            return true;
-
-        }
-
-        return val === 'true';
+        return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
 
     }
 
@@ -214,6 +204,8 @@
 
         if (!modal) return;
 
+        window._lastPaywallOpenTime = Date.now();
+
 
 
         // Hide native slider over paywall
@@ -314,7 +306,12 @@
 
 
 
-    function closeProPaywallModal() {
+    function closeProPaywallModal(force = false) {
+
+        if (!force && (Date.now() - (window._lastPaywallOpenTime || 0) < 600)) {
+            console.log('[Paywall] Ignored premature close within 600ms of open');
+            return;
+        }
 
         const modal = document.getElementById('pro-paywall-modal');
 
@@ -424,19 +421,7 @@
 
     window.onNativeProStatus = function (isPro) {
 
-        if (isPro) {
-
-            setProUser(true, false);
-
-        } else if (isProUser()) {
-
-            updateTierUI();
-
-        } else {
-
-            setProUser(false, false);
-
-        }
+        setProUser(!!isPro, false);
 
     };
 
@@ -451,6 +436,8 @@
             alert('🎉 Purchases restored successfully! Periodica 3D Pro is now active.');
 
         } else {
+
+            setProUser(false, false);
 
             alert('ℹ️ No previous Google Play purchase was found for your logged-in Google account.');
 
@@ -468,6 +455,10 @@
 
             alert('🎉 Thank you for supporting Periodica 3D! Pro features are permanently unlocked.');
 
+        } else if (status === 'pending') {
+
+            alert('⏳ ' + (msg || 'Payment is pending confirmation from Google Play. Pro will unlock automatically once confirmed.'));
+
         } else if (status === 'cancelled') {
 
             // User cancelled Google Play purchase sheet
@@ -475,6 +466,8 @@
         } else if (status === 'error') {
 
             console.warn('[Billing Error]', msg);
+
+            alert('⚠️ Purchase could not be completed: ' + (msg || 'Please verify your Google Play connection and try again.'));
 
         }
 

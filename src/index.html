@@ -3591,7 +3591,7 @@
 
     <!-- ===================== PERIODICA 3D PRO PAYWALL MODAL ===================== -->
 
-    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this)closeProPaywallModal()">
+    <div id="pro-paywall-modal" class="pro-modal-overlay" style="display:none;" onclick="if(event.target===this && (Date.now() - (window._lastPaywallOpenTime || 0) > 600))closeProPaywallModal()">
 
         <div class="pro-modal-card">
 
@@ -3605,7 +3605,7 @@
 
                 </div>
 
-                <button class="pro-modal-close-btn" onclick="closeProPaywallModal()" aria-label="Close Pro Modal">&times;</button>
+                <button class="pro-modal-close-btn" onclick="closeProPaywallModal(true)" aria-label="Close Pro Modal">&times;</button>
 
             </div>
 
@@ -3826,7 +3826,7 @@
 
                     <button class="pro-btn-secondary" onclick="restorePurchases()">🔄 Restore Purchases</button>
 
-                    <button class="pro-btn-secondary" onclick="closeProPaywallModal()">Back to Free Table ➔</button>
+                    <button class="pro-btn-secondary" onclick="closeProPaywallModal(true)">Back to Free Table ➔</button>
 
                 </div>
 
