@@ -2921,16 +2921,11 @@
 
                     <span style="font-size:0.85rem; color:#e2e8f0;">Optimized Visuals</span>
 
-                    <label id="perf-toggle-label" style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle Optimized Mode">
-
-                        <input type="checkbox" id="perf-mode-toggle" style="opacity:0; width:0; height:0; position:absolute;" onchange="applyPerfMode(this.checked, true)">
-
-                        <span id="perf-toggle-thumb" style="position:absolute; inset:0; border-radius:26px; background:#1e2a3a; border:1px solid rgba(255,255,255,0.15); transition:background 0.25s;">
-
-                            <span style="position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#475569; transition:transform 0.25s, background 0.25s;" id="perf-toggle-knob"></span>
-
+                    <label class="settings-switch" id="perf-toggle-label" title="Toggle Optimized Mode">
+                        <input type="checkbox" id="perf-mode-toggle" onchange="applyPerfMode(this.checked, true)">
+                        <span class="settings-switch-thumb" id="perf-toggle-thumb">
+                            <span class="settings-switch-knob" id="perf-toggle-knob"></span>
                         </span>
-
                     </label>
 
                 </div>
@@ -2963,16 +2958,11 @@
 
                     <span style="font-size:0.85rem; color:#e2e8f0;">Enable AI Remote Navigation</span>
 
-                    <label style="position:relative; display:inline-block; width:46px; height:26px; cursor:pointer;" title="Toggle AI Remote Navigation">
-
-                        <input type="checkbox" id="mcp-mode-toggle" checked style="opacity:0; width:0; height:0; position:absolute;" onchange="if(window.PeriodicaMCP) window.PeriodicaMCP.toggle(this.checked)">
-
-                        <span style="position:absolute; inset:0; border-radius:26px; background:#0284c7; border:1px solid rgba(0,212,255,0.4); transition:background 0.25s;">
-
-                            <span style="position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:#ffffff; transition:transform 0.25s;" id="mcp-toggle-knob"></span>
-
+                    <label class="settings-switch" id="mcp-toggle-label" title="Toggle AI Remote Navigation">
+                        <input type="checkbox" id="mcp-mode-toggle" checked onchange="applyMcpMode(this.checked, true)">
+                        <span class="settings-switch-thumb" id="mcp-toggle-thumb">
+                            <span class="settings-switch-knob" id="mcp-toggle-knob"></span>
                         </span>
-
                     </label>
 
                 </div>
@@ -3003,7 +2993,7 @@
 
                         <span>App Version</span>
 
-                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Periodica 3D v4.3.2</span>
+                        <span style="font-family:'IBM Plex Mono',monospace; color:#00d4ff; font-weight:700;">Periodica 3D v4.5.0</span>
 
                     </div>
 

@@ -9561,165 +9561,98 @@ function detectDeviceTier() {
 
 
 function applyPerfMode(enable, savePreference = false) {
-
     if (enable) {
-
         document.body.classList.add('perf-mode');
-
     } else {
-
         document.body.classList.remove('perf-mode');
-
     }
-
-
 
     // Update toggle UI
-
     const toggle = document.getElementById('perf-mode-toggle');
-
     if (toggle) toggle.checked = enable;
 
-
-
-    // Persist preference (not for mobile — mobile is always on)
-
-    if (savePreference) {
-
-        localStorage.setItem('perfModeOverride', enable ? '1' : '0');
-
+    const note = document.getElementById('perf-toggle-note');
+    if (note) {
+        note.textContent = enable
+            ? 'Optimized visuals active: GPU blur and heavy shadows reduced for maximum 60fps smoothness.'
+            : 'Full visuals active: glassmorphism, glow effects and shaders enabled.';
     }
 
+    // Persist preference
+    if (savePreference) {
+        localStorage.setItem('perfModeOverride', enable ? '1' : '0');
+    }
 }
+window.applyPerfMode = applyPerfMode;
 
+function applyMcpMode(enable, savePreference = false) {
+    const toggle = document.getElementById('mcp-mode-toggle');
+    if (toggle) toggle.checked = enable;
 
+    if (window.PeriodicaMCP && typeof window.PeriodicaMCP.toggle === 'function') {
+        window.PeriodicaMCP.toggle(enable);
+    } else if (savePreference) {
+        localStorage.setItem('periodica_mcp_enabled', enable ? 'true' : 'false');
+    }
+}
+window.applyMcpMode = applyMcpMode;
 
 function initPerfModeUI() {
-
     const { tier, isMobile, cores, mem, gpu } = detectDeviceTier();
 
-
-
     // Badge
-
     const badge = document.getElementById('perf-tier-badge');
-
     if (badge) {
-
         const labels = { mobile: ['MOBILE', '#00d4ff', 'rgba(0,212,255,0.15)'],
-
                          budget: ['BUDGET', '#f59e0b', 'rgba(245,158,11,0.15)'],
-
                          mid:    ['MID-RANGE', '#a78bfa', 'rgba(167,139,250,0.15)'],
-
                          high:   ['HIGH-END', '#10b981', 'rgba(16,185,129,0.15)'] };
-
         const [label, color, bg] = labels[tier] || labels.high;
-
         badge.textContent = label;
-
         badge.style.cssText += `color:${color}; background:${bg}; border:1px solid ${color}44;`;
-
     }
-
-
 
     // Device info panel
-
     const infoEl = document.getElementById('device-info-list');
-
     if (infoEl) {
-
         const rows = [
-
             ['Device Type', isMobile ? 'Mobile / Tablet' : 'Desktop / Laptop'],
-
             ['CPU Cores', cores > 0 ? `${cores} logical cores` : 'Not available'],
-
             ['RAM', mem > 0 ? `~${mem} GB` : 'Not exposed by browser'],
-
             ['GPU', gpu !== 'unknown' ? gpu.substring(0, 60) : 'Not available'],
-
             ['Screen', `${window.screen.width}×${window.screen.height} @ ${window.devicePixelRatio}x`],
-
         ];
-
         infoEl.innerHTML = rows.map(([k, v]) =>
-
             `<div style="display:flex; gap:8px;"><span style="color:#64748b; min-width:90px;">${k}:</span><span style="color:#94a3b8; word-break:break-word;">${v}</span></div>`
-
         ).join('');
-
     }
 
-
-
-    // Mobile toggle — disable & lock to ON
-
+    // Performance toggle — accessible & responsive on all devices!
     const toggle = document.getElementById('perf-mode-toggle');
-
-    const note   = document.getElementById('perf-toggle-note');
-
-    if (isMobile) {
-
-        if (toggle) { toggle.checked = true; toggle.disabled = true; }
-
-        if (note) note.textContent = 'Mobile always runs in Optimized mode and cannot be disabled.';
-
-    } else {
-
-        if (toggle) toggle.disabled = false;
-
+    if (toggle) {
+        toggle.disabled = false;
         const stored = localStorage.getItem('perfModeOverride');
-
-        const isOn = stored !== null ? stored === '1' : (tier === 'budget' || tier === 'mid');
-
-        if (toggle) toggle.checked = isOn;
-
-        if (note) {
-
-            note.textContent = stored !== null
-
-                ? 'Manual override active.'
-
-                : `Auto-detected as ${tier.toUpperCase()} tier — Optimized mode ${isOn ? 'enabled' : 'disabled'} by default.`;
-
-        }
-
+        const isOn = stored !== null ? stored === '1' : (isMobile || tier === 'budget' || tier === 'mid');
+        toggle.checked = isOn;
+        applyPerfMode(isOn, false);
     }
 
+    // MCP toggle — initialize to current MCP state
+    const mcpToggle = document.getElementById('mcp-mode-toggle');
+    if (mcpToggle) {
+        const isMcpOn = localStorage.getItem('periodica_mcp_enabled') !== 'false';
+        mcpToggle.checked = isMcpOn;
+    }
 }
 
-
-
 function setupPerfModeOnLoad() {
-
     const { tier, isMobile } = detectDeviceTier();
-
-    if (isMobile) {
-
-        // Mobile: always on (CSS @media rules already handle it; add body class for uniformity)
-
-        applyPerfMode(true);
-
-        return;
-
-    }
-
     const stored = localStorage.getItem('perfModeOverride');
-
     if (stored !== null) {
-
         applyPerfMode(stored === '1');
-
-    } else {
-
-        // Auto: enable for budget/mid
-
-        applyPerfMode(tier === 'budget' || tier === 'mid');
-
+        return;
     }
-
+    applyPerfMode(isMobile || tier === 'budget' || tier === 'mid');
 }
 
 
