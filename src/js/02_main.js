@@ -1328,7 +1328,7 @@ const stateColors = {
 
     'Liquid': '#00f0ff',  // Electric Neon Cyan (Liquid)
 
-    'Gas': '#ff0055',     // Vibrant Neon Pink-Red (Gas)
+    'Gas': '#fbbf24',     // Radiant Amber Gold (Gas)
 
     'Unknown': '#a1a1aa'  // Cool Translucent Silver (Unknown)
 
@@ -1342,7 +1342,7 @@ const stateTextColors = {
 
     'Liquid': '#00f0ff',  // Electric Neon Cyan (Liquid)
 
-    'Gas': '#ff0055',     // Vibrant Neon Pink-Red (Gas)
+    'Gas': '#fbbf24',     // Radiant Amber Gold (Gas)
 
     'Unknown': '#a1a1aa'  // Cool Translucent Silver (Unknown)
 
@@ -5205,7 +5205,7 @@ function updateSelectedCardVisuals() {
 
         'Liquid': '#00f0ff',  // Electric Neon Cyan for liquid
 
-        'Gas': '#ff0055',     // Vibrant Neon Pink-Red for gas
+        'Gas': '#fbbf24',     // Radiant Amber Gold for gas
 
         'Unknown': '#94a3b8'  // Muted Slate Silver for unknown
 
@@ -5217,19 +5217,19 @@ function updateSelectedCardVisuals() {
 
                       (currentState === 'Liquid') ? '0 0 7px #00f0ff' :
 
-                      (currentState === 'Gas') ? '0 0 7px #ff0055' : '0 0 4px #94a3b8';
+                      (currentState === 'Gas') ? '0 0 7px #fbbf24' : '0 0 4px #94a3b8';
 
     const statePillBorder = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.45)' :
 
                             (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.55)' :
 
-                            (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.55)' : 'rgba(148, 163, 184, 0.35)';
+                            (currentState === 'Gas') ? 'rgba(251, 191, 36, 0.55)' : 'rgba(148, 163, 184, 0.35)';
 
     const statePillBg = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.12)' :
 
                         (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.14)' :
 
-                        (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.14)' : 'rgba(148, 163, 184, 0.10)';
+                        (currentState === 'Gas') ? 'rgba(251, 191, 36, 0.14)' : 'rgba(148, 163, 184, 0.10)';
 
 
 
@@ -9082,7 +9082,7 @@ function openCardAnatomyModal(viewId, propKey) {
 
                 { badge: 'Background Color', color: '#10b981', text: '<strong>Element Series / Chemical Family:</strong> Categorizes elements into Alkali, Transition Metals, Lanthanides, Nonmetals, Halogens, Noble Gases, etc.' },
 
-                { badge: 'Symbol Text Color', color: '#00d4ff', text: '<strong>Physical State at STP:</strong> <span style="color:#ffffff;">White = Solid</span>, <span style="color:#00f0ff;">Cyan = Liquid</span>, <span style="color:#ff0055;">Crimson Red = Gas</span>, <span style="color:#94a3b8;">Gray = Unknown</span>.' },
+                { badge: 'Symbol Text Color', color: '#00d4ff', text: '<strong>Physical State at STP:</strong> <span style="color:#ffffff;">White = Solid</span>, <span style="color:#00f0ff;">Cyan = Liquid</span>, <span style="color:#fbbf24;">Amber Gold = Gas</span>, <span style="color:#94a3b8;">Gray = Unknown</span>.' },
 
                 { badge: 'Top-Left Number', color: '#a855f7', text: '<strong>Atomic Number (Z):</strong> Total number of protons in the nucleus (e.g. 6 for Carbon).' },
 

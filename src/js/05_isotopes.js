@@ -367,12 +367,12 @@ function renderIsotopeLegend(targetElement) {
     const name = el ? el.name : 'Carbon';
 
     const decayModes = [
-        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)' },
-        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)' },
-        { key: 'Beta+', label: 'β⁺ / EC', color: '#c084fc', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)' },
-        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split' },
-        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)' },
-        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)' }
+        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)', bg: 'linear-gradient(180deg, #a16207 0%, #854d0e 50%, #713f12 100%)', border: '#facc15' },
+        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)', bg: 'linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%)', border: '#38bdf8' },
+        { key: 'Beta+', label: 'β⁺ / EC', color: '#c084fc', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)', bg: 'linear-gradient(180deg, #7e22ce 0%, #6b21a8 50%, #581c87 100%)', border: '#c084fc' },
+        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split', bg: 'linear-gradient(180deg, #b91c1c 0%, #991b1b 50%, #7f1d1d 100%)', border: '#f87171' },
+        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)', bg: 'linear-gradient(180deg, #c2410c 0%, #9a3412 50%, #7c2d12 100%)', border: '#fb923c' },
+        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)', bg: 'linear-gradient(180deg, #0f766e 0%, #115e59 50%, #134e4a 100%)', border: '#2dd4bf' }
     ];
 
     let html = `
@@ -388,21 +388,21 @@ function renderIsotopeLegend(targetElement) {
             <div class="iso-legend-body">
                 <!-- Left Side: Stability Cards (Stacked full height) -->
                 <div class="iso-stability-column">
-                    <div class="iso-stability-card stable-card" data-decay="Stable" style="background: linear-gradient(135deg, rgba(74,222,128,0.25) 0%, rgba(74,222,128,0.09) 100%) !important; border: 1.5px solid rgba(74,222,128,0.65) !important; box-shadow: 0 0 8px rgba(74,222,128,0.25) !important;">
+                    <div class="iso-stability-card stable-card" data-decay="Stable" style="background: linear-gradient(180deg, #15803d 0%, #166534 50%, #14532d 100%) !important; border: 1.5px solid #4ade80 !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 6px rgba(0,0,0,0.5), 0 0 10px rgba(74,222,128,0.3) !important;">
                         <div class="iso-stab-header">
-                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; flex-shrink: 0;"></span>
-                            <span class="iso-stab-title" style="color: #4ade80;">STABLE NUCLIDES</span>
-                            <span class="iso-stab-badge" style="color: #ffffff; background: rgba(74,222,128,0.35); border: 1px solid rgba(74,222,128,0.7);">252</span>
+                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 6px #ffffff; flex-shrink: 0;"></span>
+                            <span class="iso-stab-title" style="color: #ffffff; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">STABLE NUCLIDES</span>
+                            <span class="iso-stab-badge" style="color: #ffffff; background: #14532d; border: 1px solid #4ade80; font-weight: 800; padding: 1px 5px; border-radius: 3px;">252</span>
                         </div>
-                        <div class="iso-stab-desc" style="color: #cbd5e1;">Ground-state non-decaying</div>
+                        <div class="iso-stab-desc" style="color: #dcfce7; font-weight: 600; text-shadow: 0 1px 1px rgba(0,0,0,0.7);">Ground-state non-decaying</div>
                     </div>
-                    <div class="iso-stability-card radio-card" data-decay="Radioactive" style="background: linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.09) 100%) !important; border: 1.5px solid rgba(239,68,68,0.65) !important; box-shadow: 0 0 8px rgba(239,68,68,0.25) !important;">
+                    <div class="iso-stability-card radio-card" data-decay="Radioactive" style="background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #7f1d1d 100%) !important; border: 1.5px solid #f87171 !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 6px rgba(0,0,0,0.5), 0 0 10px rgba(239,68,68,0.3) !important;">
                         <div class="iso-stab-header">
-                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px #ef4444; flex-shrink: 0;"></span>
-                            <span class="iso-stab-title" style="color: #ef4444;">RADIOISOTOPES</span>
-                            <span class="iso-stab-badge" style="color: #ffffff; background: rgba(239,68,68,0.35); border: 1px solid rgba(239,68,68,0.7);">2,900+</span>
+                            <span class="iso-stab-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 6px #ffffff; flex-shrink: 0;"></span>
+                            <span class="iso-stab-title" style="color: #ffffff; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">RADIOISOTOPES</span>
+                            <span class="iso-stab-badge" style="color: #ffffff; background: #7f1d1d; border: 1px solid #f87171; font-weight: 800; padding: 1px 5px; border-radius: 3px;">2,900+</span>
                         </div>
-                        <div class="iso-stab-desc" style="color: #cbd5e1;">Spontaneous nuclear decay</div>
+                        <div class="iso-stab-desc" style="color: #fee2e2; font-weight: 600; text-shadow: 0 1px 1px rgba(0,0,0,0.7);">Spontaneous nuclear decay</div>
                     </div>
                 </div>
 
@@ -415,12 +415,12 @@ function renderIsotopeLegend(targetElement) {
 
     decayModes.forEach(mode => {
         html += `
-            <div class="iso-mode-card" data-decay="${mode.key}" style="--mode-color: ${mode.color}; background: linear-gradient(135deg, ${mode.color}35 0%, ${mode.color}12 100%) !important; border: 1.5px solid ${mode.color}77 !important; box-shadow: 0 0 8px ${mode.color}33 !important;">
+            <div class="iso-mode-card" data-decay="${mode.key}" style="--mode-color: ${mode.color}; background: ${mode.bg} !important; border: 1.5px solid ${mode.border} !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 5px rgba(0,0,0,0.5), 0 0 8px ${mode.color}44 !important;">
                 <div class="iso-mode-top">
-                    <span class="iso-mode-pill" style="background: ${mode.color}35; color: #ffffff; border: 1px solid ${mode.color}88; font-weight: 700;">${mode.label}</span>
-                    <span class="iso-mode-count" style="color: #ffffff; font-weight: 800; text-shadow: 0 0 6px ${mode.color};">${mode.count}</span>
+                    <span class="iso-mode-pill" style="background: rgba(0, 0, 0, 0.45); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.45); font-weight: 800; padding: 1px 5px; border-radius: 3px;">${mode.label}</span>
+                    <span class="iso-mode-count" style="background: rgba(0, 0, 0, 0.55); color: #ffffff; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.9); padding: 0 4px; border-radius: 3px;">${mode.count}</span>
                 </div>
-                <span class="iso-mode-sub" style="color: #e2e8f0;">${mode.sub}</span>
+                <span class="iso-mode-sub" style="color: #ffffff; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.9); opacity: 0.95;">${mode.sub}</span>
             </div>
         `;
     });
@@ -580,19 +580,19 @@ function updateIsotopeSidebar(atomicNumber, force = false) {
     const stateColors = {
         'Solid': '#ffffff',   // Crisp Pure White for solid state
         'Liquid': '#00f0ff',  // Electric Neon Cyan for liquid
-        'Gas': '#ff0055',     // Vibrant Neon Pink-Red for gas
+        'Gas': '#fbbf24',     // Radiant Amber Gold for gas
         'Unknown': '#94a3b8'  // Muted Slate Silver for unknown
     };
     const sColor = stateColors[currentState] || '#ffffff';
     const stateGlow = (currentState === 'Solid') ? '0 0 7px rgba(255, 255, 255, 0.9)' :
                       (currentState === 'Liquid') ? '0 0 7px #00f0ff' :
-                      (currentState === 'Gas') ? '0 0 7px #ff0055' : '0 0 4px #94a3b8';
+                      (currentState === 'Gas') ? '0 0 7px #fbbf24' : '0 0 4px #94a3b8';
     const statePillBorder = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.45)' :
                             (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.55)' :
-                            (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.55)' : 'rgba(148, 163, 184, 0.35)';
+                            (currentState === 'Gas') ? 'rgba(251, 191, 36, 0.55)' : 'rgba(148, 163, 184, 0.35)';
     const statePillBg = (currentState === 'Solid') ? 'rgba(255, 255, 255, 0.12)' :
                         (currentState === 'Liquid') ? 'rgba(0, 240, 255, 0.14)' :
-                        (currentState === 'Gas') ? 'rgba(255, 0, 85, 0.14)' : 'rgba(148, 163, 184, 0.10)';
+                        (currentState === 'Gas') ? 'rgba(251, 191, 36, 0.14)' : 'rgba(148, 163, 184, 0.10)';
 
     const isoPill = document.getElementById('iso-state-pill');
     if (dotEl) {
