@@ -78,7 +78,7 @@ window.PeriodicCanvasGrid = (function() {
     const STATE_BG_COLORS = {
         0: '#475569', // Solid: Crisp Slate Metal
         1: '#0284c7', // Liquid: Deep Electric Cyan
-        2: '#e11d48', // Gas: Deep Rose Red
+        2: '#d97706', // Gas: Warm Amber Gold
         3: '#1e293b'  // Unknown: Dark Smoky Charcoal
     };
 
@@ -377,6 +377,9 @@ window.PeriodicCanvasGrid = (function() {
             }
             .in-grid-legend .legend-item[data-key="Gas"][data-type="state"] {
                 color: #fbbf24 !important;
+                border-color: #fbbf24 !important;
+                background: linear-gradient(180deg, rgba(251, 191, 36, 0.40) 0%, rgba(251, 191, 36, 0.22) 50%, rgba(251, 191, 36, 0.10) 100%) !important;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.4) !important;
             }
             .in-grid-legend .legend-item[data-key="Unknown"][data-type="state"] {
                 color: #a1a1aa !important;

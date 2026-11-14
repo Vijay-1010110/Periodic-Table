@@ -104,7 +104,7 @@ window.LEGEND_CONCEPTS = {
     'Gas': {
         title: 'Gas State',
         badge: 'State of Matter • Dispersed Phase',
-        color: '#f87171',
+        color: '#fbbf24',
         definition: 'A state of matter that has neither defined shape nor fixed volume. Gas molecules possess large amounts of kinetic energy, moving randomly at high velocities with vast intermolecular spacing compared to their molecular diameters.',
         characteristics: [
             'Expands spontaneously to fill the entire volume of any container',
@@ -116,34 +116,34 @@ window.LEGEND_CONCEPTS = {
         svg: `<svg viewBox="0 0 320 180" class="concept-svg" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <radialGradient id="gasSphere" cx="35%" cy="35%" r="65%">
-                    <stop offset="0%" stop-color="#fca5a5"/>
-                    <stop offset="50%" stop-color="#ef4444"/>
-                    <stop offset="100%" stop-color="#450a0a"/>
+                    <stop offset="0%" stop-color="#fef08a"/>
+                    <stop offset="50%" stop-color="#fbbf24"/>
+                    <stop offset="100%" stop-color="#78350f"/>
                 </radialGradient>
             </defs>
-            <rect width="320" height="180" rx="10" fill="#090e1a" stroke="rgba(248,113,113,0.2)"/>
+            <rect width="320" height="180" rx="10" fill="#090e1a" stroke="rgba(251,191,36,0.25)"/>
             <rect x="50" y="25" width="220" height="120" rx="8" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
             <!-- Gas particles with velocity vectors -->
             <g>
                 <circle cx="85" cy="55" r="7" fill="url(#gasSphere)"/>
-                <line x1="85" y1="55" x2="105" y2="40" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="85" y1="55" x2="105" y2="40" stroke="#fbbf24" stroke-width="1.5"/>
                 
                 <circle cx="160" cy="45" r="7" fill="url(#gasSphere)"/>
-                <line x1="160" y1="45" x2="185" y2="60" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="160" y1="45" x2="185" y2="60" stroke="#fbbf24" stroke-width="1.5"/>
 
                 <circle cx="230" cy="70" r="7" fill="url(#gasSphere)"/>
-                <line x1="230" y1="70" x2="210" y2="90" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="230" y1="70" x2="210" y2="90" stroke="#fbbf24" stroke-width="1.5"/>
 
                 <circle cx="90" cy="115" r="7" fill="url(#gasSphere)"/>
-                <line x1="90" y1="115" x2="110" y2="130" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="90" y1="115" x2="110" y2="130" stroke="#fbbf24" stroke-width="1.5"/>
 
                 <circle cx="150" cy="100" r="7" fill="url(#gasSphere)"/>
-                <line x1="150" y1="100" x2="130" y2="80" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="150" y1="100" x2="130" y2="80" stroke="#fbbf24" stroke-width="1.5"/>
 
                 <circle cx="215" cy="120" r="7" fill="url(#gasSphere)"/>
-                <line x1="215" y1="120" x2="240" y2="105" stroke="#f87171" stroke-width="1.5"/>
+                <line x1="215" y1="120" x2="240" y2="105" stroke="#fbbf24" stroke-width="1.5"/>
             </g>
-            <text x="160" y="165" fill="#fca5a5" font-size="10" font-family="'IBM Plex Mono', monospace" text-anchor="middle" font-weight="600">High Kinetic Energy • Random Molecular Collisions</text>
+            <text x="160" y="165" fill="#fde047" font-size="10" font-family="'IBM Plex Mono', monospace" text-anchor="middle" font-weight="600">High Kinetic Energy • Random Molecular Collisions</text>
         </svg>`
     },
 

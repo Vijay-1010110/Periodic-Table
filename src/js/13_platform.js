@@ -15,12 +15,19 @@ window.Platform = (function() {
     const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
     const isAndroid = /android/i.test(userAgent);
 
+    // Check if running in mobile browser on Android (not inside native app wrapper)
+    const urlParams = (typeof window !== 'undefined' && window.location && window.location.search) ? new URLSearchParams(window.location.search) : null;
+    const forceAndroid = urlParams ? (urlParams.get('android_test') === '1' || urlParams.get('simulate') === 'android') : false;
+    const isAndroidWeb = (isAndroid || forceAndroid) && !isCapacitorNative;
+    window.isAndroidWeb = isAndroidWeb;
+
     const platform = {
         isNative: isCapacitorNative,
         isWeb: !isCapacitorNative,
         isPWA: isPWA,
         isIOS: isIOS,
         isAndroid: isAndroid,
+        isAndroidWeb: isAndroidWeb,
         os: isIOS ? 'ios' : (isAndroid ? 'android' : 'web'),
 
         init: function() {
@@ -40,6 +47,7 @@ window.Platform = (function() {
 
             if (this.isIOS) body.classList.add('is-ios');
             if (this.isAndroid) body.classList.add('is-android');
+            if (this.isAndroidWeb) body.classList.add('is-android-web');
         }
     };
 
@@ -85,6 +93,17 @@ window.NavigationManager = (function() {
         }
 
         // 1. Check and close open modals
+        // 1-android. Android App Gate Modal
+        const androidModal = document.getElementById('android-app-modal');
+        if (androidModal && androidModal.style.display !== 'none' && androidModal.style.display !== '') {
+            if (typeof window.closeAndroidAppModal === 'function') {
+                window.closeAndroidAppModal();
+            } else {
+                androidModal.style.display = 'none';
+            }
+            return true;
+        }
+
         // 1-env. Environmental Pressure Modal
         const envModal = document.getElementById('env-pressure-modal');
         if (envModal && envModal.style.display !== 'none' && envModal.style.display !== '') {

@@ -140,9 +140,9 @@ let _valStateEl = null;
 
 const STATE_NAMES = ['Solid', 'Liquid', 'Gas', 'Unknown'];
 
-const STATE_TEXT_COLORS = ['#ffffff', '#38bdf8', '#f87171', '#94a3b8'];
+const STATE_TEXT_COLORS = ['#ffffff', '#00f0ff', '#fbbf24', '#94a3b8'];
 
-const STATE_BG_COLORS = ['#3b82f6', '#06b6d4', '#ef4444', '#6b7280'];
+const STATE_BG_COLORS = ['#3b82f6', '#06b6d4', '#d97706', '#6b7280'];
 
 
 
@@ -5661,7 +5661,7 @@ function renderLegend() {
 
         'Liquid': '#00f0ff',    // Electric Neon Cyan
 
-        'Gas': '#f87171',       // Neon Coral Red
+        'Gas': '#fbbf24',       // Radiant Amber Gold
 
         'Unknown': '#94a3b8'    // Slate Gray
 
