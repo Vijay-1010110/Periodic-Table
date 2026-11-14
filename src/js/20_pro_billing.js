@@ -136,7 +136,7 @@
 
                 const sub = sideWidget.querySelector('.sidebar-tier-sub');
 
-                if (icon) icon.textContent = '👑';
+                if (icon) icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:#fbbf24;"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5z"/></svg>';
 
                 if (name) name.textContent = 'Pro Member';
 
@@ -152,7 +152,7 @@
 
                 const sub = sideWidget.querySelector('.sidebar-tier-sub');
 
-                if (icon) icon.textContent = '⭐';
+                if (icon) icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
 
                 if (name) name.textContent = 'Free Plan';
 

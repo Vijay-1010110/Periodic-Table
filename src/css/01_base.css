@@ -1770,6 +1770,19 @@ body.has-native-slider #temp-custom-slider {
         font-size: 0.95rem;
         min-width: 18px;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-nav-item .nav-icon svg, .mobile-nav-toggle-btn .nav-icon svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        display: block;
+        transition: transform 0.2s ease;
     }
 
     .mobile-nav-item .nav-text, .mobile-nav-toggle-btn .nav-text {
@@ -3895,7 +3908,7 @@ body.has-native-slider #temp-custom-slider {
 /* Modal Dialog - Desktop Default: Modern Split-Dashboard Layout */
 .isotope-modal-dialog {
     background: radial-gradient(circle at 50% 15%, rgba(18, 30, 60, 0.98) 0%, rgba(6, 12, 24, 0.99) 100%);
-    border: 1.5px solid rgba(0, 212, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 18px;
     width: 94vw;
     max-width: 1440px;
@@ -3908,7 +3921,7 @@ body.has-native-slider #temp-custom-slider {
     grid-template-areas: 
         "topbar topbar"
         "sidebar workspace";
-    box-shadow: 0 30px 90px rgba(0,0,0,0.95), 0 0 60px rgba(0, 212, 255, 0.22);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.95);
     overflow: hidden;
     position: relative;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -6401,9 +6414,9 @@ body.has-native-slider #temp-custom-slider {
     max-height: calc(100vh - 16px) !important;
     height: 94vh !important;
     background: #090e1a !important;
-    border: 1.5px solid #00d4ff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 14px !important;
-    box-shadow: 0 0 35px rgba(0, 212, 255, 0.35), 0 20px 40px rgba(0, 0, 0, 0.85) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90) !important;
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
@@ -7257,9 +7270,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .table-type-modal-card {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
-    border: 1px solid rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     width: min(680px, 94vw);
     max-height: min(520px, 90vh);
     display: flex;
@@ -7278,8 +7291,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     justify-content: space-between;
     align-items: center;
     padding: 10px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 212, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .table-type-header h3 {
@@ -7496,9 +7509,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .card-anatomy-modal-card {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
-    border: 1px solid rgba(0, 212, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 16px;
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 212, 255, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     width: min(720px, 95vw);
     max-height: min(540px, 92vh);
     display: flex;
@@ -7512,8 +7525,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     justify-content: space-between;
     align-items: center;
     padding: 10px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 212, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .card-anatomy-header h3 {
@@ -7695,9 +7708,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .temp-converter-card {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
-    border: 1px solid rgba(0, 212, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 16px;
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 212, 255, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     width: min(560px, 95vw);
     max-height: min(540px, 92vh);
     display: flex;
@@ -7711,8 +7724,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     justify-content: space-between;
     align-items: center;
     padding: 10px 16px;
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.15));
-    border-bottom: 1px solid rgba(0, 212, 255, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .temp-converter-header h3 {
@@ -7759,7 +7772,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     flex-direction: column;
     gap: 4px;
     background: rgba(30, 41, 59, 0.45);
-    border: 1px solid rgba(0, 212, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     padding: 8px 10px;
     transition: border-color 0.2s ease;
@@ -7938,9 +7951,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .rate-us-modal-card {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
-    border: 1px solid rgba(245, 158, 11, 0.5);
+    border: 1px solid rgba(245, 158, 11, 0.25);
     border-radius: 16px;
-    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.95), 0 0 30px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     width: min(440px, 94vw);
     display: flex;
     flex-direction: column;
@@ -7953,8 +7966,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.15));
-    border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .rate-us-app-icon { font-size: 1.1rem; }
@@ -8047,9 +8060,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .app-update-modal-card {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
-    border: 1px solid rgba(0, 212, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
-    box-shadow: 0 14px 60px rgba(0, 0, 0, 0.98), 0 0 35px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     width: min(460px, 94vw);
     display: flex;
     flex-direction: column;
@@ -8086,8 +8099,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center;
     gap: 8px;
     padding: 12px 18px;
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2), rgba(59, 130, 246, 0.2));
-    border-bottom: 1px solid rgba(0, 212, 255, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .app-update-icon-wrap { font-size: 1.2rem; }
@@ -8372,10 +8385,10 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     background: rgba(10, 15, 30, 0.88);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(0, 212, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
     padding: 16px 26px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 212, 255, 0.22);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.90);
     animation: hudFloat 3s infinite ease-in-out;
 }
 
@@ -8495,9 +8508,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     position: fixed;
     z-index: 999999;
     background: #090e1a;
-    border: 1.5px solid #00d4ff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95), 0 0 14px rgba(0, 212, 255, 0.35);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -8586,9 +8599,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .orbital-modal-card {
     background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.99));
-    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90);
     width: 100%;
     max-width: 580px;
     height: 94vh;
@@ -8604,8 +8617,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center;
     justify-content: space-between;
     padding: 6px 12px;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-    background: rgba(0, 212, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
     flex-shrink: 0;
 }
 
@@ -8822,7 +8835,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .decay-modal-card {
     background: #090e1a !important;
-    border: 1.5px solid rgba(0, 212, 255, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 10px !important;
     width: 100% !important;
     max-width: 600px !important;
@@ -8830,7 +8843,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     max-height: 88vh !important;
     display: flex !important;
     flex-direction: column !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90) !important;
     overflow: hidden !important;
     animation: popInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -8840,8 +8853,8 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center !important;
     justify-content: space-between !important;
     padding: 8px 12px !important;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-    background: rgba(0, 212, 255, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     flex-shrink: 0 !important;
 }
 
@@ -9957,9 +9970,9 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .legend-concept-modal-card {
     background: linear-gradient(180deg, #0f172a 0%, #090e1a 100%);
-    border: 1.5px solid rgba(0, 212, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 212, 255, 0.15);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90);
     width: 100%;
     max-width: 580px;
     max-height: 88vh;
@@ -9971,7 +9984,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .legend-concept-header {
     padding: 10px 16px;
-    border-bottom: 2px solid #00d4ff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -10229,6 +10242,12 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 .sidebar-tier-icon {
     font-size: 1.1rem;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar-tier-icon svg {
+    display: block;
 }
 .sidebar-tier-details {
     display: flex;
@@ -10305,9 +10324,9 @@ body.is-pro-user .nav-pro-pill {
 
 .pro-modal-card {
     background: linear-gradient(145deg, #0b1528, #070d18);
-    border: 1.5px solid rgba(245, 158, 11, 0.45);
+    border: 1px solid rgba(245, 158, 11, 0.25);
     border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90), 0 0 15px rgba(245, 158, 11, 0.08);
     width: 100%;
     max-width: 820px;
     max-height: 94vh;

@@ -454,14 +454,14 @@
 
 .sim-guide-modal-card {
     background: #0b1120;
-    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
     width: min(580px, 94vw);
     max-height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90);
     animation: simModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1219,14 +1219,14 @@
 
 .mol-library-modal-card {
     background: #090e1a;
-    border: 1.5px solid rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
     width: 95vw;
     max-width: 840px;
     height: 88vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.90);
     overflow: hidden;
 }
 

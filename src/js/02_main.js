@@ -1554,6 +1554,14 @@ function switchView(viewId, updateHash = true, pushHistory = true) {
 
     if (viewId === 'properties') viewId = 'main';
 
+    // Android Web Feature Gate: Only Property Interface is active on Android web
+    if (window.isAndroidWeb && viewId !== 'main') {
+        if (typeof window.openAndroidAppModal === 'function') {
+            window.openAndroidAppModal(viewId);
+        }
+        return;
+    }
+
 
 
     if (viewId !== 'main' && window.isProUser && !window.isProUser()) {
@@ -2017,6 +2025,15 @@ function handleHashRouting() {
     }
 
 
+
+    // Android Web Feature Gate on Hash Routing
+    if (window.isAndroidWeb && hash !== 'main' && hash !== 'properties' && !propMap[hash]) {
+        switchView('main', false);
+        if (typeof window.openAndroidAppModal === 'function') {
+            window.openAndroidAppModal(hash);
+        }
+        return;
+    }
 
     // Direct element or isotope deep link (e.g. #isotope-carbon, #element-6, #gold, #fe)
 
@@ -8263,183 +8280,172 @@ let currentSidebarSide = null; // 'pos-left' or 'pos-right'
 
 // Smart Mobile Floating Panel Positioning & Control
 
-function positionMobileSidebar(cell, el) {
+// ==========================================================================
+// 3-TIER RESPONSIVE LAYOUT ENGINE
+// Mode 1: Wide Desktop (w > 1280) -> Side-by-Side
+// Mode 2: Top Pane (w <= 1280 & h >= 640 & w >= 680) -> Interactive Top Pane
+// Mode 3: Floating Panel (w <= 1280 & h < 640, or w < 680) -> Floating Panel
+// ==========================================================================
 
-    if (currentView !== 'main' && currentView !== 'electrons' && currentView !== 'isotopes') {
+function getAppLayoutMode() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w > 1280) return 'wide';
+    if (h >= 640 && w >= 680) return 'top-pane';
+    return 'floating';
+}
+window.getAppLayoutMode = getAppLayoutMode;
 
-        closeMobileSidebar();
+function updateLayoutModeClasses() {
+    const mode = getAppLayoutMode();
+    document.body.classList.remove('layout-wide', 'layout-top-pane', 'layout-floating');
+    document.body.classList.add('layout-' + mode);
 
-        return;
-
+    // If not in floating mode, ensure any open floating class is cleared
+    if (mode !== 'floating') {
+        document.querySelectorAll('.view-right').forEach(sb => {
+            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
+        });
     }
+}
+window.updateLayoutModeClasses = updateLayoutModeClasses;
 
-
+function positionMobileSidebar(cell, el) {
+    if (currentView !== 'main' && currentView !== 'electrons' && currentView !== 'isotopes') {
+        closeMobileSidebar();
+        return;
+    }
 
     const sidebar = document.querySelector('.view-mode.active .view-right');
-
     if (!sidebar) return;
 
+    const mode = getAppLayoutMode();
 
-
-    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
-
+    if (mode === 'floating') {
         let isLeftHalf = false;
-
         if (cell) {
-
             const rect = cell.getBoundingClientRect();
-
             if (rect.width > 0) {
-
                 const cellCenterX = rect.left + rect.width / 2;
-
                 isLeftHalf = cellCenterX < (window.innerWidth / 2);
-
             }
-
         } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
-
             const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
-
             if (screenPos) {
-
                 isLeftHalf = screenPos.x < (window.innerWidth / 2);
-
             } else {
-
                 const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
-
                 isLeftHalf = (pos.col <= 9);
-
             }
-
         } else if (el) {
-
             const z = el.atomicNumber || el.z;
-
             if (typeof getGridPosition === 'function' && z) {
-
                 const pos = getGridPosition(z);
-
                 isLeftHalf = (pos.col <= 9);
-
             } else {
-
                 isLeftHalf = (el.group || 1) <= 9;
-
             }
-
         }
-
-
 
         const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
-
         const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
 
-
-
         if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
-
-            // Switching to other side: close current side and open on new side
-
             sidebar.classList.remove('mobile-active', 'open', otherSide);
-
             currentSidebarSide = targetSide;
-
             sidebar.classList.add(targetSide);
-
-            void sidebar.offsetWidth; // Force synchronous reflow
-
+            void sidebar.offsetWidth;
             sidebar.classList.add('mobile-active');
-
         } else {
-
-            // Within same side: keep same panel open in-place and replace values
-
             currentSidebarSide = targetSide;
-
             sidebar.classList.remove(otherSide);
-
             sidebar.classList.add(targetSide);
-
             sidebar.classList.add('mobile-active');
-
         }
-
     } else {
-
+        // Mode 1 (Wide) or Mode 2 (Top Pane):
+        // Keep panel in normal document flow
         sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
-
         currentSidebarSide = null;
-
     }
 
+    // Always reveal detail card and hide empty state
+    const emptyState = sidebar.querySelector('.empty-state');
+    const detailCard = sidebar.querySelector('#element-detail-card, #elec-element-card');
+    if (emptyState) emptyState.classList.add('hidden');
+    if (detailCard) detailCard.classList.remove('hidden');
 }
 
-
-
 function closeMobileSidebar() {
-
-    const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active, .view-right.mobile-active');
-
-    if (!activeSidebar && !currentSidebarSide && !selectedElement) {
-
-        return; // Fast path: Sidebar is already closed! Skip heavy DOM queries and canvas redraw.
-
-    }
-
     document.querySelectorAll('.view-right.mobile-active, .view-right.open').forEach(sb => {
-
         sb.classList.remove('mobile-active', 'open', 'pos-left', 'pos-right', 'is-extended');
-
     });
 
     currentSidebarSide = null;
-
     document.querySelectorAll('.element-cell.selected').forEach(c => c.classList.remove('selected'));
-
     selectedElement = null;
 
+    // Reset element detail card to empty state
+    document.querySelectorAll('.view-mode.active .view-right').forEach(sidebar => {
+        const emptyState = sidebar.querySelector('.empty-state');
+        const detailCard = sidebar.querySelector('#element-detail-card, #elec-element-card');
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (detailCard) detailCard.classList.add('hidden');
+    });
+
     if (typeof closeIsotopeDetailPanel === 'function') {
-
         closeIsotopeDetailPanel();
-
     }
-
     if (window.OrbitalViewer && typeof window.OrbitalViewer.stop === 'function') {
-
         window.OrbitalViewer.stop();
-
     }
-
     if (currentView === 'main' && window.PeriodicCanvasGrid) {
-
         window.PeriodicCanvasGrid.render();
-
     }
-
 }
-
 window.closeMobileSidebar = closeMobileSidebar;
-
 window.dismissDetailSidebar = closeMobileSidebar;
 
+function toggleNarrowPropertiesPanel() {
+    const sidebar = document.querySelector('.view-mode.active .view-right');
+    if (!sidebar) return;
+    const mode = getAppLayoutMode();
+    if (mode === 'floating') {
+        if (sidebar.classList.contains('mobile-active')) {
+            closeMobileSidebar();
+        } else {
+            sidebar.classList.remove('pos-left');
+            sidebar.classList.add('pos-right', 'mobile-active');
+        }
+    } else if (mode === 'top-pane') {
+        const propList = sidebar.querySelector('.property-list');
+        if (propList) propList.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+window.toggleNarrowPropertiesPanel = toggleNarrowPropertiesPanel;
 
+// Outside-click pointerdown dismiss for Floating Panel mode
+document.addEventListener('pointerdown', (e) => {
+    const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active');
+    if (!activeSidebar) return;
+    if (activeSidebar.contains(e.target)) return;
+    if (e.target.closest('.element-cell') || e.target.closest('#btn-toggle-properties-sidebar')) return;
+    closeMobileSidebar();
+});
 
 window.addEventListener('resize', () => {
-
-    if (window.innerWidth > 1000 && window.innerHeight > 520) {
-
-        document.querySelectorAll('.view-right').forEach(sb => {
-
-            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
-
-        });
-
+    updateLayoutModeClasses();
+    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.resize === 'function') {
+        window.PeriodicCanvasGrid.resize();
     }
-
 });
+
+// Run layout mode check immediately on startup
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateLayoutModeClasses);
+} else {
+    updateLayoutModeClasses();
+}
 
 
 
@@ -9660,6 +9666,14 @@ function setupMobileLeftNav() {
             const view = item.dataset.view || item.closest('[data-view]')?.dataset.view;
 
             if (view) {
+
+                if (window.isAndroidWeb && view !== 'main') {
+                    if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
+                    if (typeof window.openAndroidAppModal === 'function') {
+                        window.openAndroidAppModal(view);
+                    }
+                    return;
+                }
 
                 if (view !== 'main' && window.isProUser && !window.isProUser()) {
 
