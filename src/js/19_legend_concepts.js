@@ -448,7 +448,7 @@ window.LEGEND_CONCEPTS = {
     'Halogen': {
         title: 'Halogens (Group 17)',
         badge: 'Group 17 • p⁵ Valence Configuration',
-        color: '#06b6d4',
+        color: '#0ea5e9',
         definition: 'Highly reactive nonmetallic elements with seven valence electrons (s² p⁵) that require only one additional electron to complete an octet. They form salts (halides) with metals and exhibit all three fundamental states of matter at room temperature.',
         characteristics: [
             'Highest electronegativities on the table (Fluorine = 3.98 Pauling)',

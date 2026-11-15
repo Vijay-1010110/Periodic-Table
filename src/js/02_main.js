@@ -76,7 +76,7 @@ const categoryGroups = {
 
     'Metalloids': ['Metalloid'],
 
-    'Non-Metals': ['Other nonmetal', 'Halogen', 'Noble gas']
+    'Non-Metals': ['Other nonmetal', 'Halogen', 'Noble gas', 'Reactive nonmetal', 'Halogens', 'Other Nonmetals', 'Noble Gases']
 
 };
 
@@ -1066,7 +1066,11 @@ function applyLegendHighlighting(key, type, groupKeys = null) {
 
                 } else if (type === 'category') {
 
-                    match = (cat === key) || (dualCat && dualCat === key);
+                    const isHalogenMatch = (key === 'Halogen' || key === 'Halogens') && (cat === 'Halogen' || dualCat === 'Halogen');
+
+                    const isOtherNonmetalMatch = (key === 'Other nonmetal' || key === 'Other Nonmetals' || key === 'Reactive nonmetal') && (cat === 'Other nonmetal' || cat === 'Reactive nonmetal');
+
+                    match = (cat === key) || (dualCat && dualCat === key) || isHalogenMatch || isOtherNonmetalMatch;
 
                 } else if (type === 'state') {
 
@@ -1298,17 +1302,19 @@ const categoryColors = {
 
     'Metalloid': '#eab308',            // Canary Yellow / Gold
 
-    'Other nonmetal': '#22c55e',       // Vibrant Green
+    'Reactive nonmetal': '#16a34a',    // Vibrant Green
 
-    'Other Nonmetals': '#22c55e',      // Alias
+    'Other nonmetal': '#16a34a',       // Vibrant Green
 
-    'Halogen': '#14b8a6',              // Vibrant Teal
+    'Other Nonmetals': '#16a34a',      // Alias
 
-    'Halogens': '#14b8a6',             // Alias
+    'Halogen': '#0ea5e9',              // Vibrant Sky Cyan / Teal
 
-    'Noble gas': '#06b6d4',            // Electric Cyan
+    'Halogens': '#0ea5e9',             // Alias
 
-    'Noble Gases': '#06b6d4',          // Alias
+    'Noble gas': '#7c3aed',            // Imperial Purple / Violet
+
+    'Noble Gases': '#7c3aed',          // Alias
 
     'Lanthanide': '#ec4899',           // Hot Pink / Magenta
 
@@ -1553,14 +1559,6 @@ function updateSocialShareMeta(viewId) {
 function switchView(viewId, updateHash = true, pushHistory = true) {
 
     if (viewId === 'properties') viewId = 'main';
-
-    // Android Web Feature Gate: Only Property Interface is active on Android web
-    if (window.isAndroidWeb && viewId !== 'main') {
-        if (typeof window.openAndroidAppModal === 'function') {
-            window.openAndroidAppModal(viewId);
-        }
-        return;
-    }
 
 
 
@@ -2025,15 +2023,6 @@ function handleHashRouting() {
     }
 
 
-
-    // Android Web Feature Gate on Hash Routing
-    if (window.isAndroidWeb && hash !== 'main' && hash !== 'properties' && !propMap[hash]) {
-        switchView('main', false);
-        if (typeof window.openAndroidAppModal === 'function') {
-            window.openAndroidAppModal(hash);
-        }
-        return;
-    }
 
     // Direct element or isotope deep link (e.g. #isotope-carbon, #element-6, #gold, #fe)
 
@@ -3977,7 +3966,7 @@ function getNormalizedCategory(cat, z = null) {
 
     if (z) {
 
-        if (z === 85) return 'Metalloid';
+        if (z === 85) return 'Halogen'; // Group 17 halogen with dual metalloid behavior
 
         if (z === 9 || z === 17 || z === 35 || z === 53 || z === 117) return 'Halogen';
 
@@ -5298,7 +5287,7 @@ function updateSelectedCardVisuals() {
 
     const catColor = categoryColors[normalizedCategory] || '#00d4ff';
 
-    const catText = (el.category || normalizedCategory).toUpperCase();
+    const catText = (normalizedCategory || el.category).toUpperCase();
 
     const badgeHtml = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${catColor}; box-shadow: 0 0 5px ${catColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${catText}</span>`;
 
@@ -5668,7 +5657,7 @@ function renderLegend() {
 
         'Metalloids': ['Metalloid'],
 
-        'Non-Metals': ['Reactive nonmetal', 'Noble gas']
+        'Non-Metals': ['Other nonmetal', 'Halogen', 'Noble gas', 'Reactive nonmetal', 'Halogens', 'Other Nonmetals', 'Noble Gases']
 
     };
 
@@ -7516,7 +7505,7 @@ function updateSidebarValues(force = false) {
 
     const catColor = categoryColors[normalizedCategory] || '#00d4ff';
 
-    const catText = (el.category || normalizedCategory).toUpperCase();
+    const catText = (normalizedCategory || el.category).toUpperCase();
 
     
 
@@ -7526,11 +7515,11 @@ function updateSidebarValues(force = false) {
 
         if (el.dualCategory) {
 
-            valCat.innerHTML = `<span style="color: ${catColor}; font-weight:700;">${el.category || normalizedCategory}</span> <span style="color: #94a3b8; font-size:0.6rem; font-weight:400;">/</span> <span style="color: #38bdf8; font-weight:700;">${el.dualCategory}</span> <span title="Dual classification: displays intermediate chemical behavior" style="font-size: 0.62rem; cursor:pointer;">ℹ️</span>`;
+            valCat.innerHTML = `<span style="color: ${catColor}; font-weight:700;">${normalizedCategory || el.category}</span> <span style="color: #94a3b8; font-size:0.6rem; font-weight:400;">/</span> <span style="color: #38bdf8; font-weight:700;">${el.dualCategory}</span> <span title="Dual classification: displays intermediate chemical behavior" style="font-size: 0.62rem; cursor:pointer;">ℹ️</span>`;
 
         } else {
 
-            valCat.innerText = el.category || normalizedCategory;
+            valCat.innerText = normalizedCategory || el.category;
 
             valCat.style.setProperty('color', catColor, 'important');
 
@@ -8280,172 +8269,183 @@ let currentSidebarSide = null; // 'pos-left' or 'pos-right'
 
 // Smart Mobile Floating Panel Positioning & Control
 
-// ==========================================================================
-// 3-TIER RESPONSIVE LAYOUT ENGINE
-// Mode 1: Wide Desktop (w > 1280) -> Side-by-Side
-// Mode 2: Top Pane (w <= 1280 & h >= 640 & w >= 680) -> Interactive Top Pane
-// Mode 3: Floating Panel (w <= 1280 & h < 640, or w < 680) -> Floating Panel
-// ==========================================================================
-
-function getAppLayoutMode() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    if (w > 1280) return 'wide';
-    if (h >= 640 && w >= 680) return 'top-pane';
-    return 'floating';
-}
-window.getAppLayoutMode = getAppLayoutMode;
-
-function updateLayoutModeClasses() {
-    const mode = getAppLayoutMode();
-    document.body.classList.remove('layout-wide', 'layout-top-pane', 'layout-floating');
-    document.body.classList.add('layout-' + mode);
-
-    // If not in floating mode, ensure any open floating class is cleared
-    if (mode !== 'floating') {
-        document.querySelectorAll('.view-right').forEach(sb => {
-            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
-        });
-    }
-}
-window.updateLayoutModeClasses = updateLayoutModeClasses;
-
 function positionMobileSidebar(cell, el) {
+
     if (currentView !== 'main' && currentView !== 'electrons' && currentView !== 'isotopes') {
+
         closeMobileSidebar();
+
         return;
+
     }
+
+
 
     const sidebar = document.querySelector('.view-mode.active .view-right');
+
     if (!sidebar) return;
 
-    const mode = getAppLayoutMode();
 
-    if (mode === 'floating') {
+
+    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
+
         let isLeftHalf = false;
+
         if (cell) {
+
             const rect = cell.getBoundingClientRect();
+
             if (rect.width > 0) {
+
                 const cellCenterX = rect.left + rect.width / 2;
+
                 isLeftHalf = cellCenterX < (window.innerWidth / 2);
+
             }
+
         } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
+
             const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
+
             if (screenPos) {
+
                 isLeftHalf = screenPos.x < (window.innerWidth / 2);
+
             } else {
+
                 const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
+
                 isLeftHalf = (pos.col <= 9);
+
             }
+
         } else if (el) {
+
             const z = el.atomicNumber || el.z;
+
             if (typeof getGridPosition === 'function' && z) {
+
                 const pos = getGridPosition(z);
+
                 isLeftHalf = (pos.col <= 9);
+
             } else {
+
                 isLeftHalf = (el.group || 1) <= 9;
+
             }
+
         }
+
+
 
         const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
+
         const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
 
+
+
         if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
+
+            // Switching to other side: close current side and open on new side
+
             sidebar.classList.remove('mobile-active', 'open', otherSide);
+
             currentSidebarSide = targetSide;
+
             sidebar.classList.add(targetSide);
-            void sidebar.offsetWidth;
+
+            void sidebar.offsetWidth; // Force synchronous reflow
+
             sidebar.classList.add('mobile-active');
+
         } else {
+
+            // Within same side: keep same panel open in-place and replace values
+
             currentSidebarSide = targetSide;
+
             sidebar.classList.remove(otherSide);
+
             sidebar.classList.add(targetSide);
+
             sidebar.classList.add('mobile-active');
+
         }
+
     } else {
-        // Mode 1 (Wide) or Mode 2 (Top Pane):
-        // Keep panel in normal document flow
+
         sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
+
         currentSidebarSide = null;
+
     }
 
-    // Always reveal detail card and hide empty state
-    const emptyState = sidebar.querySelector('.empty-state');
-    const detailCard = sidebar.querySelector('#element-detail-card, #elec-element-card');
-    if (emptyState) emptyState.classList.add('hidden');
-    if (detailCard) detailCard.classList.remove('hidden');
 }
 
+
+
 function closeMobileSidebar() {
+
+    const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active, .view-right.mobile-active');
+
+    if (!activeSidebar && !currentSidebarSide && !selectedElement) {
+
+        return; // Fast path: Sidebar is already closed! Skip heavy DOM queries and canvas redraw.
+
+    }
+
     document.querySelectorAll('.view-right.mobile-active, .view-right.open').forEach(sb => {
+
         sb.classList.remove('mobile-active', 'open', 'pos-left', 'pos-right', 'is-extended');
+
     });
 
     currentSidebarSide = null;
+
     document.querySelectorAll('.element-cell.selected').forEach(c => c.classList.remove('selected'));
+
     selectedElement = null;
 
-    // Reset element detail card to empty state
-    document.querySelectorAll('.view-mode.active .view-right').forEach(sidebar => {
-        const emptyState = sidebar.querySelector('.empty-state');
-        const detailCard = sidebar.querySelector('#element-detail-card, #elec-element-card');
-        if (emptyState) emptyState.classList.remove('hidden');
-        if (detailCard) detailCard.classList.add('hidden');
-    });
-
     if (typeof closeIsotopeDetailPanel === 'function') {
+
         closeIsotopeDetailPanel();
+
     }
+
     if (window.OrbitalViewer && typeof window.OrbitalViewer.stop === 'function') {
+
         window.OrbitalViewer.stop();
+
     }
+
     if (currentView === 'main' && window.PeriodicCanvasGrid) {
+
         window.PeriodicCanvasGrid.render();
+
     }
+
 }
+
 window.closeMobileSidebar = closeMobileSidebar;
+
 window.dismissDetailSidebar = closeMobileSidebar;
 
-function toggleNarrowPropertiesPanel() {
-    const sidebar = document.querySelector('.view-mode.active .view-right');
-    if (!sidebar) return;
-    const mode = getAppLayoutMode();
-    if (mode === 'floating') {
-        if (sidebar.classList.contains('mobile-active')) {
-            closeMobileSidebar();
-        } else {
-            sidebar.classList.remove('pos-left');
-            sidebar.classList.add('pos-right', 'mobile-active');
-        }
-    } else if (mode === 'top-pane') {
-        const propList = sidebar.querySelector('.property-list');
-        if (propList) propList.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-}
-window.toggleNarrowPropertiesPanel = toggleNarrowPropertiesPanel;
 
-// Outside-click pointerdown dismiss for Floating Panel mode
-document.addEventListener('pointerdown', (e) => {
-    const activeSidebar = document.querySelector('.view-mode.active .view-right.mobile-active');
-    if (!activeSidebar) return;
-    if (activeSidebar.contains(e.target)) return;
-    if (e.target.closest('.element-cell') || e.target.closest('#btn-toggle-properties-sidebar')) return;
-    closeMobileSidebar();
-});
 
 window.addEventListener('resize', () => {
-    updateLayoutModeClasses();
-    if (window.PeriodicCanvasGrid && typeof window.PeriodicCanvasGrid.resize === 'function') {
-        window.PeriodicCanvasGrid.resize();
-    }
-});
 
-// Run layout mode check immediately on startup
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateLayoutModeClasses);
-} else {
-    updateLayoutModeClasses();
-}
+    if (window.innerWidth > 1000 && window.innerHeight > 520) {
+
+        document.querySelectorAll('.view-right').forEach(sb => {
+
+            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
+
+        });
+
+    }
+
+});
 
 
 
@@ -9666,14 +9666,6 @@ function setupMobileLeftNav() {
             const view = item.dataset.view || item.closest('[data-view]')?.dataset.view;
 
             if (view) {
-
-                if (window.isAndroidWeb && view !== 'main') {
-                    if (mobileLeftNav) mobileLeftNav.classList.remove('expanded');
-                    if (typeof window.openAndroidAppModal === 'function') {
-                        window.openAndroidAppModal(view);
-                    }
-                    return;
-                }
 
                 if (view !== 'main' && window.isProUser && !window.isProUser()) {
 

@@ -49,7 +49,8 @@ def build():
         'src/js/22_chain_reaction_sim.js',
         'src/js/23_decay_particle_sim.js',
         'src/js/24_molecule_physics_sim.js',
-        'src/js/25_simulation_controls.js'
+        'src/js/25_simulation_controls.js',
+        'src/js/26_android_app_gate.js'
     ]
     js_content = ""
     for jf in js_files:
@@ -71,6 +72,7 @@ def build():
     # Copy essential app static assets
     files_to_copy = [
         'manifest.json',
+        'sw.js',
         'favicon.ico', 'favicon.svg', 'favicon-16x16.png', 
         'favicon-32x32.png', 'apple-touch-icon.png', 
         'icon-192.png', 'icon-512.png', 'version.json'

@@ -88,11 +88,11 @@ window.PeriodicCanvasGrid = (function() {
         'Transition metal': '#2563eb',      // Royal Cobalt Blue
         'Post-transition metal': '#0d9488', // Cool Jade Teal
         'Metalloid': '#d97706',             // Radiant Amber Gold
-        'Reactive nonmetal': '#059669',     // Deep Emerald Green
-        'Other nonmetal': '#059669',        // Deep Emerald Green
-        'Other Nonmetals': '#059669',       // Deep Emerald Green
-        'Halogen': '#059669',               // Group 17 Reactive Nonmetal
-        'Halogens': '#059669',              // Group 17 Reactive Nonmetal
+        'Reactive nonmetal': '#16a34a',     // Vibrant Emerald Green
+        'Other nonmetal': '#16a34a',        // Vibrant Emerald Green
+        'Other Nonmetals': '#16a34a',       // Vibrant Emerald Green
+        'Halogen': '#0ea5e9',               // Vibrant Sky Cyan / Teal (Group 17)
+        'Halogens': '#0ea5e9',              // Group 17 Halogens
         'Noble gas': '#7c3aed',             // Imperial Purple / Violet
         'Noble Gases': '#7c3aed',           // Imperial Purple / Violet
         'Lanthanide': '#0284c7',            // Electric Cerulean Cyan
@@ -211,17 +211,17 @@ window.PeriodicCanvasGrid = (function() {
 
     function normalizeCategory(cat, z = null) {
         if (z) {
-            if (z === 117) return 'Reactive nonmetal';
-            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 85) return 'Reactive nonmetal';
+            if (z === 85) return 'Halogen'; // Group 17 halogen with dual metalloid behavior
+            if (z === 9 || z === 17 || z === 35 || z === 53 || z === 117) return 'Halogen';
             if (z === 2 || z === 10 || z === 18 || z === 36 || z === 54 || z === 86 || z === 118) return 'Noble gas';
-            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Reactive nonmetal';
+            if (z === 1 || z === 6 || z === 7 || z === 8 || z === 15 || z === 16 || z === 34) return 'Other nonmetal';
             if (z === 5 || z === 14 || z === 32 || z === 33 || z === 51 || z === 52) return 'Metalloid';
         }
         if (!cat) return 'Unknown';
         const lowerCat = cat.toLowerCase();
-        if (lowerCat.includes('halogen')) return 'Reactive nonmetal';
+        if (lowerCat.includes('halogen')) return 'Halogen';
         if (lowerCat.includes('noble gas')) return 'Noble gas';
-        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Reactive nonmetal';
+        if (lowerCat.includes('nonmetal') || lowerCat === 'diatomic nonmetal' || lowerCat === 'polyatomic nonmetal' || lowerCat === 'reactive nonmetal') return 'Other nonmetal';
         if (lowerCat.includes('transition metal') && !lowerCat.includes('post')) return 'Transition metal';
         if (lowerCat.includes('post-transition metal')) return 'Post-transition metal';
         if (lowerCat.includes('metalloid')) return 'Metalloid';
@@ -1127,7 +1127,7 @@ window.PeriodicCanvasGrid = (function() {
                 } else if (el.atomicNumber === 84) {
                     dualCat = cat === 'Metalloid' ? 'Post-transition metal' : 'Metalloid';
                 } else if (el.atomicNumber === 117) {
-                    dualCat = 'Metalloid';
+                    dualCat = cat === 'Metalloid' ? 'Halogen' : 'Metalloid';
                 }
                 const stateNames = ['Solid', 'Liquid', 'Gas', 'Unknown'];
                 const curStateName = stateNames[stateCode] || 'Solid';
@@ -1135,7 +1135,10 @@ window.PeriodicCanvasGrid = (function() {
                 if (activeHighlight.groupKeys && Array.isArray(activeHighlight.groupKeys)) {
                     match = activeHighlight.groupKeys.includes(cat) || (dualCat && activeHighlight.groupKeys.includes(dualCat));
                 } else if (activeHighlight.type === 'category') {
-                    match = (cat === activeHighlight.key) || (dualCat && dualCat === activeHighlight.key);
+                    const targetKey = activeHighlight.key;
+                    const isHalogenMatch = (targetKey === 'Halogen' || targetKey === 'Halogens') && (cat === 'Halogen' || dualCat === 'Halogen');
+                    const isOtherNonmetalMatch = (targetKey === 'Other nonmetal' || targetKey === 'Other Nonmetals' || targetKey === 'Reactive nonmetal') && (cat === 'Other nonmetal' || cat === 'Reactive nonmetal');
+                    match = (cat === targetKey) || (dualCat && dualCat === targetKey) || isHalogenMatch || isOtherNonmetalMatch;
                 } else if (activeHighlight.type === 'state') {
                     match = (curStateName === activeHighlight.key);
                 } else if (activeHighlight.type === 'block') {
