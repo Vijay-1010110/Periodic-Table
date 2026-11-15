@@ -286,6 +286,26 @@
 
 
 
+        let defaultPrice = '₹11';
+        try {
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+            const lang = navigator.language || '';
+            const isIndia = tz.includes('Kolkata') || tz.includes('Calcutta') || lang.includes('IN') || lang.includes('hi');
+            defaultPrice = isIndia ? '₹11' : '$2.99';
+        } catch (e) {
+            defaultPrice = '₹11';
+        }
+
+        const priceEl = document.getElementById('pro-pricing-display');
+        if (priceEl && (!priceEl.textContent || priceEl.textContent === 'Special Launch Offer')) {
+            priceEl.textContent = `${defaultPrice} • Special Launch Offer`;
+        }
+
+        const buyBtn = document.querySelector('.pro-btn-buy');
+        if (buyBtn && !buyBtn.dataset.hasLivePrice) {
+            buyBtn.innerHTML = `<span>⭐</span> Unlock Lifetime Pro (${defaultPrice})`;
+        }
+
         if (window.PeriodicaNativeBilling && typeof window.PeriodicaNativeBilling.getProductPrice === 'function') {
 
             const livePrice = window.PeriodicaNativeBilling.getProductPrice();
@@ -478,13 +498,20 @@
 
         if (!priceStr) return;
 
+        // Ensure updated Indian regional tier reflects ₹11.00 even if Play Store cache returns ₹10.00
+        if (priceStr === '₹10.00' || priceStr === '₹10') {
+            priceStr = '₹11.00';
+        }
+
         const priceEl = document.getElementById('pro-pricing-display');
 
-        if (priceEl) priceEl.textContent = priceStr;
+        if (priceEl) priceEl.textContent = `${priceStr} • Special Launch Offer`;
 
         const buyBtn = document.querySelector('.pro-btn-buy');
 
         if (buyBtn) {
+
+            buyBtn.dataset.hasLivePrice = 'true';
 
             buyBtn.innerHTML = `<span>⭐</span> Unlock Lifetime Pro (${priceStr})`;
 
