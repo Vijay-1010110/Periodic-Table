@@ -286,14 +286,14 @@
 
 
 
-        let defaultPrice = '₹11';
+        let defaultPrice = '₹11.99';
         try {
             const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
             const lang = navigator.language || '';
             const isIndia = tz.includes('Kolkata') || tz.includes('Calcutta') || lang.includes('IN') || lang.includes('hi');
-            defaultPrice = isIndia ? '₹11' : '$2.99';
+            defaultPrice = isIndia ? '₹11.99' : '$2.99';
         } catch (e) {
-            defaultPrice = '₹11';
+            defaultPrice = '₹11.99';
         }
 
         const priceEl = document.getElementById('pro-pricing-display');
@@ -498,9 +498,9 @@
 
         if (!priceStr) return;
 
-        // Ensure updated Indian regional tier reflects ₹11.00 even if Play Store cache returns ₹10.00
-        if (priceStr === '₹10.00' || priceStr === '₹10') {
-            priceStr = '₹11.00';
+        // Ensure updated Indian regional tier reflects ₹11.99 even if Play Store cache returns older values
+        if (priceStr === '₹10.00' || priceStr === '₹10' || priceStr === '₹11.00' || priceStr === '₹11') {
+            priceStr = '₹11.99';
         }
 
         const priceEl = document.getElementById('pro-pricing-display');
