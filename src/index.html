@@ -1658,129 +1658,85 @@
 
 
 
-            <!-- Compounds Right Sidebar Detail Pane -->
+            <!-- Compounds Detail Full-Screen Overlay Modal -->
 
-            <div class="view-right sidebar" id="compounds-sidebar">
+            <div class="view-right sidebar compound-fullscreen-modal" id="compounds-sidebar">
 
-                <button class="sidebar-close-btn" onclick="this.parentElement.classList.remove('open', 'mobile-active')">&times;</button>
+                <button class="sidebar-close-btn comp-modal-close-btn" onclick="closeCompoundDetailModal()" title="Close compound details">&times;</button>
 
                 <div class="compound-detail-container">
 
-                    <div class="comp-header-card">
+                    <!-- Left Side: Interactive 3D Structure & Bohr Model -->
+                    <div class="comp-detail-structure-col">
+                        <div class="molecule-3d-card" id="compound-viewer-card">
+                            <div class="molecule-card-header">
+                                <div class="comp-viewer-tabs">
+                                    <button type="button" class="comp-viewer-tab-btn active" id="comp-tab-3d" onclick="switchCompoundViewer('3d')" title="View 3D Interactive Ball-and-Stick Molecule">
+                                        <span>🌐</span> 3D Molecule
+                                    </button>
+                                    <button type="button" class="comp-viewer-tab-btn" id="comp-tab-bohr" onclick="switchCompoundViewer('bohr')" title="View Atomic Bohr Model with Electron Shells & Bonds">
+                                        <span>⚛️</span> Bohr Model
+                                    </button>
+                                </div>
+                                <span id="comp-viewer-hint">Drag to rotate • Pinch to zoom</span>
+                            </div>
+                            <div id="molecule-canvas-container"></div>
+                            <div id="compound-bohr-container" class="compound-bohr-container" style="display: none;"></div>
+                        </div>
+                    </div>
 
-                        <div class="comp-header-top">
-
-                            <span class="comp-formula-large" id="comp-detail-formula">H₂O</span>
-
-                            <span class="comp-type-pill" id="comp-detail-type">Covalent</span>
-
+                    <!-- Right Side: Details, Chemistry & Properties -->
+                    <div class="comp-detail-info-col">
+                        <div class="comp-header-card">
+                            <div class="comp-header-top">
+                                <span class="comp-formula-large" id="comp-detail-formula">H₂O</span>
+                                <span class="comp-type-pill" id="comp-detail-type">Covalent</span>
+                            </div>
+                            <h2 class="comp-title-large" id="comp-detail-name">Water</h2>
+                            <div class="comp-iupac-sub" id="comp-detail-iupac">IUPAC: Oxidane</div>
                         </div>
 
-                        <h2 class="comp-title-large" id="comp-detail-name">Water</h2>
-
-                        <div class="comp-iupac-sub" id="comp-detail-iupac">IUPAC: Oxidane</div>
-
-                    </div>
-
-
-
-                                        <!-- Molecular 3D & Bohr Model Viewer -->
-                    <div class="molecule-3d-card" id="compound-viewer-card">
-                        <div class="molecule-card-header">
-                            <div class="comp-viewer-tabs">
-                                <button type="button" class="comp-viewer-tab-btn active" id="comp-tab-3d" onclick="switchCompoundViewer('3d')" title="View 3D Interactive Ball-and-Stick Molecule">
-                                    <span>🌐</span> 3D Molecule
-                                </button>
-                                <button type="button" class="comp-viewer-tab-btn" id="comp-tab-bohr" onclick="switchCompoundViewer('bohr')" title="View Atomic Bohr Model with Electron Shells & Bonds">
-                                    <span>⚛️</span> Bohr Model
-                                </button>
-                            </div>
-                            <span id="comp-viewer-hint" style="font-size: 0.74rem; opacity: 0.75; font-family: var(--font-mono); color: #38bdf8;">Drag to rotate</span>
-                        </div>
-                        <div id="molecule-canvas-container"></div>
-                        <div id="compound-bohr-container" class="compound-bohr-container" style="display: none;"></div>
-                    </div>
-
-                    <!-- Element Composition Section -->
-
-                    <div class="comp-section-card">
-
-                        <h4>Element Composition (% Mass)</h4>
-
-                        <div id="comp-element-breakdown"></div>
-
-                    </div>
-
-
-
-                    <!-- Physical Properties -->
-
-                    <div class="comp-section-card">
-
-                        <h4>Physical & Chemical Properties</h4>
-
-                        <div class="comp-props-grid">
-
-                            <div class="comp-prop-item">
-
-                                <span class="prop-label">Molar Mass</span>
-
-                                <span class="prop-value mono-text" id="comp-detail-mass">18.015 g/mol</span>
-
-                            </div>
-
-                            <div class="comp-prop-item">
-
-                                <span class="prop-label">State (STP)</span>
-
-                                <span class="prop-value mono-text" id="comp-detail-state">Liquid</span>
-
-                            </div>
-
-                            <div class="comp-prop-item">
-
-                                <span class="prop-label">Melting Point</span>
-
-                                <span class="prop-value mono-text" id="comp-prop-mp">0 °C</span>
-
-                            </div>
-
-                            <div class="comp-prop-item">
-
-                                <span class="prop-label">Boiling Point</span>
-
-                                <span class="prop-value mono-text" id="comp-prop-bp">100 °C</span>
-
-                            </div>
-
-                            <div class="comp-prop-item" style="grid-column: 1 / -1;">
-
-                                <span class="prop-label">Density</span>
-
-                                <span class="prop-value mono-text" id="comp-prop-density">0.998 g/cm³</span>
-
-                            </div>
-
+                        <!-- Element Composition Section -->
+                        <div class="comp-section-card">
+                            <h4>Element Composition (% Mass)</h4>
+                            <div id="comp-element-breakdown"></div>
                         </div>
 
-                    </div>
+                        <!-- Physical Properties -->
+                        <div class="comp-section-card">
+                            <h4>Physical & Chemical Properties</h4>
+                            <div class="comp-props-grid">
+                                <div class="comp-prop-item">
+                                    <span class="prop-label">Molar Mass</span>
+                                    <span class="prop-value mono-text" id="comp-detail-mass">18.015 g/mol</span>
+                                </div>
+                                <div class="comp-prop-item">
+                                    <span class="prop-label">State (STP)</span>
+                                    <span class="prop-value mono-text" id="comp-detail-state">Liquid</span>
+                                </div>
+                                <div class="comp-prop-item">
+                                    <span class="prop-label">Melting Point</span>
+                                    <span class="prop-value mono-text" id="comp-prop-mp">0 °C</span>
+                                </div>
+                                <div class="comp-prop-item">
+                                    <span class="prop-label">Boiling Point</span>
+                                    <span class="prop-value mono-text" id="comp-prop-bp">100 °C</span>
+                                </div>
+                                <div class="comp-prop-item" style="grid-column: 1 / -1;">
+                                    <span class="prop-label">Density</span>
+                                    <span class="prop-value mono-text" id="comp-prop-density">0.998 g/cm³</span>
+                                </div>
+                            </div>
+                        </div>
 
-
-
-                    <!-- Description & Wikipedia -->
-
-                    <div class="comp-section-card">
-
-                        <h4>Description</h4>
-
-                        <p id="comp-detail-desc" style="font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.8); margin-bottom: 12px;"></p>
-
-                        <button id="comp-wiki-btn" class="comp-wiki-button">
-
-                            📖 Read Wikipedia Article
-
-                        </button>
-
+                        <!-- Description & Wikipedia -->
+                        <div class="comp-section-card">
+                            <h4>Description</h4>
+                            <p id="comp-detail-desc"></p>
+                            <button id="comp-wiki-btn" class="comp-wiki-button">
+                                📖 Read Wikipedia Article
+                            </button>
+                        </div>
                     </div>
 
                 </div>

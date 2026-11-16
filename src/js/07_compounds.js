@@ -64,6 +64,13 @@ function setupCompoundsEvents() {
             renderCompoundsGrid();
         });
     });
+
+    // Close full-screen compound modal on Escape key
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeCompoundDetailModal();
+        }
+    });
 }
 
 function formatFormulaSubscript(str) {
@@ -417,13 +424,24 @@ function renderCompoundsGrid() {
     }
 }
 
+function closeCompoundDetailModal() {
+    const sidebar = document.getElementById('compounds-sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('open', 'mobile-active', 'pos-right');
+    }
+    if (typeof window.stopMoleculeViewer === 'function') {
+        window.stopMoleculeViewer();
+    }
+}
+window.closeCompoundDetailModal = closeCompoundDetailModal;
+
 function selectCompound(id) {
     const comp = compoundsData.find(c => c.id === id) || dynamicCompoundsList.find(c => c.id === id);
     if (!comp) return;
 
     selectedCompoundId = id;
 
-    // Open floating sidebar on mobile
+    // Open floating full-screen modal
     const sidebar = document.getElementById('compounds-sidebar');
     if (sidebar) {
         sidebar.classList.add('open', 'mobile-active', 'pos-right');
@@ -432,7 +450,10 @@ function selectCompound(id) {
         window.startMoleculeViewer();
     }
     if (typeof window.resizeMoleculeViewer === 'function') {
-        setTimeout(window.resizeMoleculeViewer, 120);
+        setTimeout(window.resizeMoleculeViewer, 30);
+        setTimeout(window.resizeMoleculeViewer, 100);
+        setTimeout(window.resizeMoleculeViewer, 250);
+        setTimeout(window.resizeMoleculeViewer, 500);
     }
 
     // Update Header Card
@@ -1060,7 +1081,7 @@ function renderCompoundBohrModel(comp) {
     const bond = getCompoundBondDetails(comp);
     const isIonic = bond.type === 'ionic';
 
-    let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="comp-bohr-svg" width="100%" height="220" xmlns="http://www.w3.org/2000/svg">`;
+    let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" class="comp-bohr-svg" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
     svg += `<defs>
         <radialGradient id="bohr-bg-grad-${comp.id}" cx="50%" cy="50%" r="65%">
             <stop offset="0%" stop-color="#0a192f" stop-opacity="0.88"/>
