@@ -2157,7 +2157,7 @@ window.openWikiModal = function(elName, massNum) {
             iframe.srcdoc = injectedHtml;
         })
         .catch(err => {
-            iframe.srcdoc = `<html style="background:#0f172a;"><body style="color:red;padding:20px;font-family:sans-serif;background:#0f172a;">Error loading Wikipedia page.</body></html>`;
+            iframe.srcdoc = `<html style="background:#0f172a;"><body style="color:red;padding:20px;font-family:sans-serif;background:#0f172a;">Error loading Wikipedia page.<\/body><\/html>`;
         });
 };
 
