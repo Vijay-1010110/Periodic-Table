@@ -101,29 +101,21 @@
 
 
         // Top Nav Badge
-
         const topBadge = document.getElementById('top-tier-badge');
-
         if (topBadge) {
-
-            if (isPro) {
-
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
+                topBadge.style.display = 'none';
+            } else if (isPro) {
+                topBadge.style.display = '';
                 topBadge.className = 'tier-badge-pill pro';
-
                 topBadge.textContent = '👑 PRO';
-
                 topBadge.title = 'Periodica 3D Pro (Lifetime Active)';
-
             } else {
-
+                topBadge.style.display = '';
                 topBadge.className = 'tier-badge-pill free';
-
                 topBadge.textContent = 'FREE';
-
                 topBadge.title = 'Free Version - Click to Upgrade to Pro';
-
             }
-
         }
 
 
@@ -746,6 +738,9 @@
             }
 
 
+
+            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             let sessions = parseInt(localStorage.getItem('periodica_sessions_count') || '0', 10) + 1;
 

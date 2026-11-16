@@ -8287,97 +8287,76 @@ function positionMobileSidebar(cell, el) {
 
 
 
-    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
+    // Floating popup strictly when:
+    // (innerWidth < 1200 && innerHeight < 600) OR innerWidth < 680
+    const isFloatingPopupMode = (window.innerWidth < 1200 && window.innerHeight < 600) || (window.innerWidth < 680);
 
-        let isLeftHalf = false;
-
-        if (cell) {
-
-            const rect = cell.getBoundingClientRect();
-
-            if (rect.width > 0) {
-
-                const cellCenterX = rect.left + rect.width / 2;
-
-                isLeftHalf = cellCenterX < (window.innerWidth / 2);
-
-            }
-
-        } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
-
-            const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
-
-            if (screenPos) {
-
-                isLeftHalf = screenPos.x < (window.innerWidth / 2);
-
-            } else {
-
-                const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
-
-                isLeftHalf = (pos.col <= 9);
-
-            }
-
-        } else if (el) {
-
-            const z = el.atomicNumber || el.z;
-
-            if (typeof getGridPosition === 'function' && z) {
-
-                const pos = getGridPosition(z);
-
-                isLeftHalf = (pos.col <= 9);
-
-            } else {
-
-                isLeftHalf = (el.group || 1) <= 9;
-
-            }
-
-        }
+    if (!isFloatingPopupMode) {
+        // Stationary mode: Desktop Wide (>= 1200) or Ample Height Top Pane (width < 1200 && height >= 600)
+        sidebar.classList.remove('pos-left', 'pos-right', 'mobile-active', 'open');
+        currentSidebarSide = null;
+        return;
+    }
 
 
 
-        const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
+    let isLeftHalf = false;
 
-        const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
-
-
-
-        if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
-
-            // Switching to other side: close current side and open on new side
-
-            sidebar.classList.remove('mobile-active', 'open', otherSide);
-
-            currentSidebarSide = targetSide;
-
-            sidebar.classList.add(targetSide);
-
-            void sidebar.offsetWidth; // Force synchronous reflow
-
-            sidebar.classList.add('mobile-active');
-
+    const cellRect = cell ? cell.getBoundingClientRect() : null;
+    if (cellRect && cellRect.width > 0) {
+        const cellCenterX = cellRect.left + cellRect.width / 2;
+        isLeftHalf = cellCenterX < (window.innerWidth / 2);
+    } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
+        const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
+        if (screenPos) {
+            isLeftHalf = screenPos.x < (window.innerWidth / 2);
         } else {
-
-            // Within same side: keep same panel open in-place and replace values
-
-            currentSidebarSide = targetSide;
-
-            sidebar.classList.remove(otherSide);
-
-            sidebar.classList.add(targetSide);
-
-            sidebar.classList.add('mobile-active');
-
+            const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
+            isLeftHalf = (pos.col <= 9);
         }
+    } else if (el) {
+        const z = el.atomicNumber || el.z;
+        if (typeof getGridPosition === 'function' && z) {
+            const pos = getGridPosition(z);
+            isLeftHalf = (pos.col <= 9);
+        } else {
+            isLeftHalf = (el.group || 1) <= 9;
+        }
+    }
+
+
+
+    const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
+
+    const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
+
+
+
+    if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
+
+        // Switching to other side: close current side and open on new side
+
+        sidebar.classList.remove('mobile-active', 'open', otherSide);
+
+        currentSidebarSide = targetSide;
+
+        sidebar.classList.add(targetSide);
+
+        void sidebar.offsetWidth; // Force synchronous reflow
+
+        sidebar.classList.add('mobile-active', 'open');
 
     } else {
 
-        sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
+        // Within same side: keep same panel open in-place and replace values
 
-        currentSidebarSide = null;
+        currentSidebarSide = targetSide;
+
+        sidebar.classList.remove(otherSide);
+
+        sidebar.classList.add(targetSide);
+
+        sidebar.classList.add('mobile-active', 'open');
 
     }
 
@@ -8407,6 +8386,11 @@ function closeMobileSidebar() {
 
     selectedElement = null;
 
+    const emptyState = document.getElementById('empty-state');
+    const detailCard = document.getElementById('element-detail-card');
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (detailCard) detailCard.classList.add('hidden');
+
     if (typeof closeIsotopeDetailPanel === 'function') {
 
         closeIsotopeDetailPanel();
@@ -8435,13 +8419,17 @@ window.dismissDetailSidebar = closeMobileSidebar;
 
 window.addEventListener('resize', () => {
 
-    if (window.innerWidth > 1000 && window.innerHeight > 520) {
+    const isFloatingPopupMode = (window.innerWidth < 1200 && window.innerHeight < 600) || (window.innerWidth < 680);
+
+    if (!isFloatingPopupMode) {
 
         document.querySelectorAll('.view-right').forEach(sb => {
 
-            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
+            sb.classList.remove('mobile-active', 'open', 'pos-left', 'pos-right');
 
         });
+
+        currentSidebarSide = null;
 
     }
 
