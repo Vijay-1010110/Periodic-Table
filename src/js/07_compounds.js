@@ -510,39 +510,160 @@ function renderElementComposition(comp) {
 
     container.innerHTML = '';
 
-    // Create stacked percentage bar
-    const bar = document.createElement('div');
-    bar.className = 'comp-bar-container';
+    if (!comp || !comp.elements || comp.elements.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; font-size: 0.9rem; padding: 8px;">No elemental breakdown available.</div>';
+        return;
+    }
 
-    comp.elements.forEach(el => {
-        const seg = document.createElement('div');
-        seg.className = 'comp-bar-seg';
-        seg.style.width = `${el.massPercent}%`;
-        const color = CPK_COLORS[el.atomicNumber] || '#00d4ff';
-        seg.style.backgroundColor = color;
-        seg.title = `${el.symbol}: ${el.massPercent}% by mass`;
-        bar.appendChild(seg);
+    const elements = comp.elements;
+    const n = elements.length;
+
+    // SVG Line Chart Dimensions
+    const svgWidth = 460;
+    const svgHeight = 175;
+    const padLeft = 46;
+    const padRight = 32;
+    const topY = 28;
+    const botY = 136;
+    const plotWidth = svgWidth - padLeft - padRight;
+    const plotHeight = botY - topY;
+
+    // Grid lines for 0%, 25%, 50%, 75%, 100%
+    let gridLinesSvg = '';
+    const gridPercentages = [0, 25, 50, 75, 100];
+    gridPercentages.forEach(p => {
+        const y = botY - (p / 100) * plotHeight;
+        gridLinesSvg += `
+            <line x1="${padLeft}" y1="${y.toFixed(1)}" x2="${svgWidth - padRight}" y2="${y.toFixed(1)}" stroke="#1e293b" stroke-width="1" stroke-dasharray="3,3" />
+            <text x="${padLeft - 8}" y="${(y + 3.5).toFixed(1)}" fill="#64748b" font-size="10" font-weight="600" text-anchor="end">${p}%</text>
+        `;
     });
 
-    container.appendChild(bar);
+    // Calculate (x, y) coordinates for each element
+    const points = [];
+    if (n === 1) {
+        points.push({
+            x: padLeft + plotWidth / 2,
+            y: topY,
+            el: elements[0]
+        });
+    } else {
+        elements.forEach((el, idx) => {
+            const x = padLeft + 22 + idx * ((plotWidth - 44) / (n - 1));
+            const y = botY - (Math.min(100, Math.max(0, el.massPercent)) / 100) * plotHeight;
+            points.push({ x, y, el });
+        });
+    }
 
-    // Create legend chips
+    // Build line stroke path & area fill path
+    let linePathStr = '';
+    let areaPathStr = '';
+
+    if (n === 1) {
+        const pt = points[0];
+        linePathStr = `M ${padLeft} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${pt.y.toFixed(1)}`;
+        areaPathStr = `M ${padLeft} ${botY} L ${padLeft} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${botY} Z`;
+    } else {
+        linePathStr = 'M ' + points.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ');
+        areaPathStr = `M ${points[0].x.toFixed(1)} ${botY} ` + points.map(p => `L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') + ` L ${points[points.length - 1].x.toFixed(1)} ${botY} Z`;
+    }
+
+    // Build element nodes, percentage badges, and x-axis labels
+    let nodesSvg = '';
+    points.forEach(pt => {
+        const el = pt.el;
+        const color = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
+        const percentStr = `${el.massPercent}%`;
+        
+        const nx = pt.x.toFixed(1);
+        const ny = pt.y.toFixed(1);
+
+        // Badge placement: if too close to top (pt.y < 42), place below node
+        const badgeY = pt.y < 42 ? (pt.y + 11).toFixed(1) : (pt.y - 25).toFixed(1);
+        const badgeTextY = pt.y < 42 ? (pt.y + 23).toFixed(1) : (pt.y - 13).toFixed(1);
+
+        nodesSvg += `
+            <!-- Data Point Halo & Node -->
+            <circle cx="${nx}" cy="${ny}" r="9" fill="none" stroke="${color}" stroke-width="2" opacity="0.35" class="comp-chart-pulse" />
+            <circle cx="${nx}" cy="${ny}" r="5.5" fill="${color}" stroke="#090e1a" stroke-width="2" />
+            
+            <!-- Value Badge -->
+            <rect x="${(pt.x - 24).toFixed(1)}" y="${badgeY}" width="48" height="17" rx="4" fill="#090e1a" stroke="${color}" stroke-width="1.2" opacity="0.95" />
+            <text x="${nx}" y="${badgeTextY}" fill="#f8fafc" font-size="10.5" font-weight="800" text-anchor="middle">${percentStr}</text>
+
+            <!-- X-Axis Element Symbol & Count -->
+            <text x="${nx}" y="151" fill="#38bdf8" font-size="13" font-weight="800" text-anchor="middle">${el.symbol}</text>
+            <text x="${nx}" y="164" fill="#94a3b8" font-size="9.5" font-weight="600" text-anchor="middle">${el.count} atom${el.count > 1 ? 's' : ''}</text>
+        `;
+    });
+
+    // Chart card
+    const chartCard = document.createElement('div');
+    chartCard.className = 'comp-chart-card';
+    chartCard.innerHTML = `
+        <svg class="comp-line-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <linearGradient id="compAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.36" />
+                    <stop offset="60%" stop-color="#0284c7" stop-opacity="0.10" />
+                    <stop offset="100%" stop-color="#090e1a" stop-opacity="0.0" />
+                </linearGradient>
+                <linearGradient id="compStrokeGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="50%" stop-color="#818cf8" />
+                    <stop offset="100%" stop-color="#34d399" />
+                </linearGradient>
+                <filter id="compGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#38bdf8" flood-opacity="0.6"/>
+                </filter>
+            </defs>
+            <!-- Baseline -->
+            <line x1="${padLeft}" y1="${botY}" x2="${svgWidth - padRight}" y2="${botY}" stroke="#334155" stroke-width="1.5" />
+            
+            <!-- Grid Lines & Y-Labels -->
+            ${gridLinesSvg}
+
+            <!-- Area Fill -->
+            <path d="${areaPathStr}" fill="url(#compAreaGrad)" />
+
+            <!-- Line Stroke -->
+            <path d="${linePathStr}" fill="none" stroke="url(#compStrokeGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#compGlow)" />
+
+            <!-- Nodes & Labels -->
+            ${nodesSvg}
+        </svg>
+    `;
+
+    container.appendChild(chartCard);
+
+    // Complementary Legend Chips
     const legend = document.createElement('div');
     legend.className = 'comp-legend-chips';
 
     comp.elements.forEach(el => {
         const chip = document.createElement('div');
         chip.className = 'comp-chip';
-        const color = CPK_COLORS[el.atomicNumber] || '#00d4ff';
+        const color = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
         chip.innerHTML = `
-            <span class="chip-color" style="background:${color};"></span>
-            <span class="chip-label"><b>${el.symbol}</b> (${el.count}): ${el.massPercent}%</span>
+            <span class="chip-color" style="background:${color}; box-shadow: 0 0 6px ${color}88;"></span>
+            <span class="chip-label"><b>${el.symbol}</b> (${el.count}×): <span style="color:#38bdf8; font-weight:700;">${el.massPercent}%</span></span>
         `;
         legend.appendChild(chip);
     });
 
     container.appendChild(legend);
 }
+
+function resetMoleculeView() {
+    if (molGroup) {
+        molGroup.position.set(0, 0, 0);
+        molGroup.rotation.set(0, 0, 0);
+    }
+    if (molCamera) {
+        molCamera.position.set(0, 0, 4.5);
+    }
+}
+window.resetMoleculeView = resetMoleculeView;
 
 function initMoleculeViewer() {
     const canvasContainer = document.getElementById('molecule-canvas-container');
@@ -562,6 +683,40 @@ function initMoleculeViewer() {
     molRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     canvasContainer.appendChild(molRenderer.domElement);
 
+    // Quick On-Canvas Overlay Controls (Zoom In, Zoom Out, Reset View, Auto-Rotate Toggle)
+    let controlsOverlay = document.getElementById('mol-viewer-controls');
+    if (!controlsOverlay) {
+        controlsOverlay = document.createElement('div');
+        controlsOverlay.id = 'mol-viewer-controls';
+        controlsOverlay.className = 'mol-viewer-controls';
+        controlsOverlay.innerHTML = `
+            <button type="button" class="mol-ctrl-btn" id="mol-ctrl-zoom-in" title="Zoom In (+)">➕</button>
+            <button type="button" class="mol-ctrl-btn" id="mol-ctrl-zoom-out" title="Zoom Out (-)">➖</button>
+            <button type="button" class="mol-ctrl-btn" id="mol-ctrl-reset" title="Reset View & Position">⟲</button>
+            <button type="button" class="mol-ctrl-btn" id="mol-ctrl-rotate" title="Pause / Resume Rotation">⏸</button>
+        `;
+        canvasContainer.appendChild(controlsOverlay);
+
+        document.getElementById('mol-ctrl-zoom-in')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (molCamera) molCamera.position.z = Math.max(1.8, molCamera.position.z - 0.7);
+        });
+        document.getElementById('mol-ctrl-zoom-out')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (molCamera) molCamera.position.z = Math.min(14.0, molCamera.position.z + 0.7);
+        });
+        document.getElementById('mol-ctrl-reset')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetMoleculeView();
+        });
+        document.getElementById('mol-ctrl-rotate')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMolRotating = !isMolRotating;
+            const btn = document.getElementById('mol-ctrl-rotate');
+            if (btn) btn.textContent = isMolRotating ? '⏸' : '▶';
+        });
+    }
+
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     molScene.add(ambientLight);
@@ -577,36 +732,136 @@ function initMoleculeViewer() {
     molGroup = new THREE.Group();
     molScene.add(molGroup);
 
-    // Drag Interaction
     const dom = molRenderer.domElement;
+    let mouseInteractionMode = 'rotate'; // 'rotate' | 'pan'
+
+    dom.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+
+    // Mouse Drag: Left-click rotates, Right-click / Middle-click / Shift+drag pans
     dom.addEventListener('mousedown', (e) => {
         isDraggingMol = true;
+        if (e.button === 2 || e.button === 1 || e.shiftKey || e.ctrlKey) {
+            mouseInteractionMode = 'pan';
+        } else {
+            mouseInteractionMode = 'rotate';
+        }
         previousMousePosition = { x: e.clientX, y: e.clientY };
     });
+
     dom.addEventListener('mousemove', (e) => {
         if (!isDraggingMol || !molGroup) return;
         const deltaMove = { x: e.clientX - previousMousePosition.x, y: e.clientY - previousMousePosition.y };
-        molGroup.rotation.y += deltaMove.x * 0.01;
-        molGroup.rotation.x += deltaMove.y * 0.01;
+        
+        if (mouseInteractionMode === 'pan') {
+            const panSens = 0.0055 * ((molCamera ? molCamera.position.z : 4.5) / 4.5);
+            molGroup.position.x = Math.max(-6, Math.min(6, molGroup.position.x + deltaMove.x * panSens));
+            molGroup.position.y = Math.max(-5, Math.min(5, molGroup.position.y - deltaMove.y * panSens));
+        } else {
+            molGroup.rotation.y += deltaMove.x * 0.01;
+            molGroup.rotation.x += deltaMove.y * 0.01;
+        }
         previousMousePosition = { x: e.clientX, y: e.clientY };
     });
-    window.addEventListener('mouseup', () => { isDraggingMol = false; });
 
-    // Touch support
+    window.addEventListener('mouseup', () => { 
+        isDraggingMol = false; 
+    });
+
+    // Double-click to reset view & position
+    dom.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        resetMoleculeView();
+    });
+
+    // Mouse Wheel Zoom
+    dom.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (!molCamera) return;
+        const zoomDelta = e.deltaY * 0.003;
+        molCamera.position.z = Math.max(1.8, Math.min(14.0, molCamera.position.z + zoomDelta));
+    }, { passive: false });
+
+    // Touch Support: 1-finger rotate, 2-finger pinch-to-zoom & pan, double-tap reset
+    let touchInteractionMode = 'none'; // 'rotate' | 'pinch_pan'
+    let initialTouchDist = 0;
+    let initialCameraZ = 4.5;
+    let initialTouchMidpoint = { x: 0, y: 0 };
+    let initialMolPos = { x: 0, y: 0 };
+    let lastTapTimestamp = 0;
+
     dom.addEventListener('touchstart', (e) => {
+        if (e.cancelable) e.preventDefault();
+        const now = Date.now();
+        if (e.touches.length === 1 && (now - lastTapTimestamp < 320)) {
+            // Double-tap reset view!
+            resetMoleculeView();
+            lastTapTimestamp = 0;
+            return;
+        }
+        lastTapTimestamp = now;
+
         if (e.touches.length === 1) {
+            touchInteractionMode = 'rotate';
             isDraggingMol = true;
             previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.touches.length >= 2) {
+            touchInteractionMode = 'pinch_pan';
+            isDraggingMol = true;
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            initialTouchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY) || 1;
+            initialCameraZ = molCamera ? molCamera.position.z : 4.5;
+            initialTouchMidpoint = { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+            initialMolPos = { x: molGroup.position.x, y: molGroup.position.y };
         }
-    });
+    }, { passive: false });
+
     dom.addEventListener('touchmove', (e) => {
-        if (!isDraggingMol || !molGroup || e.touches.length !== 1) return;
-        const deltaMove = { x: e.touches[0].clientX - previousMousePosition.x, y: e.touches[0].clientY - previousMousePosition.y };
-        molGroup.rotation.y += deltaMove.x * 0.01;
-        molGroup.rotation.x += deltaMove.y * 0.01;
-        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    });
-    dom.addEventListener('touchend', () => { isDraggingMol = false; });
+        if (e.cancelable) e.preventDefault();
+        if (!isDraggingMol || !molGroup) return;
+
+        if (touchInteractionMode === 'rotate' && e.touches.length === 1) {
+            const deltaMove = { 
+                x: e.touches[0].clientX - previousMousePosition.x, 
+                y: e.touches[0].clientY - previousMousePosition.y 
+            };
+            molGroup.rotation.y += deltaMove.x * 0.01;
+            molGroup.rotation.x += deltaMove.y * 0.01;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (touchInteractionMode === 'pinch_pan' && e.touches.length >= 2) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY) || 1;
+
+            // 1. Pinch to zoom in / out
+            if (molCamera && initialTouchDist > 0) {
+                const ratio = currentDist / initialTouchDist;
+                const newZ = initialCameraZ / ratio;
+                molCamera.position.z = Math.max(1.8, Math.min(14.0, newZ));
+            }
+
+            // 2. Two-finger Pan
+            const currentMid = { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+            const deltaMid = { x: currentMid.x - initialTouchMidpoint.x, y: currentMid.y - initialTouchMidpoint.y };
+            const panSens = 0.0055 * ((molCamera ? molCamera.position.z : 4.5) / 4.5);
+            molGroup.position.x = Math.max(-6, Math.min(6, initialMolPos.x + deltaMid.x * panSens));
+            molGroup.position.y = Math.max(-5, Math.min(5, initialMolPos.y - deltaMid.y * panSens));
+        }
+    }, { passive: false });
+
+    const handleTouchEnd = (e) => {
+        if (e.touches.length === 0) {
+            isDraggingMol = false;
+            touchInteractionMode = 'none';
+        } else if (e.touches.length === 1) {
+            touchInteractionMode = 'rotate';
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+    };
+    dom.addEventListener('touchend', handleTouchEnd);
+    dom.addEventListener('touchcancel', handleTouchEnd);
 
     let molRafId = null;
     let isMolRunning = false;
@@ -796,8 +1051,12 @@ function render3DMolecule(comp) {
         }
     }
 
-    // Reset rotation
+    // Reset rotation, position, and zoom
     molGroup.rotation.set(0, 0, 0);
+    molGroup.position.set(0, 0, 0);
+    if (molCamera) {
+        molCamera.position.set(0, 0, 4.5);
+    }
 
     // Update 3D Top-Left Indicator Overlay (Color Legend & Bond Types)
     updateCompound3DLegend(comp);
@@ -982,7 +1241,7 @@ function switchCompoundViewer(mode) {
         if (container3d) container3d.style.display = 'block';
         if (containerBohr) containerBohr.style.display = 'none';
         if (hint) {
-            hint.textContent = 'Drag to rotate';
+            hint.textContent = 'Drag to rotate • Pinch to zoom • Pan';
             hint.style.color = '#38bdf8';
         }
         if (selectedCompoundObj) {
