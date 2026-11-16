@@ -33,11 +33,19 @@
 
 
     // 1. Pro Status State
-
     function isProUser() {
+        // Native mobile app: check purchased license from storage / in-app billing
+        if (window.Platform?.isNative || window.Capacitor?.isNativePlatform()) {
+            return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
+        }
 
-        return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
+        // Android Mobile Browser: non-main tabs are gated to prompt Google Play app download
+        if (window.isAndroidWeb || window.Platform?.isAndroidWeb) {
+            return false;
+        }
 
+        // Desktop / regular Web: 100% free with all features fully unlocked
+        return true;
     }
 
 
@@ -195,6 +203,20 @@
     // 3. Pro Paywall Modal
 
     function openProPaywallModal(featureSource = null) {
+        // Android phone browser: route to the Play Store download modal
+        if (window.isAndroidWeb || window.Platform?.isAndroidWeb) {
+            if (typeof window.openAndroidAppModal === 'function') {
+                window.openAndroidAppModal(featureSource);
+            } else if (window.AndroidAppGate && typeof window.AndroidAppGate.openAppModal === 'function') {
+                window.AndroidAppGate.openAppModal(featureSource);
+            }
+            return;
+        }
+
+        // Desktop / regular web: all features are free, never show paywall
+        if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
+            return;
+        }
 
         if (isProUser()) return;
 
@@ -692,6 +714,8 @@
     function trackSessionAndCheckRatingPrompt() {
 
         try {
+            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             // PRO users are never prompted
 
@@ -756,6 +780,8 @@
     function trackElementInspection() {
 
         try {
+            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             // PRO users are never prompted
 

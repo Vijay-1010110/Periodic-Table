@@ -693,12 +693,10 @@ body.has-native-slider #temp-custom-slider {
 /* In-Grid Legend */
 .in-grid-legend {
     grid-column: 3 / 13;
-    grid-row: 1 / 4 !important;
+    grid-row: 2;
     display: flex;
     justify-content: center !important;
-    align-items: center !important;
-    max-height: 100% !important;
-    overflow: hidden;
+    align-items: stretch;
     gap: 8px;
     padding: 0px;
     pointer-events: auto;
@@ -2360,16 +2358,20 @@ body.has-native-slider #temp-custom-slider {
     #view-electrons .view-left {
         height: 100% !important;
         max-height: 100% !important;
-        padding: 34px 6px 4px 6px !important; /* Virtual top margin matching Property Tab top bar */
+        padding: 4px 6px 4px 6px !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
         flex: 1 !important;
+        background: transparent !important;
     }
 
     #view-electrons .table-controls {
         display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     #view-electrons .grid-wrapper {
@@ -4401,7 +4403,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .iso-tab-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.22) 0%, rgba(168, 85, 247, 0.16) 100%) !important;
+    background: rgba(0, 212, 255, 0.22) !important;
     border: 1px solid #00d4ff !important;
     color: #00d4ff !important;
     font-weight: 700;
@@ -5490,66 +5492,66 @@ body.has-native-slider #temp-custom-slider {
 
 .compound-filter-btn.active,
 .compound-filter-btn[data-type="All"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Covalent"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Ionic"].active {
-    background: linear-gradient(180deg, #7e22ce 0%, #6b21a8 100%) !important;
-    border-color: #c084fc !important;
+    background: #2563eb !important;
+    border-color: #60a5fa !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Organic"].active {
-    background: linear-gradient(180deg, #15803d 0%, #166534 100%) !important;
+    background: #15803d !important;
     border-color: #4ade80 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(74, 222, 128, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Acid"].active {
-    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    background: #dc2626 !important;
     border-color: #f87171 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Base"].active {
-    background: linear-gradient(180deg, #c2410c 0%, #9a3412 100%) !important;
+    background: #d97706 !important;
     border-color: #fb923c !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(251, 146, 60, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Solid"].active {
-    background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%) !important;
-    border-color: #ffffff !important;
-    color: #0f172a !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    background: #475569 !important;
+    border-color: #cbd5e1 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Liquid"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Gas"].active {
-    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    background: #dc2626 !important;
     border-color: #f87171 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
 }
 
 .compounds-grid-container {
@@ -5565,7 +5567,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .compound-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    background: #1e293b;
     border: 1.5px solid #334155;
     border-radius: 8px;
     padding: 16px;
@@ -5575,13 +5577,13 @@ body.has-native-slider #temp-custom-slider {
     flex-direction: column;
     gap: 8px;
     position: relative;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .compound-card:hover {
     transform: translateY(-2px);
     border-color: #00d4ff;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
 }
 
 .compound-card.active {
@@ -5655,11 +5657,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-header-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .comp-header-top {
@@ -5700,11 +5702,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .molecule-3d-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .molecule-card-header {
@@ -5732,11 +5734,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-section-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .comp-section-card h4 {
@@ -7442,7 +7444,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center;
     gap: 4px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.15));
+    background: rgba(0, 212, 255, 0.15);
     border: 1px solid rgba(0, 212, 255, 0.4);
     border-radius: 8px;
     color: #00d4ff;
@@ -7455,7 +7457,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 }
 
 .table-type-btn-top:hover, .table-type-btn-top:active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(168, 85, 247, 0.3));
+    background: rgba(0, 212, 255, 0.3);
     border-color: #ffffff;
     box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
@@ -7732,10 +7734,10 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .anatomy-confirm-btn {
     padding: 6px 16px;
-    background: linear-gradient(135deg, #00d4ff, #a855f7);
+    background: #0284c7;
     border: none;
     border-radius: 8px;
-    color: #050812;
+    color: #ffffff;
     font-weight: 800;
     font-size: 0.75rem;
     cursor: pointer;
@@ -10282,12 +10284,12 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 }
 
 .sidebar-tier-widget.free {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(0, 212, 255, 0.08));
-    border: 1px solid rgba(168, 85, 247, 0.35);
+    background: rgba(2, 132, 199, 0.15);
+    border: 1px solid rgba(2, 132, 199, 0.4);
 }
 .sidebar-tier-widget.free:hover,
 .sidebar-tier-widget.free:active {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(0, 212, 255, 0.2));
+    background: rgba(2, 132, 199, 0.28);
     border-color: #00d4ff;
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
 }
@@ -10803,9 +10805,9 @@ body.is-pro-user .nav-pro-pill {
 }
 
 .comp-3d-badge.covalent-double {
-    background: rgba(168, 85, 247, 0.18);
-    border: 1px solid rgba(168, 85, 247, 0.45);
-    color: #c084fc;
+    background: rgba(2, 132, 199, 0.2);
+    border: 1px solid rgba(2, 132, 199, 0.5);
+    color: #38bdf8;
 }
 
 .comp-3d-badge.covalent-triple {
@@ -11259,418 +11261,6 @@ body.is-pro-user .nav-pro-pill {
     color: #94a3b8;
     line-height: 1.3;
     margin: 0;
-}
-
-
-/* ==========================================================================
-   RESPONSIVE 3-TIER ENGINE STYLES (Ultra-Compact Mode 2 & Mode 3)
-   1. Wide Desktop (> 1280px) -> Classic Side-by-Side Dual Pane
-   2. Mode 2 (<= 1280px & >= 640px height) -> Ultra-Compact Top Pane Header (50px height)
-   3. Mode 3 (<= 1280px & < 640px height, or < 680px) -> Floating Panel Over Table
-   ========================================================================== */
-
-/* Base default: Floating toggle pill is hidden on desktop and top-pane modes */
-.narrow-properties-toggle-pill {
-    display: none !important;
-}
-
-/* --------------------------------------------------------------------------
-   MODE 2: ULTRA-COMPACT TOP PANE MODE (Ample Vertical Space)
-   Transforms the side panel into a sleek, 50px-high horizontal header ribbon.
-   Eliminates unnecessary vertical space and gives the table 100% full width!
-   -------------------------------------------------------------------------- */
-@media (max-width: 1280px) and (min-height: 640px) and (min-width: 680px) {
-
-    .view-mode.active {
-        flex-direction: column !important;
-        overflow: hidden !important;
-        height: 100% !important;
-        width: 100% !important;
-    }
-
-    /* Ultra-Compact Top Pane Header directly above the table */
-    .view-right {
-        order: -1 !important;
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: auto !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 48px !important;
-        max-height: 52px !important;
-        min-height: 44px !important;
-        flex: 0 0 auto !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        padding: 4px 12px !important;
-        gap: 10px !important;
-        background: rgba(10, 15, 29, 0.98) !important;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-        border-top: none !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-radius: 0 !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
-        overflow: hidden !important;
-        z-index: 25 !important;
-        display: flex !important;
-        box-sizing: border-box !important;
-        pointer-events: auto !important;
-        transform: none !important;
-    }
-
-    /* Left side of Top Pane: Ultra-Compact Empty State */
-    .view-right #empty-state {
-        flex: 0 0 200px !important;
-        min-width: 180px !important;
-        max-width: 230px !important;
-        height: 38px !important;
-        margin: 0 !important;
-        padding: 2px 8px !important;
-        background: rgba(15, 23, 42, 0.6) !important;
-        border: 1px dashed rgba(0, 212, 255, 0.35) !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 6px !important;
-        text-align: left !important;
-        box-sizing: border-box !important;
-    }
-    .view-right #empty-state.hidden {
-        display: none !important;
-    }
-    .view-right #empty-state .empty-icon {
-        font-size: 1.15rem !important;
-        margin-bottom: 0 !important;
-        flex-shrink: 0 !important;
-    }
-    .view-right #empty-state p {
-        font-size: 0.68rem !important;
-        font-weight: 700 !important;
-        color: #f1f5f9 !important;
-        margin: 0 !important;
-        line-height: 1.1 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-    .view-right #empty-state .small-text {
-        display: none !important;
-    }
-    .view-right #empty-state .sidebar-close-btn {
-        display: none !important;
-    }
-
-    /* Left side of Top Pane: Compact Element Detail Card */
-    .view-right #element-detail-card {
-        flex: 0 0 250px !important;
-        min-width: 220px !important;
-        max-width: 280px !important;
-        height: 40px !important;
-        margin: 0 !important;
-        padding: 2px 8px !important;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95)) !important;
-        border: 1px solid rgba(0, 212, 255, 0.5) !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 8px !important;
-        box-sizing: border-box !important;
-    }
-    .view-right #element-detail-card.hidden {
-        display: none !important;
-    }
-    .view-right #element-detail-card .ed-header-row {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 4px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-    }
-    .view-right #element-detail-card .ed-number-badge {
-        font-size: 0.65rem !important;
-        padding: 1px 4px !important;
-    }
-    .view-right #element-detail-card .ed-series-badge {
-        font-size: 0.60rem !important;
-        padding: 1px 5px !important;
-    }
-    .view-right #element-detail-card .ed-mass-val {
-        font-size: 0.60rem !important;
-    }
-    .view-right #element-detail-card .sidebar-close-btn,
-    .view-right #element-detail-card .ed-close-btn {
-        display: none !important;
-    }
-    .view-right #element-detail-card .ed-body-row {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 4px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    .view-right #element-detail-card .ed-symbol {
-        font-size: 1.15rem !important;
-        line-height: 1 !important;
-        font-weight: 900 !important;
-    }
-    .view-right #element-detail-card .ed-name {
-        font-size: 0.70rem !important;
-        line-height: 1 !important;
-        font-weight: 700 !important;
-    }
-    .view-right #element-detail-card .ed-quick-stats,
-    .view-right #element-detail-card .ed-details-grid,
-    .view-right #element-detail-card .ed-props-row,
-    .view-right #element-detail-card .ed-extra-info {
-        display: none !important;
-    }
-
-    /* Right side of Top Pane: Sleek Single-Line Horizontally Scrollable Properties Ribbon */
-    .view-right .property-list {
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        height: 38px !important;
-        margin: 0 !important;
-        padding: 0 4px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        gap: 4px !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scrollbar-width: none !important;
-        -webkit-overflow-scrolling: touch !important;
-        background: transparent !important;
-        border: none !important;
-    }
-    .view-right .property-list::-webkit-scrollbar {
-        display: none;
-    }
-    .view-right .property-list h3,
-    .view-right .property-list .help-text {
-        display: none !important;
-    }
-
-    /* Property Items as compact horizontal interactive chips */
-    .view-right .prop-item {
-        flex: 0 0 auto !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-        padding: 2px 7px !important;
-        background: rgba(15, 23, 42, 0.8) !important;
-        border: 1px solid rgba(0, 212, 255, 0.22) !important;
-        border-radius: 6px !important;
-        font-size: 0.65rem !important;
-        cursor: pointer !important;
-        white-space: nowrap !important;
-        height: 25px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        transition: background 0.15s, border-color 0.15s !important;
-    }
-    .view-right .prop-item:hover {
-        background: rgba(0, 212, 255, 0.15) !important;
-        border-color: rgba(0, 212, 255, 0.6) !important;
-    }
-    .view-right .prop-item.active {
-        background: rgba(0, 212, 255, 0.24) !important;
-        border-color: #00d4ff !important;
-        box-shadow: 0 0 8px rgba(0, 212, 255, 0.35) !important;
-    }
-    .view-right .prop-item .prop-label {
-        font-size: 0.62rem !important;
-        font-weight: 700 !important;
-        color: #e2e8f0 !important;
-    }
-    .view-right .prop-item .prop-value {
-        font-size: 0.62rem !important;
-        color: #38bdf8 !important;
-        font-weight: 700 !important;
-    }
-    .view-right .prop-item select {
-        font-size: 0.60rem !important;
-        padding: 0 2px !important;
-        height: 18px !important;
-        background: rgba(0,0,0,0.5) !important;
-        border: 1px solid rgba(0,212,255,0.3) !important;
-        border-radius: 3px !important;
-        color: #38bdf8 !important;
-    }
-
-    /* .view-left occupies 100% full width directly beneath the top pane */
-    .view-left {
-        order: 1 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        padding: 2px 10px 4px 10px !important;
-        border-right: none !important;
-        overflow: hidden !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Table controls & temperature slider directly above table with minimal gap */
-    .table-controls {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-top: 0 !important;
-        margin-bottom: 2px !important;
-        gap: 6px !important;
-        height: 32px !important;
-        min-height: 32px !important;
-        transform: none !important;
-        grid-column: auto !important;
-        grid-row: auto !important;
-    }
-
-    /* Grid wrapper takes 100% width with ZERO horizontal scroll */
-    .grid-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 auto !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: flex-start !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .periodic-grid {
-        width: 100% !important;
-        max-width: 1120px !important;
-        min-width: 0 !important;
-        margin: 0 auto !important;
-        gap: 3px !important;
-    }
-
-    .narrow-properties-toggle-pill {
-        display: none !important;
-    }
-}
-
-/* --------------------------------------------------------------------------
-   MODE 3: FLOATING PANEL MODE (Constrained Width AND Constrained Height)
-   Trigger: (width <= 1280px and height < 640px) OR (width < 680px)
-   -------------------------------------------------------------------------- */
-@media (max-width: 1280px) and (max-height: 639px), (max-width: 679px) {
-
-    .view-mode.active {
-        position: relative !important;
-        width: 100% !important;
-        height: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .view-left {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 100% !important;
-        min-width: 0 !important;
-        padding: 4px 6px !important;
-        border-right: none !important;
-    }
-
-    .grid-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-    }
-
-    .view-right {
-        position: fixed !important;
-        top: 60px !important;
-        height: auto !important;
-        max-height: calc(100vh - 75px) !important;
-        width: min(340px, calc(100vw - 20px)) !important;
-        max-width: calc(100vw - 20px) !important;
-        z-index: 3500 !important;
-        background: rgba(9, 14, 26, 0.98) !important;
-        border: 1.5px solid #00d4ff !important;
-        border-radius: 12px !important;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.98), 0 0 0 1px rgba(0, 212, 255, 0.4) !important;
-        padding: 10px 12px !important;
-        gap: 8px !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        touch-action: pan-y !important;
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transition: opacity 0.18s ease !important;
-    }
-
-    .view-right.mobile-active,
-    .view-right.open {
-        display: flex !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-
-    .view-right.pos-right {
-        right: 12px !important;
-        left: auto !important;
-    }
-
-    .view-right.pos-left {
-        left: 56px !important;
-        right: auto !important;
-    }
-
-    .view-right .sidebar-close-btn,
-    .view-right .ed-close-btn,
-    .view-right.mobile-active .sidebar-close-btn,
-    .view-right.open .sidebar-close-btn,
-    .view-right.mobile-active .ed-close-btn,
-    .view-right.open .ed-close-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    /* Floating toggle pill */
-    .narrow-properties-toggle-pill {
-        display: flex !important;
-        align-items: center;
-        gap: 6px;
-        position: fixed;
-        bottom: 14px;
-        right: 14px;
-        z-index: 1000;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(11, 17, 32, 0.95));
-        border: 1.5px solid rgba(0, 212, 255, 0.5);
-        color: #00d4ff;
-        font-family: var(--font-ui);
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 6px 14px;
-        border-radius: 20px;
-        cursor: pointer;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.75), 0 0 10px rgba(0, 212, 255, 0.25);
-        transition: transform 0.15s, background 0.15s;
-    }
-    .narrow-properties-toggle-pill:hover,
-    .narrow-properties-toggle-pill:active {
-        transform: scale(1.05);
-        background: rgba(0, 212, 255, 0.15);
-        color: #ffffff;
-    }
 }
 
 /* 02_simulations.css */
@@ -24741,7 +24331,7 @@ window.PeriodicCanvasGrid = (function() {
 
     function recomputeGeometry() {
         gap = Math.max(2, Math.min(4, width / 340));
-        const topBarH = 22; // Compact clearance for top bar slider and temp readout
+        const topBarH = 4; // Compact clearance for top bar slider and temp readout
         
         groupHeaderH = Math.max(14, Math.min(20, Math.round(height * 0.036)));
         periodMarginLeft = Math.max(18, Math.min(26, Math.round(width * 0.024)));
@@ -24790,9 +24380,7 @@ window.PeriodicCanvasGrid = (function() {
         offsetX = (totalW + periodMarginLeft <= width - 2 * marginX)
             ? (marginX + periodMarginLeft + Math.max(0, Math.floor((width - 2 * marginX - periodMarginLeft - totalW) / 2)))
             : (marginX + periodMarginLeft);
-        offsetY = (totalH + groupHeaderH <= height - topBarH - marginTop - marginBottom)
-            ? (topBarH + marginTop + groupHeaderH + Math.max(0, Math.floor((height - topBarH - marginTop - marginBottom - groupHeaderH - totalH) / 2)))
-            : (topBarH + marginTop + groupHeaderH);
+        offsetY = topBarH + marginTop + groupHeaderH;
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
         const legendMarginX = Math.min(8, Math.round(cellW * 0.15));
@@ -90429,12 +90017,12 @@ function renderIsotopeLegend(targetElement) {
     const name = el ? el.name : 'Carbon';
 
     const decayModes = [
-        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)', bg: 'linear-gradient(180deg, #a16207 0%, #854d0e 50%, #713f12 100%)', border: '#facc15' },
-        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)', bg: 'linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%)', border: '#38bdf8' },
-        { key: 'Beta+', label: 'β⁺ / EC', color: '#c084fc', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)', bg: 'linear-gradient(180deg, #7e22ce 0%, #6b21a8 50%, #581c87 100%)', border: '#c084fc' },
-        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split', bg: 'linear-gradient(180deg, #b91c1c 0%, #991b1b 50%, #7f1d1d 100%)', border: '#f87171' },
-        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)', bg: 'linear-gradient(180deg, #c2410c 0%, #9a3412 50%, #7c2d12 100%)', border: '#fb923c' },
-        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)', bg: 'linear-gradient(180deg, #0f766e 0%, #115e59 50%, #134e4a 100%)', border: '#2dd4bf' }
+        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)', bg: '#854d0e', border: '#facc15' },
+        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)', bg: '#0369a1', border: '#38bdf8' },
+        { key: 'Beta+', label: 'β⁺ / EC', color: '#818cf8', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)', bg: '#3730a3', border: '#818cf8' },
+        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split', bg: '#991b1b', border: '#f87171' },
+        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)', bg: '#9a3412', border: '#fb923c' },
+        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)', bg: '#115e59', border: '#2dd4bf' }
     ];
 
     let html = `
@@ -97402,7 +96990,25 @@ function setupCompoundsEvents() {
 function formatFormulaSubscript(str) {
     if (!str) return '';
     const subscripts = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
-    return str.replace(/\d+/g, m => m.split('').map(d => subscripts[d] || d).join(''));
+    const superscripts = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻'};
+    
+    // Explicit caret charge notations e.g. SO4^2- -> SO4²⁻, Fe^3+ -> Fe³⁺
+    let res = str.replace(/\^([0-9+-]+)/g, (_, chg) => {
+        return chg.split('').map(c => superscripts[c] || c).join('');
+    });
+
+    // Trailing ion charges e.g. Fe3+ -> Fe³⁺, SO42- -> SO₄²⁻
+    res = res.replace(/([A-Za-z\)])(\d+)([+-])/g, (_, sym, num, sign) => {
+        const subNum = num.split('').map(d => subscripts[d] || d).join('');
+        return sym + subNum + (superscripts[sign] || sign);
+    });
+
+    // Numbers following an element symbol or closing parenthesis e.g. H2O -> H₂O, Ca(OH)2 -> Ca(OH)₂
+    res = res.replace(/([A-Za-z\)])(\d+)/g, (_, sym, digits) => {
+        return sym + digits.split('').map(d => subscripts[d] || d).join('');
+    });
+
+    return res;
 }
 
 /**
@@ -97594,12 +97200,48 @@ async function fetchPubChemCompound(query) {
 
 function getBondTheme(type) {
     const t = (type || '').toLowerCase();
-    if (t.includes('covalent')) return { color: '#00d4ff', bg: 'linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(0, 212, 255, 0.4)', tagBg: 'rgba(0, 212, 255, 0.25)' };
-    if (t.includes('ionic')) return { color: '#a855f7', bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(168, 85, 247, 0.4)', tagBg: 'rgba(168, 85, 247, 0.25)' };
-    if (t.includes('organic')) return { color: '#10b981', bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(16, 185, 129, 0.4)', tagBg: 'rgba(16, 185, 129, 0.25)' };
-    if (t.includes('acid')) return { color: '#ef4444', bg: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(239, 68, 68, 0.4)', tagBg: 'rgba(239, 68, 68, 0.25)' };
-    if (t.includes('base')) return { color: '#f59e0b', bg: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(245, 158, 11, 0.4)', tagBg: 'rgba(245, 158, 11, 0.25)' };
-    return { color: '#3b82f6', bg: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(59, 130, 246, 0.4)', tagBg: 'rgba(59, 130, 246, 0.25)' };
+    if (t.includes('covalent')) return {
+        color: '#00d4ff',
+        bg: '#0f2942',
+        border: '#0284c7',
+        tagBg: '#082f49',
+        tagColor: '#38bdf8'
+    };
+    if (t.includes('ionic')) return {
+        color: '#60a5fa',
+        bg: '#172554',
+        border: '#2563eb',
+        tagBg: '#1e3a8a',
+        tagColor: '#93c5fd'
+    };
+    if (t.includes('organic')) return {
+        color: '#4ade80',
+        bg: '#064e3b',
+        border: '#10b981',
+        tagBg: '#065f46',
+        tagColor: '#86efac'
+    };
+    if (t.includes('acid')) return {
+        color: '#f87171',
+        bg: '#7f1d1d',
+        border: '#ef4444',
+        tagBg: '#991b1b',
+        tagColor: '#fca5a5'
+    };
+    if (t.includes('base')) return {
+        color: '#fbbf24',
+        bg: '#78350f',
+        border: '#f59e0b',
+        tagBg: '#92400e',
+        tagColor: '#fde68a'
+    };
+    return {
+        color: '#38bdf8',
+        bg: '#1e293b',
+        border: '#3b82f6',
+        tagBg: '#334155',
+        tagColor: '#93c5fd'
+    };
 }
 
 function renderCompoundsGrid() {
@@ -97642,7 +97284,7 @@ function renderCompoundsGrid() {
         // Search Query
         if (compoundSearchQuery) {
             const matchName = comp.name.toLowerCase().includes(lowerQuery);
-            const matchFormula = comp.formula.toLowerCase().includes(lowerQuery) || (comp.rawFormula && comp.rawFormula.toLowerCase().includes(lowerQuery));
+            const matchFormula = comp.formula.toLowerCase().includes(lowerQuery) || (comp.rawFormula && comp.rawFormula.toLowerCase().includes(lowerQuery)) || formatFormulaSubscript(comp.formula).toLowerCase().includes(lowerQuery);
             const matchIupac = comp.iupacName.toLowerCase().includes(lowerQuery);
             if (!matchName && !matchFormula && !matchIupac) return false;
         }
@@ -97667,16 +97309,19 @@ function renderCompoundsGrid() {
             
             card.style.background = theme.bg;
             card.style.borderColor = theme.border;
+            card.style.borderWidth = '1.5px';
+            card.style.borderStyle = 'solid';
+            card.style.boxShadow = '0 3px 8px rgba(0,0,0,0.5)';
 
             const badgePrefix = comp.isPubChem ? '🌐 PubChem' : (comp.isSynthesized ? '✨ Synthesized' : comp.type);
 
             card.innerHTML = `
                 <div class="compound-card-header">
-                    <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
-                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${badgePrefix}</span>
+                    <span class="compound-formula-badge" style="color: ${theme.color}; text-shadow: 0 0 8px ${theme.color}66; font-weight: 800;">${formatFormulaSubscript(comp.formula)}</span>
+                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.tagColor || theme.color}; border: 1px solid ${theme.border}; font-weight: 700;">${badgePrefix}</span>
                 </div>
-                <div class="compound-card-title">${comp.name}</div>
-                <div class="compound-card-meta">
+                <div class="compound-card-title" style="color: #ffffff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${comp.name}</div>
+                <div class="compound-card-meta" style="color: #cbd5e1; font-weight: 600;">
                     <span>Mass: ${comp.molarMass} g/mol</span>
                     <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
                 </div>
@@ -97722,8 +97367,8 @@ function selectCompound(id) {
     const wikiBtn = document.getElementById('comp-wiki-btn');
 
     if (nameEl) nameEl.textContent = comp.name;
-    if (formulaEl) formulaEl.textContent = comp.formula;
-    if (iupacEl) iupacEl.textContent = `IUPAC: ${comp.iupacName}`;
+    if (formulaEl) formulaEl.textContent = formatFormulaSubscript(comp.formula);
+    if (iupacEl) iupacEl.textContent = comp.iupacName.includes('Synthesized Formula:') ? comp.iupacName : `IUPAC: ${comp.iupacName}`;
     if (massEl) massEl.textContent = `${comp.molarMass} g/mol`;
     if (stateEl) stateEl.textContent = comp.state;
     if (descEl) descEl.textContent = comp.description;
@@ -97915,7 +97560,9 @@ function initMoleculeViewer() {
  */
 function getCompoundBondDetails(comp) {
     if (!comp) return { type: 'single', title: '🔗 Single Covalent', badgeClass: 'covalent-single', defaultOrder: 1, desc: '' };
-    const f = (comp.formula || '').toUpperCase();
+    const rawF = (comp.rawFormula || comp.formula || '').toUpperCase();
+    const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+    const f = rawF.replace(/[₀-₉]/g, d => subMap[d] || d);
     const id = (comp.id || '').toLowerCase();
     const type = (comp.type || '').toLowerCase();
     const isIonic = type.includes('ionic') || id === 'sodiumchloride' || id === 'magnesiumoxide' || id === 'ironiiioxide' || id === 'aluminumoxide' || id === 'zincoxide';
@@ -98327,7 +97974,9 @@ function renderCompoundBohrModel(comp) {
 
     const svgW = 380;
     const svgH = 220;
-    const f = (comp.formula || '').toUpperCase();
+    const rawF = (comp.rawFormula || comp.formula || '').toUpperCase();
+    const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+    const f = rawF.replace(/[₀-₉]/g, d => subMap[d] || d);
     const id = (comp.id || '').toLowerCase();
     const bond = getCompoundBondDetails(comp);
     const isIonic = bond.type === 'ionic';
@@ -113493,6 +113142,10 @@ let selectedRatingStars = 5;
 
 
 function openRateUsModal(forceUserTriggered = false) {
+    // Rate modal is strictly for native mobile app users (Android/iOS)
+    if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
+        return;
+    }
 
     const isPro = (typeof window.isProUser === 'function' && window.isProUser()) || localStorage.getItem('periodica_is_pro') === 'true' || localStorage.getItem('periodica_pro_tier') === 'lifetime';
 
@@ -116077,11 +115730,19 @@ window.OrbitalViewer = {
 
 
     // 1. Pro Status State
-
     function isProUser() {
+        // Native mobile app: check purchased license from storage / in-app billing
+        if (window.Platform?.isNative || window.Capacitor?.isNativePlatform()) {
+            return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
+        }
 
-        return localStorage.getItem(PRO_STORAGE_KEY) === 'true';
+        // Android Mobile Browser: non-main tabs are gated to prompt Google Play app download
+        if (window.isAndroidWeb || window.Platform?.isAndroidWeb) {
+            return false;
+        }
 
+        // Desktop / regular Web: 100% free with all features fully unlocked
+        return true;
     }
 
 
@@ -116239,6 +115900,20 @@ window.OrbitalViewer = {
     // 3. Pro Paywall Modal
 
     function openProPaywallModal(featureSource = null) {
+        // Android phone browser: route to the Play Store download modal
+        if (window.isAndroidWeb || window.Platform?.isAndroidWeb) {
+            if (typeof window.openAndroidAppModal === 'function') {
+                window.openAndroidAppModal(featureSource);
+            } else if (window.AndroidAppGate && typeof window.AndroidAppGate.openAppModal === 'function') {
+                window.AndroidAppGate.openAppModal(featureSource);
+            }
+            return;
+        }
+
+        // Desktop / regular web: all features are free, never show paywall
+        if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
+            return;
+        }
 
         if (isProUser()) return;
 
@@ -116736,6 +116411,8 @@ window.OrbitalViewer = {
     function trackSessionAndCheckRatingPrompt() {
 
         try {
+            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             // PRO users are never prompted
 
@@ -116800,6 +116477,8 @@ window.OrbitalViewer = {
     function trackElementInspection() {
 
         try {
+            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
+            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             // PRO users are never prompted
 
@@ -123973,8 +123652,238 @@ window.OrbitalViewer = {
     };
 
     // Open the targeted Android App Unlock Modal
+    
+    function injectStylesIfMissing() {
+        if (document.getElementById('android-gate-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'android-gate-styles';
+        style.textContent = `
+            .android-app-persistent-banner {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 38px;
+                background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+                border-bottom: 1.5px solid #00d4ff;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 12px;
+                z-index: 99999;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.8);
+                font-family: var(--font-ui, sans-serif);
+            }
+            .android-app-persistent-banner .banner-content {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #f1f5f9;
+                font-size: 0.75rem;
+                font-weight: 600;
+            }
+            .android-app-persistent-banner .banner-btn {
+                background: linear-gradient(135deg, #00d4ff, #0284c7);
+                color: #040914;
+                font-weight: 800;
+                font-size: 0.70rem;
+                padding: 4px 10px;
+                border-radius: 14px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .android-app-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(4, 9, 20, 0.88);
+                backdrop-filter: blur(6px);
+                z-index: 100000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                box-sizing: border-box;
+            }
+            .android-app-modal-card {
+                background: radial-gradient(circle at 50% 0%, #172554 0%, #090e1a 100%);
+                border: 1.5px solid #00d4ff;
+                border-radius: 18px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 30px rgba(0,212,255,0.3);
+                width: min(440px, 94vw);
+                padding: 24px 20px 20px 20px;
+                text-align: center;
+                position: relative;
+                box-sizing: border-box;
+                font-family: var(--font-ui, sans-serif);
+            }
+            .android-modal-close-btn {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.15);
+                color: #94a3b8;
+                font-size: 1rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .android-modal-icon-badge {
+                font-size: 2.2rem;
+                margin-bottom: 8px;
+            }
+            .android-modal-pill {
+                display: inline-block;
+                padding: 3px 10px;
+                background: rgba(0, 212, 255, 0.15);
+                border: 1px solid rgba(0, 212, 255, 0.4);
+                color: #38bdf8;
+                border-radius: 12px;
+                font-size: 0.65rem;
+                font-weight: 800;
+                letter-spacing: 0.5px;
+                margin-bottom: 10px;
+            }
+            .android-modal-title {
+                color: #ffffff;
+                font-size: 1.25rem;
+                font-weight: 800;
+                margin: 0 0 8px 0;
+            }
+            .android-modal-desc {
+                color: #94a3b8;
+                font-size: 0.82rem;
+                line-height: 1.45;
+                margin: 0 0 16px 0;
+            }
+            .android-modal-features-list {
+                text-align: left;
+                background: rgba(0,0,0,0.35);
+                border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 10px;
+                padding: 10px 14px;
+                margin-bottom: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-size: 0.78rem;
+                color: #cbd5e1;
+            }
+            .android-modal-feat-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .android-modal-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .android-modal-install-btn {
+                background: linear-gradient(135deg, #00d4ff, #0284c7);
+                color: #040914;
+                font-weight: 800;
+                font-size: 0.92rem;
+                padding: 12px 20px;
+                border-radius: 12px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
+            }
+            .android-modal-dismiss-btn {
+                background: transparent;
+                border: none;
+                color: #64748b;
+                font-size: 0.78rem;
+                cursor: pointer;
+                padding: 6px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function ensureAndroidModal() {
+        injectStylesIfMissing();
+        let modal = document.getElementById('android-app-modal');
+        if (modal) return modal;
+
+        modal = document.createElement('div');
+        modal.id = 'android-app-modal';
+        modal.className = 'android-app-modal-overlay';
+        modal.style.display = 'none';
+        modal.onclick = (e) => {
+            if (e.target === modal) closeAndroidAppModal();
+        };
+
+        modal.innerHTML = `
+            <div class="android-app-modal-card">
+                <button class="android-modal-close-btn" onclick="closeAndroidAppModal()">✕</button>
+                <div class="android-modal-icon-badge" id="android-modal-feature-icon">⚛️</div>
+                <div class="android-modal-pill" id="android-modal-feature-badge">EXCLUSIVELY IN ANDROID APP</div>
+                <h2 id="android-modal-feature-title" class="android-modal-title">Download Periodica 3D</h2>
+                <p id="android-modal-feature-desc" class="android-modal-desc">
+                    This advanced module is available in the official Periodica 3D Android app on Google Play.
+                </p>
+                <div class="android-modal-features-list">
+                    <div class="android-modal-feat-item">
+                        <span>⚡</span> <span>Full offline access to all 118 elements & isotopes</span>
+                    </div>
+                    <div class="android-modal-feat-item">
+                        <span>🌌</span> <span>Hardware-accelerated 3D Quantum Orbitals</span>
+                    </div>
+                    <div class="android-modal-feat-item">
+                        <span>⚛️</span> <span>Bohr-Wheeler Nuclear Fission & Decay Simulator</span>
+                    </div>
+                </div>
+                <div class="android-modal-actions">
+                    <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener noreferrer" class="android-modal-install-btn" onclick="trackAndroidAppInstallClick('modal')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a2.036 2.036 0 0 1-.22-.924V2.738c0-.34.08-.654.22-.924zM15.207 13.414l2.585 2.586-11.8 6.743 9.215-9.329zm0-2.828L5.992 1.257l11.8 6.743-2.585 2.586zm1.414 1.414l3.185-1.82a1.867 1.867 0 0 1 0 3.226l-3.185-1.406z"/>
+                        </svg>
+                        Get on Google Play
+                    </a>
+                    <button class="android-modal-dismiss-btn" onclick="closeAndroidAppModal()">
+                        Stay on Web (Properties Only)
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        return modal;
+    }
+
+    function ensureAndroidBanner() {
+        injectStylesIfMissing();
+        let banner = document.getElementById('android-app-persistent-banner');
+        if (banner) return banner;
+
+        banner = document.createElement('div');
+        banner.id = 'android-app-persistent-banner';
+        banner.className = 'android-app-persistent-banner';
+        banner.innerHTML = `
+            <div class="banner-content">
+                <span>📱</span>
+                <span>Get Periodica 3D App for Android</span>
+            </div>
+            <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener noreferrer" class="banner-btn" onclick="trackAndroidAppInstallClick('banner')">
+                Install Free ➔
+            </a>
+        `;
+        document.body.prepend(banner);
+        return banner;
+    }
+
     function openAndroidAppModal(featureKey) {
-        const modal = document.getElementById('android-app-modal');
+        const modal = ensureAndroidModal();
         if (!modal) return;
 
         const feat = ANDROID_FEATURE_MAP[featureKey] || ANDROID_FEATURE_MAP['general'];
@@ -124018,6 +123927,10 @@ window.OrbitalViewer = {
         }
     }
     window.closeAndroidAppModal = closeAndroidAppModal;
+    window.AndroidAppGate = {
+        openAppModal: openAndroidAppModal,
+        closeAppModal: closeAndroidAppModal
+    };
 
     // Subtle reminder toast that gently surfaces periodically without obstructing the table
     let lastToastTime = 0;
@@ -124055,7 +123968,7 @@ window.OrbitalViewer = {
         document.body.classList.add('is-android-web');
 
         // 1. Show Persistent Top Notification Banner
-        const banner = document.getElementById('android-app-persistent-banner');
+        const banner = ensureAndroidBanner();
         if (banner) {
             banner.style.display = 'flex';
         }
@@ -125686,7 +125599,7 @@ window.OrbitalViewer = {
 
                         <button class="compound-filter-btn" data-type="Covalent"><span style="width: 7px; height: 7px; border-radius: 50%; background: #00d4ff;"></span> Covalent</button>
 
-                        <button class="compound-filter-btn" data-type="Ionic"><span style="width: 7px; height: 7px; border-radius: 50%; background: #a855f7;"></span> Ionic</button>
+                        <button class="compound-filter-btn" data-type="Ionic"><span style="width: 7px; height: 7px; border-radius: 50%; background: #3b82f6;"></span> Ionic</button>
 
                         <button class="compound-filter-btn" data-type="Organic"><span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span> Organic</button>
 

@@ -638,12 +638,10 @@ body.has-native-slider #temp-custom-slider {
 /* In-Grid Legend */
 .in-grid-legend {
     grid-column: 3 / 13;
-    grid-row: 1 / 4 !important;
+    grid-row: 2;
     display: flex;
     justify-content: center !important;
-    align-items: center !important;
-    max-height: 100% !important;
-    overflow: hidden;
+    align-items: stretch;
     gap: 8px;
     padding: 0px;
     pointer-events: auto;
@@ -2305,16 +2303,20 @@ body.has-native-slider #temp-custom-slider {
     #view-electrons .view-left {
         height: 100% !important;
         max-height: 100% !important;
-        padding: 34px 6px 4px 6px !important; /* Virtual top margin matching Property Tab top bar */
+        padding: 4px 6px 4px 6px !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
         flex: 1 !important;
+        background: transparent !important;
     }
 
     #view-electrons .table-controls {
         display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     #view-electrons .grid-wrapper {
@@ -4346,7 +4348,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .iso-tab-btn.active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.22) 0%, rgba(168, 85, 247, 0.16) 100%) !important;
+    background: rgba(0, 212, 255, 0.22) !important;
     border: 1px solid #00d4ff !important;
     color: #00d4ff !important;
     font-weight: 700;
@@ -5435,66 +5437,66 @@ body.has-native-slider #temp-custom-slider {
 
 .compound-filter-btn.active,
 .compound-filter-btn[data-type="All"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Covalent"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Ionic"].active {
-    background: linear-gradient(180deg, #7e22ce 0%, #6b21a8 100%) !important;
-    border-color: #c084fc !important;
+    background: #2563eb !important;
+    border-color: #60a5fa !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Organic"].active {
-    background: linear-gradient(180deg, #15803d 0%, #166534 100%) !important;
+    background: #15803d !important;
     border-color: #4ade80 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(74, 222, 128, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Acid"].active {
-    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    background: #dc2626 !important;
     border-color: #f87171 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Base"].active {
-    background: linear-gradient(180deg, #c2410c 0%, #9a3412 100%) !important;
+    background: #d97706 !important;
     border-color: #fb923c !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(251, 146, 60, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Solid"].active {
-    background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%) !important;
-    border-color: #ffffff !important;
-    color: #0f172a !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    background: #475569 !important;
+    border-color: #cbd5e1 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Liquid"].active {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+    background: #0284c7 !important;
     border-color: #38bdf8 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
 }
 
 .compound-filter-btn[data-type="Gas"].active {
-    background: linear-gradient(180deg, #b91c1c 0%, #991b1b 100%) !important;
+    background: #dc2626 !important;
     border-color: #f87171 !important;
     color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
 }
 
 .compounds-grid-container {
@@ -5510,7 +5512,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .compound-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    background: #1e293b;
     border: 1.5px solid #334155;
     border-radius: 8px;
     padding: 16px;
@@ -5520,13 +5522,13 @@ body.has-native-slider #temp-custom-slider {
     flex-direction: column;
     gap: 8px;
     position: relative;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .compound-card:hover {
     transform: translateY(-2px);
     border-color: #00d4ff;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
 }
 
 .compound-card.active {
@@ -5600,11 +5602,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-header-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .comp-header-top {
@@ -5645,11 +5647,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .molecule-3d-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .molecule-card-header {
@@ -5677,11 +5679,11 @@ body.has-native-slider #temp-custom-slider {
 }
 
 .comp-section-card {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    background: #1e293b !important;
     border: 1.5px solid #334155 !important;
     border-radius: 10px;
     padding: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
 }
 
 .comp-section-card h4 {
@@ -7387,7 +7389,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
     align-items: center;
     gap: 4px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.15));
+    background: rgba(0, 212, 255, 0.15);
     border: 1px solid rgba(0, 212, 255, 0.4);
     border-radius: 8px;
     color: #00d4ff;
@@ -7400,7 +7402,7 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 }
 
 .table-type-btn-top:hover, .table-type-btn-top:active {
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(168, 85, 247, 0.3));
+    background: rgba(0, 212, 255, 0.3);
     border-color: #ffffff;
     box-shadow: 0 0 14px rgba(0, 212, 255, 0.4);
 }
@@ -7677,10 +7679,10 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 
 .anatomy-confirm-btn {
     padding: 6px 16px;
-    background: linear-gradient(135deg, #00d4ff, #a855f7);
+    background: #0284c7;
     border: none;
     border-radius: 8px;
-    color: #050812;
+    color: #ffffff;
     font-weight: 800;
     font-size: 0.75rem;
     cursor: pointer;
@@ -10227,12 +10229,12 @@ body.perf-mode #perf-toggle-knob   { transform: translateX(22px) !important; bac
 }
 
 .sidebar-tier-widget.free {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(0, 212, 255, 0.08));
-    border: 1px solid rgba(168, 85, 247, 0.35);
+    background: rgba(2, 132, 199, 0.15);
+    border: 1px solid rgba(2, 132, 199, 0.4);
 }
 .sidebar-tier-widget.free:hover,
 .sidebar-tier-widget.free:active {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(0, 212, 255, 0.2));
+    background: rgba(2, 132, 199, 0.28);
     border-color: #00d4ff;
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
 }
@@ -10748,9 +10750,9 @@ body.is-pro-user .nav-pro-pill {
 }
 
 .comp-3d-badge.covalent-double {
-    background: rgba(168, 85, 247, 0.18);
-    border: 1px solid rgba(168, 85, 247, 0.45);
-    color: #c084fc;
+    background: rgba(2, 132, 199, 0.2);
+    border: 1px solid rgba(2, 132, 199, 0.5);
+    color: #38bdf8;
 }
 
 .comp-3d-badge.covalent-triple {
@@ -11204,416 +11206,4 @@ body.is-pro-user .nav-pro-pill {
     color: #94a3b8;
     line-height: 1.3;
     margin: 0;
-}
-
-
-/* ==========================================================================
-   RESPONSIVE 3-TIER ENGINE STYLES (Ultra-Compact Mode 2 & Mode 3)
-   1. Wide Desktop (> 1280px) -> Classic Side-by-Side Dual Pane
-   2. Mode 2 (<= 1280px & >= 640px height) -> Ultra-Compact Top Pane Header (50px height)
-   3. Mode 3 (<= 1280px & < 640px height, or < 680px) -> Floating Panel Over Table
-   ========================================================================== */
-
-/* Base default: Floating toggle pill is hidden on desktop and top-pane modes */
-.narrow-properties-toggle-pill {
-    display: none !important;
-}
-
-/* --------------------------------------------------------------------------
-   MODE 2: ULTRA-COMPACT TOP PANE MODE (Ample Vertical Space)
-   Transforms the side panel into a sleek, 50px-high horizontal header ribbon.
-   Eliminates unnecessary vertical space and gives the table 100% full width!
-   -------------------------------------------------------------------------- */
-@media (max-width: 1280px) and (min-height: 640px) and (min-width: 680px) {
-
-    .view-mode.active {
-        flex-direction: column !important;
-        overflow: hidden !important;
-        height: 100% !important;
-        width: 100% !important;
-    }
-
-    /* Ultra-Compact Top Pane Header directly above the table */
-    .view-right {
-        order: -1 !important;
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: auto !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 48px !important;
-        max-height: 52px !important;
-        min-height: 44px !important;
-        flex: 0 0 auto !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        padding: 4px 12px !important;
-        gap: 10px !important;
-        background: rgba(10, 15, 29, 0.98) !important;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.25) !important;
-        border-top: none !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-radius: 0 !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
-        overflow: hidden !important;
-        z-index: 25 !important;
-        display: flex !important;
-        box-sizing: border-box !important;
-        pointer-events: auto !important;
-        transform: none !important;
-    }
-
-    /* Left side of Top Pane: Ultra-Compact Empty State */
-    .view-right #empty-state {
-        flex: 0 0 200px !important;
-        min-width: 180px !important;
-        max-width: 230px !important;
-        height: 38px !important;
-        margin: 0 !important;
-        padding: 2px 8px !important;
-        background: rgba(15, 23, 42, 0.6) !important;
-        border: 1px dashed rgba(0, 212, 255, 0.35) !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 6px !important;
-        text-align: left !important;
-        box-sizing: border-box !important;
-    }
-    .view-right #empty-state.hidden {
-        display: none !important;
-    }
-    .view-right #empty-state .empty-icon {
-        font-size: 1.15rem !important;
-        margin-bottom: 0 !important;
-        flex-shrink: 0 !important;
-    }
-    .view-right #empty-state p {
-        font-size: 0.68rem !important;
-        font-weight: 700 !important;
-        color: #f1f5f9 !important;
-        margin: 0 !important;
-        line-height: 1.1 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-    .view-right #empty-state .small-text {
-        display: none !important;
-    }
-    .view-right #empty-state .sidebar-close-btn {
-        display: none !important;
-    }
-
-    /* Left side of Top Pane: Compact Element Detail Card */
-    .view-right #element-detail-card {
-        flex: 0 0 250px !important;
-        min-width: 220px !important;
-        max-width: 280px !important;
-        height: 40px !important;
-        margin: 0 !important;
-        padding: 2px 8px !important;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95)) !important;
-        border: 1px solid rgba(0, 212, 255, 0.5) !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 8px !important;
-        box-sizing: border-box !important;
-    }
-    .view-right #element-detail-card.hidden {
-        display: none !important;
-    }
-    .view-right #element-detail-card .ed-header-row {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 4px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-    }
-    .view-right #element-detail-card .ed-number-badge {
-        font-size: 0.65rem !important;
-        padding: 1px 4px !important;
-    }
-    .view-right #element-detail-card .ed-series-badge {
-        font-size: 0.60rem !important;
-        padding: 1px 5px !important;
-    }
-    .view-right #element-detail-card .ed-mass-val {
-        font-size: 0.60rem !important;
-    }
-    .view-right #element-detail-card .sidebar-close-btn,
-    .view-right #element-detail-card .ed-close-btn {
-        display: none !important;
-    }
-    .view-right #element-detail-card .ed-body-row {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 4px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    .view-right #element-detail-card .ed-symbol {
-        font-size: 1.15rem !important;
-        line-height: 1 !important;
-        font-weight: 900 !important;
-    }
-    .view-right #element-detail-card .ed-name {
-        font-size: 0.70rem !important;
-        line-height: 1 !important;
-        font-weight: 700 !important;
-    }
-    .view-right #element-detail-card .ed-quick-stats,
-    .view-right #element-detail-card .ed-details-grid,
-    .view-right #element-detail-card .ed-props-row,
-    .view-right #element-detail-card .ed-extra-info {
-        display: none !important;
-    }
-
-    /* Right side of Top Pane: Sleek Single-Line Horizontally Scrollable Properties Ribbon */
-    .view-right .property-list {
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        height: 38px !important;
-        margin: 0 !important;
-        padding: 0 4px !important;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        gap: 4px !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scrollbar-width: none !important;
-        -webkit-overflow-scrolling: touch !important;
-        background: transparent !important;
-        border: none !important;
-    }
-    .view-right .property-list::-webkit-scrollbar {
-        display: none;
-    }
-    .view-right .property-list h3,
-    .view-right .property-list .help-text {
-        display: none !important;
-    }
-
-    /* Property Items as compact horizontal interactive chips */
-    .view-right .prop-item {
-        flex: 0 0 auto !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 4px !important;
-        padding: 2px 7px !important;
-        background: rgba(15, 23, 42, 0.8) !important;
-        border: 1px solid rgba(0, 212, 255, 0.22) !important;
-        border-radius: 6px !important;
-        font-size: 0.65rem !important;
-        cursor: pointer !important;
-        white-space: nowrap !important;
-        height: 25px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        transition: background 0.15s, border-color 0.15s !important;
-    }
-    .view-right .prop-item:hover {
-        background: rgba(0, 212, 255, 0.15) !important;
-        border-color: rgba(0, 212, 255, 0.6) !important;
-    }
-    .view-right .prop-item.active {
-        background: rgba(0, 212, 255, 0.24) !important;
-        border-color: #00d4ff !important;
-        box-shadow: 0 0 8px rgba(0, 212, 255, 0.35) !important;
-    }
-    .view-right .prop-item .prop-label {
-        font-size: 0.62rem !important;
-        font-weight: 700 !important;
-        color: #e2e8f0 !important;
-    }
-    .view-right .prop-item .prop-value {
-        font-size: 0.62rem !important;
-        color: #38bdf8 !important;
-        font-weight: 700 !important;
-    }
-    .view-right .prop-item select {
-        font-size: 0.60rem !important;
-        padding: 0 2px !important;
-        height: 18px !important;
-        background: rgba(0,0,0,0.5) !important;
-        border: 1px solid rgba(0,212,255,0.3) !important;
-        border-radius: 3px !important;
-        color: #38bdf8 !important;
-    }
-
-    /* .view-left occupies 100% full width directly beneath the top pane */
-    .view-left {
-        order: 1 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        padding: 2px 10px 4px 10px !important;
-        border-right: none !important;
-        overflow: hidden !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Table controls & temperature slider directly above table with minimal gap */
-    .table-controls {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-top: 0 !important;
-        margin-bottom: 2px !important;
-        gap: 6px !important;
-        height: 32px !important;
-        min-height: 32px !important;
-        transform: none !important;
-        grid-column: auto !important;
-        grid-row: auto !important;
-    }
-
-    /* Grid wrapper takes 100% width with ZERO horizontal scroll */
-    .grid-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 auto !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: flex-start !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .periodic-grid {
-        width: 100% !important;
-        max-width: 1120px !important;
-        min-width: 0 !important;
-        margin: 0 auto !important;
-        gap: 3px !important;
-    }
-
-    .narrow-properties-toggle-pill {
-        display: none !important;
-    }
-}
-
-/* --------------------------------------------------------------------------
-   MODE 3: FLOATING PANEL MODE (Constrained Width AND Constrained Height)
-   Trigger: (width <= 1280px and height < 640px) OR (width < 680px)
-   -------------------------------------------------------------------------- */
-@media (max-width: 1280px) and (max-height: 639px), (max-width: 679px) {
-
-    .view-mode.active {
-        position: relative !important;
-        width: 100% !important;
-        height: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .view-left {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 1 1 100% !important;
-        min-width: 0 !important;
-        padding: 4px 6px !important;
-        border-right: none !important;
-    }
-
-    .grid-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-    }
-
-    .view-right {
-        position: fixed !important;
-        top: 60px !important;
-        height: auto !important;
-        max-height: calc(100vh - 75px) !important;
-        width: min(340px, calc(100vw - 20px)) !important;
-        max-width: calc(100vw - 20px) !important;
-        z-index: 3500 !important;
-        background: rgba(9, 14, 26, 0.98) !important;
-        border: 1.5px solid #00d4ff !important;
-        border-radius: 12px !important;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.98), 0 0 0 1px rgba(0, 212, 255, 0.4) !important;
-        padding: 10px 12px !important;
-        gap: 8px !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        touch-action: pan-y !important;
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transition: opacity 0.18s ease !important;
-    }
-
-    .view-right.mobile-active,
-    .view-right.open {
-        display: flex !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-
-    .view-right.pos-right {
-        right: 12px !important;
-        left: auto !important;
-    }
-
-    .view-right.pos-left {
-        left: 56px !important;
-        right: auto !important;
-    }
-
-    .view-right .sidebar-close-btn,
-    .view-right .ed-close-btn,
-    .view-right.mobile-active .sidebar-close-btn,
-    .view-right.open .sidebar-close-btn,
-    .view-right.mobile-active .ed-close-btn,
-    .view-right.open .ed-close-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    /* Floating toggle pill */
-    .narrow-properties-toggle-pill {
-        display: flex !important;
-        align-items: center;
-        gap: 6px;
-        position: fixed;
-        bottom: 14px;
-        right: 14px;
-        z-index: 1000;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(11, 17, 32, 0.95));
-        border: 1.5px solid rgba(0, 212, 255, 0.5);
-        color: #00d4ff;
-        font-family: var(--font-ui);
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 6px 14px;
-        border-radius: 20px;
-        cursor: pointer;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.75), 0 0 10px rgba(0, 212, 255, 0.25);
-        transition: transform 0.15s, background 0.15s;
-    }
-    .narrow-properties-toggle-pill:hover,
-    .narrow-properties-toggle-pill:active {
-        transform: scale(1.05);
-        background: rgba(0, 212, 255, 0.15);
-        color: #ffffff;
-    }
 }

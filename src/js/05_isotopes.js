@@ -367,12 +367,12 @@ function renderIsotopeLegend(targetElement) {
     const name = el ? el.name : 'Carbon';
 
     const decayModes = [
-        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)', bg: 'linear-gradient(180deg, #a16207 0%, #854d0e 50%, #713f12 100%)', border: '#facc15' },
-        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)', bg: 'linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%)', border: '#38bdf8' },
-        { key: 'Beta+', label: 'β⁺ / EC', color: '#c084fc', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)', bg: 'linear-gradient(180deg, #7e22ce 0%, #6b21a8 50%, #581c87 100%)', border: '#c084fc' },
-        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split', bg: 'linear-gradient(180deg, #b91c1c 0%, #991b1b 50%, #7f1d1d 100%)', border: '#f87171' },
-        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)', bg: 'linear-gradient(180deg, #c2410c 0%, #9a3412 50%, #7c2d12 100%)', border: '#fb923c' },
-        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)', bg: 'linear-gradient(180deg, #0f766e 0%, #115e59 50%, #134e4a 100%)', border: '#2dd4bf' }
+        { key: 'Alpha', label: 'α Alpha', color: '#facc15', count: '436', sub: '⁴₂He (ΔZ=-2, ΔA=-4)', bg: '#854d0e', border: '#facc15' },
+        { key: 'Beta-', label: 'β⁻ Beta-', color: '#38bdf8', count: '1204', sub: 'n → p + e⁻ (ΔZ=+1)', bg: '#0369a1', border: '#38bdf8' },
+        { key: 'Beta+', label: 'β⁺ / EC', color: '#818cf8', count: '1148', sub: 'p → n + e⁺ (ΔZ=-1)', bg: '#3730a3', border: '#818cf8' },
+        { key: 'SF', label: 'SF Fission', color: '#f87171', count: '112', sub: 'Spontaneous heavy split', bg: '#991b1b', border: '#f87171' },
+        { key: 'Proton', label: 'p Proton', color: '#fb923c', count: '78', sub: 'p emission (ΔZ=-1)', bg: '#9a3412', border: '#fb923c' },
+        { key: 'Neutron', label: 'n Neutron', color: '#2dd4bf', count: '110', sub: 'n emission (ΔA=-1)', bg: '#115e59', border: '#2dd4bf' }
     ];
 
     let html = `

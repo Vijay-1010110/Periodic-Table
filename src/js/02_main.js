@@ -11123,6 +11123,10 @@ let selectedRatingStars = 5;
 
 
 function openRateUsModal(forceUserTriggered = false) {
+    // Rate modal is strictly for native mobile app users (Android/iOS)
+    if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
+        return;
+    }
 
     const isPro = (typeof window.isProUser === 'function' && window.isProUser()) || localStorage.getItem('periodica_is_pro') === 'true' || localStorage.getItem('periodica_pro_tier') === 'lifetime';
 

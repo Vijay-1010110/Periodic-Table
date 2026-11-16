@@ -69,7 +69,25 @@ function setupCompoundsEvents() {
 function formatFormulaSubscript(str) {
     if (!str) return '';
     const subscripts = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
-    return str.replace(/\d+/g, m => m.split('').map(d => subscripts[d] || d).join(''));
+    const superscripts = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻'};
+    
+    // Explicit caret charge notations e.g. SO4^2- -> SO4²⁻, Fe^3+ -> Fe³⁺
+    let res = str.replace(/\^([0-9+-]+)/g, (_, chg) => {
+        return chg.split('').map(c => superscripts[c] || c).join('');
+    });
+
+    // Trailing ion charges e.g. Fe3+ -> Fe³⁺, SO42- -> SO₄²⁻
+    res = res.replace(/([A-Za-z\)])(\d+)([+-])/g, (_, sym, num, sign) => {
+        const subNum = num.split('').map(d => subscripts[d] || d).join('');
+        return sym + subNum + (superscripts[sign] || sign);
+    });
+
+    // Numbers following an element symbol or closing parenthesis e.g. H2O -> H₂O, Ca(OH)2 -> Ca(OH)₂
+    res = res.replace(/([A-Za-z\)])(\d+)/g, (_, sym, digits) => {
+        return sym + digits.split('').map(d => subscripts[d] || d).join('');
+    });
+
+    return res;
 }
 
 /**
@@ -261,12 +279,48 @@ async function fetchPubChemCompound(query) {
 
 function getBondTheme(type) {
     const t = (type || '').toLowerCase();
-    if (t.includes('covalent')) return { color: '#00d4ff', bg: 'linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(0, 212, 255, 0.4)', tagBg: 'rgba(0, 212, 255, 0.25)' };
-    if (t.includes('ionic')) return { color: '#a855f7', bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(168, 85, 247, 0.4)', tagBg: 'rgba(168, 85, 247, 0.25)' };
-    if (t.includes('organic')) return { color: '#10b981', bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(16, 185, 129, 0.4)', tagBg: 'rgba(16, 185, 129, 0.25)' };
-    if (t.includes('acid')) return { color: '#ef4444', bg: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(239, 68, 68, 0.4)', tagBg: 'rgba(239, 68, 68, 0.25)' };
-    if (t.includes('base')) return { color: '#f59e0b', bg: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(245, 158, 11, 0.4)', tagBg: 'rgba(245, 158, 11, 0.25)' };
-    return { color: '#3b82f6', bg: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(15, 23, 42, 0.85))', border: 'rgba(59, 130, 246, 0.4)', tagBg: 'rgba(59, 130, 246, 0.25)' };
+    if (t.includes('covalent')) return {
+        color: '#00d4ff',
+        bg: '#0f2942',
+        border: '#0284c7',
+        tagBg: '#082f49',
+        tagColor: '#38bdf8'
+    };
+    if (t.includes('ionic')) return {
+        color: '#60a5fa',
+        bg: '#172554',
+        border: '#2563eb',
+        tagBg: '#1e3a8a',
+        tagColor: '#93c5fd'
+    };
+    if (t.includes('organic')) return {
+        color: '#4ade80',
+        bg: '#064e3b',
+        border: '#10b981',
+        tagBg: '#065f46',
+        tagColor: '#86efac'
+    };
+    if (t.includes('acid')) return {
+        color: '#f87171',
+        bg: '#7f1d1d',
+        border: '#ef4444',
+        tagBg: '#991b1b',
+        tagColor: '#fca5a5'
+    };
+    if (t.includes('base')) return {
+        color: '#fbbf24',
+        bg: '#78350f',
+        border: '#f59e0b',
+        tagBg: '#92400e',
+        tagColor: '#fde68a'
+    };
+    return {
+        color: '#38bdf8',
+        bg: '#1e293b',
+        border: '#3b82f6',
+        tagBg: '#334155',
+        tagColor: '#93c5fd'
+    };
 }
 
 function renderCompoundsGrid() {
@@ -309,7 +363,7 @@ function renderCompoundsGrid() {
         // Search Query
         if (compoundSearchQuery) {
             const matchName = comp.name.toLowerCase().includes(lowerQuery);
-            const matchFormula = comp.formula.toLowerCase().includes(lowerQuery) || (comp.rawFormula && comp.rawFormula.toLowerCase().includes(lowerQuery));
+            const matchFormula = comp.formula.toLowerCase().includes(lowerQuery) || (comp.rawFormula && comp.rawFormula.toLowerCase().includes(lowerQuery)) || formatFormulaSubscript(comp.formula).toLowerCase().includes(lowerQuery);
             const matchIupac = comp.iupacName.toLowerCase().includes(lowerQuery);
             if (!matchName && !matchFormula && !matchIupac) return false;
         }
@@ -334,16 +388,19 @@ function renderCompoundsGrid() {
             
             card.style.background = theme.bg;
             card.style.borderColor = theme.border;
+            card.style.borderWidth = '1.5px';
+            card.style.borderStyle = 'solid';
+            card.style.boxShadow = '0 3px 8px rgba(0,0,0,0.5)';
 
             const badgePrefix = comp.isPubChem ? '🌐 PubChem' : (comp.isSynthesized ? '✨ Synthesized' : comp.type);
 
             card.innerHTML = `
                 <div class="compound-card-header">
-                    <span class="compound-formula-badge" style="border-color: ${theme.color}; color: ${theme.color};">${comp.formula}</span>
-                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.color}; border: 1px solid ${theme.border};">${badgePrefix}</span>
+                    <span class="compound-formula-badge" style="color: ${theme.color}; text-shadow: 0 0 8px ${theme.color}66; font-weight: 800;">${formatFormulaSubscript(comp.formula)}</span>
+                    <span class="compound-type-tag" style="background: ${theme.tagBg}; color: ${theme.tagColor || theme.color}; border: 1px solid ${theme.border}; font-weight: 700;">${badgePrefix}</span>
                 </div>
-                <div class="compound-card-title">${comp.name}</div>
-                <div class="compound-card-meta">
+                <div class="compound-card-title" style="color: #ffffff; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">${comp.name}</div>
+                <div class="compound-card-meta" style="color: #cbd5e1; font-weight: 600;">
                     <span>Mass: ${comp.molarMass} g/mol</span>
                     <span class="compound-state-dot state-${comp.state.toLowerCase()}">${comp.state}</span>
                 </div>
@@ -389,8 +446,8 @@ function selectCompound(id) {
     const wikiBtn = document.getElementById('comp-wiki-btn');
 
     if (nameEl) nameEl.textContent = comp.name;
-    if (formulaEl) formulaEl.textContent = comp.formula;
-    if (iupacEl) iupacEl.textContent = `IUPAC: ${comp.iupacName}`;
+    if (formulaEl) formulaEl.textContent = formatFormulaSubscript(comp.formula);
+    if (iupacEl) iupacEl.textContent = comp.iupacName.includes('Synthesized Formula:') ? comp.iupacName : `IUPAC: ${comp.iupacName}`;
     if (massEl) massEl.textContent = `${comp.molarMass} g/mol`;
     if (stateEl) stateEl.textContent = comp.state;
     if (descEl) descEl.textContent = comp.description;
@@ -582,7 +639,9 @@ function initMoleculeViewer() {
  */
 function getCompoundBondDetails(comp) {
     if (!comp) return { type: 'single', title: '🔗 Single Covalent', badgeClass: 'covalent-single', defaultOrder: 1, desc: '' };
-    const f = (comp.formula || '').toUpperCase();
+    const rawF = (comp.rawFormula || comp.formula || '').toUpperCase();
+    const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+    const f = rawF.replace(/[₀-₉]/g, d => subMap[d] || d);
     const id = (comp.id || '').toLowerCase();
     const type = (comp.type || '').toLowerCase();
     const isIonic = type.includes('ionic') || id === 'sodiumchloride' || id === 'magnesiumoxide' || id === 'ironiiioxide' || id === 'aluminumoxide' || id === 'zincoxide';
@@ -994,7 +1053,9 @@ function renderCompoundBohrModel(comp) {
 
     const svgW = 380;
     const svgH = 220;
-    const f = (comp.formula || '').toUpperCase();
+    const rawF = (comp.rawFormula || comp.formula || '').toUpperCase();
+    const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+    const f = rawF.replace(/[₀-₉]/g, d => subMap[d] || d);
     const id = (comp.id || '').toLowerCase();
     const bond = getCompoundBondDetails(comp);
     const isIonic = bond.type === 'ionic';

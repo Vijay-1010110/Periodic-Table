@@ -892,7 +892,7 @@ window.PeriodicCanvasGrid = (function() {
 
     function recomputeGeometry() {
         gap = Math.max(2, Math.min(4, width / 340));
-        const topBarH = 22; // Compact clearance for top bar slider and temp readout
+        const topBarH = 4; // Compact clearance for top bar slider and temp readout
         
         groupHeaderH = Math.max(14, Math.min(20, Math.round(height * 0.036)));
         periodMarginLeft = Math.max(18, Math.min(26, Math.round(width * 0.024)));
@@ -941,9 +941,7 @@ window.PeriodicCanvasGrid = (function() {
         offsetX = (totalW + periodMarginLeft <= width - 2 * marginX)
             ? (marginX + periodMarginLeft + Math.max(0, Math.floor((width - 2 * marginX - periodMarginLeft - totalW) / 2)))
             : (marginX + periodMarginLeft);
-        offsetY = (totalH + groupHeaderH <= height - topBarH - marginTop - marginBottom)
-            ? (topBarH + marginTop + groupHeaderH + Math.max(0, Math.floor((height - topBarH - marginTop - marginBottom - groupHeaderH - totalH) / 2)))
-            : (topBarH + marginTop + groupHeaderH);
+        offsetY = topBarH + marginTop + groupHeaderH;
 
         // Dynamically position the void legends with clear, generous breathing gaps from surrounding table cards
         const legendMarginX = Math.min(8, Math.round(cellW * 0.15));
