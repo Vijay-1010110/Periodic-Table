@@ -516,131 +516,49 @@ function renderElementComposition(comp) {
     }
 
     const elements = comp.elements;
-    const n = elements.length;
 
-    // SVG Line Chart Dimensions
-    const svgWidth = 460;
-    const svgHeight = 175;
-    const padLeft = 46;
-    const padRight = 32;
-    const topY = 28;
-    const botY = 136;
-    const plotWidth = svgWidth - padLeft - padRight;
-    const plotHeight = botY - topY;
+    // Outer wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'comp-mass-track-wrapper';
 
-    // Grid lines for 0%, 25%, 50%, 75%, 100%
-    let gridLinesSvg = '';
-    const gridPercentages = [0, 25, 50, 75, 100];
-    gridPercentages.forEach(p => {
-        const y = botY - (p / 100) * plotHeight;
-        gridLinesSvg += `
-            <line x1="${padLeft}" y1="${y.toFixed(1)}" x2="${svgWidth - padRight}" y2="${y.toFixed(1)}" stroke="#1e293b" stroke-width="1" stroke-dasharray="3,3" />
-            <text x="${padLeft - 8}" y="${(y + 3.5).toFixed(1)}" fill="#64748b" font-size="10" font-weight="600" text-anchor="end">${p}%</text>
-        `;
-    });
+    // Thick continuous line filled with atom colors representing mass weight percentages
+    const lineBar = document.createElement('div');
+    lineBar.className = 'comp-thick-line';
 
-    // Calculate (x, y) coordinates for each element
-    const points = [];
-    if (n === 1) {
-        points.push({
-            x: padLeft + plotWidth / 2,
-            y: topY,
-            el: elements[0]
-        });
-    } else {
-        elements.forEach((el, idx) => {
-            const x = padLeft + 22 + idx * ((plotWidth - 44) / (n - 1));
-            const y = botY - (Math.min(100, Math.max(0, el.massPercent)) / 100) * plotHeight;
-            points.push({ x, y, el });
-        });
-    }
+    // Elements with light background where dark text is needed for high contrast
+    const lightColorElems = [1, 12, 14, 16, 20]; // H (white), Mg (light green), Si (tan), S (yellow), Ca (lime)
 
-    // Build line stroke path & area fill path
-    let linePathStr = '';
-    let areaPathStr = '';
-
-    if (n === 1) {
-        const pt = points[0];
-        linePathStr = `M ${padLeft} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${pt.y.toFixed(1)}`;
-        areaPathStr = `M ${padLeft} ${botY} L ${padLeft} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${pt.y.toFixed(1)} L ${svgWidth - padRight} ${botY} Z`;
-    } else {
-        linePathStr = 'M ' + points.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ');
-        areaPathStr = `M ${points[0].x.toFixed(1)} ${botY} ` + points.map(p => `L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') + ` L ${points[points.length - 1].x.toFixed(1)} ${botY} Z`;
-    }
-
-    // Build element nodes, percentage badges, and x-axis labels
-    let nodesSvg = '';
-    points.forEach(pt => {
-        const el = pt.el;
-        const color = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
-        const percentStr = `${el.massPercent}%`;
+    elements.forEach(el => {
+        const seg = document.createElement('div');
+        seg.className = 'comp-line-seg';
+        const percent = Math.min(100, Math.max(0, el.massPercent));
+        seg.style.width = `${percent}%`;
         
-        const nx = pt.x.toFixed(1);
-        const ny = pt.y.toFixed(1);
+        const color = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
+        seg.style.backgroundColor = color;
+        seg.title = `${el.symbol}: ${el.massPercent}% by mass (${el.count} atom${el.count > 1 ? 's' : ''})`;
 
-        // Badge placement: if too close to top (pt.y < 42), place below node
-        const badgeY = pt.y < 42 ? (pt.y + 11).toFixed(1) : (pt.y - 25).toFixed(1);
-        const badgeTextY = pt.y < 42 ? (pt.y + 23).toFixed(1) : (pt.y - 13).toFixed(1);
+        // Choose high-contrast text color based on atom color brightness
+        const isLight = lightColorElems.includes(el.atomicNumber) || color === '#ffffff' || color.toLowerCase() === '#ffff30';
+        const textColor = isLight ? '#090e1a' : '#ffffff';
 
-        nodesSvg += `
-            <!-- Data Point Halo & Node -->
-            <circle cx="${nx}" cy="${ny}" r="9" fill="none" stroke="${color}" stroke-width="2" opacity="0.35" class="comp-chart-pulse" />
-            <circle cx="${nx}" cy="${ny}" r="5.5" fill="${color}" stroke="#090e1a" stroke-width="2" />
-            
-            <!-- Value Badge -->
-            <rect x="${(pt.x - 24).toFixed(1)}" y="${badgeY}" width="48" height="17" rx="4" fill="#090e1a" stroke="${color}" stroke-width="1.2" opacity="0.95" />
-            <text x="${nx}" y="${badgeTextY}" fill="#f8fafc" font-size="10.5" font-weight="800" text-anchor="middle">${percentStr}</text>
+        // Add inline label if segment is wide enough
+        if (percent >= 12) {
+            seg.innerHTML = `<span class="comp-seg-label" style="color: ${textColor};">${el.symbol} ${el.massPercent}%</span>`;
+        } else if (percent >= 6) {
+            seg.innerHTML = `<span class="comp-seg-label" style="color: ${textColor};">${el.symbol}</span>`;
+        }
 
-            <!-- X-Axis Element Symbol & Count -->
-            <text x="${nx}" y="151" fill="#38bdf8" font-size="13" font-weight="800" text-anchor="middle">${el.symbol}</text>
-            <text x="${nx}" y="164" fill="#94a3b8" font-size="9.5" font-weight="600" text-anchor="middle">${el.count} atom${el.count > 1 ? 's' : ''}</text>
-        `;
+        lineBar.appendChild(seg);
     });
 
-    // Chart card
-    const chartCard = document.createElement('div');
-    chartCard.className = 'comp-chart-card';
-    chartCard.innerHTML = `
-        <svg class="comp-line-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="xMidYMid meet">
-            <defs>
-                <linearGradient id="compAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.36" />
-                    <stop offset="60%" stop-color="#0284c7" stop-opacity="0.10" />
-                    <stop offset="100%" stop-color="#090e1a" stop-opacity="0.0" />
-                </linearGradient>
-                <linearGradient id="compStrokeGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#38bdf8" />
-                    <stop offset="50%" stop-color="#818cf8" />
-                    <stop offset="100%" stop-color="#34d399" />
-                </linearGradient>
-                <filter id="compGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#38bdf8" flood-opacity="0.6"/>
-                </filter>
-            </defs>
-            <!-- Baseline -->
-            <line x1="${padLeft}" y1="${botY}" x2="${svgWidth - padRight}" y2="${botY}" stroke="#334155" stroke-width="1.5" />
-            
-            <!-- Grid Lines & Y-Labels -->
-            ${gridLinesSvg}
+    wrapper.appendChild(lineBar);
 
-            <!-- Area Fill -->
-            <path d="${areaPathStr}" fill="url(#compAreaGrad)" />
-
-            <!-- Line Stroke -->
-            <path d="${linePathStr}" fill="none" stroke="url(#compStrokeGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#compGlow)" />
-
-            <!-- Nodes & Labels -->
-            ${nodesSvg}
-        </svg>
-    `;
-
-    container.appendChild(chartCard);
-
-    // Complementary Legend Chips
+    // Complementary Legend Chips underneath
     const legend = document.createElement('div');
     legend.className = 'comp-legend-chips';
 
-    comp.elements.forEach(el => {
+    elements.forEach(el => {
         const chip = document.createElement('div');
         chip.className = 'comp-chip';
         const color = (typeof CPK_COLORS !== 'undefined' && CPK_COLORS[el.atomicNumber]) ? CPK_COLORS[el.atomicNumber] : '#00d4ff';
@@ -651,7 +569,8 @@ function renderElementComposition(comp) {
         legend.appendChild(chip);
     });
 
-    container.appendChild(legend);
+    wrapper.appendChild(legend);
+    container.appendChild(wrapper);
 }
 
 function resetMoleculeView() {
