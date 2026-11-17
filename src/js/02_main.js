@@ -1640,6 +1640,10 @@ function switchView(viewId, updateHash = true, pushHistory = true) {
 
         updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
         requestAnimationFrame(() => {
 
             syncNativeSliderVisibility();
@@ -1702,6 +1706,10 @@ function switchView(viewId, updateHash = true, pushHistory = true) {
 
             renderGrid();
 
+        }
+
+        if ((viewId === 'electrons' || viewId === 'isotopes') && window.DomGridZoomController) {
+            window.DomGridZoomController.init();
         }
 
     }
@@ -2018,6 +2026,10 @@ function handleHashRouting() {
 
         updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
         return;
 
     }
@@ -2224,6 +2236,10 @@ function setupUI() {
 
             updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
             
 
             const wikiViewBtn = document.getElementById('wiki-writeup-view');
@@ -2266,6 +2282,10 @@ function setupUI() {
 
                 updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
             }
 
         });
@@ -2283,6 +2303,10 @@ function setupUI() {
             updateSidebarValues();
 
             updateGridVisuals();
+
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
 
             if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
 
@@ -3266,6 +3290,10 @@ function renderGrid() {
 
         updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
         return;
 
     }
@@ -3782,6 +3810,14 @@ function renderGrid() {
 
                 if (window.NativeServices?.Haptics) window.NativeServices.Haptics.selection();
 
+                // If currently zoomed or panned, tapping Fit resets smoothly to 100% fit view!
+                const gridId = grid.id;
+                const state = window.DomGridZoomController?.getState(gridId);
+                if (state && (state.zoomScale > 1.03 || Math.abs(state.panX) > 4 || Math.abs(state.panY) > 4)) {
+                    window.DomGridZoomController.resetZoom(gridId, true);
+                    return;
+                }
+
                 cycleDomFitMode();
 
             };
@@ -3799,6 +3835,10 @@ function renderGrid() {
     
 
     updateGridVisuals();
+
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
 
 }
 
@@ -3826,6 +3866,8 @@ window.cycleDomFitMode = cycleDomFitMode;
 
 function applyDomFitMode(mode) {
 
+    currentDomFitMode = mode;
+
     const grids = ['electrons-grid', 'isotopes-grid'];
 
     grids.forEach(id => {
@@ -3841,6 +3883,10 @@ function applyDomFitMode(mode) {
         }
 
     });
+
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.applyCurrentFit();
+    }
 
     const labelMap = {
 
@@ -5287,7 +5333,7 @@ function updateSelectedCardVisuals() {
 
     const catColor = categoryColors[normalizedCategory] || '#00d4ff';
 
-    const catText = (normalizedCategory || el.category).toUpperCase();
+    const catText = (el.category || normalizedCategory).toUpperCase();
 
     const badgeHtml = `<span class="ed-series-dot" style="width: 5px; height: 5px; border-radius: 50%; background: ${catColor}; box-shadow: 0 0 5px ${catColor}; display: inline-block; flex-shrink: 0;"></span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${catText}</span>`;
 
@@ -5606,6 +5652,10 @@ function renderLegend() {
                     pill.classList.add('active');
 
                     updateGridVisuals();
+
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
 
                     if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
 
@@ -7505,7 +7555,7 @@ function updateSidebarValues(force = false) {
 
     const catColor = categoryColors[normalizedCategory] || '#00d4ff';
 
-    const catText = (normalizedCategory || el.category).toUpperCase();
+    const catText = (el.category || normalizedCategory).toUpperCase();
 
     
 
@@ -7515,11 +7565,11 @@ function updateSidebarValues(force = false) {
 
         if (el.dualCategory) {
 
-            valCat.innerHTML = `<span style="color: ${catColor}; font-weight:700;">${normalizedCategory || el.category}</span> <span style="color: #94a3b8; font-size:0.6rem; font-weight:400;">/</span> <span style="color: #38bdf8; font-weight:700;">${el.dualCategory}</span> <span title="Dual classification: displays intermediate chemical behavior" style="font-size: 0.62rem; cursor:pointer;">ℹ️</span>`;
+            valCat.innerHTML = `<span style="color: ${catColor}; font-weight:700;">${el.category || normalizedCategory}</span> <span style="color: #94a3b8; font-size:0.6rem; font-weight:400;">/</span> <span style="color: #38bdf8; font-weight:700;">${el.dualCategory}</span> <span title="Dual classification: displays intermediate chemical behavior" style="font-size: 0.62rem; cursor:pointer;">ℹ️</span>`;
 
         } else {
 
-            valCat.innerText = normalizedCategory || el.category;
+            valCat.innerText = el.category || normalizedCategory;
 
             valCat.style.setProperty('color', catColor, 'important');
 
@@ -7977,6 +8027,11 @@ function setupLayoutToggle() {
 
 async function toggleLandscapeFullscreenMode(forceEnable = false) {
 
+    if (window.Capacitor?.isNativePlatform()) {
+        // Native Android is strictly controlled via AndroidManifest.xml (sensorLandscape)
+        return;
+    }
+
     const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
 
     if (!isFS || forceEnable) {
@@ -8060,30 +8115,6 @@ function updateRotateBtnUI() {
 document.addEventListener('fullscreenchange', updateRotateBtnUI);
 
 document.addEventListener('webkitfullscreenchange', updateRotateBtnUI);
-
-
-
-let mobileLandscapeAutoTriggered = false;
-
-function autoActivateMobileLandscape() {
-
-    if (mobileLandscapeAutoTriggered || window.Platform?.isNative) return;
-
-    if (window.innerWidth <= 1000 || 'ontouchstart' in window) {
-
-        mobileLandscapeAutoTriggered = true;
-
-        toggleLandscapeFullscreenMode(true);
-
-    }
-
-}
-
-
-
-document.addEventListener('touchstart', autoActivateMobileLandscape, { passive: true });
-
-document.addEventListener('click', autoActivateMobileLandscape, { passive: true });
 
 
 
@@ -8287,76 +8318,97 @@ function positionMobileSidebar(cell, el) {
 
 
 
-    // Floating popup strictly when:
-    // (innerWidth < 1200 && innerHeight < 600) OR innerWidth < 680
-    const isFloatingPopupMode = (window.innerWidth < 1200 && window.innerHeight < 600) || (window.innerWidth < 680);
+    if (window.innerWidth <= 1000 || window.innerHeight <= 520) {
 
-    if (!isFloatingPopupMode) {
-        // Stationary mode: Desktop Wide (>= 1200) or Ample Height Top Pane (width < 1200 && height >= 600)
-        sidebar.classList.remove('pos-left', 'pos-right', 'mobile-active', 'open');
-        currentSidebarSide = null;
-        return;
-    }
+        let isLeftHalf = false;
 
+        if (cell) {
 
+            const rect = cell.getBoundingClientRect();
 
-    let isLeftHalf = false;
+            if (rect.width > 0) {
 
-    const cellRect = cell ? cell.getBoundingClientRect() : null;
-    if (cellRect && cellRect.width > 0) {
-        const cellCenterX = cellRect.left + cellRect.width / 2;
-        isLeftHalf = cellCenterX < (window.innerWidth / 2);
-    } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
-        const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
-        if (screenPos) {
-            isLeftHalf = screenPos.x < (window.innerWidth / 2);
-        } else {
-            const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
-            isLeftHalf = (pos.col <= 9);
+                const cellCenterX = rect.left + rect.width / 2;
+
+                isLeftHalf = cellCenterX < (window.innerWidth / 2);
+
+            }
+
+        } else if (window.PeriodicCanvasGrid?.getElementScreenPos && el) {
+
+            const screenPos = window.PeriodicCanvasGrid.getElementScreenPos(el.atomicNumber || el.z);
+
+            if (screenPos) {
+
+                isLeftHalf = screenPos.x < (window.innerWidth / 2);
+
+            } else {
+
+                const pos = (typeof getGridPosition === 'function') ? getGridPosition(el.atomicNumber || el.z) : { col: el.group || 1 };
+
+                isLeftHalf = (pos.col <= 9);
+
+            }
+
+        } else if (el) {
+
+            const z = el.atomicNumber || el.z;
+
+            if (typeof getGridPosition === 'function' && z) {
+
+                const pos = getGridPosition(z);
+
+                isLeftHalf = (pos.col <= 9);
+
+            } else {
+
+                isLeftHalf = (el.group || 1) <= 9;
+
+            }
+
         }
-    } else if (el) {
-        const z = el.atomicNumber || el.z;
-        if (typeof getGridPosition === 'function' && z) {
-            const pos = getGridPosition(z);
-            isLeftHalf = (pos.col <= 9);
+
+
+
+        const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
+
+        const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
+
+
+
+        if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
+
+            // Switching to other side: close current side and open on new side
+
+            sidebar.classList.remove('mobile-active', 'open', otherSide);
+
+            currentSidebarSide = targetSide;
+
+            sidebar.classList.add(targetSide);
+
+            void sidebar.offsetWidth; // Force synchronous reflow
+
+            sidebar.classList.add('mobile-active');
+
         } else {
-            isLeftHalf = (el.group || 1) <= 9;
+
+            // Within same side: keep same panel open in-place and replace values
+
+            currentSidebarSide = targetSide;
+
+            sidebar.classList.remove(otherSide);
+
+            sidebar.classList.add(targetSide);
+
+            sidebar.classList.add('mobile-active');
+
         }
-    }
-
-
-
-    const targetSide = isLeftHalf ? 'pos-right' : 'pos-left';
-
-    const otherSide = isLeftHalf ? 'pos-left' : 'pos-right';
-
-
-
-    if (sidebar.classList.contains('mobile-active') && currentSidebarSide && currentSidebarSide !== targetSide) {
-
-        // Switching to other side: close current side and open on new side
-
-        sidebar.classList.remove('mobile-active', 'open', otherSide);
-
-        currentSidebarSide = targetSide;
-
-        sidebar.classList.add(targetSide);
-
-        void sidebar.offsetWidth; // Force synchronous reflow
-
-        sidebar.classList.add('mobile-active', 'open');
 
     } else {
 
-        // Within same side: keep same panel open in-place and replace values
+        sidebar.classList.remove('mobile-active', 'pos-left', 'pos-right');
 
-        currentSidebarSide = targetSide;
-
-        sidebar.classList.remove(otherSide);
-
-        sidebar.classList.add(targetSide);
-
-        sidebar.classList.add('mobile-active', 'open');
+        currentSidebarSide = null;
 
     }
 
@@ -8386,11 +8438,6 @@ function closeMobileSidebar() {
 
     selectedElement = null;
 
-    const emptyState = document.getElementById('empty-state');
-    const detailCard = document.getElementById('element-detail-card');
-    if (emptyState) emptyState.classList.remove('hidden');
-    if (detailCard) detailCard.classList.add('hidden');
-
     if (typeof closeIsotopeDetailPanel === 'function') {
 
         closeIsotopeDetailPanel();
@@ -8419,17 +8466,13 @@ window.dismissDetailSidebar = closeMobileSidebar;
 
 window.addEventListener('resize', () => {
 
-    const isFloatingPopupMode = (window.innerWidth < 1200 && window.innerHeight < 600) || (window.innerWidth < 680);
-
-    if (!isFloatingPopupMode) {
+    if (window.innerWidth > 1000 && window.innerHeight > 520) {
 
         document.querySelectorAll('.view-right').forEach(sb => {
 
-            sb.classList.remove('mobile-active', 'open', 'pos-left', 'pos-right');
+            sb.classList.remove('mobile-active', 'pos-left', 'pos-right');
 
         });
-
-        currentSidebarSide = null;
 
     }
 
@@ -8855,6 +8898,10 @@ function setElectronProperty(propKey) {
 
     updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
     syncNativeSliderVisibility();
 
 }
@@ -8900,6 +8947,10 @@ function setIsotopeProperty(propKey) {
     closeTableTypeModal(null, true);
 
     updateGridVisuals();
+
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
 
     syncNativeSliderVisibility();
 
@@ -9735,122 +9786,284 @@ function setupMobileLeftNav() {
 
 
 
-// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
+// ==========================================================================
+// DOM GRID PINCH-TO-ZOOM & PAN CONTROLLER (Electrons & Isotopes Tabs)
+// Multi-Finger Pinch-to-Zoom (0.85x - 3.5x), Smooth Pan & Double-Tap Reset
+// ==========================================================================
 
-function setupPinchToZoom() {
+window.DomGridZoomController = (function() {
+    const states = {
+        'electrons-grid': { zoomScale: 1.0, panX: 0, panY: 0 },
+        'isotopes-grid': { zoomScale: 1.0, panX: 0, panY: 0 }
+    };
 
-    const wrappers = document.querySelectorAll('.grid-wrapper');
+    let suppressClickUntil = 0;
 
-    wrappers.forEach(wrapper => {
+    // Global capturing click listener to prevent element selection while panning
+    window.addEventListener('click', (e) => {
+        if (Date.now() < suppressClickUntil) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, true);
 
-        let pinchStartDist = 0;
+    function getBaseScale() {
+        if (typeof currentDomFitMode === 'undefined') return 1.0;
+        if (currentDomFitMode === 'square') return 0.97;
+        if (currentDomFitMode === 'whole') return 0.93;
+        return 1.0;
+    }
 
-        let pinchStartScale = 1;
+    function applyTransform(grid, state, animate = false) {
+        if (!grid) return;
+        if (animate) {
+            grid.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            setTimeout(() => {
+                if (grid) grid.style.transition = 'none';
+            }, 300);
+        } else {
+            grid.style.transition = 'none';
+        }
 
-        let currentScale = 1;
+        const base = getBaseScale();
+        const effScale = state.zoomScale * base;
+        grid.style.transformOrigin = 'center center';
+        grid.style.transform = `translate3d(${state.panX}px, ${state.panY}px, 0px) scale(${effScale})`;
 
-        let pinching = false;
+        updateFitBoxUI(grid.id, state);
+    }
 
+    function updateFitBoxUI(gridId, state) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        const fitBox = grid.querySelector('.fit-mode-box');
+        if (!fitBox) return;
 
+        const isZoomed = (state.zoomScale > 1.03 || Math.abs(state.panX) > 4 || Math.abs(state.panY) > 4);
+        const tagSpan = fitBox.querySelector('span:first-child');
+        const pctSpan = fitBox.querySelector('.fit-pct-tag');
+        const titleSpan = fitBox.querySelector('.fit-mode-title');
 
-        // Cache grid reference; it may be dynamically re-rendered so re-query on touchstart
+        if (isZoomed) {
+            fitBox.style.borderColor = '#f97316';
+            fitBox.style.boxShadow = '0 0 14px rgba(249, 115, 22, 0.45)';
+            if (tagSpan) {
+                tagSpan.textContent = '↺ RESET';
+                tagSpan.style.color = '#fed7aa';
+            }
+            if (pctSpan) {
+                pctSpan.textContent = `${Math.round(state.zoomScale * 100)}%`;
+                pctSpan.style.color = '#fdba74';
+            }
+            if (titleSpan) {
+                titleSpan.textContent = `Zoom: ${Math.round(state.zoomScale * 100)}%`;
+                titleSpan.style.color = '#fed7aa';
+            }
+        } else {
+            fitBox.style.borderColor = '#00d4ff';
+            fitBox.style.boxShadow = '0 0 12px rgba(0, 212, 255, 0.25)';
+            const labelMap = { 'hfill': 'Fit: H-Fill', 'square': 'Fit: Square', 'whole': 'Fit: Whole' };
+            const pctMap = { 'hfill': '100%', 'square': '92%', 'whole': '86%' };
+            const mode = (typeof currentDomFitMode !== 'undefined') ? currentDomFitMode : 'hfill';
+            if (tagSpan) {
+                tagSpan.textContent = '↔ FIT';
+                tagSpan.style.color = '#00d4ff';
+            }
+            if (pctSpan) {
+                pctSpan.textContent = pctMap[mode] || '100%';
+                pctSpan.style.color = '#94a3b8';
+            }
+            if (titleSpan) {
+                titleSpan.textContent = labelMap[mode] || 'Fit: H-Fill';
+                titleSpan.style.color = '#ffffff';
+            }
+        }
+    }
 
-        let grid = null;
+    function resetZoom(gridId, animate = true) {
+        const state = states[gridId];
+        if (!state) return;
+        state.zoomScale = 1.0;
+        state.panX = 0;
+        state.panY = 0;
+        const grid = document.getElementById(gridId);
+        applyTransform(grid, state, animate);
+    }
 
+    function initGrid(gridId) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        const wrapper = grid.closest('.grid-wrapper');
+        if (!wrapper) return;
+        if (wrapper.__domZoomAttached) return;
+        wrapper.__domZoomAttached = true;
 
+        const state = states[gridId] || { zoomScale: 1.0, panX: 0, panY: 0 };
+        states[gridId] = state;
+
+        let isPinching = false;
+        let isPanning = false;
+        let initialPinchDistance = 0;
+        let initialZoomScale = 1.0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let lastTouchX = 0;
+        let lastTouchY = 0;
+        let touchStartTime = 0;
+        let lastTapTime = 0;
+
+        function getDistance(t1, t2) {
+            return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
+
+        function clampPan() {
+            const wRect = wrapper.getBoundingClientRect();
+            const maxPanX = Math.max(0, (wRect.width * (state.zoomScale - 1)) / 1.5 + 80);
+            const maxPanY = Math.max(0, (wRect.height * (state.zoomScale - 1)) / 1.5 + 80);
+            state.panX = Math.max(-maxPanX, Math.min(maxPanX, state.panX));
+            state.panY = Math.max(-maxPanY, Math.min(maxPanY, state.panY));
+        }
 
         wrapper.addEventListener('touchstart', (e) => {
-
-            if (e.target.closest('.table-controls, input, button, select, .sidebar-close-btn, .view-right, #in-grid-legend, #elec-in-grid-legend, #iso-in-grid-legend')) return;
-
-            grid = wrapper.querySelector('.periodic-grid');
-
-            // CRITICAL: Never block compositor on single-finger touches (slider drags).
-
-            // Only intercept 2-finger pinch gestures.
+            if (e.target.closest('.fit-mode-box, .table-controls, input, button, select, .sidebar-close-btn')) return;
 
             if (e.touches.length === 2) {
-
-                pinching = true;
-
-                pinchStartDist = Math.hypot(
-
-                    e.touches[0].clientX - e.touches[1].clientX,
-
-                    e.touches[0].clientY - e.touches[1].clientY
-
-                );
-
-                pinchStartScale = currentScale;
-
-            } else {
-
-                pinching = false;
-
+                if (e.cancelable) e.preventDefault();
+                isPinching = true;
+                isPanning = false;
+                initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+                initialZoomScale = state.zoomScale;
+                grid.style.transition = 'none';
+            } else if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                lastTouchX = touchStartX;
+                lastTouchY = touchStartY;
+                touchStartTime = Date.now();
+                isPanning = false;
             }
-
-        }, { passive: true });
-
-
-
-        wrapper.addEventListener('touchmove', (e) => {
-
-            if (!pinching || e.touches.length !== 2 || !grid) return;
-
-
-
-            e.preventDefault(); // CRITICAL: blocks native scroll so pinch works
-
-
-
-            const dist = Math.hypot(
-
-                e.touches[0].clientX - e.touches[1].clientX,
-
-                e.touches[0].clientY - e.touches[1].clientY
-
-            );
-
-
-
-            const ratio = dist / (pinchStartDist || 1);
-
-            currentScale = Math.min(Math.max(pinchStartScale * ratio, 0.4), 3.0);
-
-
-
-            // Compute midpoint of the two fingers in wrapper-local coords
-
-            const wRect = wrapper.getBoundingClientRect();
-
-            const midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - wRect.left;
-
-            const midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - wRect.top;
-
-
-
-            grid.style.transformOrigin = `${midX}px ${midY}px`;
-
-            grid.style.transform = `scale(${currentScale})`;
-
         }, { passive: false });
 
-
+        wrapper.addEventListener('touchmove', (e) => {
+            if (isPinching && e.touches.length === 2) {
+                if (e.cancelable) e.preventDefault();
+                const curDist = getDistance(e.touches[0], e.touches[1]);
+                if (initialPinchDistance > 0) {
+                    const ratio = curDist / initialPinchDistance;
+                    state.zoomScale = Math.max(0.85, Math.min(3.5, initialZoomScale * ratio));
+                    clampPan();
+                    applyTransform(grid, state, false);
+                }
+            } else if (e.touches.length === 1 && state.zoomScale > 1.05) {
+                const distFromStart = Math.hypot(e.touches[0].clientX - touchStartX, e.touches[0].clientY - touchStartY);
+                if (distFromStart > 8) {
+                    isPanning = true;
+                }
+                if (isPanning) {
+                    if (e.cancelable) e.preventDefault();
+                    const dx = e.touches[0].clientX - lastTouchX;
+                    const dy = e.touches[0].clientY - lastTouchY;
+                    lastTouchX = e.touches[0].clientX;
+                    lastTouchY = e.touches[0].clientY;
+                    state.panX += dx;
+                    state.panY += dy;
+                    clampPan();
+                    applyTransform(grid, state, false);
+                }
+            }
+        }, { passive: false });
 
         wrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length === 0) {
+                const wasPanningNow = isPanning;
+                isPinching = false;
+                isPanning = false;
 
-            if (e.touches.length < 2) {
+                if (wasPanningNow) {
+                    suppressClickUntil = Date.now() + 150;
+                }
 
-                pinching = false;
+                // Double tap detection
+                const now = Date.now();
+                const tapDuration = now - touchStartTime;
+                const tapDist = e.changedTouches && e.changedTouches.length === 1 ?
+                    Math.hypot(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY) : 999;
 
-                pinchStartDist = 0;
+                if (tapDist < 20 && tapDuration < 320) {
+                    if (now - lastTapTime < 340) {
+                        if (state.zoomScale > 1.03 || Math.abs(state.panX) > 4 || Math.abs(state.panY) > 4) {
+                            if (window.NativeServices?.Haptics) window.NativeServices.Haptics.selection();
+                            resetZoom(gridId, true);
+                            lastTapTime = 0;
+                            suppressClickUntil = Date.now() + 200;
+                            return;
+                        }
+                    }
+                    lastTapTime = now;
+                }
 
+                // Snap bounds smoothly
+                if (state.zoomScale < 1.0) {
+                    state.zoomScale = 1.0;
+                    state.panX = 0;
+                    state.panY = 0;
+                    applyTransform(grid, state, true);
+                } else if (state.zoomScale > 3.5) {
+                    state.zoomScale = 3.5;
+                    clampPan();
+                    applyTransform(grid, state, true);
+                }
+            } else if (e.touches.length === 1 && state.zoomScale > 1.05) {
+                isPinching = false;
+                isPanning = true;
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
             }
+        }, { passive: false });
 
-        }, { passive: true });
+        wrapper.addEventListener('wheel', (e) => {
+            if (e.ctrlKey || e.metaKey || state.zoomScale > 1.02) {
+                e.preventDefault();
+                const delta = e.deltaY * 0.002;
+                state.zoomScale = Math.max(0.85, Math.min(3.5, state.zoomScale - delta));
+                if (state.zoomScale <= 1.02) {
+                    state.zoomScale = 1.0;
+                    state.panX = 0;
+                    state.panY = 0;
+                } else {
+                    state.panX -= (e.deltaX || 0) * 0.5;
+                    clampPan();
+                }
+                applyTransform(grid, state, false);
+            }
+        }, { passive: false });
+    }
 
-    });
+    return {
+        init: function() {
+            initGrid('electrons-grid');
+            initGrid('isotopes-grid');
+        },
+        initGrid: initGrid,
+        resetZoom: resetZoom,
+        applyCurrentFit: function() {
+            ['electrons-grid', 'isotopes-grid'].forEach(id => {
+                const g = document.getElementById(id);
+                if (g && states[id]) {
+                    applyTransform(g, states[id], true);
+                }
+            });
+        },
+        getState: function(id) {
+            return states[id] || { zoomScale: 1.0, panX: 0, panY: 0 };
+        }
+    };
+})();
 
+function setupPinchToZoom() {
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
 }
 
 
@@ -9951,6 +10164,10 @@ function setTableProperty(propKey) {
 
     updateGridVisuals();
 
+    if (window.DomGridZoomController) {
+        window.DomGridZoomController.init();
+    }
+
     renderLegend();
 
     if (window.PeriodicCanvasGrid && window.PeriodicCanvasGrid.render) {
@@ -9986,134 +10203,6 @@ function setTableProperty(propKey) {
 }
 
 window.setTableProperty = setTableProperty;
-
-
-
-
-
-
-
-
-
-
-
-// Multi-Finger Pinch-to-Zoom Gesture Support for Periodic Table Grid
-
-function setupPinchToZoom() {
-
-    const wrappers = document.querySelectorAll('.grid-wrapper');
-
-    wrappers.forEach(wrapper => {
-
-        let pinchStartDist = 0;
-
-        let pinchStartScale = 1;
-
-        let currentScale = 1;
-
-        let pinching = false;
-
-
-
-        // Cache grid reference; it may be dynamically re-rendered so re-query on touchstart
-
-        let grid = null;
-
-
-
-        wrapper.addEventListener('touchstart', (e) => {
-
-            if (e.target.closest('.table-controls, input, button, select, .sidebar-close-btn, .view-right, #in-grid-legend, #elec-in-grid-legend, #iso-in-grid-legend')) return;
-
-            grid = wrapper.querySelector('.periodic-grid');
-
-            // CRITICAL: Never block compositor on single-finger touches (slider drags).
-
-            // Only intercept 2-finger pinch gestures.
-
-            if (e.touches.length === 2) {
-
-                pinching = true;
-
-                pinchStartDist = Math.hypot(
-
-                    e.touches[0].clientX - e.touches[1].clientX,
-
-                    e.touches[0].clientY - e.touches[1].clientY
-
-                );
-
-                pinchStartScale = currentScale;
-
-            } else {
-
-                pinching = false;
-
-            }
-
-        }, { passive: true });
-
-
-
-        wrapper.addEventListener('touchmove', (e) => {
-
-            if (!pinching || e.touches.length !== 2 || !grid) return;
-
-
-
-            e.preventDefault(); // CRITICAL: blocks native scroll so pinch works
-
-
-
-            const dist = Math.hypot(
-
-                e.touches[0].clientX - e.touches[1].clientX,
-
-                e.touches[0].clientY - e.touches[1].clientY
-
-            );
-
-
-
-            const ratio = dist / (pinchStartDist || 1);
-
-            currentScale = Math.min(Math.max(pinchStartScale * ratio, 0.4), 3.0);
-
-
-
-            // Compute midpoint of the two fingers in wrapper-local coords
-
-            const wRect = wrapper.getBoundingClientRect();
-
-            const midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - wRect.left;
-
-            const midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - wRect.top;
-
-
-
-            grid.style.transformOrigin = `${midX}px ${midY}px`;
-
-            grid.style.transform = `scale(${currentScale})`;
-
-        }, { passive: false });
-
-
-
-        wrapper.addEventListener('touchend', (e) => {
-
-            if (e.touches.length < 2) {
-
-                pinching = false;
-
-                pinchStartDist = 0;
-
-            }
-
-        }, { passive: true });
-
-    });
-
-}
 
 
 
@@ -11111,10 +11200,6 @@ let selectedRatingStars = 5;
 
 
 function openRateUsModal(forceUserTriggered = false) {
-    // Rate modal is strictly for native mobile app users (Android/iOS)
-    if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) {
-        return;
-    }
 
     const isPro = (typeof window.isProUser === 'function' && window.isProUser()) || localStorage.getItem('periodica_is_pro') === 'true' || localStorage.getItem('periodica_pro_tier') === 'lifetime';
 

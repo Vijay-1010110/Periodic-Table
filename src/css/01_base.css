@@ -522,9 +522,15 @@ body.has-native-slider #temp-custom-slider {
     margin-top: 0 !important;
 }
 
+#electrons-grid {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
 #elec-in-grid-legend {
     grid-column: 3 / 13 !important;
     grid-row: 1 / 4 !important;
+    margin-top: 0 !important;
 }
 
 /* Heatmap Controller */
@@ -2379,28 +2385,27 @@ body.has-native-slider #temp-custom-slider {
         margin: 0 auto !important;
         box-sizing: border-box !important;
         position: relative !important;
-        transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        touch-action: none !important;
+        will-change: transform;
     }
 
     #electrons-grid.fit-hfill,
     #isotopes-grid.fit-hfill {
         max-width: 100% !important;
-        transform: scale(1.0) !important;
-        transform-origin: center center !important;
+        transform-origin: center center;
     }
 
     #electrons-grid.fit-square,
     #isotopes-grid.fit-square {
         max-width: 92% !important;
-        transform: scale(0.97) !important;
-        transform-origin: center center !important;
+        transform-origin: center center;
     }
 
     #electrons-grid.fit-whole,
     #isotopes-grid.fit-whole {
         max-width: 86% !important;
-        transform: scale(0.93) !important;
-        transform-origin: center center !important;
+        transform-origin: center center;
     }
 
     #electrons-grid .element-cell,

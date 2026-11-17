@@ -486,14 +486,16 @@ window.NativeServices = (function() {
                         console.log("[Orientation] Large screen / Foldable detected: Free rotation active.");
                     }
                 } else {
-                    // Standard Smartphone: Lock strictly to Landscape (sensorLandscape allows both left & right landscape)
-                    if (this.appliedState !== 'landscape_locked') {
-                        await ScreenOrientation.lock({ orientation: 'landscape' });
-                        this.appliedState = 'landscape_locked';
-                        document.body.classList.add('is-phone-landscape-locked');
-                        document.body.classList.remove('is-tablet-or-foldable');
-                        console.log("[Orientation] Smartphone detected: Locked firmly to Landscape.");
-                    }
+                    // Standard Smartphone: AndroidManifest.xml already hard-locks android:screenOrientation="sensorLandscape".
+                    // CRITICAL FIX: Do NOT call ScreenOrientation.lock({ orientation: 'landscape' }) dynamically!
+                    // Calling setRequestedOrientation(SCREEN_ORIENTATION_LANDSCAPE) at runtime:
+                    // 1. Destroys native sensorLandscape (disabling natural 180° flips between landscape sides).
+                    // 2. Triggers the OS-level system auto-rotate suggestion pill/button on Android 9+ and Vivo Funtouch OS.
+                    // By allowing the manifest to govern natively, the activity stays cleanly in sensorLandscape with zero OS prompts.
+                    this.appliedState = 'landscape_locked';
+                    document.body.classList.add('is-phone-landscape-locked');
+                    document.body.classList.remove('is-tablet-or-foldable');
+                    console.log("[Orientation] Smartphone detected: Native manifest sensorLandscape active (no dynamic override).");
                 }
             } catch (e) {
                 console.warn("[Orientation] ScreenOrientation notice:", e);
