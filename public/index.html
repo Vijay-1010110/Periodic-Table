@@ -555,6 +555,33 @@ body.has-native-slider #temp-custom-slider {
 /* Electrons View Grid Content */
 .cell-bohr { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 
+/* Global Electrons View - Zero Top Bar / Seamless Top Alignment */
+#view-electrons .table-controls {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+#view-electrons .view-left {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+#view-electrons .grid-wrapper {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+#elec-in-grid-legend {
+    grid-column: 3 / 13 !important;
+    grid-row: 1 / 4 !important;
+}
+
 /* Heatmap Controller */
 .heatmap-controller {
     display: flex;
@@ -2358,7 +2385,8 @@ body.has-native-slider #temp-custom-slider {
     #view-electrons .view-left {
         height: 100% !important;
         max-height: 100% !important;
-        padding: 4px 6px 4px 6px !important;
+        padding: 0 6px 4px 6px !important;
+        margin-top: 0 !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
@@ -2370,8 +2398,12 @@ body.has-native-slider #temp-custom-slider {
     #view-electrons .table-controls {
         display: none !important;
         height: 0 !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
+        border: none !important;
+        overflow: hidden !important;
     }
 
     #view-electrons .grid-wrapper {
@@ -5721,10 +5753,10 @@ body.has-native-slider #temp-custom-slider {
     transform: scale(0.95) !important;
 }
 
-/* Container splits into 2 side-by-side columns */
+/* Container splits into 2 side-by-side columns - expanded details panel */
 #compounds-sidebar .compound-detail-container {
     display: grid !important;
-    grid-template-columns: 1.08fr 0.92fr !important;
+    grid-template-columns: 0.88fr 1.12fr !important;
     gap: 16px !important;
     width: 100% !important;
     height: 100% !important;
@@ -5775,7 +5807,7 @@ body.has-native-slider #temp-custom-slider {
 
 #compounds-sidebar .comp-viewer-tab-btn {
     padding: 7px 14px !important;
-    font-size: 0.90rem !important;
+    font-size: 1.02rem !important;
     font-weight: 700 !important;
     border-radius: 8px !important;
     display: inline-flex !important;
@@ -5861,7 +5893,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-formula-large {
-    font-size: 2.8rem !important;
+    font-size: 3.2rem !important;
     font-weight: 800 !important;
     color: #00d4ff !important;
     text-shadow: 0 0 16px rgba(0, 212, 255, 0.45) !important;
@@ -5869,14 +5901,14 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-type-pill {
-    font-size: 0.95rem !important;
+    font-size: 1.05rem !important;
     font-weight: 700 !important;
     padding: 5px 14px !important;
     border-radius: 14px !important;
 }
 
 #compounds-sidebar .comp-title-large {
-    font-size: 1.75rem !important;
+    font-size: 2.1rem !important;
     font-weight: 700 !important;
     color: #ffffff !important;
     margin-top: 6px !important;
@@ -5884,7 +5916,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-iupac-sub {
-    font-size: 1.0rem !important;
+    font-size: 1.15rem !important;
     color: rgba(255, 255, 255, 0.72) !important;
     font-family: var(--font-mono) !important;
 }
@@ -5898,7 +5930,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-section-card h4 {
-    font-size: 1.05rem !important;
+    font-size: 1.2rem !important;
     font-weight: 800 !important;
     color: #38bdf8 !important;
     margin: 0 0 10px 0 !important;
@@ -5915,8 +5947,8 @@ body.has-native-slider #temp-custom-slider {
 
 #compounds-sidebar .comp-thick-line {
     width: 100% !important;
-    height: 24px !important;
-    border-radius: 12px !important;
+    height: 28px !important;
+    border-radius: 14px !important;
     background: #090e1a !important;
     border: 1.5px solid #1e293b !important;
     display: flex !important;
@@ -5941,7 +5973,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-seg-label {
-    font-size: 0.82rem !important;
+    font-size: 0.95rem !important;
     font-weight: 800 !important;
     letter-spacing: 0.3px !important;
     padding: 0 4px !important;
@@ -6004,7 +6036,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .comp-chip {
-    font-size: 0.95rem !important;
+    font-size: 1.08rem !important;
     font-weight: 600 !important;
     padding: 6px 12px !important;
     border-radius: 6px !important;
@@ -6013,8 +6045,8 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .chip-color {
-    width: 10px !important;
-    height: 10px !important;
+    width: 13px !important;
+    height: 13px !important;
 }
 
 #compounds-sidebar .comp-props-grid {
@@ -6032,7 +6064,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .prop-label {
-    font-size: 0.85rem !important;
+    font-size: 0.95rem !important;
     color: #94a3b8 !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
@@ -6040,21 +6072,21 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compounds-sidebar .prop-value {
-    font-size: 1.2rem !important;
+    font-size: 1.35rem !important;
     font-weight: 700 !important;
     color: #38bdf8 !important;
     font-family: var(--font-mono) !important;
 }
 
 #compounds-sidebar #comp-detail-desc {
-    font-size: 1.02rem !important;
-    line-height: 1.6 !important;
+    font-size: 1.18rem !important;
+    line-height: 1.65 !important;
     color: rgba(255, 255, 255, 0.88) !important;
     margin-bottom: 14px !important;
 }
 
 #compounds-sidebar .comp-wiki-button {
-    font-size: 1.05rem !important;
+    font-size: 1.15rem !important;
     font-weight: 700 !important;
     padding: 12px 18px !important;
     border-radius: 8px !important;
@@ -6385,7 +6417,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #reactions-sidebar {
-    width: min(380px, 88vw) !important;
+    width: min(440px, 92vw) !important;
 }
 
 /* Crystals View Styles */
@@ -6521,7 +6553,7 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #crystals-sidebar {
-    width: min(380px, 88vw) !important;
+    width: min(440px, 92vw) !important;
 }
 
 /* Compare View Styles */
@@ -7266,11 +7298,10 @@ body.has-native-slider #temp-custom-slider {
 }
 
 #compare-sidebar {
-    width: min(380px, 88vw) !important;
+    width: min(440px, 92vw) !important;
 }
 
-/* Close Buttons for Floating Mobile Sidebars (Compounds, Reactions, Crystals, Compare) */
-#compounds-sidebar > .sidebar-close-btn,
+/* Close Buttons for Floating Mobile Sidebars (Reactions, Crystals, Compare) */
 #reactions-sidebar > .sidebar-close-btn,
 #crystals-sidebar > .sidebar-close-btn,
 #compare-sidebar > .sidebar-close-btn {
@@ -7294,7 +7325,6 @@ body.has-native-slider #temp-custom-slider {
     transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease !important;
 }
 
-#compounds-sidebar > .sidebar-close-btn:active,
 #reactions-sidebar > .sidebar-close-btn:active,
 #crystals-sidebar > .sidebar-close-btn:active,
 #compare-sidebar > .sidebar-close-btn:active {
@@ -125338,12 +125368,6 @@ window.OrbitalViewer = {
         <section class="view-mode" id="view-electrons">
 
             <div class="view-left">
-
-                <div class="table-controls">
-
-                    <input type="text" id="elec-search-bar" class="element-search-input" placeholder="Search element... (e.g. Carbon, Au, 79)">
-
-                </div>
 
                 <div class="grid-wrapper">
 
