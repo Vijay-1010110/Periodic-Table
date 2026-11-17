@@ -512,14 +512,30 @@ body.has-native-slider #temp-custom-slider {
     overflow: hidden !important;
 }
 
-#view-electrons .view-left {
+#view-electrons .view-left,
+#view-isotopes .view-left {
     padding-top: 0 !important;
     margin-top: 0 !important;
 }
 
-#view-electrons .grid-wrapper {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+#view-electrons .grid-wrapper,
+#view-isotopes .grid-wrapper,
+#isotopes-grid-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important; /* CRITICAL: Must be overflow: hidden so Android never intercepts touches for native scroll */
+    touch-action: none !important; /* CRITICAL: 100% touch gestures handled by DomGridZoomController */
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#electrons-grid,
+#isotopes-grid,
+#electrons-grid *,
+#isotopes-grid * {
+    touch-action: none !important;
 }
 
 #electrons-grid {
@@ -2357,19 +2373,22 @@ body.has-native-slider #temp-custom-slider {
         overflow: hidden !important;
     }
 
-    #view-electrons .grid-wrapper {
+    #view-electrons .grid-wrapper,
+    #view-isotopes .grid-wrapper,
+    #isotopes-grid-wrapper {
         flex: 1 !important;
         height: 100% !important;
         max-height: 100% !important;
         width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        touch-action: pan-x pan-y pinch-zoom !important;
+        overflow: hidden !important;
+        touch-action: none !important;
         padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box !important;
         display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
     }
 
     #electrons-grid,

@@ -567,14 +567,30 @@ body.has-native-slider #temp-custom-slider {
     overflow: hidden !important;
 }
 
-#view-electrons .view-left {
+#view-electrons .view-left,
+#view-isotopes .view-left {
     padding-top: 0 !important;
     margin-top: 0 !important;
 }
 
-#view-electrons .grid-wrapper {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+#view-electrons .grid-wrapper,
+#view-isotopes .grid-wrapper,
+#isotopes-grid-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important; /* CRITICAL: Must be overflow: hidden so Android never intercepts touches for native scroll */
+    touch-action: none !important; /* CRITICAL: 100% touch gestures handled by DomGridZoomController */
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#electrons-grid,
+#isotopes-grid,
+#electrons-grid *,
+#isotopes-grid * {
+    touch-action: none !important;
 }
 
 #electrons-grid {
@@ -2412,19 +2428,22 @@ body.has-native-slider #temp-custom-slider {
         overflow: hidden !important;
     }
 
-    #view-electrons .grid-wrapper {
+    #view-electrons .grid-wrapper,
+    #view-isotopes .grid-wrapper,
+    #isotopes-grid-wrapper {
         flex: 1 !important;
         height: 100% !important;
         max-height: 100% !important;
         width: 100% !important;
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        touch-action: pan-x pan-y pinch-zoom !important;
+        overflow: hidden !important;
+        touch-action: none !important;
         padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box !important;
         display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
     }
 
     #electrons-grid,
@@ -112295,7 +112314,7 @@ function setupMobileLeftNav() {
 
 // ==========================================================================
 // DOM GRID PINCH-TO-ZOOM & PAN CONTROLLER (Electrons & Isotopes Tabs)
-// Multi-Finger Pinch-to-Zoom (0.85x - 3.5x), Smooth Pan & Double-Tap Reset
+// Multi-Finger Pinch-to-Zoom (0.75x - 3.5x), Smooth Pan & Double-Tap Reset
 // ==========================================================================
 
 window.DomGridZoomController = (function() {
@@ -112306,7 +112325,7 @@ window.DomGridZoomController = (function() {
 
     let suppressClickUntil = 0;
 
-    // Global capturing click listener to prevent element selection while panning
+    // Global capturing click listener to prevent element selection while panning or pinching
     window.addEventListener('click', (e) => {
         if (Date.now() < suppressClickUntil) {
             e.stopPropagation();
@@ -112334,8 +112353,8 @@ window.DomGridZoomController = (function() {
 
         const base = getBaseScale();
         const effScale = state.zoomScale * base;
-        grid.style.transformOrigin = 'center center';
-        grid.style.transform = `translate3d(${state.panX}px, ${state.panY}px, 0px) scale(${effScale})`;
+        grid.style.setProperty('transform-origin', 'center center', 'important');
+        grid.style.setProperty('transform', `translate3d(${state.panX}px, ${state.panY}px, 0px) scale(${effScale})`, 'important');
 
         updateFitBoxUI(grid.id, state);
     }
@@ -112405,6 +112424,11 @@ window.DomGridZoomController = (function() {
         if (wrapper.__domZoomAttached) return;
         wrapper.__domZoomAttached = true;
 
+        // Force inline touch-action: none on wrapper and grid elements
+        wrapper.style.touchAction = 'none';
+        wrapper.style.overflow = 'hidden';
+        grid.style.touchAction = 'none';
+
         const state = states[gridId] || { zoomScale: 1.0, panX: 0, panY: 0 };
         states[gridId] = state;
 
@@ -112425,16 +112449,18 @@ window.DomGridZoomController = (function() {
 
         function clampPan() {
             const wRect = wrapper.getBoundingClientRect();
-            const maxPanX = Math.max(0, (wRect.width * (state.zoomScale - 1)) / 1.5 + 80);
-            const maxPanY = Math.max(0, (wRect.height * (state.zoomScale - 1)) / 1.5 + 80);
+            const gRect = grid.getBoundingClientRect();
+            const maxPanX = Math.max(20, (gRect.width - wRect.width) / 2 + 80);
+            const maxPanY = Math.max(20, (gRect.height - wRect.height) / 2 + 60);
             state.panX = Math.max(-maxPanX, Math.min(maxPanX, state.panX));
             state.panY = Math.max(-maxPanY, Math.min(maxPanY, state.panY));
         }
 
+        // Touch event handling on the wrapper (capturing all children touches)
         wrapper.addEventListener('touchstart', (e) => {
             if (e.target.closest('.fit-mode-box, .table-controls, input, button, select, .sidebar-close-btn')) return;
 
-            if (e.touches.length === 2) {
+            if (e.touches.length >= 2) {
                 if (e.cancelable) e.preventDefault();
                 isPinching = true;
                 isPanning = false;
@@ -112448,22 +112474,35 @@ window.DomGridZoomController = (function() {
                 lastTouchY = touchStartY;
                 touchStartTime = Date.now();
                 isPanning = false;
+                isPinching = false;
             }
         }, { passive: false });
 
         wrapper.addEventListener('touchmove', (e) => {
-            if (isPinching && e.touches.length === 2) {
+            if (e.target.closest('.fit-mode-box, .table-controls, input, button, select, .sidebar-close-btn')) return;
+
+            if (e.touches.length >= 2) {
                 if (e.cancelable) e.preventDefault();
                 const curDist = getDistance(e.touches[0], e.touches[1]);
-                if (initialPinchDistance > 0) {
+                if (!isPinching) {
+                    isPinching = true;
+                    isPanning = false;
+                    initialPinchDistance = curDist;
+                    initialZoomScale = state.zoomScale;
+                }
+                if (initialPinchDistance > 10) {
                     const ratio = curDist / initialPinchDistance;
-                    state.zoomScale = Math.max(0.85, Math.min(3.5, initialZoomScale * ratio));
+                    state.zoomScale = Math.max(0.75, Math.min(3.5, initialZoomScale * ratio));
                     clampPan();
                     applyTransform(grid, state, false);
                 }
-            } else if (e.touches.length === 1 && state.zoomScale > 1.05) {
+            } else if (e.touches.length === 1) {
+                if (isPinching) return;
                 const distFromStart = Math.hypot(e.touches[0].clientX - touchStartX, e.touches[0].clientY - touchStartY);
-                if (distFromStart > 8) {
+                const wRect = wrapper.getBoundingClientRect();
+                const gRect = grid.getBoundingClientRect();
+                const hasOverflow = (gRect.width > wRect.width + 10 || gRect.height > wRect.height + 10);
+                if (distFromStart > 6 && (state.zoomScale > 1.05 || hasOverflow)) {
                     isPanning = true;
                 }
                 if (isPanning) {
@@ -112482,12 +112521,12 @@ window.DomGridZoomController = (function() {
 
         wrapper.addEventListener('touchend', (e) => {
             if (e.touches.length === 0) {
-                const wasPanningNow = isPanning;
+                const wasActive = isPanning || isPinching;
                 isPinching = false;
                 isPanning = false;
 
-                if (wasPanningNow) {
-                    suppressClickUntil = Date.now() + 150;
+                if (wasActive) {
+                    suppressClickUntil = Date.now() + 180;
                 }
 
                 // Double tap detection
@@ -112497,12 +112536,12 @@ window.DomGridZoomController = (function() {
                     Math.hypot(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY) : 999;
 
                 if (tapDist < 20 && tapDuration < 320) {
-                    if (now - lastTapTime < 340) {
+                    if (now - lastTapTime < 350) {
                         if (state.zoomScale > 1.03 || Math.abs(state.panX) > 4 || Math.abs(state.panY) > 4) {
                             if (window.NativeServices?.Haptics) window.NativeServices.Haptics.selection();
                             resetZoom(gridId, true);
                             lastTapTime = 0;
-                            suppressClickUntil = Date.now() + 200;
+                            suppressClickUntil = Date.now() + 250;
                             return;
                         }
                     }
@@ -112520,19 +112559,24 @@ window.DomGridZoomController = (function() {
                     clampPan();
                     applyTransform(grid, state, true);
                 }
-            } else if (e.touches.length === 1 && state.zoomScale > 1.05) {
+            } else if (e.touches.length === 1) {
                 isPinching = false;
-                isPanning = true;
                 lastTouchX = e.touches[0].clientX;
                 lastTouchY = e.touches[0].clientY;
             }
         }, { passive: false });
 
+        wrapper.addEventListener('touchcancel', () => {
+            isPinching = false;
+            isPanning = false;
+        }, { passive: true });
+
+        // Mouse wheel for desktop / browser trackpads
         wrapper.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.metaKey || state.zoomScale > 1.02) {
                 e.preventDefault();
                 const delta = e.deltaY * 0.002;
-                state.zoomScale = Math.max(0.85, Math.min(3.5, state.zoomScale - delta));
+                state.zoomScale = Math.max(0.75, Math.min(3.5, state.zoomScale - delta));
                 if (state.zoomScale <= 1.02) {
                     state.zoomScale = 1.0;
                     state.panX = 0;
