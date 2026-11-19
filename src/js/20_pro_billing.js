@@ -51,19 +51,17 @@
 
 
     function setProUser(status, notify = true) {
-
         localStorage.setItem(PRO_STORAGE_KEY, status ? 'true' : 'false');
-
         if (status) {
-
             document.body.classList.add('is-pro-user');
-
+            // Permanently suppress rating and review popups so Pro users are never disturbed
+            localStorage.setItem('periodica_rate_never', 'true');
+            if (typeof window.closeRateUsModal === 'function') {
+                window.closeRateUsModal();
+            }
         } else {
-
             document.body.classList.remove('is-pro-user');
-
         }
-
         updateTierUI();
 
 
@@ -177,17 +175,17 @@
 
 
         // Settings Modal License Field
-
         const licenseBadge = document.getElementById('settings-license-badge');
-
         if (licenseBadge) {
-
             licenseBadge.textContent = isPro ? '👑 Periodica 3D Pro (Lifetime)' : 'Free Plan';
-
             licenseBadge.style.color = isPro ? '#fbbf24' : '#94a3b8';
-
         }
 
+        // Hide Rate & Review button in Settings for Pro users so they are never disturbed
+        const rateReviewBtn = document.getElementById('settings-rate-review-btn');
+        if (rateReviewBtn) {
+            rateReviewBtn.style.display = isPro ? 'none' : 'flex';
+        }
     }
 
 
@@ -701,117 +699,91 @@
 
 
 
-    // 7. Rating Prompt & Engagement Tracker
+    // 7. Rating Prompt & Engagement Tracker (At most once a week, Never for PRO users)
+    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000; // 7 days (604,800,000 ms)
 
     function trackSessionAndCheckRatingPrompt() {
-
         try {
             // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
             if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
-            // PRO users are never prompted
-
-            if (isProUser()) return;
-
-
+            // PRO users are NEVER prompted or disturbed for ratings
+            if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                return;
+            }
 
             const hasRated = localStorage.getItem('periodica_rated') === 'true';
-
             if (hasRated) return;
 
-
-
             const neverShow = localStorage.getItem('periodica_rate_never') === 'true';
-
             if (neverShow) return;
 
-
-
-            const laterTs = parseInt(localStorage.getItem('periodica_rate_later_timestamp') || '0', 10);
-
-            if (laterTs && Date.now() - laterTs < 3 * 24 * 60 * 60 * 1000) {
-
-                // Remind later set within last 3 days
-
+            // Check 1-week cooldown: at most once a week
+            const lastPromptTs = parseInt(
+                localStorage.getItem('periodica_last_rate_prompt_timestamp') ||
+                localStorage.getItem('periodica_rate_later_timestamp') || '0',
+                10
+            );
+            if (lastPromptTs > 0 && (Date.now() - lastPromptTs) < ONE_WEEK_MS) {
+                // Asked within the last 7 days - do not disturb the user
                 return;
-
             }
-
-
-
-            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
-            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             let sessions = parseInt(localStorage.getItem('periodica_sessions_count') || '0', 10) + 1;
-
             localStorage.setItem('periodica_sessions_count', sessions.toString());
 
-
-
-            // Trigger prompt on 2nd session after a pleasant 8-second delay
-
+            // Trigger prompt on 2nd session (or subsequent sessions only if 1 week elapsed) after an 8-second delay
             if (sessions >= 2) {
-
                 setTimeout(() => {
-
-                    if (typeof window.openRateUsModal === 'function') {
-
-                        window.openRateUsModal();
-
+                    if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                        return;
                     }
-
+                    if (typeof window.openRateUsModal === 'function') {
+                        window.openRateUsModal(false);
+                    }
                 }, 8000);
-
             }
-
         } catch (e) {}
-
     }
 
-
-
     // 8. Element Inspection Tracker
-
     function trackElementInspection() {
-
         try {
             // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
             if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
-            // PRO users are never prompted
-
-            if (isProUser()) return;
-
-
-
-            if (localStorage.getItem('periodica_rated') === 'true') return;
-
-            if (localStorage.getItem('periodica_rate_never') === 'true') return;
-
-
-
-            let viewed = parseInt(localStorage.getItem('periodica_elements_viewed') || '0', 10) + 1;
-
-            localStorage.setItem('periodica_elements_viewed', viewed.toString());
-
-
-
-            if (viewed === 6) {
-
-                setTimeout(() => {
-
-                    if (typeof window.openRateUsModal === 'function') {
-
-                        window.openRateUsModal();
-
-                    }
-
-                }, 2000);
-
+            // PRO users are NEVER prompted
+            if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                return;
             }
 
-        } catch (e) {}
+            if (localStorage.getItem('periodica_rated') === 'true') return;
+            if (localStorage.getItem('periodica_rate_never') === 'true') return;
 
+            // Check 1-week cooldown
+            const lastPromptTs = parseInt(
+                localStorage.getItem('periodica_last_rate_prompt_timestamp') ||
+                localStorage.getItem('periodica_rate_later_timestamp') || '0',
+                10
+            );
+            if (lastPromptTs > 0 && (Date.now() - lastPromptTs) < ONE_WEEK_MS) {
+                return;
+            }
+
+            let viewed = parseInt(localStorage.getItem('periodica_elements_viewed') || '0', 10) + 1;
+            localStorage.setItem('periodica_elements_viewed', viewed.toString());
+
+            if (viewed === 6) {
+                setTimeout(() => {
+                    if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                        return;
+                    }
+                    if (typeof window.openRateUsModal === 'function') {
+                        window.openRateUsModal(false);
+                    }
+                }, 2000);
+            }
+        } catch (e) {}
     }
 
 

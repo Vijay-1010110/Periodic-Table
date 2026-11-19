@@ -13891,6 +13891,10 @@ window.NativeServices = (function() {
                 if (isProUser) {
                     Ads.hideBanner();
                     document.body.classList.add('is-pro');
+                    localStorage.setItem('periodica_rate_never', 'true');
+                    if (typeof window.closeRateUsModal === 'function') {
+                        window.closeRateUsModal();
+                    }
                 }
                 return isProUser;
             } catch (e) {
@@ -113742,204 +113746,155 @@ window.confirmTempConverter = confirmTempConverter;
 
 /* ==========================================================================
 
-   Rate Us / In-App Review Manager
+   Rate Us / In-App Review Manager (Weekly Throttled & Pro-Protected)
 
    ========================================================================== */
 
 let selectedRatingStars = 5;
 
+// Strict 1-week minimum cooldown: 7 days
+const RATE_US_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
+function isProUserActive() {
+    try {
+        if (typeof window.isProUser === 'function' && window.isProUser()) return true;
+        if (localStorage.getItem('periodica_is_pro') === 'true') return true;
+        if (localStorage.getItem('periodica_pro_tier') === 'lifetime') return true;
+        if (window.NativeServices && typeof window.NativeServices.isPro === 'function' && window.NativeServices.isPro()) return true;
+        if (document.body.classList.contains('is-pro-user') || document.body.classList.contains('is-pro')) return true;
+    } catch (e) {}
+    return false;
+}
+window.isProUserActive = isProUserActive;
 
 function openRateUsModal(forceUserTriggered = false) {
+    const isPro = isProUserActive();
+    const alreadyRated = localStorage.getItem('periodica_rated') === 'true';
+    const neverShow = localStorage.getItem('periodica_rate_never') === 'true';
 
-    const isPro = (typeof window.isProUser === 'function' && window.isProUser()) || localStorage.getItem('periodica_is_pro') === 'true' || localStorage.getItem('periodica_pro_tier') === 'lifetime';
-
-    const neverShow = localStorage.getItem('periodica_rate_never') === 'true' || localStorage.getItem('periodica_rated') === 'true';
-
-
-
-    // Never prompt automatically if the user is PRO or chose "Don't show again" / already rated
-
-    if (!forceUserTriggered && (isPro || neverShow)) {
-
+    // 1. Pro Users: NEVER show or ask for ratings automatically so pro users are not disturbed
+    if (isPro && !forceUserTriggered) {
         return;
-
     }
 
+    // 2. Previously rated or explicitly dismissed with "Never"
+    if (!forceUserTriggered && (alreadyRated || neverShow)) {
+        return;
+    }
 
+    // 3. Weekly Cooldown: At most once in a week (7 days)
+    if (!forceUserTriggered) {
+        const lastPromptTs = parseInt(
+            localStorage.getItem('periodica_last_rate_prompt_timestamp') ||
+            localStorage.getItem('periodica_rate_later_timestamp') || '0',
+            10
+        );
+        const now = Date.now();
+        if (lastPromptTs > 0 && (now - lastPromptTs) < RATE_US_COOLDOWN_MS) {
+            return; // Prompted within the past 7 days; do not disturb user
+        }
+    }
 
     const modal = document.getElementById('rate-us-modal');
-
     if (!modal) return;
 
-
+    // Record prompt timestamp to enforce the 7-day cooldown
+    if (!forceUserTriggered) {
+        localStorage.setItem('periodica_last_rate_prompt_timestamp', Date.now().toString());
+    }
 
     if (window.PeriodicaNativeSlider && window.PeriodicaNativeSlider.setVisibility) {
-
         window.PeriodicaNativeSlider.setVisibility(false);
-
     }
-
-
 
     handleStarClick(5);
-
     modal.style.display = 'flex';
-
 }
-
 window.openRateUsModal = openRateUsModal;
 
-
-
 function dismissRateUsNever() {
-
     localStorage.setItem('periodica_rate_never', 'true');
-
     localStorage.setItem('periodica_rated', 'true');
-
     closeRateUsModal();
-
 }
-
 window.dismissRateUsNever = dismissRateUsNever;
 
-
-
 function closeRateUsModal() {
-
-    const modal = document.getElementById('rate-us-modal');
-
-    if (modal) modal.style.display = 'none';
-
-
-
-    if (typeof syncNativeSliderVisibility === 'function') {
-
-        syncNativeSliderVisibility();
-
+    // If closed without completing rating or choosing never, treat as later so 7-day cooldown applies
+    if (localStorage.getItem('periodica_rated') !== 'true' && localStorage.getItem('periodica_rate_never') !== 'true') {
+        const nowStr = Date.now().toString();
+        localStorage.setItem('periodica_rate_later_timestamp', nowStr);
+        localStorage.setItem('periodica_last_rate_prompt_timestamp', nowStr);
     }
 
-}
+    const modal = document.getElementById('rate-us-modal');
+    if (modal) modal.style.display = 'none';
 
+    if (typeof syncNativeSliderVisibility === 'function') {
+        syncNativeSliderVisibility();
+    }
+}
 window.closeRateUsModal = closeRateUsModal;
 
-
-
 function handleStarClick(stars) {
-
     selectedRatingStars = stars;
-
     const starBtns = document.querySelectorAll('#star-rating-container .star-btn');
-
     starBtns.forEach((btn, idx) => {
-
         if (idx < stars) {
-
             btn.classList.add('active');
-
         } else {
-
             btn.classList.remove('active');
-
         }
-
     });
 
-
-
     const feedbackArea = document.getElementById('rating-feedback-area');
-
     const actionMsg = document.getElementById('rating-action-text');
-
     const textareaWrap = document.getElementById('feedback-textarea-wrap');
-
     const submitBtn = document.getElementById('rate-submit-btn');
-
-
 
     if (feedbackArea) feedbackArea.style.display = 'block';
 
-
-
     if (stars >= 4) {
-
         if (actionMsg) actionMsg.textContent = '🎉 Thank you! Rate us 5 stars on Google Play to support development:';
-
         if (textareaWrap) textareaWrap.style.display = 'none';
-
         if (submitBtn) submitBtn.textContent = '⭐ Rate on Google Play';
-
     } else {
-
         if (actionMsg) actionMsg.textContent = 'We appreciate your honesty! How can we make Periodica 3D better?';
-
         if (textareaWrap) textareaWrap.style.display = 'block';
-
         if (submitBtn) submitBtn.textContent = 'Send Feedback';
-
     }
-
 }
-
 window.handleStarClick = handleStarClick;
 
-
-
 function submitRating() {
-
     localStorage.setItem('periodica_rated', 'true');
-
+    localStorage.setItem('periodica_rate_never', 'true');
     if (selectedRatingStars >= 4) {
-
         if (window.PeriodicaNativeReview && typeof window.PeriodicaNativeReview.requestInAppReview === 'function') {
-
             window.PeriodicaNativeReview.requestInAppReview();
-
         } else {
-
             const playUrl = 'https://play.google.com/store/apps/details?id=com.periodica.app';
-
             window.open(playUrl, '_system');
-
         }
-
     } else {
-
         // Direct feedback submission
-
         const feedbackInput = document.getElementById('feedback-input-text');
-
         const text = feedbackInput ? feedbackInput.value : '';
-
         if (text) {
-
             console.log('User Feedback:', text);
-
-            // Optionally mailto
-
             window.open(`mailto:periodicax.support@gmail.com?subject=Periodica Feedback (${selectedRatingStars} Stars)&body=${encodeURIComponent(text)}`, '_system');
-
         }
-
     }
-
     closeRateUsModal();
-
 }
-
 window.submitRating = submitRating;
 
-
-
 function dismissRateUsLater() {
-
-    localStorage.setItem('periodica_rate_later_timestamp', Date.now().toString());
-
+    const nowStr = Date.now().toString();
+    localStorage.setItem('periodica_rate_later_timestamp', nowStr);
+    localStorage.setItem('periodica_last_rate_prompt_timestamp', nowStr);
     closeRateUsModal();
-
 }
-
 window.dismissRateUsLater = dismissRateUsLater;
 
 
@@ -116353,19 +116308,17 @@ window.OrbitalViewer = {
 
 
     function setProUser(status, notify = true) {
-
         localStorage.setItem(PRO_STORAGE_KEY, status ? 'true' : 'false');
-
         if (status) {
-
             document.body.classList.add('is-pro-user');
-
+            // Permanently suppress rating and review popups so Pro users are never disturbed
+            localStorage.setItem('periodica_rate_never', 'true');
+            if (typeof window.closeRateUsModal === 'function') {
+                window.closeRateUsModal();
+            }
         } else {
-
             document.body.classList.remove('is-pro-user');
-
         }
-
         updateTierUI();
 
 
@@ -116479,17 +116432,17 @@ window.OrbitalViewer = {
 
 
         // Settings Modal License Field
-
         const licenseBadge = document.getElementById('settings-license-badge');
-
         if (licenseBadge) {
-
             licenseBadge.textContent = isPro ? '👑 Periodica 3D Pro (Lifetime)' : 'Free Plan';
-
             licenseBadge.style.color = isPro ? '#fbbf24' : '#94a3b8';
-
         }
 
+        // Hide Rate & Review button in Settings for Pro users so they are never disturbed
+        const rateReviewBtn = document.getElementById('settings-rate-review-btn');
+        if (rateReviewBtn) {
+            rateReviewBtn.style.display = isPro ? 'none' : 'flex';
+        }
     }
 
 
@@ -117003,117 +116956,91 @@ window.OrbitalViewer = {
 
 
 
-    // 7. Rating Prompt & Engagement Tracker
+    // 7. Rating Prompt & Engagement Tracker (At most once a week, Never for PRO users)
+    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000; // 7 days (604,800,000 ms)
 
     function trackSessionAndCheckRatingPrompt() {
-
         try {
             // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
             if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
-            // PRO users are never prompted
-
-            if (isProUser()) return;
-
-
+            // PRO users are NEVER prompted or disturbed for ratings
+            if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                return;
+            }
 
             const hasRated = localStorage.getItem('periodica_rated') === 'true';
-
             if (hasRated) return;
 
-
-
             const neverShow = localStorage.getItem('periodica_rate_never') === 'true';
-
             if (neverShow) return;
 
-
-
-            const laterTs = parseInt(localStorage.getItem('periodica_rate_later_timestamp') || '0', 10);
-
-            if (laterTs && Date.now() - laterTs < 3 * 24 * 60 * 60 * 1000) {
-
-                // Remind later set within last 3 days
-
+            // Check 1-week cooldown: at most once a week
+            const lastPromptTs = parseInt(
+                localStorage.getItem('periodica_last_rate_prompt_timestamp') ||
+                localStorage.getItem('periodica_rate_later_timestamp') || '0',
+                10
+            );
+            if (lastPromptTs > 0 && (Date.now() - lastPromptTs) < ONE_WEEK_MS) {
+                // Asked within the last 7 days - do not disturb the user
                 return;
-
             }
-
-
-
-            // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
-            if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
             let sessions = parseInt(localStorage.getItem('periodica_sessions_count') || '0', 10) + 1;
-
             localStorage.setItem('periodica_sessions_count', sessions.toString());
 
-
-
-            // Trigger prompt on 2nd session after a pleasant 8-second delay
-
+            // Trigger prompt on 2nd session (or subsequent sessions only if 1 week elapsed) after an 8-second delay
             if (sessions >= 2) {
-
                 setTimeout(() => {
-
-                    if (typeof window.openRateUsModal === 'function') {
-
-                        window.openRateUsModal();
-
+                    if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                        return;
                     }
-
+                    if (typeof window.openRateUsModal === 'function') {
+                        window.openRateUsModal(false);
+                    }
                 }, 8000);
-
             }
-
         } catch (e) {}
-
     }
 
-
-
     // 8. Element Inspection Tracker
-
     function trackElementInspection() {
-
         try {
             // Never prompt on Web - rating is strictly for native mobile app users (Android/iOS)
             if (!window.Platform?.isNative && !window.Capacitor?.isNativePlatform()) return;
 
-            // PRO users are never prompted
-
-            if (isProUser()) return;
-
-
-
-            if (localStorage.getItem('periodica_rated') === 'true') return;
-
-            if (localStorage.getItem('periodica_rate_never') === 'true') return;
-
-
-
-            let viewed = parseInt(localStorage.getItem('periodica_elements_viewed') || '0', 10) + 1;
-
-            localStorage.setItem('periodica_elements_viewed', viewed.toString());
-
-
-
-            if (viewed === 6) {
-
-                setTimeout(() => {
-
-                    if (typeof window.openRateUsModal === 'function') {
-
-                        window.openRateUsModal();
-
-                    }
-
-                }, 2000);
-
+            // PRO users are NEVER prompted
+            if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                return;
             }
 
-        } catch (e) {}
+            if (localStorage.getItem('periodica_rated') === 'true') return;
+            if (localStorage.getItem('periodica_rate_never') === 'true') return;
 
+            // Check 1-week cooldown
+            const lastPromptTs = parseInt(
+                localStorage.getItem('periodica_last_rate_prompt_timestamp') ||
+                localStorage.getItem('periodica_rate_later_timestamp') || '0',
+                10
+            );
+            if (lastPromptTs > 0 && (Date.now() - lastPromptTs) < ONE_WEEK_MS) {
+                return;
+            }
+
+            let viewed = parseInt(localStorage.getItem('periodica_elements_viewed') || '0', 10) + 1;
+            localStorage.setItem('periodica_elements_viewed', viewed.toString());
+
+            if (viewed === 6) {
+                setTimeout(() => {
+                    if (isProUser() || (typeof window.isProUserActive === 'function' && window.isProUserActive())) {
+                        return;
+                    }
+                    if (typeof window.openRateUsModal === 'function') {
+                        window.openRateUsModal(false);
+                    }
+                }, 2000);
+            }
+        } catch (e) {}
     }
 
 
@@ -127555,13 +127482,9 @@ window.OrbitalViewer = {
 
 
             <!-- Action Buttons: Rate Us & Check Updates -->
-
             <div style="display:flex; gap:10px; margin-top:14px;">
-
-                <button onclick="openRateUsModal()" style="flex:1; padding:10px 12px; background:linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.18)); border:1px solid #f59e0b; color:#fbbf24; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">⭐ Rate & Review</button>
-
+                <button id="settings-rate-review-btn" onclick="openRateUsModal(true)" style="flex:1; padding:10px 12px; background:linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.18)); border:1px solid #f59e0b; color:#fbbf24; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">⭐ Rate & Review</button>
                 <button onclick="checkAppUpdates(true)" style="flex:1; padding:10px 12px; background:linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(59, 130, 246, 0.18)); border:1px solid #00d4ff; color:#38bdf8; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s ease;">🚀 Check Updates</button>
-
             </div>
 
 

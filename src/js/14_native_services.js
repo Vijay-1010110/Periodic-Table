@@ -206,6 +206,10 @@ window.NativeServices = (function() {
                 if (isProUser) {
                     Ads.hideBanner();
                     document.body.classList.add('is-pro');
+                    localStorage.setItem('periodica_rate_never', 'true');
+                    if (typeof window.closeRateUsModal === 'function') {
+                        window.closeRateUsModal();
+                    }
                 }
                 return isProUser;
             } catch (e) {
