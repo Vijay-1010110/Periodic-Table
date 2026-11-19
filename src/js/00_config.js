@@ -38,7 +38,7 @@ window.AppConfig = {
     app: {
         name: "Periodica 3D",
         playStoreTitle: "Periodica 3D: Periodic Table",
-        version: "4.5.0",
+        version: "4.5.2",
         bundleId: "com.periodica.app",
         developerName: "Vijay-1010110",
         contactEmail: "periodicax.support@gmail.com",

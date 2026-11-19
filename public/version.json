@@ -1,0 +1,18 @@
+{
+  "latestVersion": "4.5.2",
+  "latestVersionCode": 4512,
+  "minRequiredVersionCode": 4200,
+  "isMandatory": false,
+  "releaseDate": "November 2026",
+  "downloadSize": "~6 MB",
+  "title": "Periodica 3D v4.5.2 - Interactive Gesture Zoom & Multi-View Experience Update",
+  "changelog": [
+    "Pinch-to-Zoom & Pan on Electron & Isotope Tables: Full multi-touch gesture zoom (0.75x to 3.5x), smooth 1-finger panning with boundary clamping, and double-tap reset across Electron Configurations and Radioactive Isotopes views",
+    "Interactive FitBox Floating Widget: Visual zoom percentage pill with instant reset button on all periodic grid tables",
+    "Full-Screen Molecular 3D Suite: Edge-to-edge inspection suite displaying detailed 3D ball-and-stick structures, physical properties, and chemistry definitions side-by-side with enlarged typography",
+    "Atom-Colored Mass % Line: High-contrast thick composition bar filled with atom CPK colors representing exact stoichiometric mass weight percentages",
+    "Native Rotation & Layout Stability: Zero top bar gap alignment and preserved natural sensor orientation across mobile devices"
+  ],
+  "playStoreUrl": "market://details?id=com.periodica.app",
+  "fallbackUrl": "https://play.google.com/store/apps/details?id=com.periodica.app"
+}

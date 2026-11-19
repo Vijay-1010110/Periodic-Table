@@ -11424,9 +11424,9 @@ window.dismissRateUsLater = dismissRateUsLater;
 
    ========================================================================== */
 
-const APP_CURRENT_VERSION = window.AppConfig?.app?.version || '4.5.0';
+const APP_CURRENT_VERSION = window.AppConfig?.app?.version || '4.5.2';
 
-const APP_VERSION_CODE = 4305;
+const APP_VERSION_CODE = 4512;
 
 window.isAppUpdateMandatory = false;
 
